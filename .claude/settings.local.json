@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:www.heroui.com)",
+      "WebFetch(domain:tanstack.com)",
+      "Bash(bun run:*)"
+    ]
+  },
+  "enableAllProjectMcpServers": false
+}
