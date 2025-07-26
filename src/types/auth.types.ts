@@ -7,8 +7,22 @@ export interface User {
   familyName?: string
 }
 
+export type AuthProviderType = 'google' | 'email'
+
+export interface AuthProvider {
+  type: AuthProviderType
+  credential?: string
+  accessToken?: string
+  refreshToken?: string
+  expiresAt: number
+}
+
+export interface AuthUser extends User {
+  provider: AuthProvider
+}
+
 export interface AuthState {
-  user: User | null
+  user: AuthUser | null
   isAuthenticated: boolean
   isLoading: boolean
   error: string | null
@@ -33,4 +47,24 @@ export interface DecodedGoogleToken {
   nbf: number
   picture?: string
   sub: string
+}
+
+export interface EmailLoginCredentials {
+  email: string
+  password: string
+}
+
+export interface EmailRegisterCredentials extends EmailLoginCredentials {
+  name: string
+}
+
+export interface AuthTokens {
+  accessToken: string
+  refreshToken: string
+  expiresIn: number
+}
+
+export interface RefreshTokenResponse {
+  accessToken: string
+  expiresIn: number
 }

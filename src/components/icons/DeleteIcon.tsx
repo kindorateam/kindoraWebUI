@@ -1,6 +1,6 @@
-import React from 'react'
+import type { SVGProps } from 'react'
 
-export const DeleteIcon = (props: React.SVGProps<SVGSVGElement>) => (
+export const DeleteIcon = (props: SVGProps<SVGSVGElement>) => (
   <svg
     aria-hidden="true"
     fill="none"

@@ -1,4 +1,4 @@
-import { apiClient } from './api.client'
+import { apiClient } from './api.service'
 import { Pokemon, PokemonListResponse } from '@/types'
 
 export const pokemonService = {

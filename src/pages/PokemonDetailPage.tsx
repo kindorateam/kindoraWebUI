@@ -40,7 +40,7 @@ export function PokemonDetailPage() {
         <div className="text-center">
           <h1 className="text-2xl font-bold text-red-600">Pokemon not found</h1>
           <p className="mt-2 text-gray-600">
-            The Pokemon you're looking for doesn't exist.
+            The Pokemon you&apos;re looking for doesn&apos;t exist.
           </p>
           <Button as={Link} to="/" color="primary" className="mt-4">
             Go Back

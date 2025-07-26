@@ -1,33 +1,39 @@
-export class AppError extends Error {
-  constructor(
-    message: string,
-    public code?: string,
-    public statusCode?: number,
-  ) {
-    super(message)
-    this.name = 'AppError'
-  }
+export interface ErrorInfo {
+  componentStack: string
+  digest?: string
 }
 
-export class AuthError extends AppError {
-  constructor(message: string) {
-    super(message, 'AUTH_ERROR', 401)
-    this.name = 'AuthError'
-  }
+export interface ErrorBoundaryState {
+  hasError: boolean
+  error: Error | null
+  errorInfo: ErrorInfo | null
+  errorBoundary?: string
+  errorBoundaryStack?: string[]
 }
 
-export class NetworkError extends AppError {
-  constructor(message: string) {
-    super(message, 'NETWORK_ERROR', 0)
-    this.name = 'NetworkError'
-  }
+export type ErrorSeverity = 'low' | 'medium' | 'high' | 'critical'
+
+export interface AppError extends Error {
+  code?: string
+  severity?: ErrorSeverity
+  context?: Record<string, unknown>
+  timestamp?: string
+  userMessage?: string
 }
 
-export class ValidationError extends AppError {
-  constructor(message: string) {
-    super(message, 'VALIDATION_ERROR', 400)
-    this.name = 'ValidationError'
-  }
+export interface ErrorFallbackProps {
+  error: Error
+  resetError: () => void
+  errorInfo?: ErrorInfo
 }
 
-export type ErrorType = AppError | AuthError | NetworkError | ValidationError
+export interface ErrorLogEntry {
+  error: Error
+  errorInfo?: ErrorInfo
+  timestamp: string
+  userAgent: string
+  url: string
+  userId?: string
+  sessionId?: string
+  context?: Record<string, unknown>
+}

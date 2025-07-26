@@ -2,7 +2,7 @@ import { Outlet, useNavigate } from '@tanstack/react-router'
 import { useAtomValue } from 'jotai'
 import { useEffect, useRef } from 'react'
 
-import { authStateAtom } from '@/stores/authStore.jotai'
+import { authStateAtom } from '@/stores/auth.store'
 
 export const GuestRoute = () => {
   const authState = useAtomValue(authStateAtom)

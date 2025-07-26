@@ -1,2 +1,2 @@
-export * from './format.util'
-export * from './validation.util'
+export * from './format.utils'
+export * from './validation.utils'

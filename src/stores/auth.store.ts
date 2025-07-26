@@ -3,9 +3,10 @@ import { atomWithStorage } from 'jotai/utils'
 
 import {
   decodeJWT,
+  validateAndDecodeToken,
   isTokenExpired,
   transformGoogleUser,
-} from '@/services/auth.service'
+} from '@/utils/auth.utils'
 
 import type { GoogleAuthResponse, User } from '@/types/auth.types'
 
@@ -15,11 +16,22 @@ export const tokenAtom = atomWithStorage<string | null>('auth-token', null)
 export const isLoadingAtom = atom(true)
 export const errorAtom = atom<string | null>(null)
 
-// Derived atom for authentication status
-export const isAuthenticatedAtom = atom((get) => {
-  const user = get(userAtom)
+const isAuthenticatedAtom = atom((get) => {
   const token = get(tokenAtom)
-  return !!user && !!token
+  const user = get(userAtom)
+  return !!user && !!token && !isTokenExpired(token)
+})
+
+// Token expiration atom
+export const tokenExpirationAtom = atom((get) => {
+  const token = get(tokenAtom)
+  if (!token) return null
+  try {
+    const { exp } = decodeJWT(token)
+    return typeof exp === 'number' ? exp * 1000 : null
+  } catch {
+    return null
+  }
 })
 
 // Derived atoms
@@ -33,7 +45,7 @@ export const authStateAtom = atom((get) => ({
 // Action atoms
 export const handleGoogleLoginAtom = atom(
   null,
-  (get, set, response: GoogleAuthResponse) => {
+  (_get, set, response: GoogleAuthResponse) => {
     try {
       set(isLoadingAtom, true)
       set(errorAtom, null)
@@ -54,7 +66,7 @@ export const handleGoogleLoginAtom = atom(
   },
 )
 
-export const logoutAtom = atom(null, (get, set) => {
+export const logoutAtom = atom(null, (_get, set) => {
   // atomWithStorage handles localStorage automatically
   set(userAtom, null)
   set(tokenAtom, null)
@@ -62,46 +74,32 @@ export const logoutAtom = atom(null, (get, set) => {
   set(errorAtom, null)
 })
 
-export const updateUserAtom = atom(null, (get, set, user: User) => {
+export const updateUserAtom = atom(null, (_get, set, user: User) => {
   set(userAtom, user)
 })
 
 export const checkAuthAtom = atom(null, (get, set) => {
-  // IMPORTANT: Don't clear auth state if we haven't checked localStorage yet
-  // atomWithStorage needs time to hydrate from localStorage
   const token = get(tokenAtom)
   const user = get(userAtom)
 
   // If we have a token, validate it
-  if (token) {
-    if (!isTokenExpired(token)) {
-      try {
-        const decodedToken = decodeJWT(token)
-        const decodedUser = transformGoogleUser(decodedToken)
+  if (!token) {
+    if (user) set(userAtom, null)
+    set(errorAtom, null)
+    set(isLoadingAtom, false) // Important: Set loading to false when no token
+  } else {
+    const validationResult = validateAndDecodeToken(token)
+    if (validationResult) {
+      const { decodedUser } = validationResult
 
-        // Verify user matches stored user
-        if (!user || user.id !== decodedUser.id) {
-          set(userAtom, decodedUser)
-        }
-        set(isLoadingAtom, false)
-      } catch (error) {
-        // Token is invalid, clear auth state
-        if (import.meta.env.DEV) {
-          console.error('[Auth Debug] Token validation failed:', error)
-        }
-        set(userAtom, null)
-        set(tokenAtom, null)
-        set(isLoadingAtom, false)
-      }
+      if (!user || user.id !== decodedUser.id) set(userAtom, decodedUser)
+
+      set(errorAtom, null)
     } else {
-      // Token expired
       set(userAtom, null)
       set(tokenAtom, null)
-      set(isLoadingAtom, false)
+      set(errorAtom, 'Invalid authentication token')
     }
-  } else {
-    // No token found - set loading to false so the app can proceed
     set(isLoadingAtom, false)
-    // Don't clear user/token here - they might just not be loaded yet from localStorage
   }
 })

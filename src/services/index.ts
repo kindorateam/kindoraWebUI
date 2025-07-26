@@ -1,3 +1,3 @@
-export * from './api.client'
+export * from './api.service'
 export * from './pokemon.service'
-export * from './auth.service'
+export * from '../utils/auth.utils'

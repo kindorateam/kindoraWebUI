@@ -1,48 +1,22 @@
 import { Card, CardBody } from '@heroui/react'
 import { useNavigate } from '@tanstack/react-router'
-import React from 'react'
+import { useCallback, useEffect } from 'react'
 
 import { useAuth } from '@/hooks/useAuth'
-
-import type { GoogleAuthResponse } from '@/types/auth.types'
-
-declare global {
-  interface Window {
-    google: {
-      accounts: {
-        id: {
-          initialize: (config: {
-            client_id: string
-            callback: (response: GoogleAuthResponse) => void
-          }) => void
-          renderButton: (
-            element: HTMLElement,
-            options: {
-              theme: string
-              size: string
-              type: string
-              shape: string
-            },
-          ) => void
-          prompt: () => void
-        }
-      }
-    }
-  }
-}
 
 export function LoginPage() {
   const { handleGoogleLogin, error, isAuthenticated } = useAuth()
   const navigate = useNavigate()
 
-  // Navigate to dashboard after successful authentication
-  React.useEffect(() => {
+  // Navigate after successful authentication
+  useEffect(() => {
     if (isAuthenticated) {
+      // For now, always go to dashboard after login
       void navigate({ to: '/dashboard' })
     }
   }, [isAuthenticated, navigate])
 
-  const initializeGoogleSignIn = React.useCallback(() => {
+  const initializeGoogleSignIn = useCallback(() => {
     if (window.google?.accounts) {
       window.google.accounts.id.initialize({
         client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
@@ -61,7 +35,7 @@ export function LoginPage() {
     }
   }, [handleGoogleLogin])
 
-  React.useEffect(() => {
+  useEffect(() => {
     const loadGoogleScript = () => {
       const script = document.createElement('script')
       script.src = 'https://accounts.google.com/gsi/client'

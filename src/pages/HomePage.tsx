@@ -1,21 +1,24 @@
 import { Button } from '@heroui/react'
-import { Navigate, Link } from '@tanstack/react-router'
+import { Navigate, Link, useLocation } from '@tanstack/react-router'
 import { useAtomValue } from 'jotai'
 
 import { PokemonDemo, UsersTable } from '@/components'
 import { PageLoader } from '@/components/layout/PageLoader'
-import { authStateAtom } from '@/stores/authStore.jotai'
+import { authStateAtom } from '@/stores/auth.store.ts'
 
 export function HomePage() {
   const authState = useAtomValue(authStateAtom)
-
+  const location = useLocation()
+  //@ts-ignore
+  const from = location.state?.from?.pathname || '/dashboard'
+  console.log(from)
   // Wait for auth state to be loaded before checking authentication
   if (authState.isLoading) {
     return <PageLoader />
   }
 
   if (authState.isAuthenticated) {
-    return <Navigate to="/dashboard" />
+    return <Navigate to={`/dashboard`} />
   }
 
   return (

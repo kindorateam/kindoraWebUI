@@ -24,6 +24,11 @@
 - **KISS** (Keep It Simple, Stupid)
 - **YAGNI** (You Aren't Gonna Need It)
 - **SRP** (Single Responsibility Principle)
+- Keep code as simple as possible
+- Use modern stable APIs
+- Check solution before implementing it
+- Prevent potential errors and inconsistencies
+- **IGNORE node_modules FOLDER**
 
 ## Project Structure 📁
 
@@ -99,15 +104,15 @@ export const useName = (params?: Type) => {
 
 ## File Naming Conventions 📚
 
-| Type      | Pattern             | Example           |
-| --------- | ------------------- | ----------------- |
-| Component | `PascalCase.tsx`    | `UserCard.tsx`    |
-| Hook      | `use[Name].ts`      | `useAuth.ts`      |
-| Query Hook| `use[Name]Query.ts` | `usePokemonQuery.ts`|
-| Service   | `[name].service.ts` | `auth.service.ts` |
-| Type      | `[name].types.ts`   | `user.types.ts`   |
-| Util      | `[name].utils.ts`   | `date.utils.ts`   |
-| Schema    | `[name].schema.ts`  | `login.schema.ts` |
+| Type       | Pattern             | Example              |
+| ---------- | ------------------- | -------------------- |
+| Component  | `PascalCase.tsx`    | `UserCard.tsx`       |
+| Hook       | `use[Name].ts`      | `useAuth.ts`         |
+| Query Hook | `use[Name]Query.ts` | `usePokemonQuery.ts` |
+| Service    | `[name].service.ts` | `auth.service.ts`    |
+| Type       | `[name].types.ts`   | `user.types.ts`      |
+| Util       | `[name].utils.ts`   | `date.utils.ts`      |
+| Schema     | `[name].schema.ts`  | `login.schema.ts`    |
 
 ## Modular Development Rules 📋
 
@@ -121,8 +126,8 @@ export const useName = (params?: Type) => {
 ### 2. Import Order
 ```typescript
 // 1. External libraries
-import React from 'react'
 import axios from 'axios'
+import { useCallback, useEffect } from 'react'
 
 // 2. Internal absolute paths
 import { Button } from '@/components'

@@ -6,7 +6,7 @@ import {
   handleGoogleLoginAtom,
   logoutAtom,
   updateUserAtom,
-} from '@/stores/authStore.jotai'
+} from '@/stores/auth.store'
 
 import type { GoogleAuthResponse } from '@/types/auth.types'
 

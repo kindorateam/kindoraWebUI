@@ -24,10 +24,12 @@ class ApiClient {
     // Request interceptor
     this.instance.interceptors.request.use(
       (config) => {
-        // Add auth token if available
+        // Add auth token if available from localStorage
+        // Note: We read directly from localStorage since this runs outside React context
+        // but the token is still managed by Jotai atomWithStorage
         const token = localStorage.getItem('auth-token')
         if (token) {
-          // Remove quotes from stored JSON string
+          // Remove quotes from JSON-stored string if present
           const cleanToken = token.replace(/^"|"$/g, '')
           config.headers.Authorization = `Bearer ${cleanToken}`
         }
@@ -54,9 +56,8 @@ class ApiClient {
             error.config?.url?.includes('/auth/verify')
 
           if (!isAuthCheck) {
-            // For other API calls, we can consider the token invalid
-            localStorage.removeItem('auth-token')
-            localStorage.removeItem('auth-user')
+            // For other API calls, token is invalid - just redirect
+            // The checkAuthAtom will handle clearing expired tokens on next app load
             window.location.href = '/login'
           }
         }

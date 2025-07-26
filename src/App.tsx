@@ -3,7 +3,7 @@ import { useAtom } from 'jotai'
 import { useEffect } from 'react'
 
 import { router } from './router'
-import { checkAuthAtom } from '@/stores/authStore.jotai'
+import { checkAuthAtom } from '@/stores/auth.store'
 
 const App = () => {
   const [, checkAuth] = useAtom(checkAuthAtom)
