@@ -13,6 +13,7 @@ import type { GoogleAuthResponse, User } from '@/types/auth.types'
 // Atoms for state - using atomWithStorage handles localStorage automatically
 export const userAtom = atomWithStorage<User | null>('auth-user', null)
 export const tokenAtom = atomWithStorage<string | null>('auth-token', null)
+
 export const isLoadingAtom = atom(true)
 export const errorAtom = atom<string | null>(null)
 

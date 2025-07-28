@@ -16,7 +16,7 @@ export const GuestRoute = () => {
       !isNavigating.current
     ) {
       isNavigating.current = true
-      void navigate({ to: '/', replace: true })
+      void navigate({ to: '/dashboard', replace: true })
     }
 
     // Reset when not authenticated
