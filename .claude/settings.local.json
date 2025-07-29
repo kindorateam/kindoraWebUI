@@ -6,5 +6,8 @@
       "Bash(bun run:*)"
     ]
   },
-  "enableAllProjectMcpServers": false
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": [
+    "Figma Dev Mode MCP"
+  ]
 }
