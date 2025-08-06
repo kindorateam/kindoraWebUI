@@ -3,7 +3,9 @@
     "allow": [
       "WebFetch(domain:www.heroui.com)",
       "WebFetch(domain:tanstack.com)",
-      "Bash(bun run:*)"
+      "Bash(bun run:*)",
+      "mcp__Figma_Dev_Mode_MCP__get_code",
+      "mcp__Figma_Dev_Mode_MCP__get_image"
     ]
   },
   "enableAllProjectMcpServers": true,

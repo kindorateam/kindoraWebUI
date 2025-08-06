@@ -1,4 +1,5 @@
 export { StudentsTable } from './StudentsTable'
 export { StudentCard } from './StudentCard'
 export { StudentGroup } from './StudentGroup'
+export { StudentsListV2 } from './StudentsListV2'
 export * from './students.mock'
