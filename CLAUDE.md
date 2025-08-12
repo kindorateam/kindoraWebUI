@@ -52,7 +52,7 @@ src/
 ## Code Organization Patterns 🚀
 
 ### Component Structure
-Every component should follow this pattern:
+Every component should follow this pattern(otherwise export default if a module exports only 1 thing. Applies to component/hooks/types/services/utils etc):
 ```typescript
 // types/[domain].types.ts
 export interface ComponentProps { }

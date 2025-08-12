@@ -1,6 +1,6 @@
 import { Outlet } from '@tanstack/react-router'
 
-import { NavDrawer } from './NavDrawer'
+import { NavDrawer } from './'
 
 export const MainLayout = () => {
   return (
@@ -9,7 +9,7 @@ export const MainLayout = () => {
       <NavDrawer />
 
       {/* Main Content */}
-      <main className="flex-1 overflow-y-auto bg-gray-50">
+      <main className="flex-1 overflow-y-auto">
         <Outlet />
       </main>
     </div>

@@ -1,82 +1,19 @@
-import { Badge, Button, Divider } from '@heroui/react'
 import { Link, useLocation } from '@tanstack/react-router'
 import { useCallback, useEffect, useState } from 'react'
 
-import {
-  HeartIcon,
-  DashboardIcon,
-  SchoolIcon,
-  MessageIcon,
-  BillingIcon,
-  AnalyticsIcon,
-  ReportsIcon,
-  AdmissionsIcon,
-  PlusIcon,
-} from '@/components/icons'
+import navDrawerData from './navDrawer.data.tsx'
+import Logo from '@/assets/svg/logo.svg?no-inline'
+import { PlusIcon } from '@/components/icons'
 
-interface MenuItem {
-  label: string
-  path: string
-  icon?: React.ReactNode
-  badge?: number
-  children?: MenuItem[]
-}
+import type { NavDrawerItem } from './navDrawer.types'
 
-const menuItems: MenuItem[] = [
-  {
-    label: 'Dashboard',
-    path: '/dashboard',
-    icon: <DashboardIcon className="h-5 w-5" />,
-  },
-  {
-    label: 'My school',
-    path: '#',
-    icon: <SchoolIcon className="h-5 w-5" />,
-    children: [
-      { label: 'Insights', path: '/insights' },
-      { label: 'Students', path: '/students' },
-      { label: 'Rooms', path: '/rooms' },
-      { label: 'Staff', path: '/staff' },
-      { label: 'Calendar', path: '/calendar' },
-      { label: 'News activity', path: '/news-activity' },
-    ],
-  },
-  {
-    label: 'Messages',
-    path: '#',
-    icon: <MessageIcon className="h-5 w-5" />,
-    badge: 5,
-    children: [],
-  },
-  {
-    label: 'Billing',
-    path: '/billing',
-    icon: <BillingIcon className="h-5 w-5" />,
-  },
-  {
-    label: 'Analytics',
-    path: '/analytics',
-    icon: <AnalyticsIcon className="h-5 w-5" />,
-  },
-  {
-    label: 'Reports',
-    path: '/reports',
-    icon: <ReportsIcon className="h-5 w-5" />,
-  },
-  {
-    label: 'Admissions',
-    path: '/admissions',
-    icon: <AdmissionsIcon className="h-5 w-5" />,
-  },
-]
-
-export const NavDrawer = () => {
+const NavDrawer = () => {
   const location = useLocation()
   const [expandedItems, setExpandedItems] = useState<string[]>([])
 
   // Check if any child of a menu item is active
   const hasActiveChild = useCallback(
-    (item: MenuItem): boolean => {
+    (item: NavDrawerItem): boolean => {
       if (!item.children) return false
       return item.children.some((child) => location.pathname === child.path)
     },
@@ -86,7 +23,7 @@ export const NavDrawer = () => {
   // Auto-expand parent if child is active
   useEffect(() => {
     const expanded: string[] = []
-    menuItems.forEach((item) => {
+    navDrawerData.forEach((item) => {
       if (hasActiveChild(item)) {
         expanded.push(item.label)
       }
@@ -104,7 +41,7 @@ export const NavDrawer = () => {
     )
   }
 
-  const renderMenuItem = (item: MenuItem) => {
+  const renderMenuItem = (item: NavDrawerItem) => {
     const hasChildren = item.children && item.children.length > 0
     const isExpanded = expandedItems.includes(item.label)
     const isActive = location.pathname === item.path
@@ -115,26 +52,15 @@ export const NavDrawer = () => {
         <div key={item.label} className="mb-2">
           <button
             onClick={() => toggleExpanded(item.label)}
-            className={`flex w-full items-center justify-between rounded-lg px-4 py-3 transition-colors ${
+            className={`inline-flex w-full items-center rounded-2xl px-4 py-2.5 transition-colors ${
               isParentActive
                 ? 'bg-gray-100 text-gray-900'
                 : 'text-gray-700 hover:bg-gray-100'
             }`}
           >
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
               {item.icon}
               <span className="font-medium">{item.label}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              {item.badge && (
-                <Badge
-                  color="secondary"
-                  size="sm"
-                  className="bg-pink-100 text-pink-600"
-                >
-                  {item.badge}
-                </Badge>
-              )}
               <svg
                 className={`h-4 w-4 transition-transform ${
                   isExpanded ? 'rotate-180' : ''
@@ -150,6 +76,7 @@ export const NavDrawer = () => {
                   d="M19 9l-7 7-7-7"
                 />
               </svg>
+              {item.badge && item.badge}
             </div>
           </button>
           {isExpanded && (
@@ -180,7 +107,7 @@ export const NavDrawer = () => {
       <Link
         key={item.label}
         to={item.path}
-        className={`mb-2 flex items-center gap-3 rounded-lg px-4 py-3 transition-colors ${
+        className={`mb-2 inline-flex items-center gap-2 rounded-2xl px-4 py-2.5 transition-colors ${
           isActive
             ? 'bg-gray-100 text-gray-900'
             : 'text-gray-700 hover:bg-gray-100'
@@ -188,46 +115,25 @@ export const NavDrawer = () => {
       >
         {item.icon}
         <span className="font-medium">{item.label}</span>
-        {item.badge && (
-          <Badge
-            color="secondary"
-            size="sm"
-            className="ml-auto bg-pink-100 text-pink-600"
-          >
-            {item.badge}
-          </Badge>
-        )}
+        {item.badge && item.badge}
       </Link>
     )
   }
 
   return (
-    <div className="relative h-full bg-gray-50">
+    <div className="h-ful relative">
       <aside className="flex h-full w-64 flex-col bg-white shadow-lg">
-        {/* Logo */}
-        <div className="p-6">
-          <div className="flex items-center gap-2">
-            <HeartIcon className="h-8 w-8 text-pink-500" />
-            <span className="text-2xl font-bold text-gray-900">Kindora</span>
-          </div>
+        <div className="xl:px-4 xl:py-5">
+          <img src={Logo} alt="Kindora Logo" />
         </div>
-
-        <Divider className="my-0" />
 
         {/* Menu Items */}
         <nav className="flex-1 overflow-y-auto p-4">
-          {menuItems.map(renderMenuItem)}
+          {navDrawerData.map(renderMenuItem)}
         </nav>
       </aside>
-
-      {/* Floating Action Button */}
-      <Button
-        isIconOnly
-        className="absolute right-8 bottom-8 h-14 w-14 bg-pink-600 shadow-lg hover:bg-pink-700"
-        radius="full"
-      >
-        <PlusIcon className="h-6 w-6 text-white" />
-      </Button>
     </div>
   )
 }
+
+export default NavDrawer

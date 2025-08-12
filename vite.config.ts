@@ -17,6 +17,7 @@ export default defineConfig({
       quoteStyle: 'single',
     }),
     react(),
+
     tsconfigPaths(),
     checker({
       typescript: true,

@@ -1,4 +1,4 @@
 export { PageLoader } from './PageLoader'
-export { NavDrawer } from './NavDrawer'
+export { default as NavDrawer } from './NavDrawer/index'
 export { MainLayout } from './MainLayout'
 export { PlaceholderPage } from './PlaceholderPage'
