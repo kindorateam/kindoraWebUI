@@ -10,7 +10,7 @@ import {
 
 import type { GoogleAuthResponse } from '@/types/auth.types'
 
-export const useAuth = () => {
+const useAuth = () => {
   const authState = useAtomValue(authStateAtom)
   const [, handleGoogleLogin] = useAtom(handleGoogleLoginAtom)
   const [, logout] = useAtom(logoutAtom)
@@ -37,3 +37,5 @@ export const useAuth = () => {
     updateUser,
   }
 }
+
+export default useAuth

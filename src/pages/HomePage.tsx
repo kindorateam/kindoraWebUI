@@ -3,10 +3,10 @@ import { Navigate, Link } from '@tanstack/react-router'
 import { useAtomValue } from 'jotai'
 
 import { PokemonDemo, UsersTable } from '@/components'
-import { PageLoader } from '@/components/layout/PageLoader'
+import PageLoader from '@/components/layout/PageLoader'
 import { authStateAtom } from '@/stores/auth.store.ts'
 
-export function HomePage() {
+const HomePage = () => {
   const authState = useAtomValue(authStateAtom)
 
   if (authState.isLoading) {
@@ -37,3 +37,5 @@ export function HomePage() {
     </div>
   )
 }
+
+export default HomePage

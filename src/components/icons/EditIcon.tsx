@@ -1,6 +1,6 @@
 import type { SVGProps } from 'react'
 
-export const EditIcon = (props: SVGProps<SVGSVGElement>) => (
+const EditIcon = (props: SVGProps<SVGSVGElement>) => (
   <svg
     aria-hidden="true"
     fill="none"
@@ -37,3 +37,5 @@ export const EditIcon = (props: SVGProps<SVGSVGElement>) => (
     />
   </svg>
 )
+
+export default EditIcon

@@ -6,7 +6,7 @@ interface NeedsAttentionProps {
   items: NeedsAttentionItem[]
 }
 
-export function NeedsAttention({ items }: NeedsAttentionProps) {
+const NeedsAttention = ({ items }: NeedsAttentionProps) => {
   const getStatusColor = (type: NeedsAttentionItem['type']) => {
     switch (type) {
       case 'absence':
@@ -51,3 +51,5 @@ export function NeedsAttention({ items }: NeedsAttentionProps) {
     </Card>
   )
 }
+
+export default NeedsAttention

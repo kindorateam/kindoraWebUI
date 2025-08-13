@@ -1,4 +1,4 @@
-import { CompactErrorFallback } from './CompactErrorFallback'
+import CompactErrorFallback from './CompactErrorFallback'
 import { ErrorBoundary } from './ErrorBoundary'
 
 import type { ReactNode } from 'react'
@@ -8,7 +8,7 @@ interface RouteErrorBoundaryProps {
   routeName?: string
 }
 
-export const RouteErrorBoundary = ({
+const RouteErrorBoundary = ({
   children,
   routeName,
 }: RouteErrorBoundaryProps) => {
@@ -28,3 +28,5 @@ export const RouteErrorBoundary = ({
     </ErrorBoundary>
   )
 }
+
+export default RouteErrorBoundary

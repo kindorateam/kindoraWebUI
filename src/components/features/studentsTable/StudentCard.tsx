@@ -34,7 +34,7 @@ const getStatusLabel = (status: Student['status']) => {
   }
 }
 
-export const StudentCard = ({ student }: StudentCardProps) => {
+const StudentCard = ({ student }: StudentCardProps) => {
   const statusLabel = getStatusLabel(student.status)
   const statusColor = getStatusColor(student.status)
 
@@ -138,3 +138,5 @@ export const StudentCard = ({ student }: StudentCardProps) => {
     </div>
   )
 }
+
+export default StudentCard

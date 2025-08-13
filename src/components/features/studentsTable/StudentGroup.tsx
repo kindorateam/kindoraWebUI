@@ -1,7 +1,7 @@
 import { Button } from '@heroui/react'
 import { useState } from 'react'
 
-import { StudentCard } from './StudentCard'
+import StudentCard from './StudentCard'
 
 import type { StudentGroup as StudentGroupType } from '@/types'
 
@@ -9,7 +9,7 @@ interface StudentGroupProps {
   group: StudentGroupType
 }
 
-export const StudentGroup = ({ group }: StudentGroupProps) => {
+const StudentGroup = ({ group }: StudentGroupProps) => {
   const [isExpanded, setIsExpanded] = useState(group.isExpanded)
 
   const toggleExpanded = () => {
@@ -63,3 +63,5 @@ export const StudentGroup = ({ group }: StudentGroupProps) => {
     </div>
   )
 }
+
+export default StudentGroup

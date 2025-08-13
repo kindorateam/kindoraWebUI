@@ -6,7 +6,7 @@ interface PaymentsCardProps {
   payments: PaymentInfo
 }
 
-export function PaymentsCard({ payments }: PaymentsCardProps) {
+const PaymentsCard = ({ payments }: PaymentsCardProps) => {
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
@@ -45,3 +45,5 @@ export function PaymentsCard({ payments }: PaymentsCardProps) {
     </div>
   )
 }
+
+export default PaymentsCard

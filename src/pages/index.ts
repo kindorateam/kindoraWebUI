@@ -1,4 +1,4 @@
-export { HomePage } from './HomePage'
-export { LoginPage } from './LoginPage'
-export { DashboardPage } from './DashboardPage'
-export { StudentsPage } from './StudentsPage'
+export { default as HomePage } from './HomePage'
+export { default as LoginPage } from './LoginPage'
+export { default as DashboardPage } from './DashboardPage'
+export { default as StudentsPage } from './StudentsPage'

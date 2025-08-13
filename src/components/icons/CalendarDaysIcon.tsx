@@ -1,4 +1,4 @@
-export const CalendarDaysIcon = ({ className }: { className?: string }) => (
+const CalendarDaysIcon = ({ className }: { className?: string }) => (
   <svg
     className={className}
     fill="none"
@@ -14,3 +14,5 @@ export const CalendarDaysIcon = ({ className }: { className?: string }) => (
     />
   </svg>
 )
+
+export default CalendarDaysIcon

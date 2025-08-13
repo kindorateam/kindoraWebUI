@@ -1,2 +1,2 @@
 export * from './usePokemonQuery'
-export * from './useDashboardQuery'
+export { default as useDashboardQuery } from './useDashboardQuery'

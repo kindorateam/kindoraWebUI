@@ -16,7 +16,7 @@ import { DeleteIcon, EditIcon, EyeIcon } from '@/components/icons'
 
 import type { Key } from 'react'
 
-export function UsersTable() {
+const UsersTable = () => {
   const renderCell = useCallback((user: (typeof users)[0], columnKey: Key) => {
     const cellValue = user[columnKey as keyof typeof user]
 
@@ -100,3 +100,5 @@ export function UsersTable() {
     </Table>
   )
 }
+
+export default UsersTable

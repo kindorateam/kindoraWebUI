@@ -1,4 +1,4 @@
-export const PlusIcon = (props: React.SVGProps<SVGSVGElement>) => (
+const PlusIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
     aria-hidden="true"
     fill="none"
@@ -12,3 +12,5 @@ export const PlusIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <path d="M19 13H13V19H11V13H5V11H11V5H13V11H19V13Z" fill="currentColor" />
   </svg>
 )
+
+export default PlusIcon

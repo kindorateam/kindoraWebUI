@@ -1,4 +1,4 @@
-export const ReportsIcon = (props: React.SVGProps<SVGSVGElement>) => (
+const ReportsIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
     aria-hidden="true"
     fill="none"
@@ -15,3 +15,5 @@ export const ReportsIcon = (props: React.SVGProps<SVGSVGElement>) => (
     />
   </svg>
 )
+
+export default ReportsIcon

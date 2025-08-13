@@ -1,6 +1,6 @@
 import type { SVGProps } from 'react'
 
-export const DeleteIcon = (props: SVGProps<SVGSVGElement>) => (
+const DeleteIcon = (props: SVGProps<SVGSVGElement>) => (
   <svg
     aria-hidden="true"
     fill="none"
@@ -48,3 +48,5 @@ export const DeleteIcon = (props: SVGProps<SVGSVGElement>) => (
     />
   </svg>
 )
+
+export default DeleteIcon

@@ -1,4 +1,4 @@
-export const MessageIcon = (props: React.SVGProps<SVGSVGElement>) => (
+const MessageIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
     aria-hidden="true"
     fill="none"
@@ -15,3 +15,5 @@ export const MessageIcon = (props: React.SVGProps<SVGSVGElement>) => (
     />
   </svg>
 )
+
+export default MessageIcon

@@ -1,10 +1,10 @@
 import { Button, Input, Spinner, Card, CardBody } from '@heroui/react'
 import { useState } from 'react'
 
-import { PokemonCard } from './PokemonCard'
+import PokemonCard from './PokemonCard'
 import { usePokemonQuery, usePokemonSimpleListQuery } from '@/hooks'
 
-export const PokemonDemo = () => {
+const PokemonDemo = () => {
   const [pokemonName, setPokemonName] = useState('')
   const [searchName, setSearchName] = useState('')
 
@@ -88,3 +88,5 @@ export const PokemonDemo = () => {
     </div>
   )
 }
+
+export default PokemonDemo

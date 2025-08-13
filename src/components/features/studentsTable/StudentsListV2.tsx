@@ -6,9 +6,9 @@ import {
   AccordionItem,
 } from '@heroui/react'
 
-import { ArrowRightOnRectangleIcon } from '@/components/icons/ArrowRightOnRectangleIcon'
-import { CalendarDaysIcon } from '@/components/icons/CalendarDaysIcon'
-import { ChevronDownIcon } from '@/components/icons/ChevronDownIcon'
+import ArrowRightOnRectangleIcon from '@/components/icons/ArrowRightOnRectangleIcon'
+import CalendarDaysIcon from '@/components/icons/CalendarDaysIcon'
+import ChevronDownIcon from '@/components/icons/ChevronDownIcon'
 import { useStudentGroupsQuery } from '@/hooks/useStudentsQuery'
 
 import type { Student, StudentGroup } from '@/types/student.types'
@@ -133,7 +133,7 @@ const StudentGroupSection = ({ group }: { group: StudentGroup }) => {
   )
 }
 
-export const StudentsListV2 = () => {
+const StudentsListV2 = () => {
   const { data: studentGroups, isLoading, error } = useStudentGroupsQuery()
 
   if (isLoading) {
@@ -181,3 +181,5 @@ export const StudentsListV2 = () => {
     </div>
   )
 }
+
+export default StudentsListV2

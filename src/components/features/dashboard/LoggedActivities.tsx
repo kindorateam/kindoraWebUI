@@ -7,10 +7,7 @@ interface LoggedActivitiesProps {
   details: { id: string; name: string; count: number }[]
 }
 
-export function LoggedActivities({
-  categories,
-  details,
-}: LoggedActivitiesProps) {
+const LoggedActivities = ({ categories, details }: LoggedActivitiesProps) => {
   const maxCount = Math.max(...categories.map((c) => c.count))
 
   return (
@@ -72,3 +69,5 @@ export function LoggedActivities({
     </Card>
   )
 }
+
+export default LoggedActivities

@@ -1,6 +1,6 @@
 import type { SVGProps } from 'react'
 
-export const EyeIcon = (props: SVGProps<SVGSVGElement>) => (
+const EyeIcon = (props: SVGProps<SVGSVGElement>) => (
   <svg
     aria-hidden="true"
     fill="none"
@@ -27,3 +27,5 @@ export const EyeIcon = (props: SVGProps<SVGSVGElement>) => (
     />
   </svg>
 )
+
+export default EyeIcon

@@ -6,7 +6,7 @@ import { getErrorMessage, getUserMessage } from '@/utils/error.utils'
 
 import type { ErrorFallbackProps } from '@/types/error.types'
 
-export const ErrorFallback = ({
+const ErrorFallback = ({
   error,
   resetError,
   errorInfo,
@@ -97,3 +97,5 @@ export const ErrorFallback = ({
     </div>
   )
 }
+
+export default ErrorFallback

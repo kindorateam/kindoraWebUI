@@ -8,7 +8,7 @@ interface PokemonCardProps {
   clickable?: boolean
 }
 
-export const PokemonCard = ({
+const PokemonCard = ({
   pokemon,
   clickable = false,
 }: PokemonCardProps) => {
@@ -54,3 +54,5 @@ export const PokemonCard = ({
     </Card>
   )
 }
+
+export default PokemonCard

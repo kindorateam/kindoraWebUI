@@ -12,7 +12,7 @@ import { useParams, Link } from '@tanstack/react-router'
 
 import { pokemonService } from '@/services/pokemon.service'
 
-export function PokemonDetailPage() {
+const PokemonDetailPage = () => {
   const { pokemonId } = useParams({ from: '/pokemon/$pokemonId' })
 
   const {
@@ -165,3 +165,5 @@ export function PokemonDetailPage() {
     </div>
   )
 }
+
+export default PokemonDetailPage

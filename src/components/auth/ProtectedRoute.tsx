@@ -5,7 +5,7 @@ import { useEffect, useRef } from 'react'
 import { MainLayout, PageLoader } from '@/components/layout'
 import { authStateAtom } from '@/stores/auth.store'
 
-export const ProtectedRoute = () => {
+const ProtectedRoute = () => {
   const authState = useAtomValue(authStateAtom)
   const location = useLocation()
   const navigate = useNavigate()
@@ -41,3 +41,5 @@ export const ProtectedRoute = () => {
 
   return <MainLayout />
 }
+
+export default ProtectedRoute

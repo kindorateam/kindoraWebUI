@@ -1,6 +1,6 @@
 import type { SVGProps } from 'react'
 
-export const AlertCircleIcon = (props: SVGProps<SVGSVGElement>) => (
+const AlertCircleIcon = (props: SVGProps<SVGSVGElement>) => (
   <svg
     aria-hidden="true"
     fill="none"
@@ -36,3 +36,5 @@ export const AlertCircleIcon = (props: SVGProps<SVGSVGElement>) => (
     />
   </svg>
 )
+
+export default AlertCircleIcon

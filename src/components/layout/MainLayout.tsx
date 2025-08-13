@@ -2,7 +2,7 @@ import { Outlet } from '@tanstack/react-router'
 
 import { NavDrawer } from './'
 
-export const MainLayout = () => {
+const MainLayout = () => {
   return (
     <div className="flex h-screen">
       {/* Navigation Drawer */}
@@ -15,3 +15,5 @@ export const MainLayout = () => {
     </div>
   )
 }
+
+export default MainLayout

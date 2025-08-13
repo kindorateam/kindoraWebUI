@@ -6,7 +6,7 @@ interface UpcomingWeekProps {
   events: CalendarEvent[]
 }
 
-export function UpcomingWeek({ events }: UpcomingWeekProps) {
+const UpcomingWeek = ({ events }: UpcomingWeekProps) => {
   const getEventColor = (type: CalendarEvent['type']) => {
     switch (type) {
       case 'artist-visitor':
@@ -58,3 +58,5 @@ export function UpcomingWeek({ events }: UpcomingWeekProps) {
     </Card>
   )
 }
+
+export default UpcomingWeek

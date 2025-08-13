@@ -1,5 +1,7 @@
-import { StudentsListV2 } from '@/components/features/studentsTable/StudentsListV2'
+import StudentsListV2 from '@/components/features/studentsTable/StudentsListV2'
 
-export const StudentsPage = () => {
+const StudentsPage = () => {
   return <StudentsListV2 />
 }
+
+export default StudentsPage

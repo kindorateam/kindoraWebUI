@@ -1,6 +1,6 @@
 import type { SVGProps } from 'react'
 
-export const RefreshIcon = (props: SVGProps<SVGSVGElement>) => (
+const RefreshIcon = (props: SVGProps<SVGSVGElement>) => (
   <svg
     aria-hidden="true"
     fill="none"
@@ -34,3 +34,5 @@ export const RefreshIcon = (props: SVGProps<SVGSVGElement>) => (
     />
   </svg>
 )
+
+export default RefreshIcon

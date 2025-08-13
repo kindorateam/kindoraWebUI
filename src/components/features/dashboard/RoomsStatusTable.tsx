@@ -13,7 +13,7 @@ interface RoomsStatusTableProps {
   rooms: RoomStatus[]
 }
 
-export function RoomsStatusTable({ rooms }: RoomsStatusTableProps) {
+const RoomsStatusTable = ({ rooms }: RoomsStatusTableProps) => {
   return (
     <Card className="bg-white shadow-sm">
       <CardHeader className="pb-0">
@@ -61,3 +61,5 @@ export function RoomsStatusTable({ rooms }: RoomsStatusTableProps) {
     </Card>
   )
 }
+
+export default RoomsStatusTable

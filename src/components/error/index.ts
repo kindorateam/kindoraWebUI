@@ -1,4 +1,4 @@
 export { ErrorBoundary } from './ErrorBoundary'
-export { ErrorFallback } from './ErrorFallback'
-export { CompactErrorFallback } from './CompactErrorFallback'
-export { RouteErrorBoundary } from './RouteErrorBoundary'
+export { default as ErrorFallback } from './ErrorFallback'
+export { default as CompactErrorFallback } from './CompactErrorFallback'
+export { default as RouteErrorBoundary } from './RouteErrorBoundary'

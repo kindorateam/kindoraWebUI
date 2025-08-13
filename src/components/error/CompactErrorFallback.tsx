@@ -5,7 +5,7 @@ import { getUserMessage } from '@/utils/error.utils'
 
 import type { ErrorFallbackProps } from '@/types/error.types'
 
-export const CompactErrorFallback = ({
+const CompactErrorFallback = ({
   error,
   resetError,
 }: ErrorFallbackProps) => {
@@ -28,3 +28,5 @@ export const CompactErrorFallback = ({
     </div>
   )
 }
+
+export default CompactErrorFallback

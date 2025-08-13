@@ -1,4 +1,4 @@
-export const ArrowRightOnRectangleIcon = ({
+const ArrowRightOnRectangleIcon = ({
   className,
 }: {
   className?: string
@@ -18,3 +18,5 @@ export const ArrowRightOnRectangleIcon = ({
     />
   </svg>
 )
+
+export default ArrowRightOnRectangleIcon

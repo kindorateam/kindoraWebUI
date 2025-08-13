@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 
 import { RouteErrorBoundary } from '@/components/error'
-import { PokemonDetailPage } from '@/pages/PokemonDetailPage'
+import PokemonDetailPage from '@/pages/PokemonDetailPage'
 
 export const Route = createFileRoute('/pokemon/$pokemonId')({
   component: () => (

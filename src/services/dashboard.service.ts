@@ -1,6 +1,6 @@
 import type { DashboardData } from '@/types/dashboard.types'
 
-export const fetchDashboardData = (): DashboardData => {
+const fetchDashboardData = (): DashboardData => {
   // Mock data for now - replace with actual API call
   return {
     stats: {
@@ -152,3 +152,5 @@ export const fetchDashboardData = (): DashboardData => {
     },
   }
 }
+
+export default fetchDashboardData

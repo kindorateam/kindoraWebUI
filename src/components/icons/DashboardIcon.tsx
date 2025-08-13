@@ -1,4 +1,4 @@
-export const DashboardIcon = (props: React.SVGProps<SVGSVGElement>) => (
+const DashboardIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
     aria-hidden="true"
     fill="none"
@@ -15,3 +15,5 @@ export const DashboardIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <rect x="14" y="14" width="7" height="7" rx="1" fill="currentColor" />
   </svg>
 )
+
+export default DashboardIcon

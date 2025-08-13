@@ -2,9 +2,9 @@ import { Card, CardBody } from '@heroui/react'
 import { useNavigate } from '@tanstack/react-router'
 import { useCallback, useEffect } from 'react'
 
-import { useAuth } from '@/hooks/useAuth'
+import useAuth from '@/hooks/useAuth'
 
-export function LoginPage() {
+const LoginPage = () => {
   const { handleGoogleLogin, error, isAuthenticated } = useAuth()
   const navigate = useNavigate()
 
@@ -86,3 +86,5 @@ export function LoginPage() {
     </Card>
   )
 }
+
+export default LoginPage

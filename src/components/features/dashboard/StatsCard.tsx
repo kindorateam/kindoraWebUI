@@ -9,14 +9,14 @@ interface StatsCardProps {
   icon?: React.ReactNode
 }
 
-export function StatsCard({
+const StatsCard = ({
   title,
   value,
   subValue,
   label,
   avatars,
   icon,
-}: StatsCardProps) {
+}: StatsCardProps) => {
   return (
     <Card className="bg-white shadow-sm">
       <CardBody className="p-6">
@@ -50,3 +50,5 @@ export function StatsCard({
     </Card>
   )
 }
+
+export default StatsCard

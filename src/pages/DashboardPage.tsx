@@ -8,10 +8,10 @@ import {
   PaymentsCard,
   LoggedActivities,
 } from '@/components/features/dashboard'
-import { useAuth } from '@/hooks/useAuth'
-import { useDashboardQuery } from '@/hooks/useDashboardQuery'
+import useAuth from '@/hooks/useAuth'
+import useDashboardQuery from '@/hooks/useDashboardQuery'
 
-export function DashboardPage() {
+const DashboardPage = () => {
   const { user } = useAuth()
   const { data, isLoading, error } = useDashboardQuery()
 
@@ -98,3 +98,5 @@ export function DashboardPage() {
     </div>
   )
 }
+
+export default DashboardPage

@@ -4,7 +4,7 @@ import { useEffect, useRef } from 'react'
 
 import { authStateAtom } from '@/stores/auth.store'
 
-export const GuestRoute = () => {
+const GuestRoute = () => {
   const authState = useAtomValue(authStateAtom)
   const navigate = useNavigate()
   const isNavigating = useRef(false)
@@ -51,3 +51,5 @@ export const GuestRoute = () => {
     </div>
   )
 }
+
+export default GuestRoute

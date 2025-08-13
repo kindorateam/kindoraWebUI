@@ -1,10 +1,10 @@
 import { Button, Input, Spinner } from '@heroui/react'
 import { useState } from 'react'
 
-import { StudentGroup } from './StudentGroup'
+import StudentGroup from './StudentGroup'
 import { useStudentGroupsQuery } from '@/hooks/useStudentsQuery'
 
-export const StudentsTable = () => {
+const StudentsTable = () => {
   const [searchQuery, setSearchQuery] = useState('')
   const { data: studentGroups, isLoading, error } = useStudentGroupsQuery()
 
@@ -159,3 +159,5 @@ export const StudentsTable = () => {
     </div>
   )
 }
+
+export default StudentsTable
