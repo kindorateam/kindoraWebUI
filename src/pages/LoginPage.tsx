@@ -3,6 +3,7 @@ import { useNavigate } from '@tanstack/react-router'
 import { useCallback, useEffect } from 'react'
 
 import useAuth from '@/hooks/useAuth'
+import { getReturnUrlFromLocation } from '@/services/redirect.service'
 
 const LoginPage = () => {
   const { handleGoogleLogin, error, isAuthenticated } = useAuth()
@@ -11,8 +12,10 @@ const LoginPage = () => {
   // Navigate after successful authentication
   useEffect(() => {
     if (isAuthenticated) {
-      // For now, always go to dashboard after login
-      void navigate({ to: '/dashboard' })
+      const returnUrl = getReturnUrlFromLocation()
+      const destination =
+        returnUrl && returnUrl !== '/login' ? returnUrl : '/dashboard'
+      void navigate({ to: destination })
     }
   }, [isAuthenticated, navigate])
 
@@ -36,18 +39,36 @@ const LoginPage = () => {
   }, [handleGoogleLogin])
 
   useEffect(() => {
-    const loadGoogleScript = () => {
-      const script = document.createElement('script')
-      script.src = 'https://accounts.google.com/gsi/client'
-      script.async = true
-      script.defer = true
-      script.onload = () => {
-        initializeGoogleSignIn()
-      }
-      document.head.appendChild(script)
+    // Check if script is already loaded
+    if (window.google?.accounts) {
+      initializeGoogleSignIn()
+      return
     }
 
-    loadGoogleScript()
+    // Check if script is already in the DOM
+    const existingScript = document.querySelector(
+      'script[src="https://accounts.google.com/gsi/client"]',
+    )
+    if (existingScript) {
+      // Script exists but not loaded yet, wait for it
+      existingScript.addEventListener('load', initializeGoogleSignIn)
+      return () => {
+        existingScript.removeEventListener('load', initializeGoogleSignIn)
+      }
+    }
+
+    // Load script for the first time
+    const script = document.createElement('script')
+    script.src = 'https://accounts.google.com/gsi/client'
+    script.async = true
+    script.defer = true
+    script.onload = initializeGoogleSignIn
+    document.head.appendChild(script)
+
+    // Cleanup function
+    return () => {
+      script.removeEventListener('load', initializeGoogleSignIn)
+    }
   }, [initializeGoogleSignIn])
 
   return (

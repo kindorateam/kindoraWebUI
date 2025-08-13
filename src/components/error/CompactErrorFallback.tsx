@@ -5,10 +5,7 @@ import { getUserMessage } from '@/utils/error.utils'
 
 import type { ErrorFallbackProps } from '@/types/error.types'
 
-const CompactErrorFallback = ({
-  error,
-  resetError,
-}: ErrorFallbackProps) => {
+const CompactErrorFallback = ({ error, resetError }: ErrorFallbackProps) => {
   return (
     <div className="flex flex-col items-center justify-center p-8 text-center">
       <AlertTriangleIcon className="text-warning mb-4 h-12 w-12" />

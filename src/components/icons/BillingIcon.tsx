@@ -1,4 +1,6 @@
-const BillingIcon = (props: React.SVGProps<SVGSVGElement>) => (
+import type { SVGProps } from 'react'
+
+const BillingIcon = (props: SVGProps<SVGSVGElement>) => (
   <svg
     aria-hidden="true"
     fill="none"

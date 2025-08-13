@@ -1,4 +1,6 @@
-const AdmissionsIcon = (props: React.SVGProps<SVGSVGElement>) => (
+import type { SVGProps } from 'react'
+
+const AdmissionsIcon = (props: SVGProps<SVGSVGElement>) => (
   <svg
     aria-hidden="true"
     fill="none"

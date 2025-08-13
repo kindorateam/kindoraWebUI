@@ -7,12 +7,6 @@ import { authStateAtom, checkAuthAtom } from '@/stores/auth.store'
 
 const router = createRouter({ routeTree })
 
-declare module '@tanstack/react-router' {
-  interface Register {
-    router: typeof router
-  }
-}
-
 const App = () => {
   const [, checkAuth] = useAtom(checkAuthAtom)
   const authState = useAtomValue(authStateAtom)

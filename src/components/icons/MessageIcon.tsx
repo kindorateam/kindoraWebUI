@@ -1,4 +1,6 @@
-const MessageIcon = (props: React.SVGProps<SVGSVGElement>) => (
+import type { SVGProps } from 'react'
+
+const MessageIcon = (props: SVGProps<SVGSVGElement>) => (
   <svg
     aria-hidden="true"
     fill="none"

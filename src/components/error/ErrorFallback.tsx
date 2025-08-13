@@ -1,5 +1,4 @@
 import { Button } from '@heroui/react'
-import { useNavigate } from '@tanstack/react-router'
 
 import { AlertCircleIcon, RefreshIcon, HomeIcon } from '@/components/icons'
 import { getErrorMessage, getUserMessage } from '@/utils/error.utils'
@@ -11,12 +10,10 @@ const ErrorFallback = ({
   resetError,
   errorInfo,
 }: ErrorFallbackProps) => {
-  const navigate = useNavigate()
   const isDev = import.meta.env.DEV
 
   const handleGoHome = () => {
-    void navigate({ to: '/' })
-    resetError()
+    window.location.href = '/'
   }
 
   return (

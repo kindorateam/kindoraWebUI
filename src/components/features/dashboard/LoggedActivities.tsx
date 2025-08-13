@@ -1,6 +1,7 @@
 import { Card, CardBody, CardHeader, Progress, Chip } from '@heroui/react'
 
 import type { LoggedActivity } from '@/types/dashboard.types'
+import type { CSSProperties } from 'react'
 
 interface LoggedActivitiesProps {
   categories: LoggedActivity[]
@@ -38,13 +39,14 @@ const LoggedActivities = ({ categories, details }: LoggedActivitiesProps) => {
                   value={(category.count / maxCount) * 100}
                   color="primary"
                   size="sm"
+                  aria-label={`${category.name} activity progress: ${category.count} items`}
                   classNames={{
                     indicator: `bg-[${category.color}]`,
                   }}
                   style={
                     {
                       '--progress-color': category.color,
-                    } as React.CSSProperties
+                    } as CSSProperties
                   }
                 />
               </div>

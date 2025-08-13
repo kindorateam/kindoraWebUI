@@ -3,7 +3,6 @@ import { useCallback, useEffect, useState } from 'react'
 
 import navDrawerData from './navDrawer.data.tsx'
 import Logo from '@/assets/svg/logo.svg?no-inline'
-import { PlusIcon } from '@/components/icons'
 
 import type { NavDrawerItem } from './navDrawer.types'
 
@@ -121,7 +120,7 @@ const NavDrawer = () => {
   }
 
   return (
-    <div className="h-ful relative">
+    <div className="relative h-full">
       <aside className="flex h-full w-64 flex-col bg-white shadow-lg">
         <div className="xl:px-4 xl:py-5">
           <img src={Logo} alt="Kindora Logo" />

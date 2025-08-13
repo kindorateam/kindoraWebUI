@@ -1,5 +1,8 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios'
 
+import { scheduleRedirectToLogin } from './redirect.service'
+import { getCleanToken, clearToken } from './token.service'
+
 const API_BASE_URL =
   (import.meta.env.VITE_API_BASE_URL as string | undefined) ??
   'https://pokeapi.co/api/v2'
@@ -24,13 +27,8 @@ class ApiClient {
     // Request interceptor
     this.instance.interceptors.request.use(
       (config) => {
-        // Add auth token if available from localStorage
-        // Note: We read directly from localStorage since this runs outside React context
-        // but the token is still managed by Jotai atomWithStorage
-        const token = localStorage.getItem('auth-token')
-        if (token) {
-          // Remove quotes from JSON-stored string if present
-          const cleanToken = token.replace(/^"|"$/g, '')
+        const cleanToken = getCleanToken()
+        if (cleanToken) {
           config.headers.Authorization = `Bearer ${cleanToken}`
         }
         return config
@@ -50,15 +48,13 @@ class ApiClient {
       (error: unknown) => {
         // Handle common errors
         if (axios.isAxiosError(error) && error.response?.status === 401) {
-          // Only clear auth data if this is NOT during initial auth check
           const isAuthCheck =
             error.config?.url?.includes('/auth/me') ??
             error.config?.url?.includes('/auth/verify')
 
           if (!isAuthCheck) {
-            // For other API calls, token is invalid - just redirect
-            // The checkAuthAtom will handle clearing expired tokens on next app load
-            window.location.href = '/login'
+            clearToken()
+            scheduleRedirectToLogin({ reason: 'unauthorized' })
           }
         }
 

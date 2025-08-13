@@ -1,8 +1,4 @@
-const ArrowRightOnRectangleIcon = ({
-  className,
-}: {
-  className?: string
-}) => (
+const ArrowRightOnRectangleIcon = ({ className }: { className?: string }) => (
   <svg
     className={className}
     fill="none"

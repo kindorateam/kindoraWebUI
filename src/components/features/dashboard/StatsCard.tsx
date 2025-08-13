@@ -1,12 +1,14 @@
 import { Card, CardBody, Avatar, AvatarGroup } from '@heroui/react'
 
+import type { ReactNode } from 'react'
+
 interface StatsCardProps {
   title: string
   value: number | string
   subValue?: number | string
   label?: string
   avatars?: { id: string; name: string; avatar?: string }[]
-  icon?: React.ReactNode
+  icon?: ReactNode
 }
 
 const StatsCard = ({

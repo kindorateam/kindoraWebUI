@@ -1,4 +1,6 @@
-const DashboardIcon = (props: React.SVGProps<SVGSVGElement>) => (
+import type { SVGProps } from 'react'
+
+const DashboardIcon = (props: SVGProps<SVGSVGElement>) => (
   <svg
     aria-hidden="true"
     fill="none"

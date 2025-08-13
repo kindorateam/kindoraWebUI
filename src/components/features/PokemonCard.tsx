@@ -8,10 +8,7 @@ interface PokemonCardProps {
   clickable?: boolean
 }
 
-const PokemonCard = ({
-  pokemon,
-  clickable = false,
-}: PokemonCardProps) => {
+const PokemonCard = ({ pokemon, clickable = false }: PokemonCardProps) => {
   const navigate = useNavigate()
 
   const handleClick = () => {

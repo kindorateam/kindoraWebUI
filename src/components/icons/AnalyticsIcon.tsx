@@ -1,4 +1,6 @@
-const AnalyticsIcon = (props: React.SVGProps<SVGSVGElement>) => (
+import type { SVGProps } from 'react'
+
+const AnalyticsIcon = (props: SVGProps<SVGSVGElement>) => (
   <svg
     aria-hidden="true"
     fill="none"
