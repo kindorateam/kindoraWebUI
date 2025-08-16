@@ -1,6 +1,5 @@
 export * from './api.types'
 export * from './dashboard.types'
-export * from './pokemon.types'
 export * from './student.types'
 export * from './ui.types'
 export * from './utils.types'

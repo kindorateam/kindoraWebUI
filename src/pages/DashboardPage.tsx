@@ -1,12 +1,12 @@
 import { Button, Spinner } from '@heroui/react'
 
-import {
-  RoomsStatusTable,
-  UpcomingWeek,
-  NeedsAttention,
-  PaymentsCard,
-  LoggedActivities,
-} from '@/components/features/dashboard'
+// import {
+//   RoomsStatusTable,
+//   UpcomingWeek,
+//   NeedsAttention,
+//   PaymentsCard,
+//   LoggedActivities,
+// } from '@/components/features/dashboard'
 import StatsCard from '@/components/features/dashboard/StatsCard/StatsCard'
 import {
   absentCardData,

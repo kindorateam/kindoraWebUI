@@ -181,7 +181,7 @@ import './styles.css'
 
 ### Hook Naming Conventions
 - **Regular Hooks**: `use[Name].ts` - For state management, side effects, and business logic (e.g., `useAuth.ts`, `useTheme.ts`)
-- **Query Hooks**: `use[Name]Query.ts` - For TanStack Query hooks that fetch data (e.g., `usePokemonQuery.ts`, `useUsersQuery.ts`)
+- **Query Hooks**: `use[Name]Query.ts` - For TanStack Query hooks that fetch data (e.g., `useUsersQuery.ts`, `useDashboardQuery.ts`)
 - This distinction helps identify data-fetching hooks at a glance and keeps them organized
 
 ## Anti-Patterns to Avoid ⚠️

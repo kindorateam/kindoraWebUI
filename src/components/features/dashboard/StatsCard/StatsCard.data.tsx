@@ -51,7 +51,7 @@ export const absentCardData = {
   bodyData: <div></div>,
 }
 
-const roomCardData = {
+const _roomCardData = {
   headerData: <RoomIcon />,
   bodyData: {
     title: 'Room Occupancy',
@@ -59,7 +59,7 @@ const roomCardData = {
   },
 }
 
-const staffCardData = {
+const _staffCardData = {
   headerData: <StaffIcon />,
   bodyData: {
     title: 'Staff Online',
@@ -67,7 +67,7 @@ const staffCardData = {
   },
 }
 
-const studentCardData = {
+const _studentCardData = {
   headerData: <StudentIcon />,
   bodyData: {
     title: 'Total Students',

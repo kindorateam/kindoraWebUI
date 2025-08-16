@@ -1,6 +1,5 @@
 export * from '../utils/auth.utils'
 export * from './api.service'
 export { default as fetchDashboardData } from './dashboard.service'
-export * from './pokemon.service'
 export * from './redirect.service'
 export * from './token.service'

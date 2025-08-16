@@ -108,7 +108,7 @@ export const useName = (params?: Type) => {
 | ---------- | ------------------- | -------------------- |
 | Component  | `PascalCase.tsx`    | `UserCard.tsx`       |
 | Hook       | `use[Name].ts`      | `useAuth.ts`         |
-| Query Hook | `use[Name]Query.ts` | `usePokemonQuery.ts` |
+| Query Hook | `use[Name]Query.ts` | `useUsersQuery.ts` |
 | Service    | `[name].service.ts` | `auth.service.ts`    |
 | Type       | `[name].types.ts`   | `user.types.ts`      |
 | Util       | `[name].utils.ts`   | `date.utils.ts`      |
@@ -179,7 +179,7 @@ import './styles.css'
 
 ### Hook Naming Conventions
 - **Regular Hooks**: `use[Name].ts` - For state management, side effects, and business logic (e.g., `useAuth.ts`, `useTheme.ts`)
-- **Query Hooks**: `use[Name]Query.ts` - For TanStack Query hooks that fetch data (e.g., `usePokemonQuery.ts`, `useUsersQuery.ts`)
+- **Query Hooks**: `use[Name]Query.ts` - For TanStack Query hooks that fetch data (e.g., `useUsersQuery.ts`, `useDashboardQuery.ts`)
 - This distinction helps identify data-fetching hooks at a glance and keeps them organized
 
 ## Anti-Patterns to Avoid ⚠️

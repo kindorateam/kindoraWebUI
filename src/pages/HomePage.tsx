@@ -2,7 +2,6 @@ import { Button } from '@heroui/react'
 import { Navigate, Link } from '@tanstack/react-router'
 import { useAtomValue } from 'jotai'
 
-import { PokemonDemo, UsersTable } from '@/components'
 import PageLoader from '@/components/layout/PageLoader'
 import { authStateAtom } from '@/stores/auth.store.ts'
 
@@ -25,14 +24,6 @@ const HomePage = () => {
         <Button as={Link} to="/login" color="primary" size="lg">
           Get Started
         </Button>
-      </div>
-
-      <div className="w-full max-w-6xl">
-        <PokemonDemo />
-
-        <div className="mt-12">
-          <UsersTable />
-        </div>
       </div>
     </div>
   )
