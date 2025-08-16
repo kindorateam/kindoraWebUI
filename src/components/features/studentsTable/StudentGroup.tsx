@@ -54,7 +54,7 @@ const StudentGroup = ({ group }: StudentGroupProps) => {
 
       {/* Students List */}
       {isExpanded && (
-        <div className="space-y-2">
+        <div>
           {group.students.map((student) => (
             <StudentCard key={student.id} student={student} />
           ))}

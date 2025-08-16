@@ -96,9 +96,7 @@ const PokemonDetailPage = () => {
               </div>
             </div>
 
-            {/* Pokemon Details */}
-            <div className="space-y-4">
-              {/* Types */}
+            <div>
               <div>
                 <h3 className="mb-2 font-semibold">Types</h3>
                 <div className="flex gap-2">
@@ -110,7 +108,6 @@ const PokemonDetailPage = () => {
                 </div>
               </div>
 
-              {/* Physical Characteristics */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <h3 className="font-semibold">Height</h3>
@@ -122,10 +119,9 @@ const PokemonDetailPage = () => {
                 </div>
               </div>
 
-              {/* Base Stats */}
               <div>
                 <h3 className="mb-3 font-semibold">Base Stats</h3>
-                <div className="space-y-2">
+                <div>
                   {pokemon.stats.map((stat) => (
                     <div key={stat.stat.name}>
                       <div className="flex justify-between text-sm">
@@ -146,7 +142,6 @@ const PokemonDetailPage = () => {
                 </div>
               </div>
 
-              {/* Abilities */}
               <div>
                 <h3 className="mb-2 font-semibold">Abilities</h3>
                 <div className="flex flex-wrap gap-2">

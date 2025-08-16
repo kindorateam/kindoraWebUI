@@ -1,4 +1,29 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 @plugin './hero.ts';
 @source '../node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}';
+
 @custom-variant dark (&:is(.dark *));
+
+@theme {
+  --shadow-subtle: 0px 1px 1px 0px rgb(0 0 0 / 0.14);
+  --shadow-soft: 0px 2px 4px 0px rgb(0 0 0 / 0.14);
+
+  --color-wine-700: #792c41;
+}
+
+@utility shadow-subtle {
+  box-shadow: var(--shadow-subtle);
+}
+
+@utility shadow-soft {
+  box-shadow: var(--shadow-soft);
+}
+
+@utility container {
+  margin-inline: auto;
+  padding-inline: 1rem;
+}
+
+* {
+  font-family: system-ui, sans-serif;
+}

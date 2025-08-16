@@ -51,7 +51,7 @@ const NavDrawer = () => {
         <div key={item.label} className="mb-2">
           <button
             onClick={() => toggleExpanded(item.label)}
-            className={`inline-flex w-full items-center rounded-2xl px-4 py-2.5 transition-colors ${
+            className={`inline-flex items-center rounded-2xl px-4 py-2 transition-colors ${
               isParentActive
                 ? 'bg-gray-100 text-gray-900'
                 : 'text-gray-700 hover:bg-gray-100'
@@ -79,14 +79,14 @@ const NavDrawer = () => {
             </div>
           </button>
           {isExpanded && (
-            <div className="mt-1 ml-12">
+            <div className="ms-6 mt-1 flex flex-col items-start">
               {item.children?.map((child) => {
                 const isChildActive = location.pathname === child.path
                 return (
                   <Link
                     key={child.label}
                     to={child.path}
-                    className={`block rounded-lg px-4 py-2 transition-colors ${
+                    className={`inline-flex rounded-lg px-4 py-2 text-sm transition-colors ${
                       isChildActive
                         ? 'bg-gray-100 font-medium text-gray-900'
                         : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
@@ -106,9 +106,9 @@ const NavDrawer = () => {
       <Link
         key={item.label}
         to={item.path}
-        className={`mb-2 inline-flex items-center gap-2 rounded-2xl px-4 py-2.5 transition-colors ${
+        className={`mb-2 inline-flex items-center gap-2 rounded-2xl px-4 py-2 font-semibold transition-colors ${
           isActive
-            ? 'bg-gray-100 text-gray-900'
+            ? 'bg-gray-100 text-gray-900 backdrop-opacity-20'
             : 'text-gray-700 hover:bg-gray-100'
         }`}
       >
@@ -121,7 +121,7 @@ const NavDrawer = () => {
 
   return (
     <div className="relative h-full">
-      <aside className="flex h-full w-64 flex-col bg-white shadow-lg">
+      <aside className="flex h-full flex-col bg-white shadow-lg">
         <div className="xl:px-4 xl:py-5">
           <img src={Logo} alt="Kindora Logo" />
         </div>

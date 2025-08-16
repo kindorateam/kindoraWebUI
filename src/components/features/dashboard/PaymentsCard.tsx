@@ -15,7 +15,7 @@ const PaymentsCard = ({ payments }: PaymentsCardProps) => {
   }
 
   return (
-    <div className="space-y-4">
+    <div>
       <h3 className="text-lg font-semibold">Payments</h3>
       <div className="grid grid-cols-2 gap-4">
         <Card className="bg-white shadow-sm">

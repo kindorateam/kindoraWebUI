@@ -73,8 +73,8 @@ const LoginPage = () => {
 
   return (
     <Card className="w-full p-6">
-      <CardBody className="space-y-6">
-        <div className="space-y-2 text-center">
+      <CardBody>
+        <div className="text-center">
           <h2 className="text-2xl font-bold">Welcome back</h2>
           <p className="text-gray-600">Sign in to your account</p>
         </div>
@@ -85,7 +85,7 @@ const LoginPage = () => {
           </div>
         )}
 
-        <div className="space-y-4">
+        <div>
           <div id="googleSignInButton" className="flex justify-center" />
 
           <div className="relative">

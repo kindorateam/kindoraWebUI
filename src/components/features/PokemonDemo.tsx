@@ -23,7 +23,7 @@ const PokemonDemo = () => {
   }
 
   return (
-    <div className="space-y-8">
+    <div>
       <div className="text-center">
         <h2 className="mb-4 text-2xl font-bold">TanStack Query Pokemon Demo</h2>
 

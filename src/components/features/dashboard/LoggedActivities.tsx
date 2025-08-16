@@ -19,10 +19,10 @@ const LoggedActivities = ({ categories, details }: LoggedActivitiesProps) => {
         </h3>
       </CardHeader>
       <CardBody>
-        <div className="space-y-6">
-          <div className="space-y-3">
+        <div>
+          <div>
             {categories.map((category) => (
-              <div key={category.id} className="space-y-2">
+              <div key={category.id}>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <div
@@ -53,7 +53,7 @@ const LoggedActivities = ({ categories, details }: LoggedActivitiesProps) => {
             ))}
           </div>
 
-          <div className="space-y-2">
+          <div>
             {details.map((detail) => (
               <div
                 key={detail.id}

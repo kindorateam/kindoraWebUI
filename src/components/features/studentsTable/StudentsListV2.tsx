@@ -155,7 +155,6 @@ const StudentsListV2 = () => {
   return (
     <div className="min-h-screen bg-[#f7f7f2]">
       <div className="mx-auto max-w-[860px] py-8">
-        {/* Column Headers */}
         <div className="mb-4 flex items-center px-8 pb-2">
           <div className="flex flex-1 items-center gap-10">
             <div className="w-44 text-xs text-[#909090]">Students name</div>
@@ -165,8 +164,7 @@ const StudentsListV2 = () => {
           </div>
         </div>
 
-        {/* Student Groups */}
-        <div className="space-y-0">
+        <div>
           {studentGroups?.map((group) => (
             <StudentGroupSection key={group.room.id} group={group} />
           ))}

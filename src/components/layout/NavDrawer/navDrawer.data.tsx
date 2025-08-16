@@ -1,10 +1,12 @@
-import AdmissionsIcon from '@/assets/svg/admissionsIcon.svg?no-inline'
-import AnalyticsIcon from '@/assets/svg/analyticsIcon.svg?no-inline'
-import BillingIcon from '@/assets/svg/billingIcon.svg?no-inline'
-import DashboardIcon from '@/assets/svg/dashboardIcon.svg?no-inline'
-import MessageIcon from '@/assets/svg/messagesIcon.svg?no-inline'
-import ReportsIcon from '@/assets/svg/reportsIcon.svg?no-inline'
-import SchoolIcon from '@/assets/svg/schoolIcon.svg?no-inline'
+import {
+  AdmissionsIcon,
+  AnalyticsIcon,
+  BillingIcon,
+  DashboardIcon,
+  MessageIcon,
+  ReportsIcon,
+  SchoolIcon,
+} from '@/components/icons'
 
 import type { NavDrawerItem } from './navDrawer.types'
 
@@ -12,13 +14,12 @@ const navDrawerData: NavDrawerItem[] = [
   {
     label: 'Dashboard',
     path: '/dashboard',
-    icon: <img src={DashboardIcon} alt="" />,
+    icon: <DashboardIcon />,
   },
   {
     label: 'My school',
     path: '#',
-    icon: <img src={SchoolIcon} alt="" />,
-    badge: 5,
+    icon: <SchoolIcon />,
     children: [
       { label: 'Insights', path: '/insights' },
       { label: 'Students', path: '/students' },
@@ -29,31 +30,31 @@ const navDrawerData: NavDrawerItem[] = [
     ],
   },
   {
-    label: 'Messages',
+    label: 'Connections',
     path: '#',
-    icon: <img src={MessageIcon} alt="" />,
+    icon: <MessageIcon />,
     badge: 5,
     children: [],
   },
   {
     label: 'Billing',
     path: '/billing',
-    icon: <img src={BillingIcon} alt="" />,
+    icon: <BillingIcon />,
   },
   {
     label: 'Analytics',
     path: '/analytics',
-    icon: <img src={AnalyticsIcon} alt="" />,
+    icon: <AnalyticsIcon />,
   },
   {
     label: 'Reports',
     path: '/reports',
-    icon: <img src={ReportsIcon} alt="" />,
+    icon: <ReportsIcon />,
   },
   {
     label: 'Admissions',
     path: '/admissions',
-    icon: <img src={AdmissionsIcon} alt="" />,
+    icon: <AdmissionsIcon />,
   },
 ]
 

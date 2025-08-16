@@ -37,7 +37,7 @@ const ErrorFallback = ({
               <summary className="mb-2 cursor-pointer text-sm font-medium text-gray-700 dark:text-gray-300">
                 Error Details (Development Only)
               </summary>
-              <div className="space-y-2 rounded-lg bg-gray-100 p-4 dark:bg-gray-900">
+              <div className="rounded-lg bg-gray-100 p-4 dark:bg-gray-900">
                 <div>
                   <p className="text-xs font-semibold text-gray-500 dark:text-gray-400">
                     Error Message:

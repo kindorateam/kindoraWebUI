@@ -4,12 +4,12 @@ import { NavDrawer } from './'
 
 const MainLayout = () => {
   return (
-    <div className="flex h-screen">
+    <div className="grid grid-cols-[200px_1fr]">
       {/* Navigation Drawer */}
       <NavDrawer />
 
       {/* Main Content */}
-      <main className="flex-1 overflow-y-auto">
+      <main className="container">
         <Outlet />
       </main>
     </div>

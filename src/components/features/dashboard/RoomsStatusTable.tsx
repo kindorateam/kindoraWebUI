@@ -20,7 +20,7 @@ const RoomsStatusTable = ({ rooms }: RoomsStatusTableProps) => {
         <h3 className="text-lg font-semibold">Rooms status today</h3>
       </CardHeader>
       <CardBody>
-        <div className="space-y-3">
+        <div>
           <div className="grid grid-cols-4 text-xs font-medium text-gray-500 uppercase">
             <div>Rooms name</div>
             <div>Students signed in</div>

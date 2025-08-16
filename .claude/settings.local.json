@@ -11,5 +11,6 @@
   "enableAllProjectMcpServers": true,
   "enabledMcpjsonServers": [
     "Figma Dev Mode MCP"
-  ]
+  ],
+  "outputStyle": "Explanatory"
 }

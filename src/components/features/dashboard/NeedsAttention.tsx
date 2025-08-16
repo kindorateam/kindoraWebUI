@@ -26,7 +26,7 @@ const NeedsAttention = ({ items }: NeedsAttentionProps) => {
         <h3 className="text-lg font-semibold">Needs attention</h3>
       </CardHeader>
       <CardBody>
-        <div className="space-y-3">
+        <div>
           {items.map((item) => (
             <div
               key={item.id}

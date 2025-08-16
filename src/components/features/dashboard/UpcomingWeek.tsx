@@ -29,7 +29,7 @@ const UpcomingWeek = ({ events }: UpcomingWeekProps) => {
         </Button>
       </CardHeader>
       <CardBody>
-        <div className="space-y-3">
+        <div>
           {events.map((event) => (
             <div
               key={event.id}

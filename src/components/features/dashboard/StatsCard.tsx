@@ -1,4 +1,4 @@
-import { Card, CardBody, Avatar, AvatarGroup } from '@heroui/react'
+import { Card, CardHeader, CardBody, Avatar, AvatarGroup } from '@heroui/react'
 
 import type { ReactNode } from 'react'
 
@@ -20,8 +20,9 @@ const StatsCard = ({
   icon,
 }: StatsCardProps) => {
   return (
-    <Card className="bg-white shadow-sm">
-      <CardBody className="p-6">
+    <Card className="bg-white shadow-md">
+      <CardHeader className="flex"></CardHeader>
+      <CardBody className="p-7">
         <div className="mb-4 flex items-start justify-between">
           <div className="flex items-center gap-2">
             {icon && <div className="text-gray-600">{icon}</div>}

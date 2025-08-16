@@ -7,6 +7,7 @@ import react from 'eslint-plugin-react'
 import importPlugin from 'eslint-plugin-import'
 import prettier from 'eslint-plugin-prettier'
 import prettierConfig from 'eslint-config-prettier'
+import perfectionist from 'eslint-plugin-perfectionist'
 
 export default tseslint.config(
   { ignores: ['dist', 'node_modules'] },
@@ -41,6 +42,7 @@ export default tseslint.config(
       'react-refresh': reactRefresh,
       import: importPlugin,
       prettier,
+      perfectionist,
     },
     rules: {
       ...reactHooks.configs.recommended.rules,
@@ -64,6 +66,14 @@ export default tseslint.config(
             order: 'asc',
             caseInsensitive: true,
           },
+        },
+      ],
+      'perfectionist/sort-exports': [
+        'error',
+        {
+          type: 'alphabetical',
+          order: 'asc',
+          ignoreCase: true,
         },
       ],
       '@typescript-eslint/no-unused-vars': [

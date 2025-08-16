@@ -1,3 +1,4 @@
+import './index.css'
 import { HeroUIProvider } from '@heroui/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { Provider as JotaiProvider } from 'jotai'
@@ -6,8 +7,6 @@ import { createRoot } from 'react-dom/client'
 
 import App from './App'
 import { ErrorBoundary } from './components/error'
-
-import './index.css'
 
 const queryClient = new QueryClient({
   defaultOptions: {
