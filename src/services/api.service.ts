@@ -1,7 +1,7 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios'
 
 import { scheduleRedirectToLogin } from './redirect.service'
-import { getCleanToken, clearToken } from './token.service'
+import { clearToken, getCleanToken } from './token.service'
 
 const API_BASE_URL =
   (import.meta.env.VITE_API_BASE_URL as string | undefined) ??

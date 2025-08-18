@@ -76,6 +76,22 @@ export default tseslint.config(
           ignoreCase: true,
         },
       ],
+      'perfectionist/sort-named-imports': [
+        'error',
+        {
+          type: 'alphabetical',
+          order: 'asc',
+          ignoreCase: true,
+        },
+      ],
+      'perfectionist/sort-jsx-props': [
+        'error',
+        {
+          type: 'alphabetical',
+          order: 'asc',
+          ignoreCase: true,
+        },
+      ],
       '@typescript-eslint/no-unused-vars': [
         'error',
         {
@@ -95,7 +111,22 @@ export default tseslint.config(
       ],
       'react/prop-types': 'off',
       'react/react-in-jsx-scope': 'off',
-      '@typescript-eslint/only-throw-error': 'off', // Allow throwing TanStack Router redirect objects
+      '@typescript-eslint/only-throw-error': 'off',
+      'no-trailing-spaces': [
+        'error',
+        {
+          skipBlankLines: false,
+          ignoreComments: false,
+        },
+      ],
+      'react/jsx-curly-brace-presence': [
+        'error',
+        {
+          props: 'never',
+          children: 'never',
+          propElementValues: 'always',
+        },
+      ],
     },
   },
 )

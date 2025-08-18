@@ -2,7 +2,8 @@ import { useLocation, useNavigate } from '@tanstack/react-router'
 import { useAtomValue } from 'jotai'
 import { useEffect, useRef } from 'react'
 
-import { MainLayout, PageLoader } from '@/components/layout'
+import MainLayout from '@/components/MainLayout'
+import PageLoader from '@/components/PageLoader'
 import { authStateAtom } from '@/stores/auth.store'
 
 const ProtectedRoute = () => {

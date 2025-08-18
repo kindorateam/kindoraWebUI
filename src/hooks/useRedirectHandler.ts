@@ -2,8 +2,8 @@ import { useNavigate } from '@tanstack/react-router'
 import { useEffect } from 'react'
 
 import {
-  getPendingRedirect,
   clearPendingRedirect,
+  getPendingRedirect,
 } from '@/services/redirect.service'
 
 export const useRedirectHandler = () => {

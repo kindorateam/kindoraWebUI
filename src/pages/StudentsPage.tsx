@@ -1,7 +1,5 @@
-import StudentsListV2 from '@/components/features/studentsTable/StudentsListV2'
-
 const StudentsPage = () => {
-  return <StudentsListV2 />
+  return <div>123</div>
 }
 
 export default StudentsPage

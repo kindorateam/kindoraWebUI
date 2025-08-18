@@ -1,17 +1,20 @@
 import { Outlet } from '@tanstack/react-router'
 
-import { NavDrawer } from './'
+import Header from './Header'
+import NavDrawer from './NavDrawer'
 
 const MainLayout = () => {
   return (
     <div className="grid grid-cols-[200px_1fr]">
-      {/* Navigation Drawer */}
       <NavDrawer />
 
-      {/* Main Content */}
-      <main className="container">
-        <Outlet />
-      </main>
+      <div>
+        <Header />
+
+        <main className="container">
+          <Outlet />
+        </main>
+      </div>
     </div>
   )
 }

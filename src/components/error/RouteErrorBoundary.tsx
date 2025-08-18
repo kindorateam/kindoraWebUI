@@ -14,15 +14,15 @@ const RouteErrorBoundary = ({
 }: RouteErrorBoundaryProps) => {
   return (
     <ErrorBoundary
-      level={`route-${routeName ?? 'unknown'}`}
       fallback={(error, resetError) => (
         <CompactErrorFallback error={error} resetError={resetError} />
       )}
+      isolate
+      level={`route-${routeName ?? 'unknown'}`}
       onError={(error, errorInfo) => {
         console.error(`Route Error [${routeName}]:`, error, errorInfo)
       }}
       resetOnPropsChange
-      isolate
     >
       {children}
     </ErrorBoundary>

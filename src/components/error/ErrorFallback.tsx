@@ -1,6 +1,8 @@
 import { Button } from '@heroui/react'
 
-import { AlertCircleIcon, RefreshIcon, HomeIcon } from '@/components/icons'
+import AlertCircleIcon from '@/components/icons/AlertCircleIcon'
+import HomeIcon from '@/components/icons/HomeIcon'
+import RefreshIcon from '@/components/icons/RefreshIcon'
 import { getErrorMessage, getUserMessage } from '@/utils/error.utils'
 
 import type { ErrorFallbackProps } from '@/types/error.types'
@@ -72,19 +74,19 @@ const ErrorFallback = ({
 
           <div className="flex w-full gap-3">
             <Button
+              className="flex-1"
               color="primary"
-              variant="flat"
               onPress={resetError}
               startContent={<RefreshIcon className="h-4 w-4" />}
-              className="flex-1"
+              variant="flat"
             >
               Try Again
             </Button>
             <Button
+              className="flex-1"
               color="primary"
               onPress={handleGoHome}
               startContent={<HomeIcon className="h-4 w-4" />}
-              className="flex-1"
             >
               Go Home
             </Button>

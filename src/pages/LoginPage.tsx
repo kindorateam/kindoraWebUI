@@ -86,7 +86,7 @@ const LoginPage = () => {
         )}
 
         <div>
-          <div id="googleSignInButton" className="flex justify-center" />
+          <div className="flex justify-center" id="googleSignInButton" />
 
           <div className="relative">
             <div className="absolute inset-0 flex items-center">

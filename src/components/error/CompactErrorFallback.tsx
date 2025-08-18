@@ -1,6 +1,7 @@
 import { Button } from '@heroui/react'
 
-import { AlertTriangleIcon, RefreshIcon } from '@/components/icons'
+import AlertTriangleIcon from '@/components/icons/AlertTriangleIcon'
+import RefreshIcon from '@/components/icons/RefreshIcon'
 import { getUserMessage } from '@/utils/error.utils'
 
 import type { ErrorFallbackProps } from '@/types/error.types'
@@ -14,11 +15,11 @@ const CompactErrorFallback = ({ error, resetError }: ErrorFallbackProps) => {
         {getUserMessage(error)}
       </p>
       <Button
-        size="sm"
         color="primary"
-        variant="flat"
         onPress={resetError}
+        size="sm"
         startContent={<RefreshIcon className="h-4 w-4" />}
+        variant="flat"
       >
         Try Again
       </Button>

@@ -1,6 +1,0 @@
-export { default as LoggedActivities } from './LoggedActivities'
-export { default as NeedsAttention } from './NeedsAttention'
-export { default as PaymentsCard } from './PaymentsCard'
-export { default as RoomsStatusTable } from './RoomsStatusTable'
-export { default as StatsCard } from './StatsCard'
-export { default as UpcomingWeek } from './UpcomingWeek'

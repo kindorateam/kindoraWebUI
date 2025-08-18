@@ -122,8 +122,8 @@ export class ErrorBoundary extends Component<
         return (
           <ErrorFallback
             error={error}
-            resetError={this.resetError}
             errorInfo={errorInfo ?? undefined}
+            resetError={this.resetError}
           />
         )
       }
@@ -136,8 +136,8 @@ export class ErrorBoundary extends Component<
       return (
         <ErrorFallback
           error={error}
-          resetError={this.resetError}
           errorInfo={errorInfo ?? undefined}
+          resetError={this.resetError}
         />
       )
     }

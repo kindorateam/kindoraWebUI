@@ -1,8 +1,8 @@
 import { Button } from '@heroui/react'
-import { Navigate, Link } from '@tanstack/react-router'
+import { Link, Navigate } from '@tanstack/react-router'
 import { useAtomValue } from 'jotai'
 
-import PageLoader from '@/components/layout/PageLoader'
+import PageLoader from '@/components/PageLoader'
 import { authStateAtom } from '@/stores/auth.store.ts'
 
 const HomePage = () => {
@@ -13,7 +13,7 @@ const HomePage = () => {
   }
 
   if (authState.isAuthenticated) {
-    return <Navigate to={`/dashboard`} />
+    return <Navigate to="/dashboard" />
   }
 
   return (
@@ -21,7 +21,7 @@ const HomePage = () => {
       <div className="text-center">
         <h1 className="text-4xl font-bold text-gray-900">Welcome to Kindora</h1>
         <p className="text-lg text-gray-600">Kindergarten Management System</p>
-        <Button as={Link} to="/login" color="primary" size="lg">
+        <Button as={Link} color="primary" size="lg" to="/login">
           Get Started
         </Button>
       </div>

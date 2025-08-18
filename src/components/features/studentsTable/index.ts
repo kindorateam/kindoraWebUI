@@ -1,5 +1,0 @@
-export { default as StudentCard } from './StudentCard'
-export { default as StudentGroup } from './StudentGroup'
-export * from './students.mock'
-export { default as StudentsListV2 } from './StudentsListV2'
-export { default as StudentsTable } from './StudentsTable'

@@ -48,14 +48,14 @@ const NavDrawer = () => {
 
     if (hasChildren) {
       return (
-        <div key={item.label} className="mb-2">
+        <div className="mb-2" key={item.label}>
           <button
-            onClick={() => toggleExpanded(item.label)}
             className={`inline-flex items-center rounded-2xl px-4 py-2 transition-colors ${
               isParentActive
                 ? 'bg-gray-100 text-gray-900'
                 : 'text-gray-700 hover:bg-gray-100'
             }`}
+            onClick={() => toggleExpanded(item.label)}
           >
             <div className="flex items-center gap-2">
               {item.icon}
@@ -69,10 +69,10 @@ const NavDrawer = () => {
                 viewBox="0 0 24 24"
               >
                 <path
+                  d="M19 9l-7 7-7-7"
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   strokeWidth={2}
-                  d="M19 9l-7 7-7-7"
                 />
               </svg>
               {item.badge && item.badge}
@@ -84,13 +84,13 @@ const NavDrawer = () => {
                 const isChildActive = location.pathname === child.path
                 return (
                   <Link
-                    key={child.label}
-                    to={child.path}
                     className={`inline-flex rounded-lg px-4 py-2 text-sm transition-colors ${
                       isChildActive
                         ? 'bg-gray-100 font-medium text-gray-900'
                         : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
                     }`}
+                    key={child.label}
+                    to={child.path}
                   >
                     {child.label}
                   </Link>
@@ -104,13 +104,13 @@ const NavDrawer = () => {
 
     return (
       <Link
-        key={item.label}
-        to={item.path}
         className={`mb-2 inline-flex items-center gap-2 rounded-2xl px-4 py-2 font-semibold transition-colors ${
           isActive
             ? 'bg-gray-100 text-gray-900 backdrop-opacity-20'
             : 'text-gray-700 hover:bg-gray-100'
         }`}
+        key={item.label}
+        to={item.path}
       >
         {item.icon}
         <span className="font-medium">{item.label}</span>
@@ -123,7 +123,7 @@ const NavDrawer = () => {
     <div className="relative h-full">
       <aside className="flex h-full flex-col bg-white shadow-lg">
         <div className="xl:px-4 xl:py-5">
-          <img src={Logo} alt="Kindora Logo" />
+          <img alt="Kindora Logo" src={Logo} />
         </div>
 
         {/* Menu Items */}

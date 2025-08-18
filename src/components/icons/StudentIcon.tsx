@@ -2,10 +2,10 @@ import type { SVGProps } from 'react'
 
 const StudentIcon = (props: SVGProps<SVGSVGElement>) => (
   <svg
-    width="16"
+    fill="none"
     height="16"
     viewBox="0 0 16 16"
-    fill="none"
+    width="16"
     xmlns="http://www.w3.org/2000/svg"
     {...props}
   >
@@ -20,10 +20,10 @@ const StudentIcon = (props: SVGProps<SVGSVGElement>) => (
       />
     </g>
     <path
-      fillRule="evenodd"
       clipRule="evenodd"
       d="M8 1C9.933 1 11.5 2.567 11.5 4.5C11.5 6.433 9.933 8 8 8C6.067 8 4.5 6.433 4.5 4.5C4.5 2.567 6.067 1 8 1ZM8 2C6.61929 2 5.5 3.11929 5.5 4.5C5.5 5.88071 6.61929 7 8 7C9.38071 7 10.5 5.88071 10.5 4.5C10.5 3.11929 9.38071 2 8 2Z"
       fill="black"
+      fillRule="evenodd"
     />
     <path
       d="M9 9C12.1454 9 14.7255 11.4203 14.9795 14.5002C15.0022 14.7754 14.7761 15 14.5 15C14.2239 15 14.0026 14.7755 13.9754 14.5007C13.7248 11.9737 11.5929 10 9 10H7C4.40709 10 2.27516 11.9737 2.02462 14.5007C1.99737 14.7755 1.77614 15 1.5 15C1.22386 15 0.997827 14.7754 1.02052 14.5002C1.27453 11.4203 3.85462 9 7 9H9Z"

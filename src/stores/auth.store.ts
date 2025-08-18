@@ -3,9 +3,9 @@ import { atomWithStorage } from 'jotai/utils'
 
 import {
   decodeJWT,
-  validateAndDecodeToken,
   isTokenExpired,
   transformGoogleUser,
+  validateAndDecodeToken,
 } from '@/utils/auth.utils'
 
 import type { GoogleAuthResponse, User } from '@/types/auth.types'

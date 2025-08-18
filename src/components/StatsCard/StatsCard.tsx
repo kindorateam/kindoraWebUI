@@ -1,4 +1,4 @@
-import { Card, CardHeader, CardBody } from '@heroui/react'
+import { Card, CardBody, CardHeader } from '@heroui/react'
 
 import type { ReactNode } from 'react'
 
