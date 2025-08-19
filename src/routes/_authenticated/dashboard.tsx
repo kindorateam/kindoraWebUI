@@ -9,4 +9,9 @@ export const Route = createFileRoute('/_authenticated/dashboard')({
       <DashboardPage />
     </RouteErrorBoundary>
   ),
+  beforeLoad: () => {
+    return {
+      breadcrumb: 'Dashboard',
+    }
+  },
 })

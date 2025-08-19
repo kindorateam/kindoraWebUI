@@ -8,12 +8,12 @@ import {
   DropdownSection,
   DropdownTrigger,
   Input,
-  Link,
   Navbar,
   NavbarContent,
   NavbarItem,
 } from '@heroui/react'
 
+import Breadcrumbs from '@/components/Breadcrumbs'
 import NotificationIcon from '@/components/icons/NotificationIcon'
 import ProfileIcon from '@/components/icons/ProfileIcon'
 import SchoolIcon from '@/components/icons/SchoolIcon'
@@ -30,10 +30,8 @@ const Header = () => {
       }}
     >
       <NavbarContent>
-        <NavbarItem>
-          <Link color="foreground" href="#">
-            Integrations
-          </Link>
+        <NavbarItem className="flex-1">
+          <Breadcrumbs />
         </NavbarItem>
       </NavbarContent>
 

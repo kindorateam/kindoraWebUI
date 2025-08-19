@@ -38,8 +38,8 @@ src/
 │   ├── images/         # Static images like png/jpeg/webp etc
 │   └── fonts/          # Fonts
 ├── components/         # UI components
-│   ├── layout/         # Layout components
-│   └── features/       # Feature-specific components
+│   ├── Breadcrumbs.tsx # Common component
+│   └── NavDrawer/      # If a component has types/data etc.
 ├── hooks/              # Custom React hooks
 ├── services/           # API services
 ├── types/              # TypeScript types
@@ -55,23 +55,31 @@ src/
 Every component should follow this pattern(otherwise export default if a module exports only 1 thing. Applies to component/hooks/types/services/utils etc):
 ```typescript
 // types/[domain].types.ts
-export interface ComponentProps { }
+interface ComponentProps { }
+
+export default ComponentProps;  //Otherwise use named export if a module has multiple exports
 
 // hooks/use[Feature].ts
-export const useFeature = () => {
+const useFeature = () => {
   // Business logic here
   return { /* ... */ }
 }
 
+export default useFeature;
+
 // services/[domain].service.ts
-export const fetchData = async () => {
+const fetchData = async () => {
   // API calls here
 }
 
+export default fetchData; //Otherwise use named export if a module has multiple exports
+
 // components/[Component].tsx
-export const Component = () => {
+const Component = () => {
   // UI only, use hooks for logic
 }
+
+export default Component;
 ```
 
 ### Service Layer Pattern
@@ -87,12 +95,14 @@ import { apiClient } from './api.client'
 ### Hook Pattern
 ```typescript
 // hooks/use[Name].ts
-export const useName = (params?: Type) => {
+const useName = (params?: Type) => {
   // Logic encapsulation
   // State management
   // Side effects
   return { /* data, methods, state */ }
 }
+
+export default useName;
 ```
 
 ### Type Organization
@@ -104,15 +114,15 @@ export const useName = (params?: Type) => {
 
 ## File Naming Conventions 📚
 
-| Type       | Pattern             | Example              |
-| ---------- | ------------------- | -------------------- |
-| Component  | `PascalCase.tsx`    | `UserCard.tsx`       |
-| Hook       | `use[Name].ts`      | `useAuth.ts`         |
+| Type       | Pattern             | Example            |
+| ---------- | ------------------- | ------------------ |
+| Component  | `PascalCase.tsx`    | `UserCard.tsx`     |
+| Hook       | `use[Name].ts`      | `useAuth.ts`       |
 | Query Hook | `use[Name]Query.ts` | `useUsersQuery.ts` |
-| Service    | `[name].service.ts` | `auth.service.ts`    |
-| Type       | `[name].types.ts`   | `user.types.ts`      |
-| Util       | `[name].utils.ts`   | `date.utils.ts`      |
-| Schema     | `[name].schema.ts`  | `login.schema.ts`    |
+| Service    | `[name].service.ts` | `auth.service.ts`  |
+| Type       | `[name].types.ts`   | `user.types.ts`    |
+| Util       | `[name].utils.ts`   | `date.utils.ts`    |
+| Schema     | `[name].schema.ts`  | `login.schema.ts`  |
 
 ## Modular Development Rules 📋
 
@@ -130,13 +140,13 @@ import axios from 'axios'
 import { useCallback, useEffect } from 'react'
 
 // 2. Internal absolute paths
-import { Button } from '@/components'
+import Button from '@/components/Button.tsx'
 
 // 3. Relative imports
-import { useLocalHook } from './hooks'
+import useLocalHook from './hooks/useLocalHook.ts'
 
 // 4. Types
-import type { User } from '@/types'
+import type User from '@/types/userSpecificPath'
 
 // 5. Styles
 import './styles.css'
