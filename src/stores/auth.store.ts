@@ -6,7 +6,7 @@ import {
   isTokenExpired,
   transformGoogleUser,
   validateAndDecodeToken,
-} from '@/utils/auth.utils'
+} from '@/utils/auth'
 
 import type { GoogleAuthResponse, User } from '@/types/auth.types'
 

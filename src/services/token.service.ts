@@ -1,7 +1,7 @@
 import { getDefaultStore } from 'jotai'
 
 import { tokenAtom } from '@/stores/auth.store'
-import { validateAndDecodeToken } from '@/utils/auth.utils'
+import { validateAndDecodeToken } from '@/utils/auth'
 
 const store = getDefaultStore()
 

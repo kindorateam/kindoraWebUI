@@ -15,9 +15,7 @@ const Breadcrumbs = () => {
 
   // If only one breadcrumb after filtering (top-level route), show just the title
   if (filteredBreadcrumbs.length === 1) {
-    return (
-      <div className="text-default-900 text-2xl font-semibold">{pageTitle}</div>
-    )
+    return <div className="text-grey3 font-semibold">{pageTitle}</div>
   }
 
   // For nested routes, show full breadcrumb trail

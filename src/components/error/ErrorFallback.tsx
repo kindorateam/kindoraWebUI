@@ -3,7 +3,7 @@ import { Button } from '@heroui/react'
 import AlertCircleIcon from '@/components/icons/AlertCircleIcon'
 import HomeIcon from '@/components/icons/HomeIcon'
 import RefreshIcon from '@/components/icons/RefreshIcon'
-import { getErrorMessage, getUserMessage } from '@/utils/error.utils'
+import { getErrorMessage, getUserMessage } from '@/utils/error'
 
 import type { ErrorFallbackProps } from '@/types/error.types'
 

@@ -12,6 +12,7 @@
     rgba(240, 240, 235, 0) 100%
   );
   --color-wine-700: #792c41;
+  --color-grey3: #707070;
 }
 
 @utility shadow-soft {
