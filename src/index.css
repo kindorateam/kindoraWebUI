@@ -13,6 +13,23 @@
   );
   --color-wine-700: #792c41;
   --color-grey3: #707070;
+  
+  /* Gradient overlays */
+  --background-gradient-green: linear-gradient(
+    146.82deg,
+    rgba(49, 98, 60, 0.3) 6.84%,
+    rgba(134, 192, 119, 0.3) 93.16%
+  );
+  --background-gradient-gray: linear-gradient(
+    146.82deg,
+    rgba(64, 64, 64, 0.3) 6.84%,
+    rgba(134, 134, 134, 0.3) 93.16%
+  );
+  --background-gradient-orange: linear-gradient(
+    146.82deg,
+    rgba(123, 78, 11, 0.3) 6.84%,
+    rgba(217, 93, 65, 0.3) 93.16%
+  );
 }
 
 @utility shadow-soft {
@@ -21,6 +38,18 @@
 
 @utility bg-fade-cream {
   background: var(--background-fade-cream);
+}
+
+@utility bg-gradient-green {
+  background: var(--background-gradient-green);
+}
+
+@utility bg-gradient-gray {
+  background: var(--background-gradient-gray);
+}
+
+@utility bg-gradient-orange {
+  background: var(--background-gradient-orange);
 }
 
 @utility container {
