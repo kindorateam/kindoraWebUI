@@ -1,5 +1,7 @@
 # Claude Code Guide: Frontend Development with React & TypeScript 🎨
 
+# ALWAYS USE AGENTS
+
 ## Project Stack Overview
 - **React 19+** with TypeScript
 - **HeroUI** (NextUI-based component library) with Tailwind CSS
