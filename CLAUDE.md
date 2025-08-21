@@ -1,7 +1,5 @@
 # Claude Code Guide: Frontend Development with React & TypeScript 🎨
 
-# ALWAYS USE AGENTS
-
 ## Project Stack Overview
 - **React 19+** with TypeScript
 - **HeroUI** (NextUI-based component library) with Tailwind CSS
@@ -40,9 +38,11 @@ src/
 │   ├── images/         # Static images like png/jpeg/webp etc
 │   └── fonts/          # Fonts
 ├── components/         # UI components
-│   ├── Breadcrumbs.tsx # Common component
-│   └── NavDrawer/      # If a component has types/data etc.
-├── hooks/              # Custom React hooks
+│   ├── [name].tsx      # Common component
+│   └── [name]/├──index.tsx
+               └──[name].data.tsx # If a component has mock data create a folder.
+├── hooks/
+      └── use[Name].ts  # Custom React hooks
 ├── services/           # API services
 ├── types/              # TypeScript types
 ├── utils/              # Utilities
@@ -121,10 +121,10 @@ export default useName;
 | Component  | `PascalCase.tsx`    | `UserCard.tsx`     |
 | Hook       | `use[Name].ts`      | `useAuth.ts`       |
 | Query Hook | `use[Name]Query.ts` | `useUsersQuery.ts` |
-| Service    | `[name].service.ts` | `auth.service.ts`  |
-| Type       | `[name].types.ts`   | `user.types.ts`    |
-| Util       | `[name].utils.ts`   | `date.utils.ts`    |
-| Schema     | `[name].schema.ts`  | `login.schema.ts`  |
+| Service    | `[name].ts`         | `auth.ts`          |
+| Type       | `[name].ts`         | `User.ts`          |
+| Util       | `[name].ts`         | `date.ts`          |
+| Schema     | `[name].ts`         | `login.ts`         |
 
 ## Modular Development Rules 📋
 

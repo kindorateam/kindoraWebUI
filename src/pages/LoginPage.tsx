@@ -9,10 +9,27 @@ const LoginPage = () => {
   const { handleGoogleLogin, error, isAuthenticated } = useAuth()
   const navigate = useNavigate()
 
+  // Store redirect URL in sessionStorage on component mount
+  useEffect(() => {
+    const returnUrl = getReturnUrlFromLocation()
+    if (returnUrl && returnUrl !== '/login') {
+      sessionStorage.setItem('authRedirectUrl', returnUrl)
+    }
+  }, [])
+
   // Navigate after successful authentication
   useEffect(() => {
     if (isAuthenticated) {
-      const returnUrl = getReturnUrlFromLocation()
+      // First try to get from sessionStorage, then from URL
+      const storedUrl = sessionStorage.getItem('authRedirectUrl')
+      const urlParam = getReturnUrlFromLocation()
+      const returnUrl = storedUrl ?? urlParam
+
+      // Clear the stored URL after using it
+      if (storedUrl) {
+        sessionStorage.removeItem('authRedirectUrl')
+      }
+
       const destination =
         returnUrl && returnUrl !== '/login' ? returnUrl : '/dashboard'
       void navigate({ to: destination })

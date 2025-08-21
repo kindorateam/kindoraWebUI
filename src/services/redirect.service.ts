@@ -34,6 +34,7 @@ const getLoginUrl = (options?: RedirectOptions): string => {
 }
 
 export const scheduleRedirectToLogin = (options?: RedirectOptions): void => {
+  console.log(options, '<- scheduleRedirectToLogin')
   const returnUrl = options?.returnUrl ?? buildReturnUrl()
   const loginUrl = getLoginUrl({ ...options, returnUrl })
 
@@ -68,7 +69,7 @@ export const getReturnUrlFromLocation = (): string | null => {
   if (typeof window === 'undefined') return null
 
   const params = new URLSearchParams(window.location.search)
-  return params.get('returnUrl')
+  return params.get('redirect')
 }
 
 export const buildReturnUrl = (): string => {

@@ -11,7 +11,7 @@ const MainLayout = () => {
       <div>
         <Header />
 
-        <main className="container">
+        <main className="container max-w-7xl">
           <Outlet />
         </main>
       </div>

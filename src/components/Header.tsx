@@ -20,8 +20,11 @@ import SchoolIcon from '@/components/icons/SchoolIcon'
 import SearchIcon from '@/components/icons/SearchIcon'
 import SignOutIcon from '@/components/icons/SignOutIcon'
 import SubscriptionIcon from '@/components/icons/SubscriptionIcon'
+import useAuth from '@/hooks/useAuth'
 
 const Header = () => {
+  const { user, logout } = useAuth()
+
   return (
     <Navbar
       classNames={{
@@ -76,9 +79,9 @@ const Header = () => {
               showDivider
             >
               <DropdownItem className="p-0" key="profile">
-                <p className="font-semibold lg:text-lg">Sophia Carter</p>
+                <p className="font-semibold lg:text-lg">{user?.name}</p>
                 <p className="text-wine-700 font-semibold lg:text-xs">
-                  s.carter@examled.com
+                  {user?.email}
                 </p>
               </DropdownItem>
             </DropdownSection>
@@ -116,6 +119,7 @@ const Header = () => {
                 className="px-0 py-2"
                 color="danger"
                 key="logout"
+                onClick={logout}
                 startContent={<SignOutIcon className="h-4 w-4" />}
               >
                 Log Out
