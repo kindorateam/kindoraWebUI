@@ -48,10 +48,10 @@ const StaffTable = () => {
                 showFallback
                 src={staff.avatar}
               />
-              <div>
-                <div className="text-sm font-medium">{staff.name}</div>
+              <div className="flex flex-col">
+                <span className="text-sm font-medium">{staff.name}</span>
                 {staff.isCurrentUser && (
-                  <div className="text-xs text-green-500">My2 account</div>
+                  <span className="text-xs text-green-500">My account</span>
                 )}
               </div>
             </div>
@@ -59,17 +59,17 @@ const StaffTable = () => {
 
         case 'rooms':
           return (
-            <div className="flex items-center gap-2">
+            <div className="text-gray2 flex items-center gap-2">
               <RoomIcon roomType="turtle" />
-              <span className="text-sm">Baby turtles</span>
+              <span className="text-xs">Baby turtles</span>
             </div>
           )
 
         case 'role':
-          return <span className="text-sm">{staff.role}</span>
+          return <span className="text-xs">{staff.role}</span>
 
         case 'email':
-          return <span className="text-grey3 text-sm">{staff.email}</span>
+          return <span className="text-gray2 text-xs">{staff.email}</span>
 
         case 'pin':
           if (staff.isCurrentUser) {
@@ -101,7 +101,7 @@ const StaffTable = () => {
             </Chip>
           ) : (
             <Button
-              className="bg-pink-100 text-pink-700 hover:bg-pink-200"
+              className="text-wine-700 bg-[#792C4133] text-[11px] font-semibold"
               onPress={() => {
                 togglePinVisibility(staff.id)
               }}
@@ -133,15 +133,15 @@ const StaffTable = () => {
         classNames={{
           wrapper: 'min-w-full p-0 shadow-none! bg-transparent',
           base: 'p-0',
-          thead: 'bg-transparent!',
-          th: 'p-0',
-          td: 'p-0',
+          table: 'border-spacing-y-2!',
+          th: 'p-0 pb-7 bg-transparent text-xs!',
+          td: 'p-0 py-2.5',
         }}
       >
         <TableHeader columns={columns}>
           {(column) => (
             <TableColumn
-              className="text-left text-sm font-medium tracking-wider text-gray-500 uppercase"
+              className="text-gray2 text-left text-sm font-medium tracking-wider"
               key={column.key}
             >
               {column.label}

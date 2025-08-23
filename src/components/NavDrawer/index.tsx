@@ -120,7 +120,7 @@ const NavDrawer = () => {
   }
 
   return (
-    <div className="relative h-full">
+    <div className="relative h-screen">
       <aside className="flex h-full flex-col bg-white shadow-lg">
         <div className="xl:px-4 xl:py-5">
           <img alt="Kindora Logo" src={Logo} />

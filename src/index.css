@@ -12,8 +12,9 @@
     rgba(240, 240, 235, 0) 100%
   );
   --color-wine-700: #792c41;
-  --color-grey3: #707070;
-  
+  --color-gray3: #707070;
+  --color-gray2: #909090;
+
   /* Gradient overlays */
   --background-gradient-green: linear-gradient(
     146.82deg,
