@@ -1,48 +1,54 @@
-import StaffTable from '@/components/StaffTable'
+import RoomsTable from '@/components/RoomsTable'
 import SubHeader from '@/components/SubHeader'
 
 const roomsFilters = [
   {
-    id: 'status',
-    label: 'Status',
-    value: '', // No selection - will show "Status: None"
+    id: 'capacity',
+    label: 'Capacity',
+    value: '',
     options: [
-      { value: '', label: 'All Statuses' },
-      { value: 'active', label: 'Active' },
-      { value: 'inactive', label: 'Inactive' },
+      { value: '', label: 'All Capacities' },
+      { value: '1-10', label: '1-10 Students' },
+      { value: '11-20', label: '11-20 Students' },
+      { value: '21+', label: '21+ Students' },
     ],
   },
   {
-    id: 'role',
-    label: 'Role',
-    value: 'admin', // Selected - will show "Role: Administrator"
+    id: 'occupancy',
+    label: 'Occupancy',
+    value: '',
     options: [
-      { value: 'all', label: 'All Roles' },
-      { value: 'admin', label: 'Administrator' },
-      { value: 'teacher', label: 'Teacher' },
+      { value: '', label: 'All' },
+      { value: 'empty', label: 'Empty' },
+      { value: 'partial', label: 'Partially Filled' },
+      { value: 'full', label: 'Full' },
     ],
   },
   {
-    id: 'location',
-    label: 'Location',
-    value: 'none', // Default - will show "Location: None"
+    id: 'roomType',
+    label: 'Room Type',
+    value: '',
     options: [
-      { value: 'none', label: 'No Location Filter' },
-      { value: 'main', label: 'Main Campus' },
-      { value: 'remote', label: 'Remote' },
+      { value: '', label: 'All Rooms' },
+      { value: 'turtle', label: 'Baby Turtles' },
+      { value: 'rabbit', label: 'Happy Rabbits' },
+      { value: 'bear', label: 'Curious Bears' },
+      { value: 'butterfly', label: 'Bright Butterflies' },
+      { value: 'owl', label: 'Wise Owls' },
+      { value: 'fox', label: 'Clever Foxes' },
     ],
   },
 ]
 
-const StaffPage = () => {
+const RoomsPage = () => {
   return (
     <>
       <SubHeader filters={roomsFilters} />
       <main className="container max-w-7xl pt-10">
-        <StaffTable />
+        <RoomsTable />
       </main>
     </>
   )
 }
 
-export default StaffPage
+export default RoomsPage

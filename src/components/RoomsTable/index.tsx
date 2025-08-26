@@ -1,33 +1,27 @@
 import { useQuery } from '@tanstack/react-query'
 import { useMemo } from 'react'
 
-import createStaffColumns from './RoomsTableConfig'
+import createRoomsColumns from './RoomsTableConfig'
 import DataTable from '@/components/DataTable'
-import usePinVisibility from '@/hooks/usePinVisibility'
-import { getStaffMembers } from '@/services/staff.service'
+import { getRooms } from '@/services/room.service'
 
-const StaffTable = () => {
-  const { data: staffMembers = [], isLoading } = useQuery({
-    queryKey: ['staff'],
-    queryFn: getStaffMembers,
+const RoomsTable = () => {
+  const { data: rooms = [], isLoading } = useQuery({
+    queryKey: ['rooms'],
+    queryFn: getRooms,
   })
 
-  const { isPinVisible, togglePinVisibility } = usePinVisibility()
-
-  const columns = useMemo(
-    () => createStaffColumns({ isPinVisible, togglePinVisibility }),
-    [isPinVisible, togglePinVisibility],
-  )
+  const columns = useMemo(() => createRoomsColumns(), [])
 
   return (
     <DataTable
       columns={columns}
-      data={staffMembers}
-      emptyMessage="No staff members found"
-      getRowKey={(staff) => staff.id}
+      data={rooms}
+      emptyMessage="No rooms found"
+      getRowKey={(room) => room.id}
       isLoading={isLoading}
     />
   )
 }
 
-export default StaffTable
+export default RoomsTable

@@ -43,7 +43,7 @@ const DataTable = <T,>({
           wrapper: 'min-w-full p-0 shadow-none! bg-transparent',
           base: 'p-0',
           table: `border-spacing-y-2! ${tableClassName}`,
-          th: 'p-0 pb-7 bg-transparent text-xs!',
+          th: 'p-0 pb-4 bg-transparent text-xs!',
           td: 'p-0 py-2.5',
         }}
       >

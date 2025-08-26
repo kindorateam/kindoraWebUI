@@ -1,106 +1,107 @@
-import { Avatar, Button, Chip } from '@heroui/react'
+import { Avatar } from '@heroui/react'
 
 import RoomIcon from '@/components/RoomIcon'
 
-import type Staff from '@/types/staff'
+import type Room from '@/types/room'
 import type { TableColumn } from '@/types/table'
 
-interface StaffTableCellProps {
-  staff: Staff
-  isPinVisible: (id: string) => boolean
-  togglePinVisibility: (id: string) => void
-}
-
-const createStaffColumns = ({
-  isPinVisible,
-  togglePinVisibility,
-}: Omit<StaffTableCellProps, 'staff'>): TableColumn<Staff>[] => [
+const createRoomsColumns = (): TableColumn<Room>[] => [
+  {
+    key: 'room',
+    label: 'Rooms',
+    renderCell: (room) => (
+      <div className="flex items-center gap-2">
+        <RoomIcon roomType={room.icon} />
+        <span className="text-sm font-medium">{room.name}</span>
+      </div>
+    ),
+  },
+  {
+    key: 'capacity',
+    label: 'Capacity',
+    renderCell: (room) => (
+      <span className="text-sm text-gray-600">{room.capacity}</span>
+    ),
+  },
+  {
+    key: 'students',
+    label: 'Students',
+    renderCell: (room) => (
+      <span className="text-sm text-gray-600">{room.studentsCount}</span>
+    ),
+  },
   {
     key: 'staff',
     label: 'Staff',
-    renderCell: (staff) => (
-      <div className="flex items-center gap-3">
-        <Avatar
-          alt={staff.name}
-          className="h-10 w-10"
-          showFallback
-          src={staff.avatar}
-        />
-        <div className="flex flex-col">
-          <span className="text-sm font-medium">{staff.name}</span>
-          {staff.isCurrentUser && (
-            <span className="text-xs text-green-500">My account</span>
-          )}
-        </div>
-      </div>
+    renderCell: (room) => (
+      <span className="text-sm text-gray-600">{room.staffCount}</span>
     ),
   },
   {
-    key: 'role',
-    label: 'Role',
-    renderCell: (staff) => <span className="text-xs">{staff.role}</span>,
-  },
-  {
-    key: 'email',
-    label: 'Email',
-    renderCell: (staff) => (
-      <span className="text-gray2 text-xs">{staff.email}</span>
-    ),
-  },
-  {
-    key: 'rooms',
-    label: 'Rooms',
-    renderCell: () => (
-      <div className="text-gray2 flex items-center gap-2">
-        <RoomIcon roomType="turtle" />
-        <span className="text-xs">Baby turtles</span>
-      </div>
-    ),
-  },
-  {
-    key: 'pin',
-    label: 'Pin',
-    renderCell: (staff) => {
-      const isVisible = isPinVisible(staff.id)
+    key: 'signInStudents',
+    label: 'Sign in students',
+    renderCell: (room) => {
+      const { signedInStudents } = room
+      const totalStudents = signedInStudents.length
 
-      if (staff.isCurrentUser) {
-        return (
-          <Chip
-            className="bg-gray-100 p-0! text-gray-800"
-            classNames={{
-              base: 'p-0!',
-              content: 'p-0!',
-            }}
-            size="sm"
-          >
-            {staff.pin}
-          </Chip>
-        )
+      if (totalStudents === 0) {
+        return <span className="text-sm text-gray-400">No students</span>
       }
 
-      return isVisible ? (
-        <Chip
-          className="cursor-pointer bg-gray-100 p-0! text-gray-800"
-          classNames={{
-            base: 'p-0!',
-            content: 'p-0!',
-          }}
-          onClick={() => togglePinVisibility(staff.id)}
-          size="sm"
-        >
-          {staff.pin}
-        </Chip>
-      ) : (
-        <Button
-          className="text-wine-700 bg-[#792C4133] text-[11px] font-semibold"
-          onPress={() => togglePinVisibility(staff.id)}
-          size="sm"
-        >
-          Reveal
-        </Button>
+      const displayCount = Math.min(2, totalStudents)
+      const remainingCount = totalStudents - displayCount
+
+      return (
+        <div className="flex items-center -space-x-2">
+          {signedInStudents.slice(0, displayCount).map((student) => (
+            <Avatar
+              alt={student.name}
+              className="h-8 w-8 border-2 border-white"
+              key={student.id}
+              showFallback
+              src={student.avatar}
+            />
+          ))}
+          {remainingCount > 0 && (
+            <div className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-white bg-gray-200">
+              <span className="text-xs font-semibold text-gray-700">
+                +{remainingCount}
+              </span>
+            </div>
+          )}
+          <span className="ml-3 text-sm text-gray-600">({totalStudents})</span>
+        </div>
+      )
+    },
+  },
+  {
+    key: 'signInStaff',
+    label: 'Sign in staff',
+    renderCell: (room) => {
+      const { signedInStaff } = room
+      const totalStaff = signedInStaff.length
+
+      if (totalStaff === 0) {
+        return <span className="text-sm text-gray-400">No staff</span>
+      }
+
+      const displayCount = Math.min(3, totalStaff)
+
+      return (
+        <div className="flex items-center -space-x-2">
+          {signedInStaff.slice(0, displayCount).map((staff) => (
+            <Avatar
+              alt={staff.name}
+              className="h-8 w-8 border-2 border-white"
+              key={staff.id}
+              showFallback
+              src={staff.avatar}
+            />
+          ))}
+        </div>
       )
     },
   },
 ]
 
-export default createStaffColumns
+export default createRoomsColumns

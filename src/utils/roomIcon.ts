@@ -4,14 +4,16 @@ export const getRoomIcon = (roomType: RoomType) => {
   switch (roomType) {
     case 'turtle':
       return '🐢'
-    case 'zebra':
-      return '🦓'
-    case 'giraffe':
-      return '🦒'
-    case 'elephant':
-      return '🐘'
-    case 'mammoth':
-      return '🦣'
+    case 'rabbit':
+      return '🐰'
+    case 'bear':
+      return '🐻'
+    case 'butterfly':
+      return '🦋'
+    case 'owl':
+      return '🦉'
+    case 'fox':
+      return '🦊'
   }
 }
 
@@ -19,14 +21,16 @@ export const getRoomIconBg = (roomType: RoomType) => {
   switch (roomType) {
     case 'turtle':
       return 'bg-gradient-green'
-    case 'zebra':
-      return 'bg-gradient-gray'
-    case 'giraffe':
+    case 'rabbit':
+      return 'bg-gradient-blue'
+    case 'bear':
       return 'bg-gradient-orange'
-    case 'elephant':
+    case 'butterfly':
+      return 'bg-gradient-purple'
+    case 'owl':
       return 'bg-gradient-gray'
-    case 'mammoth':
-      return 'bg-gradient-orange'
+    case 'fox':
+      return 'bg-gradient-red'
   }
 }
 
