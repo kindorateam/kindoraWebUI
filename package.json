@@ -53,6 +53,7 @@
     "@tanstack/react-router": "^1.125.6",
     "@tanstack/react-router-devtools": "^1.123.2",
     "axios": "^1.10.0",
+    "clsx": "^2.1.1",
     "framer-motion": "^12.18.1",
     "jotai": "^2.12.5",
     "jwt-decode": "^4.0.0",

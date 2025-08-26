@@ -4,7 +4,7 @@ import AlertTriangleIcon from '@/components/icons/AlertTriangleIcon'
 import RefreshIcon from '@/components/icons/RefreshIcon'
 import { getUserMessage } from '@/utils/error'
 
-import type { ErrorFallbackProps } from '@/types/error.types'
+import type { ErrorFallbackProps } from '@/types/error'
 
 const CompactErrorFallback = ({ error, resetError }: ErrorFallbackProps) => {
   return (

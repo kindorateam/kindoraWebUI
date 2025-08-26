@@ -1,4 +1,4 @@
-import type { GoogleAuthResponse } from '@/types/auth.types'
+import type { GoogleAuthResponse } from '@/types/auth'
 
 declare global {
   interface Window {

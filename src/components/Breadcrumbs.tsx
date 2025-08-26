@@ -1,24 +1,21 @@
 import { BreadcrumbItem, Breadcrumbs as HeroUIBreadcrumbs } from '@heroui/react'
 import { Link } from '@tanstack/react-router'
 
-import { usePageMetadata } from '@/hooks/usePageMetadata'
+import usePageMetadata from '@/hooks/usePageMetadata'
 
 const Breadcrumbs = () => {
   const { breadcrumbs, pageTitle } = usePageMetadata()
 
   if (breadcrumbs.length === 0) return null
 
-  // Filter out "Home" from breadcrumbs
   const filteredBreadcrumbs = breadcrumbs.filter(
     (crumb) => crumb.title !== 'Home',
   )
 
-  // If only one breadcrumb after filtering (top-level route), show just the title
   if (filteredBreadcrumbs.length === 1) {
-    return <div className="text-grey3 font-semibold">{pageTitle}</div>
+    return <div className="text-gray3 font-medium">{pageTitle}</div>
   }
 
-  // For nested routes, show full breadcrumb trail
   return (
     <HeroUIBreadcrumbs
       classNames={{

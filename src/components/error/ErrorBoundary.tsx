@@ -3,7 +3,7 @@ import { Component } from 'react'
 import ErrorFallback from './ErrorFallback'
 import { logError } from '@/utils/error'
 
-import type { ErrorBoundaryState, ErrorInfo } from '@/types/error.types'
+import type { ErrorBoundaryState, ErrorInfo } from '@/types/error'
 import type { ReactNode } from 'react'
 
 interface ErrorBoundaryProps {

@@ -28,7 +28,7 @@ const Header = () => {
   return (
     <Navbar
       classNames={{
-        base: 'h-20 w-full px-7 bg-transparent',
+        base: 'h-20 w-full mb-7 px-7 bg-transparent',
         wrapper: 'w-full max-w-none p-0',
       }}
     >

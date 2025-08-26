@@ -1,4 +1,4 @@
-import type { RoomType } from '@/types/roomTypes'
+import type { RoomType } from '@/types/RoomNames'
 
 export const getRoomIcon = (roomType: RoomType) => {
   switch (roomType) {

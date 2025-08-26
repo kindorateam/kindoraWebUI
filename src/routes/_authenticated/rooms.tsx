@@ -1,9 +1,9 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-import { StudentsPage } from '@/pages'
+import RoomsPages from '@/pages/RoomsPage'
 
 export const Route = createFileRoute('/_authenticated/rooms')({
-  component: StudentsPage,
+  component: RoomsPages,
   beforeLoad: () => {
     return {
       breadcrumb: 'Rooms',

@@ -8,7 +8,7 @@ import {
   validateAndDecodeToken,
 } from '@/utils/auth'
 
-import type { GoogleAuthResponse, User } from '@/types/auth.types'
+import type { GoogleAuthResponse, User } from '@/types/auth'
 
 // Atoms for state - using atomWithStorage handles localStorage automatically
 export const userAtom = atomWithStorage<User | null>('auth-user', null)

@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { useMemo } from 'react'
 
-import createStaffColumns from './StaffTableConfig'
+import createStaffColumns from './RoomsTableConfig'
 import DataTable from '@/components/DataTable'
 import usePinVisibility from '@/hooks/usePinVisibility'
 import { getStaffMembers } from '@/services/staff.service'

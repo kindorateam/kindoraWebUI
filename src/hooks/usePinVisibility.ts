@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react'
 
-import type { PinVisibility } from '@/types/staff.types'
+import type { PinVisibility } from '@/types/staff'
 
 const usePinVisibility = () => {
   const [pinVisibility, setPinVisibility] = useState<PinVisibility>({})

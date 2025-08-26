@@ -8,7 +8,7 @@ import {
   updateUserAtom,
 } from '@/stores/auth.store'
 
-import type { GoogleAuthResponse } from '@/types/auth.types'
+import type { GoogleAuthResponse } from '@/types/auth'
 
 const useAuth = () => {
   const authState = useAtomValue(authStateAtom)

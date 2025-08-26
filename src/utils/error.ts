@@ -1,4 +1,4 @@
-import type { AppError, ErrorSeverity } from '@/types/error.types'
+import type { AppError, ErrorSeverity } from '@/types/error'
 
 export class ApplicationError extends Error implements AppError {
   code?: string

@@ -1,6 +1,6 @@
 import { jwtDecode } from 'jwt-decode'
 
-import type { DecodedGoogleToken, User } from '@/types/auth.types'
+import type { DecodedGoogleToken, User } from '@/types/auth'
 
 export const decodeJWT = (token: string): DecodedGoogleToken => {
   const decoded = jwtDecode<DecodedGoogleToken>(token)

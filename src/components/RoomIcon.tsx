@@ -1,6 +1,6 @@
 import { getRoomIcon, getRoomIconBg } from '@/utils/roomIcon'
 
-import type { RoomType } from '@/types/roomTypes'
+import type { RoomType } from '@/types/RoomNames'
 
 const RoomIcon = ({ roomType }: { roomType: RoomType }) => {
   const icon = getRoomIcon(roomType)

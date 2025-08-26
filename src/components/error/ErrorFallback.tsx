@@ -5,7 +5,7 @@ import HomeIcon from '@/components/icons/HomeIcon'
 import RefreshIcon from '@/components/icons/RefreshIcon'
 import { getErrorMessage, getUserMessage } from '@/utils/error'
 
-import type { ErrorFallbackProps } from '@/types/error.types'
+import type { ErrorFallbackProps } from '@/types/error'
 
 const ErrorFallback = ({
   error,

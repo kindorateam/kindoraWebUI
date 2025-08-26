@@ -5,7 +5,7 @@ import type { Breadcrumb, PageMetadata, RouteMatch } from '@/types/URL'
 
 const APP_NAME = 'Kindora'
 
-export const usePageMetadata = (): PageMetadata => {
+const usePageMetadata = (): PageMetadata => {
   const matches = useRouterState({
     select: (s) => s.matches as RouteMatch[],
   })
@@ -45,3 +45,5 @@ export const usePageMetadata = (): PageMetadata => {
     documentTitle,
   }
 }
+
+export default usePageMetadata
