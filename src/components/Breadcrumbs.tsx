@@ -1,16 +1,32 @@
 import { BreadcrumbItem, Breadcrumbs as HeroUIBreadcrumbs } from '@heroui/react'
 import { Link } from '@tanstack/react-router'
+import { memo, useMemo } from 'react'
 
 import usePageMetadata from '@/hooks/usePageMetadata'
 
-const Breadcrumbs = () => {
+const Breadcrumbs = memo(() => {
   const { breadcrumbs, pageTitle } = usePageMetadata()
-  console.log(breadcrumbs, pageTitle)
-  if (breadcrumbs.length === 0) return null
 
-  const filteredBreadcrumbs = breadcrumbs.filter(
-    (crumb) => crumb.title !== 'Home',
+  const filteredBreadcrumbs = useMemo(() => {
+    return breadcrumbs.filter((crumb) => crumb.title !== 'Home')
+  }, [breadcrumbs])
+
+  const breadcrumbClassNames = useMemo(
+    () => ({
+      list: 'gap-2',
+    }),
+    [],
   )
+
+  const breadcrumbItemClasses = useMemo(
+    () => ({
+      item: 'text-sm',
+      separator: 'text-default-400',
+    }),
+    [],
+  )
+
+  if (breadcrumbs.length === 0) return null
 
   if (filteredBreadcrumbs.length === 1) {
     return <div className="text-gray3 font-medium">{pageTitle}</div>
@@ -18,13 +34,8 @@ const Breadcrumbs = () => {
 
   return (
     <HeroUIBreadcrumbs
-      classNames={{
-        list: 'gap-2',
-      }}
-      itemClasses={{
-        item: 'text-sm',
-        separator: 'text-default-400',
-      }}
+      classNames={breadcrumbClassNames}
+      itemClasses={breadcrumbItemClasses}
       separator="/"
       variant="light"
     >
@@ -44,6 +55,8 @@ const Breadcrumbs = () => {
       ))}
     </HeroUIBreadcrumbs>
   )
-}
+})
+
+Breadcrumbs.displayName = 'Breadcrumbs'
 
 export default Breadcrumbs

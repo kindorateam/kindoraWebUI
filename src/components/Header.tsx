@@ -12,6 +12,7 @@ import {
   NavbarContent,
   NavbarItem,
 } from '@heroui/react'
+import { memo, useCallback, useMemo } from 'react'
 
 import Breadcrumbs from '@/components/Breadcrumbs'
 import NotificationIcon from '@/components/icons/NotificationIcon'
@@ -22,16 +23,32 @@ import SignOutIcon from '@/components/icons/SignOutIcon'
 import SubscriptionIcon from '@/components/icons/SubscriptionIcon'
 import useAuth from '@/hooks/useAuth'
 
-const Header = () => {
+const Header = memo(() => {
   const { user, logout } = useAuth()
 
+  const handleLogout = useCallback(() => {
+    logout()
+  }, [logout])
+
+  const navbarClassNames = useMemo(
+    () => ({
+      base: 'h-20 w-full mb-7 px-7 bg-transparent',
+      wrapper: 'w-full max-w-none p-0',
+    }),
+    [],
+  )
+
+  const inputClassNames = useMemo(
+    () => ({
+      base: 'w-[150px]',
+      input: 'ps-2! font-normal rounded-4xl text-sm',
+      inputWrapper: 'h-9.5 ps-4 rounded-[20px] shadow-md bg-white',
+    }),
+    [],
+  )
+
   return (
-    <Navbar
-      classNames={{
-        base: 'h-20 w-full mb-7 px-7 bg-transparent',
-        wrapper: 'w-full max-w-none p-0',
-      }}
-    >
+    <Navbar classNames={navbarClassNames}>
       <NavbarContent>
         <NavbarItem className="flex-1">
           <Breadcrumbs />
@@ -40,11 +57,7 @@ const Header = () => {
 
       <NavbarContent className="items-center gap-5" justify="end">
         <Input
-          classNames={{
-            base: 'w-[150px]',
-            input: 'ps-2! font-normal rounded-4xl text-sm',
-            inputWrapper: 'h-9.5 ps-4 rounded-[20px] shadow-md bg-white',
-          }}
+          classNames={inputClassNames}
           placeholder="Search"
           size="sm"
           startContent={<SearchIcon />}
@@ -119,7 +132,7 @@ const Header = () => {
                 className="px-0 py-2"
                 color="danger"
                 key="logout"
-                onClick={logout}
+                onClick={handleLogout}
                 startContent={<SignOutIcon className="h-4 w-4" />}
               >
                 Log Out
@@ -130,6 +143,8 @@ const Header = () => {
       </NavbarContent>
     </Navbar>
   )
-}
+})
+
+Header.displayName = 'Header'
 
 export default Header

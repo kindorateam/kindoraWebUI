@@ -16,9 +16,16 @@ const RoomDetailSubHeader = ({
   activeTab,
   onTabChange,
 }: RoomDetailSubHeaderProps) => {
+  // Use React Query with better caching strategy
+  // Use React Query with better caching and no unnecessary refetches
   const { data: room, isLoading } = useQuery({
     queryKey: ['room', roomId],
     queryFn: () => getRoomById(roomId),
+    staleTime: 5 * 60 * 1000, // Consider data fresh for 5 minutes
+    refetchOnWindowFocus: false, // Don't refetch when window regains focus
+    refetchOnMount: false, // Don't refetch on mount if data exists
+    refetchOnReconnect: false, // Don't refetch on reconnect
+    enabled: !!roomId, // Only run query if roomId exists
   })
   return (
     <div className="border-b border-[#0000000D]">

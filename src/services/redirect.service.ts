@@ -34,7 +34,6 @@ const getLoginUrl = (options?: RedirectOptions): string => {
 }
 
 export const scheduleRedirectToLogin = (options?: RedirectOptions): void => {
-  console.log(options, '<- scheduleRedirectToLogin')
   const returnUrl = options?.returnUrl ?? buildReturnUrl()
   const loginUrl = getLoginUrl({ ...options, returnUrl })
 

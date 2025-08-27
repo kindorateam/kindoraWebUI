@@ -1,123 +1,101 @@
-import { Link, useLocation } from '@tanstack/react-router'
-import { useCallback, useEffect, useState } from 'react'
+import { useLocation } from '@tanstack/react-router'
+import { memo, useCallback, useMemo, useState } from 'react'
 
 import navDrawerData from './navDrawer.data.tsx'
+import NavGroup from './NavGroup'
+import NavItem from './NavItem'
 import Logo from '@/assets/svg/logo.svg?no-inline'
 
 import type { NavDrawerItem } from './navDrawer.types'
 
-const NavDrawer = () => {
+const NavDrawer = memo(() => {
   const location = useLocation()
-  const [expandedItems, setExpandedItems] = useState<string[]>([])
+  const [manuallyExpandedItems, setManuallyExpandedItems] = useState<string[]>(
+    [],
+  )
 
-  // Check if any child of a menu item is active
-  const hasActiveChild = useCallback(
-    (item: NavDrawerItem): boolean => {
-      if (!item.children) return false
-      return item.children.some((child) => location.pathname === child.path)
+  // Memoize path matching functions to prevent unnecessary re-renders
+  const isPathActive = useCallback(
+    (path: string): boolean => {
+      if (!path || path === '#') return false
+
+      const currentPath = location.pathname
+
+      // Exact match
+      if (currentPath === path) return true
+
+      // Handle trailing slashes
+      if (currentPath === path + '/' || currentPath + '/' === path) return true
+
+      // Check if current path starts with the given path (for nested routes)
+      // Add trailing slash to avoid partial matches (e.g., /room vs /rooms)
+      const normalizedPath = path.endsWith('/') ? path : path + '/'
+      const normalizedCurrent = currentPath.endsWith('/')
+        ? currentPath
+        : currentPath + '/'
+
+      return normalizedCurrent.startsWith(normalizedPath)
     },
     [location.pathname],
   )
 
-  // Auto-expand parent if child is active
-  useEffect(() => {
+  // Memoize child checking function
+  const hasActiveChild = useCallback(
+    (item: NavDrawerItem): boolean => {
+      if (!item.children) return false
+      return item.children.some((child) => isPathActive(child.path))
+    },
+    [isPathActive],
+  )
+
+  // Calculate automatically expanded items (based on active routes)
+  const autoExpandedItems = useMemo(() => {
     const expanded: string[] = []
     navDrawerData.forEach((item) => {
       if (hasActiveChild(item)) {
         expanded.push(item.label)
       }
     })
-    if (expanded.length > 0) {
-      setExpandedItems(expanded)
-    }
+    return expanded
   }, [hasActiveChild])
 
-  const toggleExpanded = (itemLabel: string) => {
-    setExpandedItems((prev) =>
+  // Combine auto-expanded and manually expanded items
+  const expandedItems = useMemo(() => {
+    const combined = new Set([...autoExpandedItems, ...manuallyExpandedItems])
+    return Array.from(combined)
+  }, [autoExpandedItems, manuallyExpandedItems])
+
+  // Toggle function for manual expansion
+  const toggleExpanded = useCallback((itemLabel: string) => {
+    setManuallyExpandedItems((prev) =>
       prev.includes(itemLabel)
         ? prev.filter((item) => item !== itemLabel)
         : [...prev, itemLabel],
     )
-  }
+  }, [])
 
-  const renderMenuItem = (item: NavDrawerItem) => {
-    const hasChildren = item.children && item.children.length > 0
-    const isExpanded = expandedItems.includes(item.label)
-    const isActive = location.pathname === item.path
-    const isParentActive = hasActiveChild(item)
+  // Memoize the menu items to prevent unnecessary re-renders
+  const menuItems = useMemo(() => {
+    return navDrawerData.map((item) => {
+      const hasChildren = item.children && item.children.length > 0
+      const isExpanded = expandedItems.includes(item.label)
+      const isActive = isPathActive(item.path)
 
-    if (hasChildren) {
-      return (
-        <div className="mb-2" key={item.label}>
-          <button
-            className={`inline-flex items-center rounded-2xl px-4 py-2 transition-colors ${
-              isParentActive
-                ? 'bg-gray-100 text-gray-900'
-                : 'text-gray-700 hover:bg-gray-100'
-            }`}
-            onClick={() => toggleExpanded(item.label)}
-          >
-            <div className="flex items-center gap-2">
-              {item.icon}
-              <span className="font-medium">{item.label}</span>
-              <svg
-                className={`h-4 w-4 transition-transform ${
-                  isExpanded ? 'rotate-180' : ''
-                }`}
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  d="M19 9l-7 7-7-7"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                />
-              </svg>
-              {item.badge && item.badge}
-            </div>
-          </button>
-          {isExpanded && (
-            <div className="ms-6 mt-1 flex flex-col items-start">
-              {item.children?.map((child) => {
-                const isChildActive = location.pathname === child.path
-                return (
-                  <Link
-                    className={`inline-flex rounded-lg px-4 py-2 text-sm transition-colors ${
-                      isChildActive
-                        ? 'bg-gray-100 font-medium text-gray-900'
-                        : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
-                    }`}
-                    key={child.label}
-                    to={child.path}
-                  >
-                    {child.label}
-                  </Link>
-                )
-              })}
-            </div>
-          )}
-        </div>
-      )
-    }
+      if (hasChildren) {
+        return (
+          <NavGroup
+            isExpanded={isExpanded}
+            isPathActive={isPathActive}
+            item={item}
+            key={item.label}
+            onToggle={toggleExpanded}
+          />
+        )
+      }
 
-    return (
-      <Link
-        className={`mb-2 inline-flex items-center gap-2 rounded-2xl px-4 py-2 font-semibold transition-colors ${
-          isActive
-            ? 'bg-gray-100 text-gray-900 backdrop-opacity-20'
-            : 'text-gray-700 hover:bg-gray-100'
-        }`}
-        key={item.label}
-        to={item.path}
-      >
-        {item.icon}
-        <span className="font-medium">{item.label}</span>
-        {item.badge && item.badge}
-      </Link>
-    )
-  }
+      return <NavItem isActive={isActive} item={item} key={item.label} />
+    })
+  }, [expandedItems, isPathActive, toggleExpanded])
 
   return (
     <div className="relative h-screen">
@@ -127,12 +105,12 @@ const NavDrawer = () => {
         </div>
 
         {/* Menu Items */}
-        <nav className="flex-1 overflow-y-auto p-4">
-          {navDrawerData.map(renderMenuItem)}
-        </nav>
+        <nav className="flex-1 overflow-y-auto p-4">{menuItems}</nav>
       </aside>
     </div>
   )
-}
+})
+
+NavDrawer.displayName = 'NavDrawer'
 
 export default NavDrawer

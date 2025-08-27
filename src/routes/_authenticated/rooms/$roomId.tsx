@@ -1,5 +1,5 @@
 import { createFileRoute, Outlet, useNavigate } from '@tanstack/react-router'
-import { useEffect } from 'react'
+import { useCallback, useEffect } from 'react'
 
 import { RouteErrorBoundary } from '@/components/error'
 import RoomDetailSubHeader from '@/components/RoomDetailSubHeader'
@@ -55,12 +55,15 @@ function RoomDetailLayout() {
     }
   }, [tab, navigate])
 
-  const handleTabChange = (newTab: TabType) => {
-    void navigate({
-      search: { tab: newTab },
-      replace: true,
-    })
-  }
+  const handleTabChange = useCallback(
+    (newTab: TabType) => {
+      void navigate({
+        search: { tab: newTab },
+        replace: true,
+      })
+    },
+    [navigate],
+  )
 
   return (
     <RouteErrorBoundary routeName="room-detail">
