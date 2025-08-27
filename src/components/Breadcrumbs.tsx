@@ -5,7 +5,7 @@ import usePageMetadata from '@/hooks/usePageMetadata'
 
 const Breadcrumbs = () => {
   const { breadcrumbs, pageTitle } = usePageMetadata()
-
+  console.log(breadcrumbs, pageTitle)
   if (breadcrumbs.length === 0) return null
 
   const filteredBreadcrumbs = breadcrumbs.filter(

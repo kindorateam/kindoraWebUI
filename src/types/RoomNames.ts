@@ -1,1 +1,7 @@
-export type RoomType = 'turtle' | 'rabbit' | 'bear' | 'butterfly' | 'owl' | 'fox'
+export type RoomType =
+  | 'turtle'
+  | 'rabbit'
+  | 'bear'
+  | 'butterfly'
+  | 'owl'
+  | 'fox'

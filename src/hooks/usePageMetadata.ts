@@ -9,15 +9,21 @@ const usePageMetadata = (): PageMetadata => {
   const matches = useRouterState({
     select: (s) => s.matches as RouteMatch[],
   })
-
+  console.log(matches)
   const breadcrumbs: Breadcrumb[] = matches.reduce<Breadcrumb[]>(
     (acc, match, index) => {
       if (match.context && typeof match.context.breadcrumb === 'string') {
-        acc.push({
-          title: match.context.breadcrumb,
-          path: match.pathname,
-          isLast: index === matches.length - 1,
-        })
+        // Deduplicate breadcrumbs with same title
+        const existingCrumb = acc.find(
+          (crumb) => crumb.title === match.context?.breadcrumb,
+        )
+        if (!existingCrumb) {
+          acc.push({
+            title: match.context.breadcrumb,
+            path: match.pathname,
+            isLast: index === matches.length - 1,
+          })
+        }
       }
       return acc
     },
