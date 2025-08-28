@@ -1,18 +1,19 @@
 import { useLocation } from '@tanstack/react-router'
-import { memo, useCallback, useMemo, useState } from 'react'
+import { useAtom } from 'jotai'
+import { memo, useCallback, useMemo } from 'react'
 
 import navDrawerData from './navDrawer.data.tsx'
 import NavGroup from './NavGroup'
 import NavItem from './NavItem'
 import Logo from '@/assets/svg/logo.svg?no-inline'
+import { navDrawerExpandedItemsAtom, toggleNavDrawerItemAtom } from '@/stores'
 
 import type { NavDrawerItem } from './navDrawer.types'
 
 const NavDrawer = memo(() => {
   const location = useLocation()
-  const [manuallyExpandedItems, setManuallyExpandedItems] = useState<string[]>(
-    [],
-  )
+  const [manuallyExpandedItems] = useAtom(navDrawerExpandedItemsAtom)
+  const [, toggleExpanded] = useAtom(toggleNavDrawerItemAtom)
 
   // Memoize path matching functions to prevent unnecessary re-renders
   const isPathActive = useCallback(
@@ -60,19 +61,19 @@ const NavDrawer = memo(() => {
   }, [hasActiveChild])
 
   // Combine auto-expanded and manually expanded items
+  // Manually expanded items take priority and won't be auto-collapsed
   const expandedItems = useMemo(() => {
     const combined = new Set([...autoExpandedItems, ...manuallyExpandedItems])
     return Array.from(combined)
   }, [autoExpandedItems, manuallyExpandedItems])
 
-  // Toggle function for manual expansion
-  const toggleExpanded = useCallback((itemLabel: string) => {
-    setManuallyExpandedItems((prev) =>
-      prev.includes(itemLabel)
-        ? prev.filter((item) => item !== itemLabel)
-        : [...prev, itemLabel],
-    )
-  }, [])
+  // Wrapper function for Jotai toggle action
+  const handleToggleExpanded = useCallback(
+    (itemLabel: string) => {
+      toggleExpanded(itemLabel)
+    },
+    [toggleExpanded],
+  )
 
   // Memoize the menu items to prevent unnecessary re-renders
   const menuItems = useMemo(() => {
@@ -88,14 +89,14 @@ const NavDrawer = memo(() => {
             isPathActive={isPathActive}
             item={item}
             key={item.label}
-            onToggle={toggleExpanded}
+            onToggle={handleToggleExpanded}
           />
         )
       }
 
       return <NavItem isActive={isActive} item={item} key={item.label} />
     })
-  }, [expandedItems, isPathActive, toggleExpanded])
+  }, [expandedItems, isPathActive, handleToggleExpanded])
 
   return (
     <div className="relative h-screen">

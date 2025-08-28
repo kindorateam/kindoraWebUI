@@ -29,7 +29,7 @@ const navDrawerData: NavDrawerItem[] = [
   },
   {
     label: 'Connections',
-    path: '#',
+    path: '/connections',
     icon: <MessageIcon />,
     badge: 5,
     children: [],

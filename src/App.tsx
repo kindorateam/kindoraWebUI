@@ -3,7 +3,7 @@ import { useAtom, useAtomValue } from 'jotai'
 import { useEffect } from 'react'
 
 import { routeTree } from './routeTree.gen'
-import { authStateAtom, checkAuthAtom } from '@/stores/auth.store'
+import { authStateAtom, checkAuthAtom } from '@/stores'
 
 const router = createRouter({ routeTree })
 

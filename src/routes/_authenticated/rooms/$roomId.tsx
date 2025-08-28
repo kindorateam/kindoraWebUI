@@ -24,10 +24,10 @@ export const Route = createFileRoute('/_authenticated/rooms/$roomId')({
       tab: validTabs.includes(tab as TabType) ? (tab as TabType) : 'students',
     }
   },
-  beforeLoad: async ({ params }) => {
+  beforeLoad: async ({ params }: { params: { roomId: string } }) => {
     const room = await getRoomById(params.roomId)
     return {
-      breadcrumb: `Rooms / ${room?.name ?? `Room ${params.roomId}`}`,
+      breadcrumb: room?.name ?? `Room ${params.roomId}`,
     }
   },
 })

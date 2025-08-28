@@ -4,27 +4,21 @@ import { memo, useMemo } from 'react'
 
 import usePageMetadata from '@/hooks/usePageMetadata'
 
+const breadcrumbClassNames = {
+  list: 'gap-2',
+}
+
+const breadcrumbItemClasses = {
+  item: 'text-sm',
+  separator: 'text-default-400',
+}
+
 const Breadcrumbs = memo(() => {
   const { breadcrumbs, pageTitle } = usePageMetadata()
 
   const filteredBreadcrumbs = useMemo(() => {
     return breadcrumbs.filter((crumb) => crumb.title !== 'Home')
   }, [breadcrumbs])
-
-  const breadcrumbClassNames = useMemo(
-    () => ({
-      list: 'gap-2',
-    }),
-    [],
-  )
-
-  const breadcrumbItemClasses = useMemo(
-    () => ({
-      item: 'text-sm',
-      separator: 'text-default-400',
-    }),
-    [],
-  )
 
   if (breadcrumbs.length === 0) return null
 

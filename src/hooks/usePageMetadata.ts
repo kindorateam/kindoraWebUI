@@ -35,15 +35,13 @@ const usePageMetadata = (): PageMetadata => {
       .filter((title) => title !== 'Home')
   }, [breadcrumbs])
 
-  const pageTitle = useMemo(() => {
-    return filteredTitles[filteredTitles.length - 1] ?? ''
-  }, [filteredTitles])
+  const pageTitle = filteredTitles[filteredTitles.length - 1] ?? ''
 
   const documentTitle = useMemo(() => {
     let title = APP_NAME
     if (filteredTitles.length > 0) {
-      // Create a copy before reversing to avoid mutating the original array
-      title = `${[...filteredTitles].reverse().join(' - ')} | ${APP_NAME}`
+      // Show only the latest breadcrumb part, not the full path
+      title = `${filteredTitles[filteredTitles.length - 1]} | ${APP_NAME}`
     }
     return title
   }, [filteredTitles])
