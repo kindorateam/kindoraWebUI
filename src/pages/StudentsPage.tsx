@@ -1,5 +1,64 @@
+import RoomsTable from '@/components/RoomsTable'
+import SubHeader from '@/components/SubHeader'
+
+const studentsFilters = [
+  {
+    id: 'groupBy',
+    label: 'Group By',
+    value: '',
+    options: [
+      { value: '', label: 'No Grouping' },
+      { value: 'capacity', label: 'Capacity' },
+      { value: 'occupancy', label: 'Occupancy' },
+      { value: 'roomType', label: 'Room Type' },
+    ],
+  },
+  {
+    id: 'roomBy',
+    label: 'Room By',
+    value: '',
+    options: [
+      { value: '', label: 'All' },
+      { value: '11-20', label: '11-20 Students' },
+      { value: '21+', label: '21+ Students' },
+    ],
+  },
+  {
+    id: 'tagsBy',
+    label: 'Tags by',
+    value: '',
+    options: [
+      { value: '', label: 'All' },
+      { value: 'empty', label: 'Empty' },
+      { value: 'partial', label: 'Partially Filled' },
+      { value: 'full', label: 'Full' },
+    ],
+  },
+  {
+    id: 'Status by',
+    label: 'Status by',
+    value: '',
+    options: [
+      { value: '', label: 'All Rooms' },
+      { value: 'turtle', label: 'Baby Turtles' },
+      { value: 'rabbit', label: 'Happy Rabbits' },
+      { value: 'bear', label: 'Curious Bears' },
+      { value: 'butterfly', label: 'Bright Butterflies' },
+      { value: 'owl', label: 'Wise Owls' },
+      { value: 'fox', label: 'Clever Foxes' },
+    ],
+  },
+]
+
 const StudentsPage = () => {
-  return <div>123</div>
+  return (
+    <>
+      <SubHeader filters={studentsFilters} />
+      <main className="container max-w-7xl pt-10">
+        <RoomsTable />
+      </main>
+    </>
+  )
 }
 
 export default StudentsPage
