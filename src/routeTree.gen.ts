@@ -17,7 +17,6 @@ import { Route as AuthenticatedReportsRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedNewsActivityRouteImport } from './routes/_authenticated/news-activity'
 import { Route as AuthenticatedInsightsRouteImport } from './routes/_authenticated/insights'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
-import { Route as AuthenticatedConnectionsRouteImport } from './routes/_authenticated/connections'
 import { Route as AuthenticatedCalendarRouteImport } from './routes/_authenticated/calendar'
 import { Route as AuthenticatedBillingRouteImport } from './routes/_authenticated/billing'
 import { Route as AuthenticatedAnalyticsRouteImport } from './routes/_authenticated/analytics'
@@ -27,6 +26,8 @@ import { Route as AuthenticatedStudentsIndexRouteImport } from './routes/_authen
 import { Route as AuthenticatedRoomsIndexRouteImport } from './routes/_authenticated/rooms/index'
 import { Route as AuthenticatedStudentsStudentIdRouteImport } from './routes/_authenticated/students/$studentId'
 import { Route as AuthenticatedRoomsRoomIdRouteImport } from './routes/_authenticated/rooms/$roomId'
+import { Route as AuthenticatedConnectionsNewslettersRouteImport } from './routes/_authenticated/connections/newsletters'
+import { Route as AuthenticatedConnectionsMessagesRouteImport } from './routes/_authenticated/connections/messages'
 import { Route as AuthenticatedRoomsRoomIdIndexRouteImport } from './routes/_authenticated/rooms/$roomId/index'
 import { Route as AuthenticatedStudentsStudentIdProfileRouteImport } from './routes/_authenticated/students/$studentId/profile'
 import { Route as AuthenticatedStudentsStudentIdParentsRouteImport } from './routes/_authenticated/students/$studentId/parents'
@@ -71,12 +72,6 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
-const AuthenticatedConnectionsRoute =
-  AuthenticatedConnectionsRouteImport.update({
-    id: '/connections',
-    path: '/connections',
-    getParentRoute: () => AuthenticatedRoute,
-  } as any)
 const AuthenticatedCalendarRoute = AuthenticatedCalendarRouteImport.update({
   id: '/calendar',
   path: '/calendar',
@@ -125,6 +120,18 @@ const AuthenticatedRoomsRoomIdRoute =
     path: '/rooms/$roomId',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedConnectionsNewslettersRoute =
+  AuthenticatedConnectionsNewslettersRouteImport.update({
+    id: '/connections/newsletters',
+    path: '/connections/newsletters',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedConnectionsMessagesRoute =
+  AuthenticatedConnectionsMessagesRouteImport.update({
+    id: '/connections/messages',
+    path: '/connections/messages',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedRoomsRoomIdIndexRoute =
   AuthenticatedRoomsRoomIdIndexRouteImport.update({
     id: '/',
@@ -157,12 +164,13 @@ export interface FileRoutesByFullPath {
   '/analytics': typeof AuthenticatedAnalyticsRoute
   '/billing': typeof AuthenticatedBillingRoute
   '/calendar': typeof AuthenticatedCalendarRoute
-  '/connections': typeof AuthenticatedConnectionsRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/insights': typeof AuthenticatedInsightsRoute
   '/news-activity': typeof AuthenticatedNewsActivityRoute
   '/reports': typeof AuthenticatedReportsRoute
   '/staff': typeof AuthenticatedStaffRoute
+  '/connections/messages': typeof AuthenticatedConnectionsMessagesRoute
+  '/connections/newsletters': typeof AuthenticatedConnectionsNewslettersRoute
   '/rooms/$roomId': typeof AuthenticatedRoomsRoomIdRouteWithChildren
   '/students/$studentId': typeof AuthenticatedStudentsStudentIdRouteWithChildren
   '/rooms': typeof AuthenticatedRoomsIndexRoute
@@ -179,12 +187,13 @@ export interface FileRoutesByTo {
   '/analytics': typeof AuthenticatedAnalyticsRoute
   '/billing': typeof AuthenticatedBillingRoute
   '/calendar': typeof AuthenticatedCalendarRoute
-  '/connections': typeof AuthenticatedConnectionsRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/insights': typeof AuthenticatedInsightsRoute
   '/news-activity': typeof AuthenticatedNewsActivityRoute
   '/reports': typeof AuthenticatedReportsRoute
   '/staff': typeof AuthenticatedStaffRoute
+  '/connections/messages': typeof AuthenticatedConnectionsMessagesRoute
+  '/connections/newsletters': typeof AuthenticatedConnectionsNewslettersRoute
   '/students/$studentId': typeof AuthenticatedStudentsStudentIdRouteWithChildren
   '/rooms': typeof AuthenticatedRoomsIndexRoute
   '/students': typeof AuthenticatedStudentsIndexRoute
@@ -203,12 +212,13 @@ export interface FileRoutesById {
   '/_authenticated/analytics': typeof AuthenticatedAnalyticsRoute
   '/_authenticated/billing': typeof AuthenticatedBillingRoute
   '/_authenticated/calendar': typeof AuthenticatedCalendarRoute
-  '/_authenticated/connections': typeof AuthenticatedConnectionsRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/insights': typeof AuthenticatedInsightsRoute
   '/_authenticated/news-activity': typeof AuthenticatedNewsActivityRoute
   '/_authenticated/reports': typeof AuthenticatedReportsRoute
   '/_authenticated/staff': typeof AuthenticatedStaffRoute
+  '/_authenticated/connections/messages': typeof AuthenticatedConnectionsMessagesRoute
+  '/_authenticated/connections/newsletters': typeof AuthenticatedConnectionsNewslettersRoute
   '/_authenticated/rooms/$roomId': typeof AuthenticatedRoomsRoomIdRouteWithChildren
   '/_authenticated/students/$studentId': typeof AuthenticatedStudentsStudentIdRouteWithChildren
   '/_authenticated/rooms/': typeof AuthenticatedRoomsIndexRoute
@@ -227,12 +237,13 @@ export interface FileRouteTypes {
     | '/analytics'
     | '/billing'
     | '/calendar'
-    | '/connections'
     | '/dashboard'
     | '/insights'
     | '/news-activity'
     | '/reports'
     | '/staff'
+    | '/connections/messages'
+    | '/connections/newsletters'
     | '/rooms/$roomId'
     | '/students/$studentId'
     | '/rooms'
@@ -249,12 +260,13 @@ export interface FileRouteTypes {
     | '/analytics'
     | '/billing'
     | '/calendar'
-    | '/connections'
     | '/dashboard'
     | '/insights'
     | '/news-activity'
     | '/reports'
     | '/staff'
+    | '/connections/messages'
+    | '/connections/newsletters'
     | '/students/$studentId'
     | '/rooms'
     | '/students'
@@ -272,12 +284,13 @@ export interface FileRouteTypes {
     | '/_authenticated/analytics'
     | '/_authenticated/billing'
     | '/_authenticated/calendar'
-    | '/_authenticated/connections'
     | '/_authenticated/dashboard'
     | '/_authenticated/insights'
     | '/_authenticated/news-activity'
     | '/_authenticated/reports'
     | '/_authenticated/staff'
+    | '/_authenticated/connections/messages'
+    | '/_authenticated/connections/newsletters'
     | '/_authenticated/rooms/$roomId'
     | '/_authenticated/students/$studentId'
     | '/_authenticated/rooms/'
@@ -352,13 +365,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
-    '/_authenticated/connections': {
-      id: '/_authenticated/connections'
-      path: '/connections'
-      fullPath: '/connections'
-      preLoaderRoute: typeof AuthenticatedConnectionsRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
     '/_authenticated/calendar': {
       id: '/_authenticated/calendar'
       path: '/calendar'
@@ -420,6 +426,20 @@ declare module '@tanstack/react-router' {
       path: '/rooms/$roomId'
       fullPath: '/rooms/$roomId'
       preLoaderRoute: typeof AuthenticatedRoomsRoomIdRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/connections/newsletters': {
+      id: '/_authenticated/connections/newsletters'
+      path: '/connections/newsletters'
+      fullPath: '/connections/newsletters'
+      preLoaderRoute: typeof AuthenticatedConnectionsNewslettersRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/connections/messages': {
+      id: '/_authenticated/connections/messages'
+      path: '/connections/messages'
+      fullPath: '/connections/messages'
+      preLoaderRoute: typeof AuthenticatedConnectionsMessagesRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/rooms/$roomId/': {
@@ -503,12 +523,13 @@ interface AuthenticatedRouteChildren {
   AuthenticatedAnalyticsRoute: typeof AuthenticatedAnalyticsRoute
   AuthenticatedBillingRoute: typeof AuthenticatedBillingRoute
   AuthenticatedCalendarRoute: typeof AuthenticatedCalendarRoute
-  AuthenticatedConnectionsRoute: typeof AuthenticatedConnectionsRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedInsightsRoute: typeof AuthenticatedInsightsRoute
   AuthenticatedNewsActivityRoute: typeof AuthenticatedNewsActivityRoute
   AuthenticatedReportsRoute: typeof AuthenticatedReportsRoute
   AuthenticatedStaffRoute: typeof AuthenticatedStaffRoute
+  AuthenticatedConnectionsMessagesRoute: typeof AuthenticatedConnectionsMessagesRoute
+  AuthenticatedConnectionsNewslettersRoute: typeof AuthenticatedConnectionsNewslettersRoute
   AuthenticatedRoomsRoomIdRoute: typeof AuthenticatedRoomsRoomIdRouteWithChildren
   AuthenticatedStudentsStudentIdRoute: typeof AuthenticatedStudentsStudentIdRouteWithChildren
   AuthenticatedRoomsIndexRoute: typeof AuthenticatedRoomsIndexRoute
@@ -520,12 +541,14 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAnalyticsRoute: AuthenticatedAnalyticsRoute,
   AuthenticatedBillingRoute: AuthenticatedBillingRoute,
   AuthenticatedCalendarRoute: AuthenticatedCalendarRoute,
-  AuthenticatedConnectionsRoute: AuthenticatedConnectionsRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedInsightsRoute: AuthenticatedInsightsRoute,
   AuthenticatedNewsActivityRoute: AuthenticatedNewsActivityRoute,
   AuthenticatedReportsRoute: AuthenticatedReportsRoute,
   AuthenticatedStaffRoute: AuthenticatedStaffRoute,
+  AuthenticatedConnectionsMessagesRoute: AuthenticatedConnectionsMessagesRoute,
+  AuthenticatedConnectionsNewslettersRoute:
+    AuthenticatedConnectionsNewslettersRoute,
   AuthenticatedRoomsRoomIdRoute: AuthenticatedRoomsRoomIdRouteWithChildren,
   AuthenticatedStudentsStudentIdRoute:
     AuthenticatedStudentsStudentIdRouteWithChildren,

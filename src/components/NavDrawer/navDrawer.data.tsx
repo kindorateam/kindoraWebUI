@@ -2,7 +2,6 @@ import AdmissionsIcon from '@/components/icons/AdmissionsIcon'
 import AnalyticsIcon from '@/components/icons/AnalyticsIcon'
 import BillingIcon from '@/components/icons/BillingIcon'
 import DashboardIcon from '@/components/icons/DashboardIcon'
-import MessageIcon from '@/components/icons/MessageIcon'
 import ReportsIcon from '@/components/icons/ReportsIcon'
 import SchoolIcon from '@/components/icons/SchoolIcon'
 
@@ -29,10 +28,11 @@ const navDrawerData: NavDrawerItem[] = [
   },
   {
     label: 'Connections',
-    path: '/connections',
-    icon: <MessageIcon />,
-    badge: 5,
-    children: [],
+    path: '#',
+    children: [
+      { label: 'Messages', path: '/connections/messages' },
+      { label: 'Newsletters', path: '/connections/newsletters' },
+    ],
   },
   {
     label: 'Billing',
