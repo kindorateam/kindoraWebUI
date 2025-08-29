@@ -2,7 +2,7 @@ import { createFileRoute, Outlet, useNavigate } from '@tanstack/react-router'
 import { useCallback, useEffect } from 'react'
 
 import { RouteErrorBoundary } from '@/components/error'
-import RoomDetailSubHeader from '@/components/RoomDetailSubHeader'
+import RoomDetailHeader from '@/components/RoomDetailHeader'
 import { getRoomById } from '@/services/room.service'
 
 type TabType = 'students' | 'activity' | 'profile'
@@ -68,7 +68,7 @@ function RoomDetailLayout() {
   return (
     <RouteErrorBoundary routeName="room-detail">
       <div>
-        <RoomDetailSubHeader
+        <RoomDetailHeader
           activeTab={tab}
           onTabChange={handleTabChange}
           roomId={roomId}
