@@ -23,7 +23,7 @@ function RoomDetailContent() {
   // Render content based on active tab
   switch (tab) {
     case 'students':
-      return <RoomStudentsTab roomId={roomId} />
+      return <RoomStudentsTab />
     case 'activity':
       return <RoomActivityTab roomId={roomId} />
     case 'profile':

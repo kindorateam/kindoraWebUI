@@ -1,74 +1,103 @@
-import {
-  Chip,
-  Table,
-  TableBody,
-  TableCell,
-  TableColumn,
-  TableHeader,
-  TableRow,
-} from '@heroui/react'
+import { useMemo } from 'react'
 
-interface RoomStudentsTabProps {
-  roomId: string
-}
+import createStudentColumns from './RoomStudentsTabConfig'
+import DataTable from '@/components/DataTable'
 
-// Mock data for demonstration
-const mockStudents = [
+import type { Student } from './RoomStudentsTabConfig'
+
+const mockStudents: Student[] = [
   {
     id: '1',
     name: 'Emma Johnson',
-    parents: 'Sarah & Mike Johnson',
-    tags: ['Morning', 'Full Day'],
+    avatar:
+      'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&h=150&fit=crop&crop=face',
+    parents: [
+      {
+        id: 'p1',
+        name: 'Sarah Johnson',
+        avatar:
+          'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face',
+      },
+      {
+        id: 'p2',
+        name: 'Mike Johnson',
+        avatar:
+          'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face',
+      },
+    ],
+    tags: ['Fast learner', 'Good memory'],
   },
   {
     id: '2',
     name: 'Oliver Smith',
-    parents: 'Lisa Smith',
-    tags: ['Afternoon', 'Special Needs'],
+    avatar:
+      'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face',
+    parents: [
+      {
+        id: 'p3',
+        name: 'Lisa Smith',
+        avatar:
+          'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face',
+      },
+    ],
+    tags: ['Loves drawing', 'Creative'],
   },
   {
     id: '3',
     name: 'Sophia Brown',
-    parents: 'David & Emma Brown',
-    tags: ['Full Day'],
+    avatar:
+      'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&h=150&fit=crop&crop=face',
+    parents: [
+      {
+        id: 'p4',
+        name: 'David Brown',
+        avatar:
+          'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face',
+      },
+      {
+        id: 'p5',
+        name: 'Emma Brown',
+        avatar:
+          'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&h=150&fit=crop&crop=face',
+      },
+    ],
+    tags: ['Good memory', 'Loves singing', 'Friendly'],
+  },
+  {
+    id: '4',
+    name: 'Liam Davis',
+    avatar:
+      'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150&h=150&fit=crop&crop=face',
+    parents: [
+      {
+        id: 'p6',
+        name: 'Jennifer Davis',
+        avatar:
+          'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=150&h=150&fit=crop&crop=face',
+      },
+    ],
+    tags: ['Fast learner'],
+  },
+  {
+    id: '5',
+    name: 'Ava Wilson',
+    avatar:
+      'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&h=150&fit=crop&crop=face',
+    parents: [],
+    tags: ['Shy', 'Loves reading', 'Good listener'],
   },
 ]
 
-const RoomStudentsTab = ({ roomId }: RoomStudentsTabProps) => {
-  return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <h2 className="text-xl font-semibold">Students in Room {roomId}</h2>
-        <p className="text-sm text-gray-600">
-          Total: {mockStudents.length} students
-        </p>
-      </div>
+const RoomStudentsTab = () => {
+  const columns = useMemo(() => createStudentColumns(), [])
 
-      <Table aria-label="Students table">
-        <TableHeader>
-          <TableColumn>STUDENTS</TableColumn>
-          <TableColumn>PARENTS</TableColumn>
-          <TableColumn>TAGS</TableColumn>
-        </TableHeader>
-        <TableBody>
-          {mockStudents.map((student) => (
-            <TableRow key={student.id}>
-              <TableCell>{student.name}</TableCell>
-              <TableCell>{student.parents}</TableCell>
-              <TableCell>
-                <div className="flex gap-1">
-                  {student.tags.map((tag) => (
-                    <Chip key={tag} size="sm" variant="flat">
-                      {tag}
-                    </Chip>
-                  ))}
-                </div>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </div>
+  return (
+    <DataTable
+      columns={columns}
+      data={mockStudents}
+      emptyMessage="No students found"
+      getRowKey={(student) => student.id}
+    />
   )
 }
 
