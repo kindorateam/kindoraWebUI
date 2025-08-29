@@ -1,0 +1,65 @@
+@import 'tailwindcss';
+@plugin './hero.ts';
+@source '../node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}';
+
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+  --shadow-soft: 0px 2px 4px 0px rgb(0 0 0 / 0.14);
+  --background-fade-cream: linear-gradient(
+    180deg,
+    #f0f0eb 0%,
+    rgba(240, 240, 235, 0) 100%
+  );
+  --color-wine-700: #792c41;
+  --color-gray3: #707070;
+  --color-gray2: #909090;
+
+  --tw-leading: 1;
+
+  /* Gradient overlays */
+  --background-gradient-green: linear-gradient(
+    146.82deg,
+    rgba(49, 98, 60, 0.3) 6.84%,
+    rgba(134, 192, 119, 0.3) 93.16%
+  );
+  --background-gradient-gray: linear-gradient(
+    146.82deg,
+    rgba(64, 64, 64, 0.3) 6.84%,
+    rgba(134, 134, 134, 0.3) 93.16%
+  );
+  --background-gradient-orange: linear-gradient(
+    146.82deg,
+    rgba(123, 78, 11, 0.3) 6.84%,
+    rgba(217, 93, 65, 0.3) 93.16%
+  );
+}
+
+@utility shadow-soft {
+  box-shadow: var(--shadow-soft);
+}
+
+@utility bg-fade-cream {
+  background: var(--background-fade-cream);
+}
+
+@utility bg-gradient-green {
+  background: var(--background-gradient-green);
+}
+
+@utility bg-gradient-gray {
+  background: var(--background-gradient-gray);
+}
+
+@utility bg-gradient-orange {
+  background: var(--background-gradient-orange);
+}
+
+@utility container {
+  margin-inline: auto;
+  padding-inline: 1rem;
+}
+
+* {
+  font-family: system-ui, sans-serif;
+}
