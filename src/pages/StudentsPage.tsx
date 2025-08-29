@@ -1,4 +1,4 @@
-import RoomsTable from '@/components/RoomsTable'
+import StudentsTable from '@/components/StudentsTable'
 import SubHeader from '@/components/SubHeader'
 
 const studentsFilters = [
@@ -55,7 +55,7 @@ const StudentsPage = () => {
     <>
       <SubHeader filters={studentsFilters} />
       <main className="container max-w-7xl pt-10">
-        <RoomsTable />
+        <StudentsTable />
       </main>
     </>
   )
