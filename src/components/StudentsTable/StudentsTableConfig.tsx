@@ -1,4 +1,5 @@
 import { Avatar, Chip } from '@heroui/react'
+import { Link } from '@tanstack/react-router'
 
 import RoomIcon from '@/components/RoomIcon'
 
@@ -10,7 +11,12 @@ const createStudentsColumns = (): TableColumn<Student>[] => [
     key: 'student',
     label: 'Students',
     renderCell: (student) => (
-      <div className="flex items-center gap-3">
+      <Link
+        className="hover:text-primary flex items-center gap-3"
+        params={{ studentId: student.id }}
+        search={{ tab: 'profile' }}
+        to="/students/$studentId"
+      >
         <Avatar
           alt={student.name}
           className="h-10 w-10"
@@ -23,7 +29,7 @@ const createStudentsColumns = (): TableColumn<Student>[] => [
             <span className="text-xs text-green-500">{student.status}</span>
           )}
         </div>
-      </div>
+      </Link>
     ),
   },
   {

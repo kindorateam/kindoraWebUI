@@ -43,7 +43,7 @@ const roomsFilters = [
 const RoomsPage = () => {
   return (
     <>
-      <SubHeader filters={roomsFilters} />
+      <SubHeader initialFilters={roomsFilters} />
       <main className="container max-w-7xl pt-10">
         <RoomsTable />
       </main>

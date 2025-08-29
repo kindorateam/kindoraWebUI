@@ -37,7 +37,7 @@ const staffFilters = [
 const StaffPage = () => {
   return (
     <>
-      <SubHeader filters={staffFilters} />
+      <SubHeader initialFilters={staffFilters} />
       <main className="container max-w-7xl pt-10">
         <StaffTable />
       </main>

@@ -53,7 +53,7 @@ const studentsFilters = [
 const StudentsPage = () => {
   return (
     <>
-      <SubHeader filters={studentsFilters} />
+      <SubHeader initialFilters={studentsFilters} />
       <main className="container max-w-7xl pt-10">
         <StudentsTable />
       </main>

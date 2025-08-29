@@ -6,10 +6,10 @@ import usePageMetadata from '@/hooks/usePageMetadata'
 import type { FilterProps } from '@/types/TableFilters'
 
 interface SubHeaderProps {
-  filters: FilterProps[]
+  initialFilters: FilterProps[]
 }
 
-const SubHeader = ({ filters: initialFilters }: SubHeaderProps) => {
+const SubHeader = ({ initialFilters }: SubHeaderProps) => {
   const [filters, setFilters] = useState<FilterProps[]>(initialFilters)
 
   const { breadcrumbs } = usePageMetadata()
