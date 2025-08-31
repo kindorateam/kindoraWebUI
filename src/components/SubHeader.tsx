@@ -6,11 +6,11 @@ import usePageMetadata from '@/hooks/usePageMetadata'
 import type { FilterProps } from '@/types/TableFilters'
 
 interface SubHeaderProps {
-  initialFilters: FilterProps[]
+  initialFilters?: FilterProps[]
 }
 
 const SubHeader = ({ initialFilters }: SubHeaderProps) => {
-  const [filters, setFilters] = useState<FilterProps[]>(initialFilters)
+  const [filters, setFilters] = useState<FilterProps[]>(initialFilters ?? [])
 
   const { breadcrumbs } = usePageMetadata()
 
@@ -28,7 +28,9 @@ const SubHeader = ({ initialFilters }: SubHeaderProps) => {
         <h1 className="font-semibold lg:text-[36px]">
           {breadcrumbs[0]?.title}
         </h1>
-        <Filters filters={filters} onFilterChange={handleFilterChange} />
+        {initialFilters && (
+          <Filters filters={filters} onFilterChange={handleFilterChange} />
+        )}
       </div>
     </div>
   )

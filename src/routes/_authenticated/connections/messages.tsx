@@ -1,9 +1,9 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-import PlaceholderPage from '@/components/PlaceholderPage'
+import MessagesPage from '@/pages/MessagesPage'
 
 export const Route = createFileRoute('/_authenticated/connections/messages')({
-  component: () => <PlaceholderPage name="Messages" />,
+  component: () => <MessagesPage />,
   beforeLoad: () => {
     return {
       breadcrumb: 'Messages',
