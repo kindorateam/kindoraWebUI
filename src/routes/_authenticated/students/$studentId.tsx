@@ -1,8 +1,8 @@
 import { createFileRoute, Outlet, useNavigate } from '@tanstack/react-router'
-import { useCallback, useEffect } from 'react'
 
 import { RouteErrorBoundary } from '@/components/error'
 import StudentDetailHeader from '@/components/StudentDetailHeader'
+import { useTabNavigation } from '@/hooks/useTabNavigation'
 import { getStudentById } from '@/services/student.service'
 
 type TabType = 'profile' | 'activity' | 'parents'
@@ -45,25 +45,7 @@ function StudentDetailLayout() {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
   const tab = search.tab as TabType
 
-  // Redirect to profile tab if no tab is specified
-  useEffect(() => {
-    if (!tab) {
-      void navigate({
-        search: { tab: 'profile' },
-        replace: true,
-      })
-    }
-  }, [tab, navigate])
-
-  const handleTabChange = useCallback(
-    (newTab: TabType) => {
-      void navigate({
-        search: { tab: newTab },
-        replace: true,
-      })
-    },
-    [navigate],
-  )
+  const handleTabChange = useTabNavigation(tab, 'profile', navigate)
 
   return (
     <RouteErrorBoundary routeName="student-detail">
