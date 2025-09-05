@@ -45,6 +45,7 @@ const LoginPage = () => {
       })
 
       const buttonDiv = document.getElementById('googleSignInButton')
+
       if (buttonDiv) {
         window.google.accounts.id.renderButton(buttonDiv, {
           theme: 'outline',

@@ -1,3 +1,4 @@
+import MessageIcon from '../icons/MessageIcon'
 import AdmissionsIcon from '@/components/icons/AdmissionsIcon'
 import AnalyticsIcon from '@/components/icons/AnalyticsIcon'
 import BillingIcon from '@/components/icons/BillingIcon'
@@ -29,9 +30,10 @@ const navDrawerData: NavDrawerItem[] = [
   {
     label: 'Connections',
     path: '#',
+    icon: <MessageIcon />,
     children: [
-      { label: 'Messages', path: '/connections/messages' },
-      { label: 'Newsletters', path: '/connections/newsletters' },
+      { label: 'Messages', path: '/messages' },
+      { label: 'Newsletters', path: '/newsletters' },
     ],
   },
   {

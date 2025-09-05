@@ -1,3 +1,5 @@
+import { Tab, Tabs } from '@heroui/react'
+
 import SubHeader from '@/components/SubHeader'
 
 // const messagesFilters = [
@@ -21,6 +23,23 @@ const MessagesPage = () => {
   return (
     <div>
       <SubHeader />
+      <Tabs
+        aria-label="Student details tabs"
+        classNames={{
+          tabList: 'gap-4',
+          cursor: 'w-full',
+          tab: 'p-0',
+        }}
+        onSelectionChange={(key) => handleTabChange(key as TabType)}
+        selectedKey={tab}
+        variant="underlined"
+      >
+        <Tab key="activity" title="Activity" />
+        <Tab key="profile" title="Profile" />
+        <Tab key="documents" title="Documents" />
+        <Tab key="immunization" title="Immunization" />
+        <Tab key="billing" title="Billing" />
+      </Tabs>
     </div>
   )
 }
