@@ -1,55 +1,51 @@
-import { Button, Chip, Tab, Tabs } from '@heroui/react'
+import { Button, Chip } from '@heroui/react'
 import { Avatar } from '@heroui/react'
-import { useQuery } from '@tanstack/react-query'
 
 import IdentityChip from './IdentityChip'
-// import RoomIcon from './RoomIcon'
-import { getStudentById } from '@/services/student.service'
 
-type TabType = 'profile' | 'activity' | 'parents'
+import type { Tag } from '@/types/student'
+
+// import RoomIcon from './RoomIcon'
 
 interface StudentDetailHeaderProps {
-  studentId: string
-  activeTab: TabType
-  onTabChange: (tab: TabType) => void
+  age?: string
+  roomName?: string
+  studentAvatar?: string
+  studentName?: string
+  tags?: Tag[]
+  tabs: React.ReactNode
 }
 
 const StudentDetailHeader = ({
-  studentId,
-  activeTab,
-  onTabChange,
+  age,
+  roomName,
+  studentAvatar,
+  studentName,
+  tags,
+  tabs,
 }: StudentDetailHeaderProps) => {
-  const { data: student } = useQuery({
-    queryKey: ['student', studentId],
-    queryFn: () => getStudentById(studentId),
-    staleTime: 5 * 60 * 1000, // Consider data fresh for 5 minutes
-    refetchOnWindowFocus: false, // Don't refetch when window regains focus
-    refetchOnMount: false, // Don't refetch on mount if data exists
-    refetchOnReconnect: false, // Don't refetch on reconnect
-    enabled: !!studentId, // Only run query if studentId exists
-  })
-  console.log(student)
   return (
     <div className="border-b border-[#0000000D]">
       <div className="container max-w-7xl">
         <div className="mb-13 flex items-center">
           <div className="flex items-center">
             <div className="me-7">
-              <Avatar
-                className="size-37.5"
-                showFallback
-                src={student?.avatar}
-              />
+              <Avatar className="size-37.5" showFallback src={studentAvatar} />
             </div>
             <div className="w-full">
-              <h1 className="mb-3.5 leading-none font-semibold lg:text-[36px]">
-                {student?.name ?? `Student ${studentId}`}
+              <h1 className="mb-1 leading-none font-semibold lg:text-[36px]">
+                {studentName}
               </h1>
-              <div>
-                <Chip />
+              <p className="mb-3">{age}</p>
+              <div className="mb-3 flex gap-2.5">
+                {tags?.map((tag) => (
+                  <Chip key={tag.id} size="sm">
+                    {tag.name}
+                  </Chip>
+                ))}
               </div>
               <div className="flex gap-3.5">
-                <IdentityChip fullName={`${student?.rooms[0]?.name}`} />
+                <IdentityChip fullName={roomName ?? 'Test Room'} />
               </div>
             </div>
           </div>
@@ -69,21 +65,7 @@ const StudentDetailHeader = ({
           </div>
         </div>
 
-        <Tabs
-          aria-label="Student details tabs"
-          classNames={{
-            tabList: 'gap-4',
-            cursor: 'w-full',
-            tab: 'p-0',
-          }}
-          onSelectionChange={(key) => onTabChange(key as TabType)}
-          selectedKey={activeTab}
-          variant="underlined"
-        >
-          <Tab key="profile" title="Profile" />
-          <Tab key="activity" title="Activity" />
-          <Tab key="parents" title="Parents" />
-        </Tabs>
+        {tabs}
       </div>
     </div>
   )
