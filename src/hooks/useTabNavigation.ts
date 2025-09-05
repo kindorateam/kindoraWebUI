@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react'
+import { useCallback } from 'react'
 
 /**
  * Custom hook for handling tab navigation in detail pages.
@@ -14,23 +14,16 @@ export function useTabNavigation<T extends string>(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   navigate: any,
 ) {
-  // Redirect to default tab if no tab is specified
-  useEffect(() => {
-    if (!currentTab) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-      void navigate({
-        search: { tab: defaultTab },
-        replace: true,
-      })
-    }
-  }, [currentTab, navigate, defaultTab])
-
   const handleTabChange = useCallback(
     (newTab: T) => {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       void navigate({
-        search: { tab: newTab },
         replace: true,
+        // Preserve any existing search params
+        search: (prev: Record<string, unknown>) => ({
+          ...prev,
+          tab: newTab,
+        }),
       })
     },
     [navigate],

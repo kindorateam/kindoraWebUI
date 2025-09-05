@@ -7,7 +7,8 @@ const APP_NAME = 'Kindora'
 
 const usePageMetadata = (): PageMetadata => {
   const matches = useRouterState({
-    select: (s) => s.matches as RouteMatch[],
+    // matches is a union from TanStack Router; cast to the shape we read
+    select: (s) => s.matches as unknown as RouteMatch[],
   })
 
   const breadcrumbs: Breadcrumb[] = useMemo(() => {

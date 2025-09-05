@@ -1,6 +1,6 @@
 import { BreadcrumbItem, Breadcrumbs as HeroUIBreadcrumbs } from '@heroui/react'
 import { Link } from '@tanstack/react-router'
-import { memo, useMemo } from 'react'
+import { memo } from 'react'
 
 import usePageMetadata from '@/hooks/usePageMetadata'
 
@@ -16,9 +16,9 @@ const breadcrumbItemClasses = {
 const Breadcrumbs = memo(() => {
   const { breadcrumbs, pageTitle } = usePageMetadata()
 
-  const filteredBreadcrumbs = useMemo(() => {
-    return breadcrumbs.filter((crumb) => crumb.title !== 'Home')
-  }, [breadcrumbs])
+  const filteredBreadcrumbs = breadcrumbs.filter(
+    (crumb) => crumb.title !== 'Home',
+  )
 
   if (breadcrumbs.length === 0) return null
 

@@ -80,7 +80,6 @@ const NavDrawer = memo(() => {
     return navDrawerData.map((item) => {
       const hasChildren = item.children && item.children.length > 0
       const isExpanded = expandedItems.includes(item.label)
-      const isActive = isPathActive(item.path)
 
       if (hasChildren) {
         return (
@@ -94,7 +93,7 @@ const NavDrawer = memo(() => {
         )
       }
 
-      return <NavItem isActive={isActive} item={item} key={item.label} />
+      return <NavItem item={item} key={item.label} />
     })
   }, [expandedItems, isPathActive, handleToggleExpanded])
 

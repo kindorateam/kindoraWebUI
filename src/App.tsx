@@ -1,11 +1,9 @@
-import { createRouter, RouterProvider } from '@tanstack/react-router'
+import { RouterProvider } from '@tanstack/react-router'
 import { useAtom, useAtomValue } from 'jotai'
 import { useEffect } from 'react'
 
-import { routeTree } from './routeTree.gen'
+import { router } from './router'
 import { authStateAtom, checkAuthAtom } from '@/stores'
-
-const router = createRouter({ routeTree })
 
 const App = () => {
   const [, checkAuth] = useAtom(checkAuthAtom)

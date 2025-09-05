@@ -9,7 +9,6 @@ import tsconfigPaths from 'vite-tsconfig-paths'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
-    react(),
     tanstackRouter({
       target: 'react',
       autoCodeSplitting: true,
@@ -18,6 +17,7 @@ export default defineConfig({
       routeFileIgnorePrefix: '-',
       quoteStyle: 'single',
     }),
+    react(),
     tsconfigPaths(),
     checker({
       typescript: true,

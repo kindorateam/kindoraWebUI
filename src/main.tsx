@@ -2,11 +2,13 @@ import { HeroUIProvider } from '@heroui/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { Provider as JotaiProvider } from 'jotai'
 import { createRoot } from 'react-dom/client'
+import 'jotai-devtools/styles.css'
 
 import './index.css'
 
 import App from './App'
 import { ErrorBoundary } from './components/error'
+import { appStore } from '@/stores/jotaiStore'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -28,7 +30,7 @@ createRoot(rootElement).render(
       console.error('Root Application Error:', error, errorInfo)
     }}
   >
-    <JotaiProvider>
+    <JotaiProvider store={appStore}>
       <QueryClientProvider client={queryClient}>
         <HeroUIProvider>
           <App />

@@ -1,10 +1,8 @@
-import { getDefaultStore } from 'jotai'
-
-import { apiClient } from './api.service'
 import { refreshTokenAtom, tokenAtom } from '@/stores/auth.store'
+import { appStore } from '@/stores/jotaiStore'
 import { validateAndDecodeToken } from '@/utils/auth'
 
-const store = getDefaultStore()
+const store = appStore
 
 export const getToken = (): string | null => {
   const token = store.get(tokenAtom)
@@ -49,6 +47,7 @@ export const refreshAccessToken = async (): Promise<string | null> => {
   }
 
   try {
+    const { apiClient } = await import('./api.service')
     // Assuming the refresh endpoint is /auth/refresh
     const response = await apiClient.post<{
       accessToken: string

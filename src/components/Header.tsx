@@ -12,7 +12,8 @@ import {
   NavbarContent,
   NavbarItem,
 } from '@heroui/react'
-import { memo, useCallback, useMemo } from 'react'
+import { useNavigate } from '@tanstack/react-router'
+import { memo, useCallback } from 'react'
 
 import Breadcrumbs from '@/components/Breadcrumbs'
 import NotificationIcon from '@/components/icons/NotificationIcon'
@@ -23,29 +24,25 @@ import SignOutIcon from '@/components/icons/SignOutIcon'
 import SubscriptionIcon from '@/components/icons/SubscriptionIcon'
 import useAuth from '@/hooks/useAuth'
 
+const navbarClassNames = {
+  base: 'h-20 w-full mb-7 px-7 bg-transparent',
+  wrapper: 'w-full max-w-none p-0',
+}
+
+const inputClassNames = {
+  base: 'w-[150px]',
+  input: 'ps-2! font-normal rounded-4xl text-sm',
+  inputWrapper: 'h-9.5 ps-4 rounded-[20px] shadow-md bg-white',
+}
+
 const Header = memo(() => {
   const { user, logout } = useAuth()
+  const navigate = useNavigate()
 
   const handleLogout = useCallback(() => {
     logout()
-  }, [logout])
-
-  const navbarClassNames = useMemo(
-    () => ({
-      base: 'h-20 w-full mb-7 px-7 bg-transparent',
-      wrapper: 'w-full max-w-none p-0',
-    }),
-    [],
-  )
-
-  const inputClassNames = useMemo(
-    () => ({
-      base: 'w-[150px]',
-      input: 'ps-2! font-normal rounded-4xl text-sm',
-      inputWrapper: 'h-9.5 ps-4 rounded-[20px] shadow-md bg-white',
-    }),
-    [],
-  )
+    void navigate({ to: '/login', replace: true })
+  }, [logout, navigate])
 
   return (
     <Navbar classNames={navbarClassNames}>

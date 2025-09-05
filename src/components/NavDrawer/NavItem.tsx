@@ -1,25 +1,26 @@
 import { Link } from '@tanstack/react-router'
-import clsx from 'clsx'
 import { memo } from 'react'
 
 import type { NavDrawerItem } from './navDrawer.types'
 
 interface NavItemProps {
   item: NavDrawerItem
-  isActive: boolean
 }
 
-const NavItem = memo(({ item, isActive }: NavItemProps) => {
+const baseClasses =
+  'mb-2 inline-flex items-center gap-2 rounded-2xl px-4 py-2 font-semibold transition-colors'
+
+const NavItem = memo(({ item }: NavItemProps) => {
   return (
     <Link
-      className={clsx(
-        'mb-2 inline-flex items-center gap-2 rounded-2xl px-4 py-2 font-semibold transition-colors',
-        {
-          'bg-gray-100 text-gray-900 backdrop-opacity-20': isActive,
-          'text-gray-700 hover:bg-gray-100': !isActive,
-        },
-      )}
       to={item.path}
+      activeOptions={{ exact: false }}
+      activeProps={{
+        className: `${baseClasses} bg-gray-100 text-gray-900 backdrop-opacity-20`,
+      }}
+      inactiveProps={{
+        className: `${baseClasses} text-gray-700 hover:bg-gray-100`,
+      }}
     >
       {item.icon}
       <span className="font-medium">{item.label}</span>

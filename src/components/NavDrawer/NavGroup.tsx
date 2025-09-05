@@ -14,26 +14,24 @@ interface NavGroupProps {
 const NavGroup = memo(
   ({ item, isExpanded, isPathActive, onToggle }: NavGroupProps) => {
     const children = useMemo(() => {
-      return item.children?.map((child) => {
-        const isChildActive = isPathActive(child.path)
-        return (
-          <Link
-            className={clsx(
-              'inline-flex rounded-lg px-4 py-2 text-sm transition-colors',
-              {
-                'bg-gray-100 font-medium text-gray-900': isChildActive,
-                'text-gray-600 hover:bg-gray-50 hover:text-gray-900':
-                  !isChildActive,
-              },
-            )}
-            key={child.label}
-            to={child.path}
-          >
-            {child.label}
-          </Link>
-        )
-      })
-    }, [item.children, isPathActive])
+      return item.children?.map((child) => (
+        <Link
+          activeOptions={{ exact: false }}
+          activeProps={{
+            className:
+              'inline-flex rounded-lg px-4 py-2 text-sm transition-colors bg-gray-100 font-medium text-gray-900',
+          }}
+          inactiveProps={{
+            className:
+              'inline-flex rounded-lg px-4 py-2 text-sm transition-colors text-gray-600 hover:bg-gray-50 hover:text-gray-900',
+          }}
+          key={child.label}
+          to={child.path}
+        >
+          {child.label}
+        </Link>
+      ))
+    }, [item.children])
 
     const handleToggle = () => {
       onToggle(item.label)
