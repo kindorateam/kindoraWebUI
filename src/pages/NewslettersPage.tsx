@@ -1,14 +1,14 @@
-import { Tab, Tabs } from '@heroui/react'
+import { Button, Tab, Tabs } from '@heroui/react'
 import { useNavigate } from '@tanstack/react-router'
 
 import SubHeader from '@/components/SubHeader'
-import { Route as MessagesRoute } from '@/routes/_authenticated/messages'
+import { Route as NewslettersRoute } from '@/routes/_authenticated/newsletters'
 
-type TabKey = 'parents' | 'rooms'
+type TabKey = 'drafts' | 'scheduled' | 'sent'
 
-const MessagesPage = () => {
-  const search = MessagesRoute.useSearch()
-  const navigate = useNavigate({ from: MessagesRoute.fullPath })
+const NewslettersPage = () => {
+  const search = NewslettersRoute.useSearch()
+  const navigate = useNavigate({ from: NewslettersRoute.fullPath })
 
   const tab = search.tab
 
@@ -25,21 +25,24 @@ const MessagesPage = () => {
       <SubHeader
         bottomSlot={
           <Tabs
-            aria-label="Messages tabs"
+            aria-label="Newsletters tabs"
             classNames={{ tabList: 'gap-4', cursor: 'w-full', tab: 'p-0' }}
             onSelectionChange={handleTabChange}
             selectedKey={tab}
             variant="underlined"
           >
-            <Tab key="parents" title="Parents" />
-            <Tab key="rooms" title="Rooms" />
+            <Tab key="sent" title="Sent" />
+            <Tab key="scheduled" title="Scheduled" />
+            <Tab key="drafts" title="Drafts" />
           </Tabs>
         }
+        endSlot={<Button>Create New</Button>}
       />
 
       <div className="mt-6">
-        {tab === 'parents' && <InboxPanel />}
-        {tab === 'rooms' && <SentPanel />}
+        {tab === 'sent' && <PanelBox title="Sent" />}
+        {tab === 'scheduled' && 123}
+        {tab === 'drafts' && 123}
       </div>
     </div>
   )
@@ -52,7 +55,4 @@ const PanelBox = ({ title }: { title: string }) => (
   </div>
 )
 
-const InboxPanel = () => <PanelBox title="Inbox" />
-const SentPanel = () => <PanelBox title="Sent" />
-
-export default MessagesPage
+export default NewslettersPage
