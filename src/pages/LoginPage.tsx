@@ -1,7 +1,8 @@
-import { Card, CardBody } from '@heroui/react'
+import { Card, CardBody, CardHeader } from '@heroui/react'
 import { useNavigate } from '@tanstack/react-router'
 import { useCallback, useEffect } from 'react'
 
+import LogoIconLg from '@/components/icons/LogoIconLg'
 import useAuth from '@/hooks/useAuth'
 import { getReturnUrlFromLocation } from '@/services/redirect.service'
 
@@ -89,39 +90,28 @@ const LoginPage = () => {
   }, [initializeGoogleSignIn])
 
   return (
-    <Card className="w-full p-6">
-      <CardBody>
-        <div className="text-center">
-          <h2 className="text-2xl font-bold">Welcome back</h2>
-          <p className="text-gray-600">Sign in to your account</p>
-        </div>
+    <div className="grid h-screen grid-cols-1 lg:grid-cols-[55fr_73fr]">
+      <div className="bg-wine-700 flex items-center justify-center">
+        <LogoIconLg />
+      </div>
+      <div className="flex items-center justify-center bg-[#F7F7F2]">
+        <Card className="w-full max-w-[352px] bg-transparent shadow-none">
+          <CardHeader className="p-0 text-[34px] font-bold">Sign in</CardHeader>
+          <CardBody className="w-full px-0 py-10.5">
+            {error && (
+              <div className="rounded-md bg-red-50 p-3 text-sm text-red-600">
+                {error}
+              </div>
+            )}
 
-        {error && (
-          <div className="rounded-md bg-red-50 p-3 text-sm text-red-600">
-            {error}
-          </div>
-        )}
-
-        <div>
-          <div className="flex justify-center" id="googleSignInButton" />
-
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-300" />
-            </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="bg-white px-2 text-gray-500">
-                Or continue with Google
-              </span>
-            </div>
-          </div>
-        </div>
-
-        <p className="text-center text-sm text-gray-600">
-          By signing in, you agree to our Terms of Service and Privacy Policy
-        </p>
-      </CardBody>
-    </Card>
+            <div
+              className="flex w-full max-w-[352px] justify-center"
+              id="googleSignInButton"
+            />
+          </CardBody>
+        </Card>
+      </div>
+    </div>
   )
 }
 

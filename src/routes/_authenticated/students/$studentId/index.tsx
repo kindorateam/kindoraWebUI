@@ -1,5 +1,7 @@
 import { createFileRoute, Navigate } from '@tanstack/react-router'
 
+import StudentActivityTab from '@/components/StudentActivityTab'
+
 export const Route = createFileRoute('/_authenticated/students/$studentId/')({
   component: StudentDetailIndex,
 })
@@ -13,14 +15,7 @@ function StudentDetailIndex() {
 
   switch (tab) {
     case 'activity':
-      return (
-        <Navigate
-          params={{ studentId }}
-          replace
-          search={{ tab: 'activity' }}
-          to="/students/$studentId"
-        />
-      )
+      return <StudentActivityTab />
     case 'profile':
       return (
         <Navigate
