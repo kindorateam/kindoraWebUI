@@ -1,4 +1,4 @@
-import { Button, Tab, Tabs } from '@heroui/react'
+import { Button, Chip, Tab, Tabs } from '@heroui/react'
 import { Avatar } from '@heroui/react'
 import { useQuery } from '@tanstack/react-query'
 
@@ -28,36 +28,44 @@ const StudentDetailHeader = ({
     refetchOnReconnect: false, // Don't refetch on reconnect
     enabled: !!studentId, // Only run query if studentId exists
   })
-
+  console.log(student)
   return (
     <div className="border-b border-[#0000000D]">
       <div className="container max-w-7xl">
-        <div className="mb-13 flex">
-          <div className="me-7">
-            <Avatar className="size-37.5" showFallback src={student?.avatar} />
+        <div className="mb-13 flex items-center">
+          <div className="flex items-center">
+            <div className="me-7">
+              <Avatar
+                className="size-37.5"
+                showFallback
+                src={student?.avatar}
+              />
+            </div>
+            <div className="w-full">
+              <h1 className="mb-3.5 leading-none font-semibold lg:text-[36px]">
+                {student?.name ?? `Student ${studentId}`}
+              </h1>
+              <div>
+                <Chip />
+              </div>
+              <div className="flex gap-3.5">
+                <IdentityChip fullName={`${student?.rooms[0]?.name}`} />
+              </div>
+            </div>
           </div>
-          <div className="w-full">
-            <h1 className="mb-3.5 leading-none font-semibold lg:text-[36px]">
-              {student?.name ?? `Student ${studentId}`}
-            </h1>
-            <div className="mb-4 flex items-center">
-              <Button
-                className="bg-wine-700 text-medium ms-auto text-white"
-                radius="lg"
-              >
-                Edit Profile
-              </Button>
-            </div>
-            <div className="flex gap-3.5">
-              {student?.parents
-                .slice(0, 2)
-                .map((parent) => (
-                  <IdentityChip
-                    fullName={`${parent.name} (${parent.relationship})`}
-                    key={parent.id}
-                  />
-                ))}
-            </div>
+          <div className="ms-auto">
+            <Button
+              className="bg-wine-700 text-medium ms-auto text-white"
+              radius="lg"
+            >
+              Mark absent
+            </Button>
+            <Button
+              className="bg-wine-700 text-medium ms-3.5 text-white"
+              radius="lg"
+            >
+              Sign Out
+            </Button>
           </div>
         </div>
 

@@ -57,17 +57,12 @@ export const Route = createFileRoute('/_authenticated/rooms/$roomId')({
 })
 
 function RoomDetailLayout() {
-  // Route hooks return any but are validated by route config
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const params = Route.useParams()
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const search = Route.useSearch()
   const navigate = useNavigate({ from: Route.fullPath })
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-  const roomId = params.roomId as string
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-  const tab = search.tab as TabType
+  const roomId = params.roomId
+  const tab = search.tab
 
   const handleTabChange = useTabNavigation(tab, 'students', navigate)
 

@@ -10,10 +10,9 @@ export const Route = createFileRoute(
 })
 
 function StudentProfile() {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const params = Route.useParams()
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-  const studentId = params.studentId as string
+  const studentId = params.studentId
+
   const { data: student, isLoading } = useQuery({
     queryKey: ['student', studentId],
     queryFn: () => getStudentById(studentId),
