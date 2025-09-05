@@ -12,7 +12,6 @@ import {
   NavbarContent,
   NavbarItem,
 } from '@heroui/react'
-import { useNavigate } from '@tanstack/react-router'
 import { memo, useCallback } from 'react'
 
 import Breadcrumbs from '@/components/Breadcrumbs'
@@ -36,13 +35,11 @@ const inputClassNames = {
 }
 
 const Header = memo(() => {
-  const { user, logout } = useAuth()
-  const navigate = useNavigate()
+  const { user, logoutAndRedirect } = useAuth()
 
   const handleLogout = useCallback(() => {
-    logout()
-    void navigate({ to: '/login', replace: true })
-  }, [logout, navigate])
+    logoutAndRedirect()
+  }, [logoutAndRedirect])
 
   return (
     <Navbar classNames={navbarClassNames}>

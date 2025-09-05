@@ -1,3 +1,4 @@
+import { useLocation, useNavigate } from '@tanstack/react-router'
 import { useAtom, useAtomValue } from 'jotai'
 import { useCallback } from 'react'
 
@@ -15,6 +16,8 @@ const useAuth = () => {
   const [, handleGoogleLogin] = useAtom(handleGoogleLoginAtom)
   const [, logout] = useAtom(logoutAtom)
   const [, updateUser] = useAtom(updateUserAtom)
+  const navigate = useNavigate()
+  const location = useLocation()
 
   const handleLogin = useCallback(
     (response: GoogleAuthResponse) => {
@@ -27,6 +30,31 @@ const useAuth = () => {
     logout()
   }, [logout])
 
+  interface LogoutOptions {
+    preserveReturnUrl?: boolean
+    to?: string // defaults to '/login'
+    replace?: boolean // defaults to true
+  }
+
+  const logoutAndRedirect = useCallback(
+    (opts?: LogoutOptions) => {
+      logout()
+
+      const replace = opts?.replace ?? true
+      const baseTo = opts?.to ?? '/login'
+
+      if (opts?.preserveReturnUrl) {
+        const href = location.href
+        const next = `${baseTo}?redirect=${encodeURIComponent(href)}`
+        void navigate({ href: next, replace })
+        return
+      }
+
+      void navigate({ to: baseTo, replace })
+    },
+    [logout, navigate, location.href],
+  )
+
   return {
     user: authState.user,
     isAuthenticated: authState.isAuthenticated,
@@ -34,6 +62,7 @@ const useAuth = () => {
     error: authState.error,
     handleGoogleLogin: handleLogin,
     logout: handleLogout,
+    logoutAndRedirect,
     updateUser,
   }
 }
