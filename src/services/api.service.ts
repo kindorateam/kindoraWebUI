@@ -1,11 +1,11 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios'
 
-import { scheduleRedirectToLogin } from './redirect.service'
-import { clearToken, getCleanToken } from './token.service'
+import { clearToken, getCleanToken, refreshAccessToken } from './token.service'
+import { redirectToLogin } from '@/services/redirect.service'
 
 const API_BASE_URL =
   (import.meta.env.VITE_API_BASE_URL as string | undefined) ??
-  'https://pokeapi.co/api/v2'
+  'https://your-backend-api.com/api/v1' // Update this to your actual backend URL
 const API_TIMEOUT = 30000
 
 class ApiClient {
@@ -45,16 +45,29 @@ class ApiClient {
       (response) => {
         return response
       },
-      (error: unknown) => {
+      async (error: unknown) => {
         // Handle common errors
         if (axios.isAxiosError(error) && error.response?.status === 401) {
           const isAuthCheck =
             error.config?.url?.includes('/auth/me') ??
-            error.config?.url?.includes('/auth/verify')
+            error.config?.url?.includes('/auth/verify') ??
+            error.config?.url?.includes('/auth/refresh')
 
           if (!isAuthCheck) {
+            // Try to refresh token first
+            const newToken = await refreshAccessToken()
+            if (newToken) {
+              // Retry the original request with new token
+              const originalRequest = error.config
+              if (originalRequest) {
+                originalRequest.headers.Authorization = `Bearer ${newToken}`
+                return this.instance.request(originalRequest)
+              }
+            }
+
+            // If refresh failed or no original request, redirect to login
             clearToken()
-            scheduleRedirectToLogin({ reason: 'unauthorized' })
+            redirectToLogin()
           }
         }
 

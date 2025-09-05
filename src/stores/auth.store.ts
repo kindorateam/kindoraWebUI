@@ -13,6 +13,10 @@ import type { GoogleAuthResponse, User } from '@/types/auth'
 // Atoms for state - using atomWithStorage handles localStorage automatically
 export const userAtom = atomWithStorage<User | null>('auth-user', null)
 export const tokenAtom = atomWithStorage<string | null>('auth-token', null)
+export const refreshTokenAtom = atomWithStorage<string | null>(
+  'auth-refresh-token',
+  null,
+)
 
 export const isLoadingAtom = atom(true)
 export const errorAtom = atom<string | null>(null)
@@ -57,10 +61,13 @@ export const handleGoogleLoginAtom = atom(
       // atomWithStorage handles localStorage automatically
       set(userAtom, user)
       set(tokenAtom, response.credential)
+      // Note: Google OAuth doesn't provide refresh tokens directly
+      // You may need to exchange the credential with your backend for tokens
       set(isLoadingAtom, false)
     } catch (error) {
       set(userAtom, null)
       set(tokenAtom, null)
+      set(refreshTokenAtom, null)
       set(isLoadingAtom, false)
       set(errorAtom, error instanceof Error ? error.message : 'Login failed')
     }
@@ -71,6 +78,7 @@ export const logoutAtom = atom(null, (_get, set) => {
   // atomWithStorage handles localStorage automatically
   set(userAtom, null)
   set(tokenAtom, null)
+  set(refreshTokenAtom, null)
   set(isLoadingAtom, false)
   set(errorAtom, null)
 })
@@ -99,6 +107,7 @@ export const checkAuthAtom = atom(null, (get, set) => {
     } else {
       set(userAtom, null)
       set(tokenAtom, null)
+      set(refreshTokenAtom, null)
       set(errorAtom, 'Invalid authentication token')
     }
     set(isLoadingAtom, false)

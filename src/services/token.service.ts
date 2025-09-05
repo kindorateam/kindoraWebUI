@@ -1,6 +1,7 @@
 import { getDefaultStore } from 'jotai'
 
-import { tokenAtom } from '@/stores/auth.store'
+import { apiClient } from './api.service'
+import { refreshTokenAtom, tokenAtom } from '@/stores/auth.store'
 import { validateAndDecodeToken } from '@/utils/auth'
 
 const store = getDefaultStore()
@@ -25,8 +26,46 @@ export const getCleanToken = (): string | null => {
   return sanitizeToken(token)
 }
 
+export const getRefreshToken = (): string | null => {
+  return store.get(refreshTokenAtom)
+}
+
 export const clearToken = (): void => {
   store.set(tokenAtom, null)
+  store.set(refreshTokenAtom, null)
+}
+
+export const setTokens = (accessToken: string, refreshToken?: string): void => {
+  store.set(tokenAtom, accessToken)
+  if (refreshToken) {
+    store.set(refreshTokenAtom, refreshToken)
+  }
+}
+
+export const refreshAccessToken = async (): Promise<string | null> => {
+  const refreshToken = getRefreshToken()
+  if (!refreshToken) {
+    return null
+  }
+
+  try {
+    // Assuming the refresh endpoint is /auth/refresh
+    const response = await apiClient.post<{
+      accessToken: string
+      refreshToken?: string
+    }>('/auth/refresh', { refreshToken })
+
+    const { accessToken, refreshToken: newRefreshToken } = response
+
+    // Update tokens in store
+    setTokens(accessToken, newRefreshToken)
+
+    return accessToken
+  } catch {
+    // If refresh fails, clear all tokens
+    clearToken()
+    return null
+  }
 }
 
 const sanitizeToken = (token: string): string => {
