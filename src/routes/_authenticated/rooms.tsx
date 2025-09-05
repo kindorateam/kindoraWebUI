@@ -1,0 +1,6 @@
+import { createFileRoute, Outlet } from '@tanstack/react-router'
+
+export const Route = createFileRoute('/_authenticated/rooms')({
+  component: () => <Outlet />,
+  beforeLoad: () => ({ breadcrumb: 'Rooms' }),
+})

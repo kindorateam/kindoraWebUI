@@ -1,26 +1,19 @@
-import { useState } from 'react'
-
-import Filters from '@/components/Filters'
 import usePageMetadata from '@/hooks/usePageMetadata'
 
-import type { FilterProps } from '@/types/TableFilters'
-
 interface SubHeaderProps {
-  initialFilters?: FilterProps[]
+  endSlot?: React.ReactNode
 }
 
-const SubHeader = ({ initialFilters }: SubHeaderProps) => {
-  const [filters, setFilters] = useState<FilterProps[]>(initialFilters ?? [])
-
+const SubHeader = ({ endSlot }: SubHeaderProps) => {
   const { breadcrumbs } = usePageMetadata()
 
-  const handleFilterChange = (filterId: string, newValue: string) => {
-    setFilters((prevFilters) =>
-      prevFilters.map((filter) =>
-        filter.id === filterId ? { ...filter, value: newValue } : filter,
-      ),
-    )
-  }
+  // const handleFilterChange = (filterId: string, newValue: string) => {
+  //   setFilters((prevFilters) =>
+  //     prevFilters.map((filter) =>
+  //       filter.id === filterId ? { ...filter, value: newValue } : filter,
+  //     ),
+  //   )
+  // }
 
   return (
     <div className="border-b border-[#0000000D]">
@@ -28,9 +21,7 @@ const SubHeader = ({ initialFilters }: SubHeaderProps) => {
         <h1 className="font-semibold lg:text-[36px]">
           {breadcrumbs[0]?.title}
         </h1>
-        {initialFilters && (
-          <Filters filters={filters} onFilterChange={handleFilterChange} />
-        )}
+        {endSlot}
       </div>
     </div>
   )

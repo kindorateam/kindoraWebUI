@@ -1,12 +1,12 @@
 import { Avatar } from '@heroui/react'
 import { clsx } from 'clsx'
 
-interface PersonBadgeProps {
+interface IdentityChipProps {
   fullName: string
   src?: string
 }
 
-const PersonBadge = ({ fullName, src }: PersonBadgeProps) => {
+const IdentityChip = ({ fullName, src }: IdentityChipProps) => {
   return (
     <div
       className={clsx(
@@ -19,4 +19,4 @@ const PersonBadge = ({ fullName, src }: PersonBadgeProps) => {
   )
 }
 
-export default PersonBadge
+export default IdentityChip

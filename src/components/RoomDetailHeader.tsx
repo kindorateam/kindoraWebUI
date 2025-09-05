@@ -5,8 +5,8 @@ import { useState } from 'react'
 
 import Filters from './Filters'
 import StudentIcon from './icons/StudentIcon'
+import IdentityChip from './IdentityChip'
 import LabeledNumberBadge from './LabeledNumberBadge'
-import PersonBadge from './PersonBadge'
 import SmileEmoji from '@/components/icons/emojies/SmileEmoji'
 import { getRoomById } from '@/services/room.service'
 
@@ -100,7 +100,7 @@ const RoomDetailHeader = ({
             </div>
             <div className="flex gap-3.5">
               {staffNames.map((name) => (
-                <PersonBadge fullName={name} key={name} />
+                <IdentityChip fullName={name} key={name} />
               ))}
             </div>
           </div>

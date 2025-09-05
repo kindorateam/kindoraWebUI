@@ -2,9 +2,8 @@ import { Button, Tab, Tabs } from '@heroui/react'
 import { Avatar } from '@heroui/react'
 import { useQuery } from '@tanstack/react-query'
 
-import LabeledNumberBadge from './LabeledNumberBadge'
-import PersonBadge from './PersonBadge'
-import RoomIcon from './RoomIcon'
+import IdentityChip from './IdentityChip'
+// import RoomIcon from './RoomIcon'
 import { getStudentById } from '@/services/student.service'
 
 type TabType = 'profile' | 'activity' | 'parents'
@@ -30,21 +29,6 @@ const StudentDetailHeader = ({
     enabled: !!studentId, // Only run query if studentId exists
   })
 
-  const studentStats = [
-    {
-      label: 'Age',
-      value: 5, // This would come from student data in a real app
-    },
-    {
-      label: 'Tags',
-      value: student?.tags.length ?? 0,
-    },
-    {
-      label: 'Parents',
-      value: student?.parents.length ?? 0,
-    },
-  ]
-
   return (
     <div className="border-b border-[#0000000D]">
       <div className="container max-w-7xl">
@@ -57,23 +41,6 @@ const StudentDetailHeader = ({
               {student?.name ?? `Student ${studentId}`}
             </h1>
             <div className="mb-4 flex items-center">
-              <div className="flex flex-wrap gap-4">
-                {studentStats.map((stat) => (
-                  <LabeledNumberBadge
-                    key={stat.label}
-                    label={stat.label}
-                    value={stat.value}
-                  />
-                ))}
-                {student?.rooms[0] && (
-                  <div className="flex items-center gap-2 rounded-lg bg-gray-50 px-3 py-2">
-                    <RoomIcon roomType={student.rooms[0].icon} />
-                    <span className="text-sm font-medium">
-                      {student.rooms[0].name}
-                    </span>
-                  </div>
-                )}
-              </div>
               <Button
                 className="bg-wine-700 text-medium ms-auto text-white"
                 radius="lg"
@@ -85,7 +52,7 @@ const StudentDetailHeader = ({
               {student?.parents
                 .slice(0, 2)
                 .map((parent) => (
-                  <PersonBadge
+                  <IdentityChip
                     fullName={`${parent.name} (${parent.relationship})`}
                     key={parent.id}
                   />

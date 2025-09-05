@@ -1,5 +1,10 @@
+import { useState } from 'react'
+
+import Filters from '@/components/Filters'
 import StaffTable from '@/components/StaffTable'
 import SubHeader from '@/components/SubHeader'
+
+import type { FilterProps } from '@/types/TableFilters'
 
 const staffFilters = [
   {
@@ -35,9 +40,23 @@ const staffFilters = [
 ]
 
 const StaffPage = () => {
+  const [filters, setFilters] = useState<FilterProps[]>(staffFilters ?? [])
+
+  const handleFilterChange = (filterId: string, newValue: string) => {
+    setFilters((prevFilters) =>
+      prevFilters.map((filter) =>
+        filter.id === filterId ? { ...filter, value: newValue } : filter,
+      ),
+    )
+  }
+
   return (
     <>
-      <SubHeader initialFilters={staffFilters} />
+      <SubHeader
+        endSlot={
+          <Filters filters={filters} onFilterChange={handleFilterChange} />
+        }
+      />
       <main className="container max-w-7xl pt-10">
         <StaffTable />
       </main>
