@@ -7,7 +7,7 @@ import StudentDetailHeader from '@/components/StudentDetailHeader'
 import { useTabNavigation } from '@/hooks/useTabNavigation'
 import { getStudentById } from '@/services/student.service'
 
-type TabType = 'profile' | 'activity' | 'parents'
+type TabType = 'profile' | 'activity' | 'documents' | 'immunization' | 'billing'
 
 interface StudentDetailSearch {
   tab: TabType
@@ -20,10 +20,16 @@ export const Route = createFileRoute('/_authenticated/students/$studentId')({
   }),
   validateSearch: (search: Record<string, unknown>): StudentDetailSearch => {
     const tab = search.tab as string
-    const validTabs: TabType[] = ['profile', 'activity', 'parents']
+    const validTabs: TabType[] = [
+      'activity',
+      'profile',
+      'documents',
+      'immunization',
+      'billing',
+    ]
 
     return {
-      tab: validTabs.includes(tab as TabType) ? (tab as TabType) : 'profile',
+      tab: validTabs.includes(tab as TabType) ? (tab as TabType) : 'activity',
     }
   },
   beforeLoad: async ({ params }: { params: { studentId: string } }) => {

@@ -9,16 +9,11 @@ export const Route = createFileRoute('/_authenticated/rooms/$roomId/')({
 })
 
 function RoomDetailContent() {
-  // Route hooks return any but are validated by parent route
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const search = Route.useSearch()
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const params = Route.useParams()
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-  const tab = search.tab as 'students' | 'activity' | 'profile'
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-  const roomId = params.roomId as string
+  const tab = search.tab
+  const roomId = params.roomId
 
   // Render content based on active tab
   switch (tab) {

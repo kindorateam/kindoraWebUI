@@ -31,10 +31,8 @@ import { Route as AuthenticatedStudentsStudentIdRouteImport } from './routes/_au
 import { Route as AuthenticatedRoomsRoomIdRouteImport } from './routes/_authenticated/rooms/$roomId'
 import { Route as AuthenticatedConnectionsNewslettersRouteImport } from './routes/_authenticated/connections/newsletters'
 import { Route as AuthenticatedConnectionsMessagesRouteImport } from './routes/_authenticated/connections/messages'
+import { Route as AuthenticatedStudentsStudentIdIndexRouteImport } from './routes/_authenticated/students/$studentId/index'
 import { Route as AuthenticatedRoomsRoomIdIndexRouteImport } from './routes/_authenticated/rooms/$roomId/index'
-import { Route as AuthenticatedStudentsStudentIdProfileRouteImport } from './routes/_authenticated/students/$studentId/profile'
-import { Route as AuthenticatedStudentsStudentIdParentsRouteImport } from './routes/_authenticated/students/$studentId/parents'
-import { Route as AuthenticatedStudentsStudentIdActivityRouteImport } from './routes/_authenticated/students/$studentId/activity'
 
 const AuthenticatedRoute = AuthenticatedRouteImport.update({
   id: '/_authenticated',
@@ -151,29 +149,17 @@ const AuthenticatedConnectionsMessagesRoute =
     path: '/messages',
     getParentRoute: () => AuthenticatedConnectionsRoute,
   } as any)
+const AuthenticatedStudentsStudentIdIndexRoute =
+  AuthenticatedStudentsStudentIdIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedStudentsStudentIdRoute,
+  } as any)
 const AuthenticatedRoomsRoomIdIndexRoute =
   AuthenticatedRoomsRoomIdIndexRouteImport.update({
     id: '/',
     path: '/',
     getParentRoute: () => AuthenticatedRoomsRoomIdRoute,
-  } as any)
-const AuthenticatedStudentsStudentIdProfileRoute =
-  AuthenticatedStudentsStudentIdProfileRouteImport.update({
-    id: '/profile',
-    path: '/profile',
-    getParentRoute: () => AuthenticatedStudentsStudentIdRoute,
-  } as any)
-const AuthenticatedStudentsStudentIdParentsRoute =
-  AuthenticatedStudentsStudentIdParentsRouteImport.update({
-    id: '/parents',
-    path: '/parents',
-    getParentRoute: () => AuthenticatedStudentsStudentIdRoute,
-  } as any)
-const AuthenticatedStudentsStudentIdActivityRoute =
-  AuthenticatedStudentsStudentIdActivityRouteImport.update({
-    id: '/activity',
-    path: '/activity',
-    getParentRoute: () => AuthenticatedStudentsStudentIdRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
@@ -197,10 +183,8 @@ export interface FileRoutesByFullPath {
   '/students/$studentId': typeof AuthenticatedStudentsStudentIdRouteWithChildren
   '/rooms/': typeof AuthenticatedRoomsIndexRoute
   '/students/': typeof AuthenticatedStudentsIndexRoute
-  '/students/$studentId/activity': typeof AuthenticatedStudentsStudentIdActivityRoute
-  '/students/$studentId/parents': typeof AuthenticatedStudentsStudentIdParentsRoute
-  '/students/$studentId/profile': typeof AuthenticatedStudentsStudentIdProfileRoute
   '/rooms/$roomId/': typeof AuthenticatedRoomsRoomIdIndexRoute
+  '/students/$studentId/': typeof AuthenticatedStudentsStudentIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -217,13 +201,10 @@ export interface FileRoutesByTo {
   '/staff': typeof AuthenticatedStaffRoute
   '/connections/messages': typeof AuthenticatedConnectionsMessagesRoute
   '/connections/newsletters': typeof AuthenticatedConnectionsNewslettersRoute
-  '/students/$studentId': typeof AuthenticatedStudentsStudentIdRouteWithChildren
   '/rooms': typeof AuthenticatedRoomsIndexRoute
   '/students': typeof AuthenticatedStudentsIndexRoute
-  '/students/$studentId/activity': typeof AuthenticatedStudentsStudentIdActivityRoute
-  '/students/$studentId/parents': typeof AuthenticatedStudentsStudentIdParentsRoute
-  '/students/$studentId/profile': typeof AuthenticatedStudentsStudentIdProfileRoute
   '/rooms/$roomId': typeof AuthenticatedRoomsRoomIdIndexRoute
+  '/students/$studentId': typeof AuthenticatedStudentsStudentIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -249,10 +230,8 @@ export interface FileRoutesById {
   '/_authenticated/students/$studentId': typeof AuthenticatedStudentsStudentIdRouteWithChildren
   '/_authenticated/rooms/': typeof AuthenticatedRoomsIndexRoute
   '/_authenticated/students/': typeof AuthenticatedStudentsIndexRoute
-  '/_authenticated/students/$studentId/activity': typeof AuthenticatedStudentsStudentIdActivityRoute
-  '/_authenticated/students/$studentId/parents': typeof AuthenticatedStudentsStudentIdParentsRoute
-  '/_authenticated/students/$studentId/profile': typeof AuthenticatedStudentsStudentIdProfileRoute
   '/_authenticated/rooms/$roomId/': typeof AuthenticatedRoomsRoomIdIndexRoute
+  '/_authenticated/students/$studentId/': typeof AuthenticatedStudentsStudentIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -277,10 +256,8 @@ export interface FileRouteTypes {
     | '/students/$studentId'
     | '/rooms/'
     | '/students/'
-    | '/students/$studentId/activity'
-    | '/students/$studentId/parents'
-    | '/students/$studentId/profile'
     | '/rooms/$roomId/'
+    | '/students/$studentId/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -297,13 +274,10 @@ export interface FileRouteTypes {
     | '/staff'
     | '/connections/messages'
     | '/connections/newsletters'
-    | '/students/$studentId'
     | '/rooms'
     | '/students'
-    | '/students/$studentId/activity'
-    | '/students/$studentId/parents'
-    | '/students/$studentId/profile'
     | '/rooms/$roomId'
+    | '/students/$studentId'
   id:
     | '__root__'
     | '/'
@@ -328,10 +302,8 @@ export interface FileRouteTypes {
     | '/_authenticated/students/$studentId'
     | '/_authenticated/rooms/'
     | '/_authenticated/students/'
-    | '/_authenticated/students/$studentId/activity'
-    | '/_authenticated/students/$studentId/parents'
-    | '/_authenticated/students/$studentId/profile'
     | '/_authenticated/rooms/$roomId/'
+    | '/_authenticated/students/$studentId/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -496,33 +468,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedConnectionsMessagesRouteImport
       parentRoute: typeof AuthenticatedConnectionsRoute
     }
+    '/_authenticated/students/$studentId/': {
+      id: '/_authenticated/students/$studentId/'
+      path: '/'
+      fullPath: '/students/$studentId/'
+      preLoaderRoute: typeof AuthenticatedStudentsStudentIdIndexRouteImport
+      parentRoute: typeof AuthenticatedStudentsStudentIdRoute
+    }
     '/_authenticated/rooms/$roomId/': {
       id: '/_authenticated/rooms/$roomId/'
       path: '/'
       fullPath: '/rooms/$roomId/'
       preLoaderRoute: typeof AuthenticatedRoomsRoomIdIndexRouteImport
       parentRoute: typeof AuthenticatedRoomsRoomIdRoute
-    }
-    '/_authenticated/students/$studentId/profile': {
-      id: '/_authenticated/students/$studentId/profile'
-      path: '/profile'
-      fullPath: '/students/$studentId/profile'
-      preLoaderRoute: typeof AuthenticatedStudentsStudentIdProfileRouteImport
-      parentRoute: typeof AuthenticatedStudentsStudentIdRoute
-    }
-    '/_authenticated/students/$studentId/parents': {
-      id: '/_authenticated/students/$studentId/parents'
-      path: '/parents'
-      fullPath: '/students/$studentId/parents'
-      preLoaderRoute: typeof AuthenticatedStudentsStudentIdParentsRouteImport
-      parentRoute: typeof AuthenticatedStudentsStudentIdRoute
-    }
-    '/_authenticated/students/$studentId/activity': {
-      id: '/_authenticated/students/$studentId/activity'
-      path: '/activity'
-      fullPath: '/students/$studentId/activity'
-      preLoaderRoute: typeof AuthenticatedStudentsStudentIdActivityRouteImport
-      parentRoute: typeof AuthenticatedStudentsStudentIdRoute
     }
   }
 }
@@ -583,19 +541,13 @@ const AuthenticatedRoomsRouteWithChildren =
   AuthenticatedRoomsRoute._addFileChildren(AuthenticatedRoomsRouteChildren)
 
 interface AuthenticatedStudentsStudentIdRouteChildren {
-  AuthenticatedStudentsStudentIdActivityRoute: typeof AuthenticatedStudentsStudentIdActivityRoute
-  AuthenticatedStudentsStudentIdParentsRoute: typeof AuthenticatedStudentsStudentIdParentsRoute
-  AuthenticatedStudentsStudentIdProfileRoute: typeof AuthenticatedStudentsStudentIdProfileRoute
+  AuthenticatedStudentsStudentIdIndexRoute: typeof AuthenticatedStudentsStudentIdIndexRoute
 }
 
 const AuthenticatedStudentsStudentIdRouteChildren: AuthenticatedStudentsStudentIdRouteChildren =
   {
-    AuthenticatedStudentsStudentIdActivityRoute:
-      AuthenticatedStudentsStudentIdActivityRoute,
-    AuthenticatedStudentsStudentIdParentsRoute:
-      AuthenticatedStudentsStudentIdParentsRoute,
-    AuthenticatedStudentsStudentIdProfileRoute:
-      AuthenticatedStudentsStudentIdProfileRoute,
+    AuthenticatedStudentsStudentIdIndexRoute:
+      AuthenticatedStudentsStudentIdIndexRoute,
   }
 
 const AuthenticatedStudentsStudentIdRouteWithChildren =
