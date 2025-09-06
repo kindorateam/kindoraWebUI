@@ -1,4 +1,4 @@
-import type Staff from '@/types/staff'
+import type { Staff } from '@/types/staff'
 
 const MOCK_STAFF_DATA: Staff[] = [
   {

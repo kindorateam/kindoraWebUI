@@ -3,7 +3,7 @@ import { Link } from '@tanstack/react-router'
 
 import RoomIcon from '@/components/RoomIcon'
 
-import type Room from '@/types/room'
+import type { Room } from '@/types/room'
 import type { TableColumn } from '@/types/table'
 
 const createRoomsColumns = (): TableColumn<Room>[] => [

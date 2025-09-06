@@ -2,7 +2,7 @@ import { Avatar, Button, Chip } from '@heroui/react'
 
 import RoomIcon from '@/components/RoomIcon'
 
-import type Staff from '@/types/staff'
+import type { Staff } from '@/types/staff'
 import type { TableColumn } from '@/types/table'
 
 interface StaffTableCellProps {

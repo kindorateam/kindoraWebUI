@@ -1,4 +1,4 @@
-import type Student from '@/types/student'
+import type { Student } from '@/types/student'
 
 const MOCK_STUDENTS_DATA: Student[] = [
   {

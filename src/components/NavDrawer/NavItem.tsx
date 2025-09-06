@@ -13,7 +13,6 @@ const baseClasses =
 const NavItem = memo(({ item }: NavItemProps) => {
   return (
     <Link
-      to={item.path}
       activeOptions={{ exact: false }}
       activeProps={{
         className: `${baseClasses} bg-gray-100 text-gray-900 backdrop-opacity-20`,
@@ -21,6 +20,7 @@ const NavItem = memo(({ item }: NavItemProps) => {
       inactiveProps={{
         className: `${baseClasses} text-gray-700 hover:bg-gray-100`,
       }}
+      to={item.path}
     >
       {item.icon}
       <span className="font-medium">{item.label}</span>

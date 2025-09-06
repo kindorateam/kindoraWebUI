@@ -1,4 +1,4 @@
-import type Room from '@/types/room'
+import type { Room } from '@/types/room'
 
 const MOCK_ROOMS_DATA: Room[] = [
   {
