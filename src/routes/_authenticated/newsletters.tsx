@@ -9,7 +9,7 @@ export const Route = createFileRoute('/_authenticated/newsletters')({
     const allowed = ['sent', 'scheduled', 'drafts'] as const
 
     return {
-      tab: allowed.includes(t as (typeof allowed)[number]) ? t : 'drafts',
+      tab: allowed.includes(t as (typeof allowed)[number]) ? t : 'sent',
     }
   },
   beforeLoad: () => ({ breadcrumb: 'Newsletters' }),

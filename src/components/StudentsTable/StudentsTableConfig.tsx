@@ -14,7 +14,7 @@ const createStudentsColumns = (): TableColumn<Student>[] => [
       <Link
         className="hover:text-primary flex items-center gap-3"
         params={{ studentId: student.id }}
-        search={{ tab: 'profile' }}
+        search={{ tab: 'activity' }}
         to="/students/$studentId"
       >
         <Avatar

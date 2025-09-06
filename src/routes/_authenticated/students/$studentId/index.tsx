@@ -1,4 +1,4 @@
-import { createFileRoute, Navigate } from '@tanstack/react-router'
+import { createFileRoute } from '@tanstack/react-router'
 
 import StudentActivityTab from '@/components/StudentActivityTab'
 
@@ -7,59 +7,26 @@ export const Route = createFileRoute('/_authenticated/students/$studentId/')({
 })
 
 function StudentDetailIndex() {
-  const params = Route.useParams()
   const search = Route.useSearch()
 
-  const studentId = params.studentId
-  const tab = search.tab
+  const tab = (search as Record<string, unknown>).tab as string | undefined
 
-  switch (tab) {
-    case 'activity':
-      return <StudentActivityTab />
-    case 'profile':
-      return (
-        <Navigate
-          params={{ studentId }}
-          replace
-          search={{ tab: 'profile' }}
-          to="/students/$studentId"
-        />
-      )
-    case 'documents':
-      return (
-        <Navigate
-          params={{ studentId }}
-          replace
-          search={{ tab: 'documents' }}
-          to="/students/$studentId"
-        />
-      )
-    case 'immunization':
-      return (
-        <Navigate
-          params={{ studentId }}
-          replace
-          search={{ tab: 'immunization' }}
-          to="/students/$studentId"
-        />
-      )
-    case 'billing':
-      return (
-        <Navigate
-          params={{ studentId }}
-          replace
-          search={{ tab: 'billing' }}
-          to="/students/$studentId"
-        />
-      )
-    default:
-      return (
-        <Navigate
-          params={{ studentId }}
-          replace
-          search={{ tab: 'activity' }}
-          to="/students/$studentId"
-        />
-      )
+  if (!tab || tab === 'activity') {
+    return <StudentActivityTab />
   }
+
+  if (tab === 'profile') {
+    return <div className="text-default-500">Profile coming soon…</div>
+  }
+  if (tab === 'documents') {
+    return <div className="text-default-500">Documents coming soon…</div>
+  }
+  if (tab === 'immunization') {
+    return <div className="text-default-500">Immunization coming soon…</div>
+  }
+  if (tab === 'billing') {
+    return <div className="text-default-500">Billing coming soon…</div>
+  }
+
+  return <StudentActivityTab />
 }
