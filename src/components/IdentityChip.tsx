@@ -1,5 +1,5 @@
 import { Avatar } from '@heroui/react'
-import { clsx } from 'clsx'
+import clsx from 'clsx'
 
 interface IdentityChipProps {
   fullName: string

@@ -16,5 +16,3 @@ export interface StaffRoom {
 }
 
 export type PinVisibility = Record<string, boolean>
-
-export default Staff

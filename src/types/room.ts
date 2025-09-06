@@ -22,5 +22,3 @@ export interface StaffMember {
   name: string
   avatar: string
 }
-
-export default Room

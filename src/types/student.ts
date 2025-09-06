@@ -48,5 +48,3 @@ export interface MedicalInfo {
     phone: string
   }
 }
-
-export default Student
