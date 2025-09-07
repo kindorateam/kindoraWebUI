@@ -112,3 +112,4 @@ By default, agents should:
 - Use existing patterns/utilities first; add new ones only if necessary.
 - Include brief rationale in PR/hand-off notes and a quick verification plan.
 - Apply KISS, YAGNI, DRY principles.
+- Prefer functional programming over OOP.
