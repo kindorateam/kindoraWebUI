@@ -11,13 +11,18 @@
     #f0f0eb 0%,
     rgba(240, 240, 235, 0) 100%
   );
-  --color-wine-700: #792c41;
-  --color-gray3: #707070;
-  --color-gray2: #909090;
+
+  --color-brand: #792c41;
+  --color-brand-active: #6f2237;
+  --color-brand-hover: #8d4055;
+
+  --color-text-primary: #393b3f;
+  --color-text-primary-muted: #646464;
+  --color-text-secondary: #909090;
+  --color-text-secondary-strong: #707070;
 
   --tw-leading: 1;
 
-  /* Gradient overlays */
   --background-gradient-green: linear-gradient(
     146.82deg,
     rgba(49, 98, 60, 0.3) 6.84%,

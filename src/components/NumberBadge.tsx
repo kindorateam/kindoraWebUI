@@ -10,7 +10,7 @@ const NumberBadge = ({ className, value, ...props }: NumberBadgeProps) => {
       className={clsx('w-7 rounded-lg bg-[#792C410D] text-center', className)}
       {...props}
     >
-      <span className="text-wine-700 text-sm font-semibold">{value}</span>
+      <span className="text-brand text-sm font-semibold">{value}</span>
     </div>
   )
 }

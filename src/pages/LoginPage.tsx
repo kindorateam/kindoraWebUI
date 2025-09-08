@@ -92,7 +92,7 @@ const LoginPage = () => {
 
   return (
     <div className="grid h-screen grid-cols-1 lg:grid-cols-[55fr_73fr]">
-      <div className="bg-wine-700 flex items-center justify-center">
+      <div className="bg-brand flex items-center justify-center">
         <LogoIconLg />
       </div>
       <div className="flex items-center justify-center bg-[#F7F7F2]">

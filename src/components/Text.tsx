@@ -27,7 +27,7 @@ const Text = ({
   children,
   ...props
 }: TextProps) => {
-  const sizeClass = sizeClassMap[(size as TextSize) ?? 16] ?? 'text-base'
+  const sizeClass = sizeClassMap[size ?? 16] ?? 'text-base'
 
   return (
     <Tag className={clsx(sizeClass, className)} {...props}>
@@ -37,4 +37,3 @@ const Text = ({
 }
 
 export default Text
-

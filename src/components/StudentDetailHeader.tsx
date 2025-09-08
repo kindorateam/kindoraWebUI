@@ -51,13 +51,13 @@ const StudentDetailHeader = ({
           </div>
           <div className="ms-auto">
             <Button
-              className="bg-wine-700 text-medium ms-auto text-white"
+              className="bg-brand text-medium ms-auto text-white"
               radius="lg"
             >
               Mark absent
             </Button>
             <Button
-              className="bg-wine-700 text-medium ms-3.5 text-white"
+              className="bg-brand text-medium ms-3.5 text-white"
               radius="lg"
             >
               Sign Out

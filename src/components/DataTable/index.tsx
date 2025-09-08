@@ -51,7 +51,7 @@ const DataTable = <T,>({
           {(column) => (
             <TableColumn
               align={column.align ?? 'start'}
-              className={`text-gray2 text-left text-sm font-medium tracking-wider ${column.className ?? ''}`}
+              className={`text-text-secondary text-left text-sm font-medium tracking-wider ${column.className ?? ''}`}
               key={column.key}
             >
               {column.label}

@@ -15,7 +15,7 @@ const LabeledNumberBadge = ({
     <div className="flex items-center gap-2">
       <span className="">{label}</span>
       {!icon && value !== undefined && <NumberBadge value={value} />}
-      {icon && <span className="text-wine-700">{icon}</span>}
+      {icon && <span className="text-brand">{icon}</span>}
     </div>
   )
 }

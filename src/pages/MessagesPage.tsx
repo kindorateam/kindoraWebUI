@@ -234,7 +234,7 @@ const columns: TableColumn<MessageRow>[] = [
       <div className="flex items-center gap-3">
         {/* Unread dot */}
         <span
-          className={`h-2.5 w-2.5 rounded-full ${row.student.unread ? 'bg-wine-700' : 'bg-transparent'}`}
+          className={`h-2.5 w-2.5 rounded-full ${row.student.unread ? 'bg-brand' : 'bg-transparent'}`}
         />
         <div className="relative">
           <Avatar className="h-8 w-8" showFallback src={row.student.avatar} />

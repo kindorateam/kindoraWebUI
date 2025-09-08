@@ -40,7 +40,7 @@ const Filters = ({ filters, onFilterChange }: FiltersProps) => {
         <span className="text-sm">{filter.label} </span>
         <span
           className={clsx([
-            `${isActive ? 'text-wine-700' : ''}`,
+            `${isActive ? 'text-brand' : ''}`,
             'text-sm font-medium',
           ])}
         >

@@ -15,21 +15,16 @@ const NavDrawer = memo(() => {
   const [manuallyExpandedItems] = useAtom(navDrawerExpandedItemsAtom)
   const [, toggleExpanded] = useAtom(toggleNavDrawerItemAtom)
 
-  // Memoize path matching functions to prevent unnecessary re-renders
   const isPathActive = useCallback(
     (path: string): boolean => {
       if (!path || path === '#') return false
 
       const currentPath = location.pathname
 
-      // Exact match
       if (currentPath === path) return true
 
-      // Handle trailing slashes
       if (currentPath === path + '/' || currentPath + '/' === path) return true
 
-      // Check if current path starts with the given path (for nested routes)
-      // Add trailing slash to avoid partial matches (e.g., /room vs /rooms)
       const normalizedPath = path.endsWith('/') ? path : path + '/'
       const normalizedCurrent = currentPath.endsWith('/')
         ? currentPath
@@ -40,7 +35,6 @@ const NavDrawer = memo(() => {
     [location.pathname],
   )
 
-  // Memoize child checking function
   const hasActiveChild = useCallback(
     (item: NavDrawerItem): boolean => {
       if (!item.children) return false
@@ -49,7 +43,6 @@ const NavDrawer = memo(() => {
     [isPathActive],
   )
 
-  // Calculate automatically expanded items (based on active routes)
   const autoExpandedItems = useMemo(() => {
     const expanded: string[] = []
     navDrawerData.forEach((item) => {
@@ -60,14 +53,11 @@ const NavDrawer = memo(() => {
     return expanded
   }, [hasActiveChild])
 
-  // Combine auto-expanded and manually expanded items
-  // Manually expanded items take priority and won't be auto-collapsed
   const expandedItems = useMemo(() => {
     const combined = new Set([...autoExpandedItems, ...manuallyExpandedItems])
     return Array.from(combined)
   }, [autoExpandedItems, manuallyExpandedItems])
 
-  // Wrapper function for Jotai toggle action
   const handleToggleExpanded = useCallback(
     (itemLabel: string) => {
       toggleExpanded(itemLabel)
@@ -75,7 +65,6 @@ const NavDrawer = memo(() => {
     [toggleExpanded],
   )
 
-  // Memoize the menu items to prevent unnecessary re-renders
   const menuItems = useMemo(() => {
     return navDrawerData.map((item) => {
       const hasChildren = item.children && item.children.length > 0
@@ -104,7 +93,6 @@ const NavDrawer = memo(() => {
           <img alt="Kindora Logo" src={Logo} />
         </div>
 
-        {/* Menu Items */}
         <nav className="flex-1 overflow-y-auto p-4">{menuItems}</nav>
       </aside>
     </div>

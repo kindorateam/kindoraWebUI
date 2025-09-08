@@ -14,14 +14,14 @@ const ParentCard = () => {
         <p className="mb-2.5 font-semibold">John Doe</p>
         <div className="flex text-xs">
           <div className="me-2.5 flex flex-col">
-            <span className="text-gray3 mb-2.5">Email</span>
-            <span className="text-gray3 mb-2.5">Phone</span>
-            <span className="text-gray3">Pin</span>
+            <span className="text-secondary-strong mb-2.5">Email</span>
+            <span className="text-secondary-strong mb-2.5">Phone</span>
+            <span className="text-secondary-strong">Pin</span>
           </div>
           <div className="flex flex-col">
-            <span className="text-wine-700 mb-2.5">j.hayes@example.com</span>
+            <span className="text-brand mb-2.5">j.hayes@example.com</span>
             <span className="mb-2.5 text-black">(415) 555-5678</span>
-            <span className="text-wine-700">
+            <span className="text-brand">
               <Chip>4423</Chip>
             </span>
           </div>

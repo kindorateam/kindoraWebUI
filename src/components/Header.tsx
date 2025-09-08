@@ -87,7 +87,7 @@ const Header = memo(() => {
             >
               <DropdownItem className="p-0" key="profile">
                 <p className="font-semibold lg:text-lg">{user?.name}</p>
-                <p className="text-wine-700 font-semibold lg:text-xs">
+                <p className="text-brand font-semibold lg:text-xs">
                   {user?.email}
                 </p>
               </DropdownItem>

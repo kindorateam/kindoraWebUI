@@ -44,14 +44,14 @@ const createStaffColumns = ({
     key: 'email',
     label: 'Email',
     renderCell: (staff) => (
-      <span className="text-gray2 text-xs">{staff.email}</span>
+      <span className="text-text-secondary text-xs">{staff.email}</span>
     ),
   },
   {
     key: 'rooms',
     label: 'Rooms',
     renderCell: () => (
-      <div className="text-gray2 flex items-center gap-2">
+      <div className="text-text-secondary flex items-center gap-2">
         <RoomIcon roomType="turtle" />
         <span className="text-xs">Baby turtles</span>
       </div>
@@ -92,7 +92,7 @@ const createStaffColumns = ({
         </Chip>
       ) : (
         <Button
-          className="text-wine-700 bg-[#792C4133] text-[11px] font-semibold"
+          className="text-brand bg-[#792C4133] text-[11px] font-semibold"
           onPress={() => togglePinVisibility(staff.id)}
           size="sm"
         >

@@ -91,7 +91,7 @@ const RoomDetailHeader = ({
                 ))}
               </div>
               <Button
-                className="bg-wine-700 text-medium ms-auto text-white"
+                className="bg-brand text-medium ms-auto text-white"
                 radius="lg"
                 startContent={<StudentIcon fill="#fff" />}
               >

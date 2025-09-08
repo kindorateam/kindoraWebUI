@@ -18,7 +18,7 @@ const NavGroup = memo(({ item, isExpanded, onToggle }: NavGroupProps) => {
         activeOptions={{ exact: false }}
         activeProps={{
           className:
-            'inline-flex rounded-lg px-4 py-2 text-sm transition-colors bg-gray-100 font-medium text-gray-900',
+            'inline-flex rounded-lg px-4 py-2 text-sm transition-colors bg-brand/20 font-medium text-gray-900',
         }}
         inactiveProps={{
           className:

@@ -23,7 +23,7 @@ const Breadcrumbs = memo(() => {
   if (breadcrumbs.length === 0) return null
 
   if (filteredBreadcrumbs.length === 1) {
-    return <div className="text-gray3 font-medium">{pageTitle}</div>
+    return <div className="text-secondary-strong font-medium">{pageTitle}</div>
   }
 
   return (
