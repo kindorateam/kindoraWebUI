@@ -13,11 +13,13 @@ interface NavGroupProps {
 const baseClasses = 'inline-flex rounded-lg px-4 py-2 text-sm transition-colors'
 
 const NavGroup = memo(({ item, isExpanded, onToggle }: NavGroupProps) => {
+  const controlsId = `group-${item.label.replace(/\s+/g, '-')}`
   const children = useMemo(() => {
     return item.children?.map((child) => (
       <Link
         activeOptions={{ exact: false }}
         activeProps={{
+          'aria-current': 'page',
           className: clsx(baseClasses, 'bg-brand/20 text-brand'),
         }}
         inactiveProps={{
@@ -26,7 +28,7 @@ const NavGroup = memo(({ item, isExpanded, onToggle }: NavGroupProps) => {
             'text-neutral-800 hover:bg-brand/5 hover:text-brand',
           ),
         }}
-        key={child.label}
+        key={child.path}
         to={child.path}
       >
         {child.label}
@@ -41,7 +43,7 @@ const NavGroup = memo(({ item, isExpanded, onToggle }: NavGroupProps) => {
   return (
     <div className="mb-2">
       <button
-        aria-controls={`group-${item.label}`}
+        aria-controls={controlsId}
         aria-expanded={isExpanded}
         className="hover:bg-brand/5 hover:text-brand inline-flex w-full items-center rounded-2xl px-4 py-2 text-[15px] font-semibold text-neutral-800 transition-colors"
         onClick={handleToggle}
@@ -73,7 +75,9 @@ const NavGroup = memo(({ item, isExpanded, onToggle }: NavGroupProps) => {
         </div>
       </button>
       {isExpanded && (
-        <div className="ms-6 mt-1 flex flex-col items-start">{children}</div>
+        <div className="ms-6 mt-1 flex flex-col items-start" id={controlsId}>
+          {children}
+        </div>
       )}
     </div>
   )

@@ -75,7 +75,11 @@ const NavDrawer = memo(() => {
           <img alt="Kindora Logo" src={Logo} />
         </div>
 
-        <nav className="flex-1 overflow-y-auto p-4" role="navigation">
+        <nav
+          aria-label="Primary"
+          className="flex-1 overflow-y-auto p-4"
+          role="navigation"
+        >
           {menuItems}
         </nav>
       </aside>

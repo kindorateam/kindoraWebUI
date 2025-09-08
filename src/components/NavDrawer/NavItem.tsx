@@ -15,6 +15,7 @@ const NavItem = memo(({ item }: NavItemProps) => {
     <Link
       activeOptions={{ exact: false }}
       activeProps={{
+        'aria-current': 'page',
         className: `${baseClasses} bg-brand/20 text-brand`,
       }}
       inactiveProps={{
