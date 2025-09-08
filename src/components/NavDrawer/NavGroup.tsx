@@ -11,18 +11,21 @@ interface NavGroupProps {
   onToggle: (itemLabel: string) => void
 }
 
+const baseClasses = 'inline-flex rounded-lg px-4 py-2 text-sm transition-colors'
+
 const NavGroup = memo(({ item, isExpanded, onToggle }: NavGroupProps) => {
   const children = useMemo(() => {
     return item.children?.map((child) => (
       <Link
         activeOptions={{ exact: false }}
         activeProps={{
-          className:
-            'inline-flex rounded-lg px-4 py-2 text-sm transition-colors bg-brand/20 font-medium text-gray-900',
+          className: clsx(baseClasses, 'bg-brand/20 text-brand'),
         }}
         inactiveProps={{
-          className:
-            'inline-flex rounded-lg px-4 py-2 text-sm transition-colors text-gray-600 hover:bg-gray-50 hover:text-gray-900',
+          className: clsx(
+            baseClasses,
+            'text-neutral-800 hover:bg-brand/5 hover:text-brand',
+          ),
         }}
         key={child.label}
         to={child.path}
@@ -39,13 +42,13 @@ const NavGroup = memo(({ item, isExpanded, onToggle }: NavGroupProps) => {
   return (
     <div className="mb-2">
       <button
-        className="inline-flex w-full items-center rounded-2xl px-4 py-2 text-gray-700 transition-colors hover:bg-gray-50"
+        className="hover:bg-brand/5 hover:text-brand inline-flex w-full items-center rounded-2xl px-4 py-2 text-[15px] font-semibold text-neutral-800 transition-colors"
         onClick={handleToggle}
         type="button"
       >
         <div className="flex items-center gap-2">
           {item.icon}
-          <span className="font-medium">{item.label}</span>
+          <span>{item.label}</span>
           <svg
             className={clsx('h-4 w-4 transition-transform', {
               'rotate-180': isExpanded,

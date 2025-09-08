@@ -8,22 +8,22 @@ interface NavItemProps {
 }
 
 const baseClasses =
-  'mb-2 inline-flex items-center gap-2 rounded-2xl px-4 py-2 font-semibold transition-colors'
+  'mb-2 inline-flex items-center gap-2 rounded-2xl px-4 py-2 text-[15px] font-semibold transition-colors'
 
 const NavItem = memo(({ item }: NavItemProps) => {
   return (
     <Link
       activeOptions={{ exact: false }}
       activeProps={{
-        className: `${baseClasses} bg-gray-100 text-gray-900 backdrop-opacity-20`,
+        className: `${baseClasses} bg-brand/20 text-brand`,
       }}
       inactiveProps={{
-        className: `${baseClasses} text-gray-700 hover:bg-gray-100`,
+        className: `${baseClasses} text-neutral-800 hover:bg-brand/5 hover:text-brand`,
       }}
       to={item.path}
     >
       {item.icon}
-      <span className="font-medium">{item.label}</span>
+      <span>{item.label}</span>
       {item.badge && (
         <span className="ml-auto flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs text-white">
           {item.badge}

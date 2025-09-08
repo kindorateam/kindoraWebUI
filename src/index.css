@@ -16,10 +16,10 @@
   --color-brand-active: #6f2237;
   --color-brand-hover: #8d4055;
 
-  --color-text-primary: #393b3f;
-  --color-text-primary-muted: #646464;
-  --color-text-secondary: #909090;
-  --color-text-secondary-strong: #707070;
+  --color-neutral-800: #393b3f;
+  --color-neutral-700: #646464;
+  --color-neutral-600: #707070;
+  --color-neutral-500: #909090;
 
   --tw-leading: 1;
 

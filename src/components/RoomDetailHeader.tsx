@@ -1,8 +1,9 @@
-import { Button, Tab, Tabs } from '@heroui/react'
+import { Tab, Tabs } from '@heroui/react'
 import { Avatar } from '@heroui/react'
 import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
 
+import Button from './Button'
 import Filters from './Filters'
 import StudentIcon from './icons/StudentIcon'
 import IdentityChip from './IdentityChip'
@@ -91,8 +92,7 @@ const RoomDetailHeader = ({
                 ))}
               </div>
               <Button
-                className="bg-brand text-medium ms-auto text-white"
-                radius="lg"
+                className="ms-auto"
                 startContent={<StudentIcon fill="#fff" />}
               >
                 Add student
