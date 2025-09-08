@@ -1,4 +1,4 @@
-import { useLocation } from '@tanstack/react-router'
+import { useRouterState } from '@tanstack/react-router'
 import { useAtom } from 'jotai'
 import { memo, useCallback, useMemo } from 'react'
 
@@ -11,28 +11,16 @@ import { navDrawerExpandedItemsAtom, toggleNavDrawerItemAtom } from '@/stores'
 import type { NavDrawerItem } from './navDrawer.types'
 
 const NavDrawer = memo(() => {
-  const location = useLocation()
+  const matches = useRouterState({ select: (s) => s.matches })
   const [manuallyExpandedItems] = useAtom(navDrawerExpandedItemsAtom)
   const [, toggleExpanded] = useAtom(toggleNavDrawerItemAtom)
 
   const isPathActive = useCallback(
-    (path: string): boolean => {
-      if (!path || path === '#') return false
-
-      const currentPath = location.pathname
-
-      if (currentPath === path) return true
-
-      if (currentPath === path + '/' || currentPath + '/' === path) return true
-
-      const normalizedPath = path.endsWith('/') ? path : path + '/'
-      const normalizedCurrent = currentPath.endsWith('/')
-        ? currentPath
-        : currentPath + '/'
-
-      return normalizedCurrent.startsWith(normalizedPath)
-    },
-    [location.pathname],
+    (path: string) =>
+      matches.some(
+        (m) => m.pathname === path || m.pathname.startsWith(path + '/'),
+      ),
+    [matches],
   )
 
   const hasActiveChild = useCallback(
@@ -43,15 +31,10 @@ const NavDrawer = memo(() => {
     [isPathActive],
   )
 
-  const autoExpandedItems = useMemo(() => {
-    const expanded: string[] = []
-    navDrawerData.forEach((item) => {
-      if (hasActiveChild(item)) {
-        expanded.push(item.label)
-      }
-    })
-    return expanded
-  }, [hasActiveChild])
+  const autoExpandedItems = useMemo(
+    () => navDrawerData.filter(hasActiveChild).map((i) => i.label),
+    [hasActiveChild],
+  )
 
   const expandedItems = useMemo(() => {
     const combined = new Set([...autoExpandedItems, ...manuallyExpandedItems])
@@ -74,7 +57,6 @@ const NavDrawer = memo(() => {
         return (
           <NavGroup
             isExpanded={isExpanded}
-            isPathActive={isPathActive}
             item={item}
             key={item.label}
             onToggle={handleToggleExpanded}
@@ -84,7 +66,7 @@ const NavDrawer = memo(() => {
 
       return <NavItem item={item} key={item.label} />
     })
-  }, [expandedItems, isPathActive, handleToggleExpanded])
+  }, [expandedItems, handleToggleExpanded])
 
   return (
     <div className="relative h-screen">
@@ -93,7 +75,9 @@ const NavDrawer = memo(() => {
           <img alt="Kindora Logo" src={Logo} />
         </div>
 
-        <nav className="flex-1 overflow-y-auto p-4">{menuItems}</nav>
+        <nav className="flex-1 overflow-y-auto p-4" role="navigation">
+          {menuItems}
+        </nav>
       </aside>
     </div>
   )

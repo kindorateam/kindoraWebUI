@@ -7,7 +7,6 @@ import type { NavDrawerItem } from './navDrawer.types'
 interface NavGroupProps {
   item: NavDrawerItem
   isExpanded: boolean
-  isPathActive: (path: string) => boolean
   onToggle: (itemLabel: string) => void
 }
 
@@ -42,6 +41,8 @@ const NavGroup = memo(({ item, isExpanded, onToggle }: NavGroupProps) => {
   return (
     <div className="mb-2">
       <button
+        aria-controls={`group-${item.label}`}
+        aria-expanded={isExpanded}
         className="hover:bg-brand/5 hover:text-brand inline-flex w-full items-center rounded-2xl px-4 py-2 text-[15px] font-semibold text-neutral-800 transition-colors"
         onClick={handleToggle}
         type="button"
