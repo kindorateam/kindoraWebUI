@@ -7,13 +7,14 @@ const StudentActivityTab = () => {
   return (
     <div className="grid grid-cols-12 gap-4">
       <div className="col-span-4">
-        <Card className="bg-[#00000006] p-6.5">
+        <Card className="bg-black/2 p-6.5">
           <CardHeader className="p-0">
-            <Text as="h3" className="font-semibold" size={18}>
+            <Text as="h3" size={18} weight="semibold">
               Parents
             </Text>
           </CardHeader>
           <CardBody className="px-0 py-7">
+            <ParentCard />
             <ParentCard />
           </CardBody>
           <CardFooter className="p-0">

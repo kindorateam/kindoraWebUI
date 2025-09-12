@@ -35,7 +35,7 @@ const StudentDetailHeader = ({
               <Avatar className="size-37.5" showFallback src={studentAvatar} />
             </div>
             <div className="w-full">
-              <Text as="h1" className="mb-1 font-bold" size={36}>
+              <Text as="h1" className="mb-1" size={36} weight="bold">
                 {studentName}
               </Text>
 

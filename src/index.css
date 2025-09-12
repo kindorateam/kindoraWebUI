@@ -4,10 +4,6 @@
 
 @custom-variant dark (&:is(.dark *));
 
-:root {
-  --color-base: var(--color-neutral-800);
-}
-
 @theme {
   --shadow-soft: 0px 2px 4px 0px rgb(0 0 0 / 0.14);
   --background-fade-cream: linear-gradient(

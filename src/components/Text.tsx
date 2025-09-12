@@ -2,13 +2,13 @@ import clsx from 'clsx'
 
 type TextTag = 'span' | 'p' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
 
-type TextSize = 12 | 14 | 16 | 18 | 20 | 24 | 30 | 36
+type TextSize = 11 | 12 | 14 | 16 | 18 | 20 | 24 | 30 | 36
 
 type TextWeightString =
   | 'thin' // 100
   | 'extralight' // 200
   | 'light' // 300
-  | 'normal' // 400
+  | 'regular' // 400
   | 'medium' // 500
   | 'semibold' // 600
   | 'bold' // 700
@@ -23,8 +23,10 @@ type TextColor =
   | 'neutral-700'
   | 'neutral-600'
   | 'neutral-500'
+  | 'black'
 
 const sizeClassMap: Record<TextSize, string> = {
+  11: 'text-[11px]',
   12: 'text-xs',
   14: 'text-sm',
   16: 'text-base',
@@ -39,7 +41,7 @@ const weightNumberToName: Record<TextWeightNumber, TextWeightString> = {
   100: 'thin',
   200: 'extralight',
   300: 'light',
-  400: 'normal',
+  400: 'regular',
   500: 'medium',
   600: 'semibold',
   700: 'bold',
@@ -48,6 +50,7 @@ const weightNumberToName: Record<TextWeightNumber, TextWeightString> = {
 }
 
 const colorClassMap: Record<TextColor, string> = {
+  black: 'text-black',
   brand: 'text-brand',
   'neutral-800': 'text-neutral-800',
   'neutral-700': 'text-neutral-700',
