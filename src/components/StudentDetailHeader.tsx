@@ -30,8 +30,8 @@ const StudentDetailHeader = ({
     <div className="border-b border-[#0000000D]">
       <div className="container max-w-4xl">
         <div className="mb-13 flex items-center">
-          <div className="flex items-center">
-            <div className="me-7">
+          <div className="flex items-center gap-7">
+            <div>
               <Avatar className="size-37.5" showFallback src={studentAvatar} />
             </div>
             <div className="w-full">
@@ -59,11 +59,11 @@ const StudentDetailHeader = ({
               </div>
             </div>
           </div>
-          <div className="ms-auto">
+          <div className="ms-auto flex gap-3.5">
             <Button className="ms-auto" color="secondary">
               Mark absent
             </Button>
-            <Button className="ms-3.5">Sign Out</Button>
+            <Button>Sign Out</Button>
           </div>
         </div>
 
