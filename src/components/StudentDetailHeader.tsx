@@ -1,6 +1,7 @@
-import { Button, Chip } from '@heroui/react'
+import { Chip } from '@heroui/react'
 import { Avatar } from '@heroui/react'
 
+import Button from './Button'
 import IdentityChip from './IdentityChip'
 
 import type { Tag } from '@/types/student'
@@ -50,18 +51,10 @@ const StudentDetailHeader = ({
             </div>
           </div>
           <div className="ms-auto">
-            <Button
-              className="bg-brand text-medium ms-auto text-white"
-              radius="lg"
-            >
+            <Button className="ms-auto" color="secondary">
               Mark absent
             </Button>
-            <Button
-              className="bg-brand text-medium ms-3.5 text-white"
-              radius="lg"
-            >
-              Sign Out
-            </Button>
+            <Button className="ms-3.5">Sign Out</Button>
           </div>
         </div>
 
