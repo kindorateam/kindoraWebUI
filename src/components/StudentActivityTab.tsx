@@ -1,20 +1,18 @@
-import {
-  // Avatar,
-  Button,
-  Card,
-  CardBody,
-  CardFooter,
-  CardHeader,
-} from '@heroui/react'
+import { Button, Card, CardBody, CardFooter, CardHeader } from '@heroui/react'
 
 import ParentCard from './ParentCard'
+import Text from './Text'
 
 const StudentActivityTab = () => {
   return (
     <div className="grid grid-cols-12 gap-4">
       <div className="col-span-4">
         <Card className="bg-[#00000006] p-6.5">
-          <CardHeader className="p-0 text-lg font-semibold">Parents</CardHeader>
+          <CardHeader className="p-0">
+            <Text as="h3" className="font-semibold" size={18}>
+              Parents
+            </Text>
+          </CardHeader>
           <CardBody className="px-0 py-7">
             <ParentCard />
           </CardBody>
