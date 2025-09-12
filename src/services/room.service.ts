@@ -249,13 +249,13 @@ const MOCK_ROOMS_DATA: Room[] = [
 
 export const getRooms = async (): Promise<Room[]> => {
   // Simulate API delay
-  await new Promise((resolve) => setTimeout(resolve, 500))
+  await new Promise((resolve) => setTimeout(resolve, 1))
   return MOCK_ROOMS_DATA
 }
 
 export const getRoomById = async (id: string): Promise<Room | undefined> => {
   // Reduce delay for better performance
-  await new Promise((resolve) => setTimeout(resolve, 100))
+  await new Promise((resolve) => setTimeout(resolve, 1))
   return MOCK_ROOMS_DATA.find((room) => room.id === id)
 }
 

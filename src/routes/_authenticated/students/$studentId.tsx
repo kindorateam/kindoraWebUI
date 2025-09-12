@@ -57,7 +57,6 @@ function StudentDetailLayout() {
     refetchOnReconnect: false, // Don't refetch on reconnect
     enabled: !!studentId, // Only run query if studentId exists
   })
-  console.log(student)
 
   const handleTabChange = useTabNavigation(tab, 'activity', navigate)
 
@@ -73,9 +72,11 @@ function StudentDetailLayout() {
             <Tabs
               aria-label="Student details tabs"
               classNames={{
-                tabList: 'gap-4',
-                cursor: 'w-full',
-                tab: 'p-0',
+                tabList: 'p-0 gap-7',
+                cursor: 'w-full bg-brand',
+                tab: 'p-0 pb-5',
+                tabContent:
+                  'group-data-[selected=true]:text-brand text-neutral-700 font-medium',
               }}
               onSelectionChange={(key) => handleTabChange(key as TabType)}
               selectedKey={tab}
@@ -90,7 +91,7 @@ function StudentDetailLayout() {
           }
           tags={student?.tags}
         />
-        <main className="container max-w-7xl pt-10">
+        <main className="container max-w-4xl pt-10">
           <Outlet />
         </main>
       </div>

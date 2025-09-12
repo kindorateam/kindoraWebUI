@@ -1,8 +1,9 @@
-import { Chip } from '@heroui/react'
 import { Avatar } from '@heroui/react'
 
 import Button from './Button'
+import Chip from './Chip'
 import IdentityChip from './IdentityChip'
+import Text from './Text'
 
 import type { Tag } from '@/types/student'
 
@@ -27,17 +28,25 @@ const StudentDetailHeader = ({
 }: StudentDetailHeaderProps) => {
   return (
     <div className="border-b border-[#0000000D]">
-      <div className="container max-w-7xl">
+      <div className="container max-w-4xl">
         <div className="mb-13 flex items-center">
           <div className="flex items-center">
             <div className="me-7">
               <Avatar className="size-37.5" showFallback src={studentAvatar} />
             </div>
             <div className="w-full">
-              <h1 className="mb-1 leading-none font-semibold lg:text-[36px]">
+              <Text as="h1" className="mb-1 font-bold" size={36}>
                 {studentName}
-              </h1>
-              <p className="mb-3">{age}</p>
+              </Text>
+
+              <div className="mb-3.5">
+                <Text as="span" size={12}>
+                  {age}{' '}
+                </Text>
+                <Text as="span" className="opacity-50" size={12}>
+                  5 years
+                </Text>
+              </div>
               <div className="mb-3 flex gap-2.5">
                 {tags?.map((tag) => (
                   <Chip key={tag.id} size="sm">

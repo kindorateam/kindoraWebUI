@@ -70,7 +70,7 @@ const RoomDetailHeader = ({
 
   return (
     <div className="border-b border-[#0000000D]">
-      <div className="container max-w-7xl">
+      <div className="container max-w-4xl">
         <div className="mb-13 flex">
           <div className="me-7">
             <Avatar className="size-37.5" showFallback />
@@ -110,11 +110,11 @@ const RoomDetailHeader = ({
           <Tabs
             aria-label="Room details tabs"
             classNames={{
-              // base: 'w-49',
-              tabList: 'gap-4',
-              cursor: 'w-full',
-              tab: 'p-0',
-              // tabContent: 'group-data-[selected=true]:text-primary',
+              tabList: 'p-0 gap-7',
+              cursor: 'w-full bg-brand',
+              tab: 'p-0 pb-5',
+              tabContent:
+                'group-data-[selected=true]:text-brand text-neutral-700 font-medium',
             }}
             onSelectionChange={(key) => onTabChange(key as TabType)}
             selectedKey={activeTab}

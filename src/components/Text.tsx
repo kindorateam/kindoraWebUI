@@ -2,7 +2,7 @@ import clsx from 'clsx'
 
 type TextTag = 'span' | 'p' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
 
-type TextSize = 12 | 14 | 16 | 18 | 20 | 24 | 30 | 34
+type TextSize = 12 | 14 | 16 | 18 | 20 | 24 | 30 | 36
 
 const sizeClassMap: Record<TextSize, string> = {
   12: 'text-xs',
@@ -12,7 +12,7 @@ const sizeClassMap: Record<TextSize, string> = {
   20: 'text-xl',
   24: 'text-2xl',
   30: 'text-3xl',
-  34: 'text-4xl',
+  36: 'text-4xl',
 }
 
 interface TextProps extends React.HTMLAttributes<HTMLElement> {
@@ -30,7 +30,7 @@ const Text = ({
   const sizeClass = sizeClassMap[size ?? 16] ?? 'text-base'
 
   return (
-    <Tag className={clsx(sizeClass, className)} {...props}>
+    <Tag className={clsx(sizeClass, className, 'text-neutral-800')} {...props}>
       {children}
     </Tag>
   )

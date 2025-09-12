@@ -400,7 +400,7 @@ const MOCK_STUDENTS_DATA: Student[] = [
 
 export const getStudents = async (): Promise<Student[]> => {
   // Simulate API delay
-  await new Promise((resolve) => setTimeout(resolve, 500))
+  await new Promise((resolve) => setTimeout(resolve, 1))
   return MOCK_STUDENTS_DATA
 }
 
@@ -408,7 +408,7 @@ export const getStudentById = async (
   studentId: string,
 ): Promise<Student | null> => {
   // Simulate API delay
-  await new Promise((resolve) => setTimeout(resolve, 300))
+  await new Promise((resolve) => setTimeout(resolve, 1))
   return MOCK_STUDENTS_DATA.find((student) => student.id === studentId) ?? null
 }
 

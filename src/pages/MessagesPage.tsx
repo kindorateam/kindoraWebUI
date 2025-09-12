@@ -57,7 +57,13 @@ const MessagesPage = () => {
           <>
             <Tabs
               aria-label="Messages tabs"
-              classNames={{ tabList: 'gap-4', cursor: 'w-full', tab: 'p-0' }}
+              classNames={{
+                tabList: 'p-0 gap-7',
+                cursor: 'w-full bg-brand',
+                tab: 'p-0 pb-5',
+                tabContent:
+                  'group-data-[selected=true]:text-brand text-neutral-700 font-medium',
+              }}
               onSelectionChange={handleTabChange}
               selectedKey={tab}
               variant="underlined"
@@ -70,7 +76,7 @@ const MessagesPage = () => {
         }
       />
 
-      <div className="container mt-10.5 max-w-7xl">
+      <div className="container mt-10.5 max-w-4xl">
         {tab === 'parents' && <ParentsMessagesTable />}
         {tab === 'rooms' && <SentPanel />}
       </div>

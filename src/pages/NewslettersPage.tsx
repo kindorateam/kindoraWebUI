@@ -40,7 +40,13 @@ const NewslettersPage = () => {
         bottomSlot={
           <Tabs
             aria-label="Newsletters tabs"
-            classNames={{ tabList: 'gap-4', cursor: 'w-full', tab: 'p-0' }}
+            classNames={{
+              tabList: 'p-0 gap-7',
+              cursor: 'w-full bg-brand',
+              tab: 'p-0 pb-5',
+              tabContent:
+                'group-data-[selected=true]:text-brand text-neutral-700 font-medium',
+            }}
             onSelectionChange={(key) => handleTabChange(key as TabKey)}
             selectedKey={tab}
             variant="underlined"
@@ -53,7 +59,7 @@ const NewslettersPage = () => {
         endSlot={<Button>Create New</Button>}
       />
 
-      <div className="container mt-10.5 max-w-7xl">
+      <div className="container mt-10.5 max-w-4xl">
         {tab === 'sent' && (
           <DataTable<Newsletter>
             columns={[

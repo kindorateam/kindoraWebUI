@@ -56,7 +56,7 @@ const MOCK_STAFF_DATA: Staff[] = [
 
 export const getStaffMembers = async (): Promise<Staff[]> => {
   // Simulate API delay
-  await new Promise((resolve) => setTimeout(resolve, 500))
+  await new Promise((resolve) => setTimeout(resolve, 1))
   return MOCK_STAFF_DATA
 }
 
@@ -65,7 +65,7 @@ export const updateStaffPin = async (
   newPin: string,
 ): Promise<void> => {
   // Simulate API call
-  await new Promise((resolve) => setTimeout(resolve, 300))
+  await new Promise((resolve) => setTimeout(resolve, 1))
   const staff = MOCK_STAFF_DATA.find((s) => s.id === staffId)
   if (staff) {
     staff.pin = newPin

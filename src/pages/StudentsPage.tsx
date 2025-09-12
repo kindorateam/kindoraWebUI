@@ -73,7 +73,7 @@ const StudentsPage = () => {
           <Filters filters={filters} onFilterChange={handleFilterChange} />
         }
       />
-      <main className="container max-w-7xl pt-10">
+      <main className="container max-w-4xl pt-10">
         <StudentsTable />
       </main>
     </>

@@ -75,7 +75,7 @@ function RoomDetailLayout() {
           onTabChange={handleTabChange}
           roomId={roomId}
         />
-        <main className="container max-w-7xl pt-10">
+        <main className="container max-w-4xl pt-10">
           <Outlet />
         </main>
       </div>
