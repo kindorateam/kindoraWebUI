@@ -1,4 +1,4 @@
-import { useRouterState } from '@tanstack/react-router'
+import { Link, useRouterState } from '@tanstack/react-router'
 import { useAtom } from 'jotai'
 import { memo, useCallback, useMemo } from 'react'
 
@@ -71,12 +71,14 @@ const NavDrawer = memo(() => {
   return (
     <div className="relative h-screen">
       <aside className="flex h-full flex-col bg-white shadow-lg">
-        <div className="xl:px-4 xl:py-5">
-          <img alt="Kindora Logo" src={Logo} />
+        <div className="px-4 py-5">
+          <Link to="/dashboard">
+            <img alt="Kindora Logo" src={Logo} />
+          </Link>
         </div>
         <nav
           aria-label="Primary"
-          className="flex-1 overflow-y-auto p-4"
+          className="flex-1 overflow-y-auto px-[14px] py-4"
           role="navigation"
         >
           {menuItems}

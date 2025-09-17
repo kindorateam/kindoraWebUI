@@ -9,7 +9,7 @@ const IdentityChip = ({ fullName, src }: IdentityChipProps) => {
   return (
     <Chip
       avatar={<Avatar fallback src={src} />}
-      className="text-sm"
+      className="hover:bg-brand/5 hover:text-brand text-sm"
       size="lg"
       variant="flat"
     >

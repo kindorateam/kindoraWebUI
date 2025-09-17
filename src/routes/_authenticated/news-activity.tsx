@@ -1,9 +1,9 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-import PlaceholderPage from '@/components/PlaceholderPage'
+import NewsActivityPage from '@/pages/NewsActivityPage'
 
 export const Route = createFileRoute('/_authenticated/news-activity')({
-  component: () => <PlaceholderPage name="News Activity" />,
+  component: () => <NewsActivityPage />,
   beforeLoad: () => {
     return {
       breadcrumb: 'News & Activity',

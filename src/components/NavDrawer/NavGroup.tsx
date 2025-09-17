@@ -10,7 +10,7 @@ interface NavGroupProps {
   onToggle: (itemLabel: string) => void
 }
 
-const baseClasses = 'inline-flex rounded-lg px-4 py-2 text-sm transition-colors'
+const baseClasses = 'flex rounded-[14px] px-4 py-2 text-sm transition-colors'
 
 const NavGroup = memo(({ item, isExpanded, onToggle }: NavGroupProps) => {
   const controlsId = `group-${item.label.replace(/\s+/g, '-')}`
@@ -45,7 +45,7 @@ const NavGroup = memo(({ item, isExpanded, onToggle }: NavGroupProps) => {
       <button
         aria-controls={controlsId}
         aria-expanded={isExpanded}
-        className="hover:bg-brand/5 hover:text-brand inline-flex w-full items-center rounded-2xl px-4 py-2 text-[15px] font-semibold text-neutral-800 transition-colors"
+        className="hover:bg-brand/5 hover:text-brand flex w-full items-center rounded-2xl px-4 py-2 text-[15px] font-semibold text-neutral-800 transition-colors"
         onClick={handleToggle}
         type="button"
       >
@@ -75,7 +75,7 @@ const NavGroup = memo(({ item, isExpanded, onToggle }: NavGroupProps) => {
         </div>
       </button>
       {isExpanded && (
-        <div className="ms-6 mt-1 flex flex-col items-start" id={controlsId}>
+        <div className="ms-6 mt-2 flex flex-col" id={controlsId}>
           {children}
         </div>
       )}
