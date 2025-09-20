@@ -60,6 +60,14 @@ export const getStaffMembers = async (): Promise<Staff[]> => {
   return MOCK_STAFF_DATA
 }
 
+export const getStaffMemberById = async (
+  staffId: string,
+): Promise<Staff | null> => {
+  await new Promise((resolve) => setTimeout(resolve, 1))
+  const staff = MOCK_STAFF_DATA.find((member) => member.id === staffId)
+  return staff ?? null
+}
+
 export const updateStaffPin = async (
   staffId: string,
   newPin: string,
@@ -74,5 +82,6 @@ export const updateStaffPin = async (
 
 export default {
   getStaffMembers,
+  getStaffMemberById,
   updateStaffPin,
 }

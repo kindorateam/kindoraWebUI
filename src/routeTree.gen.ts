@@ -30,8 +30,10 @@ import { Route as AuthenticatedStudentsIndexRouteImport } from './routes/_authen
 import { Route as AuthenticatedStaffIndexRouteImport } from './routes/_authenticated/staff/index'
 import { Route as AuthenticatedRoomsIndexRouteImport } from './routes/_authenticated/rooms/index'
 import { Route as AuthenticatedStudentsStudentIdRouteImport } from './routes/_authenticated/students/$studentId'
+import { Route as AuthenticatedStaffStaffIdRouteImport } from './routes/_authenticated/staff/$staffId'
 import { Route as AuthenticatedRoomsRoomIdRouteImport } from './routes/_authenticated/rooms/$roomId'
 import { Route as AuthenticatedStudentsStudentIdIndexRouteImport } from './routes/_authenticated/students/$studentId/index'
+import { Route as AuthenticatedStaffStaffIdIndexRouteImport } from './routes/_authenticated/staff/$staffId/index'
 import { Route as AuthenticatedRoomsRoomIdIndexRouteImport } from './routes/_authenticated/rooms/$roomId/index'
 
 const AuthenticatedRoute = AuthenticatedRouteImport.update({
@@ -141,6 +143,12 @@ const AuthenticatedStudentsStudentIdRoute =
     path: '/$studentId',
     getParentRoute: () => AuthenticatedStudentsRoute,
   } as any)
+const AuthenticatedStaffStaffIdRoute =
+  AuthenticatedStaffStaffIdRouteImport.update({
+    id: '/$staffId',
+    path: '/$staffId',
+    getParentRoute: () => AuthenticatedStaffRoute,
+  } as any)
 const AuthenticatedRoomsRoomIdRoute =
   AuthenticatedRoomsRoomIdRouteImport.update({
     id: '/$roomId',
@@ -152,6 +160,12 @@ const AuthenticatedStudentsStudentIdIndexRoute =
     id: '/',
     path: '/',
     getParentRoute: () => AuthenticatedStudentsStudentIdRoute,
+  } as any)
+const AuthenticatedStaffStaffIdIndexRoute =
+  AuthenticatedStaffStaffIdIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedStaffStaffIdRoute,
   } as any)
 const AuthenticatedRoomsRoomIdIndexRoute =
   AuthenticatedRoomsRoomIdIndexRouteImport.update({
@@ -177,11 +191,13 @@ export interface FileRoutesByFullPath {
   '/staff': typeof AuthenticatedStaffRouteWithChildren
   '/students': typeof AuthenticatedStudentsRouteWithChildren
   '/rooms/$roomId': typeof AuthenticatedRoomsRoomIdRouteWithChildren
+  '/staff/$staffId': typeof AuthenticatedStaffStaffIdRouteWithChildren
   '/students/$studentId': typeof AuthenticatedStudentsStudentIdRouteWithChildren
   '/rooms/': typeof AuthenticatedRoomsIndexRoute
   '/staff/': typeof AuthenticatedStaffIndexRoute
   '/students/': typeof AuthenticatedStudentsIndexRoute
   '/rooms/$roomId/': typeof AuthenticatedRoomsRoomIdIndexRoute
+  '/staff/$staffId/': typeof AuthenticatedStaffStaffIdIndexRoute
   '/students/$studentId/': typeof AuthenticatedStudentsStudentIdIndexRoute
 }
 export interface FileRoutesByTo {
@@ -201,6 +217,7 @@ export interface FileRoutesByTo {
   '/staff': typeof AuthenticatedStaffIndexRoute
   '/students': typeof AuthenticatedStudentsIndexRoute
   '/rooms/$roomId': typeof AuthenticatedRoomsRoomIdIndexRoute
+  '/staff/$staffId': typeof AuthenticatedStaffStaffIdIndexRoute
   '/students/$studentId': typeof AuthenticatedStudentsStudentIdIndexRoute
 }
 export interface FileRoutesById {
@@ -223,11 +240,13 @@ export interface FileRoutesById {
   '/_authenticated/staff': typeof AuthenticatedStaffRouteWithChildren
   '/_authenticated/students': typeof AuthenticatedStudentsRouteWithChildren
   '/_authenticated/rooms/$roomId': typeof AuthenticatedRoomsRoomIdRouteWithChildren
+  '/_authenticated/staff/$staffId': typeof AuthenticatedStaffStaffIdRouteWithChildren
   '/_authenticated/students/$studentId': typeof AuthenticatedStudentsStudentIdRouteWithChildren
   '/_authenticated/rooms/': typeof AuthenticatedRoomsIndexRoute
   '/_authenticated/staff/': typeof AuthenticatedStaffIndexRoute
   '/_authenticated/students/': typeof AuthenticatedStudentsIndexRoute
   '/_authenticated/rooms/$roomId/': typeof AuthenticatedRoomsRoomIdIndexRoute
+  '/_authenticated/staff/$staffId/': typeof AuthenticatedStaffStaffIdIndexRoute
   '/_authenticated/students/$studentId/': typeof AuthenticatedStudentsStudentIdIndexRoute
 }
 export interface FileRouteTypes {
@@ -249,11 +268,13 @@ export interface FileRouteTypes {
     | '/staff'
     | '/students'
     | '/rooms/$roomId'
+    | '/staff/$staffId'
     | '/students/$studentId'
     | '/rooms/'
     | '/staff/'
     | '/students/'
     | '/rooms/$roomId/'
+    | '/staff/$staffId/'
     | '/students/$studentId/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -273,6 +294,7 @@ export interface FileRouteTypes {
     | '/staff'
     | '/students'
     | '/rooms/$roomId'
+    | '/staff/$staffId'
     | '/students/$studentId'
   id:
     | '__root__'
@@ -294,11 +316,13 @@ export interface FileRouteTypes {
     | '/_authenticated/staff'
     | '/_authenticated/students'
     | '/_authenticated/rooms/$roomId'
+    | '/_authenticated/staff/$staffId'
     | '/_authenticated/students/$studentId'
     | '/_authenticated/rooms/'
     | '/_authenticated/staff/'
     | '/_authenticated/students/'
     | '/_authenticated/rooms/$roomId/'
+    | '/_authenticated/staff/$staffId/'
     | '/_authenticated/students/$studentId/'
   fileRoutesById: FileRoutesById
 }
@@ -457,6 +481,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedStudentsStudentIdRouteImport
       parentRoute: typeof AuthenticatedStudentsRoute
     }
+    '/_authenticated/staff/$staffId': {
+      id: '/_authenticated/staff/$staffId'
+      path: '/$staffId'
+      fullPath: '/staff/$staffId'
+      preLoaderRoute: typeof AuthenticatedStaffStaffIdRouteImport
+      parentRoute: typeof AuthenticatedStaffRoute
+    }
     '/_authenticated/rooms/$roomId': {
       id: '/_authenticated/rooms/$roomId'
       path: '/$roomId'
@@ -470,6 +501,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/students/$studentId/'
       preLoaderRoute: typeof AuthenticatedStudentsStudentIdIndexRouteImport
       parentRoute: typeof AuthenticatedStudentsStudentIdRoute
+    }
+    '/_authenticated/staff/$staffId/': {
+      id: '/_authenticated/staff/$staffId/'
+      path: '/'
+      fullPath: '/staff/$staffId/'
+      preLoaderRoute: typeof AuthenticatedStaffStaffIdIndexRouteImport
+      parentRoute: typeof AuthenticatedStaffStaffIdRoute
     }
     '/_authenticated/rooms/$roomId/': {
       id: '/_authenticated/rooms/$roomId/'
@@ -518,11 +556,27 @@ const AuthenticatedRoomsRouteChildren: AuthenticatedRoomsRouteChildren = {
 const AuthenticatedRoomsRouteWithChildren =
   AuthenticatedRoomsRoute._addFileChildren(AuthenticatedRoomsRouteChildren)
 
+interface AuthenticatedStaffStaffIdRouteChildren {
+  AuthenticatedStaffStaffIdIndexRoute: typeof AuthenticatedStaffStaffIdIndexRoute
+}
+
+const AuthenticatedStaffStaffIdRouteChildren: AuthenticatedStaffStaffIdRouteChildren =
+  {
+    AuthenticatedStaffStaffIdIndexRoute: AuthenticatedStaffStaffIdIndexRoute,
+  }
+
+const AuthenticatedStaffStaffIdRouteWithChildren =
+  AuthenticatedStaffStaffIdRoute._addFileChildren(
+    AuthenticatedStaffStaffIdRouteChildren,
+  )
+
 interface AuthenticatedStaffRouteChildren {
+  AuthenticatedStaffStaffIdRoute: typeof AuthenticatedStaffStaffIdRouteWithChildren
   AuthenticatedStaffIndexRoute: typeof AuthenticatedStaffIndexRoute
 }
 
 const AuthenticatedStaffRouteChildren: AuthenticatedStaffRouteChildren = {
+  AuthenticatedStaffStaffIdRoute: AuthenticatedStaffStaffIdRouteWithChildren,
   AuthenticatedStaffIndexRoute: AuthenticatedStaffIndexRoute,
 }
 
