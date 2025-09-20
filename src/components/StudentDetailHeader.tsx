@@ -2,6 +2,8 @@ import { Avatar } from '@heroui/react'
 
 import Button from './Button'
 import Chip from './Chip'
+import CalendarPlusIcon from './icons/CalendarPlusIcon'
+import SignOutIcon from './icons/SignOutIcon'
 import IdentityChip from './IdentityChip'
 import Text from './Text'
 
@@ -60,10 +62,14 @@ const StudentDetailHeader = ({
             </div>
           </div>
           <div className="ms-auto flex gap-3.5">
-            <Button className="ms-auto" color="secondary">
+            <Button
+              className="ms-auto"
+              color="secondary"
+              startContent={<CalendarPlusIcon />}
+            >
               Mark absent
             </Button>
-            <Button>Sign Out</Button>
+            <Button startContent={<SignOutIcon fill="#fff" />}>Sign Out</Button>
           </div>
         </div>
 

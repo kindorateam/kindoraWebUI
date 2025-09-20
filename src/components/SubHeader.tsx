@@ -36,7 +36,7 @@ const SubHeader = ({
   return (
     <div className="border-b border-[#0000000D]">
       <div className="container max-w-4xl">
-        <div className={clsx('flex justify-between', topMb)}>
+        <div className={clsx('flex items-center justify-between', topMb)}>
           <div
             className={clsx(
               'flex gap-3',

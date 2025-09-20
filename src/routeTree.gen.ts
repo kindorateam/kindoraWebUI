@@ -27,6 +27,7 @@ import { Route as AuthenticatedAnalyticsRouteImport } from './routes/_authentica
 import { Route as AuthenticatedAdmissionsRouteImport } from './routes/_authenticated/admissions'
 import { Route as AuthLoginRouteImport } from './routes/_auth/login'
 import { Route as AuthenticatedStudentsIndexRouteImport } from './routes/_authenticated/students/index'
+import { Route as AuthenticatedStaffIndexRouteImport } from './routes/_authenticated/staff/index'
 import { Route as AuthenticatedRoomsIndexRouteImport } from './routes/_authenticated/rooms/index'
 import { Route as AuthenticatedStudentsStudentIdRouteImport } from './routes/_authenticated/students/$studentId'
 import { Route as AuthenticatedRoomsRoomIdRouteImport } from './routes/_authenticated/rooms/$roomId'
@@ -124,6 +125,11 @@ const AuthenticatedStudentsIndexRoute =
     path: '/',
     getParentRoute: () => AuthenticatedStudentsRoute,
   } as any)
+const AuthenticatedStaffIndexRoute = AuthenticatedStaffIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthenticatedStaffRoute,
+} as any)
 const AuthenticatedRoomsIndexRoute = AuthenticatedRoomsIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -168,11 +174,12 @@ export interface FileRoutesByFullPath {
   '/newsletters': typeof AuthenticatedNewslettersRoute
   '/reports': typeof AuthenticatedReportsRoute
   '/rooms': typeof AuthenticatedRoomsRouteWithChildren
-  '/staff': typeof AuthenticatedStaffRoute
+  '/staff': typeof AuthenticatedStaffRouteWithChildren
   '/students': typeof AuthenticatedStudentsRouteWithChildren
   '/rooms/$roomId': typeof AuthenticatedRoomsRoomIdRouteWithChildren
   '/students/$studentId': typeof AuthenticatedStudentsStudentIdRouteWithChildren
   '/rooms/': typeof AuthenticatedRoomsIndexRoute
+  '/staff/': typeof AuthenticatedStaffIndexRoute
   '/students/': typeof AuthenticatedStudentsIndexRoute
   '/rooms/$roomId/': typeof AuthenticatedRoomsRoomIdIndexRoute
   '/students/$studentId/': typeof AuthenticatedStudentsStudentIdIndexRoute
@@ -190,8 +197,8 @@ export interface FileRoutesByTo {
   '/news-activity': typeof AuthenticatedNewsActivityRoute
   '/newsletters': typeof AuthenticatedNewslettersRoute
   '/reports': typeof AuthenticatedReportsRoute
-  '/staff': typeof AuthenticatedStaffRoute
   '/rooms': typeof AuthenticatedRoomsIndexRoute
+  '/staff': typeof AuthenticatedStaffIndexRoute
   '/students': typeof AuthenticatedStudentsIndexRoute
   '/rooms/$roomId': typeof AuthenticatedRoomsRoomIdIndexRoute
   '/students/$studentId': typeof AuthenticatedStudentsStudentIdIndexRoute
@@ -213,11 +220,12 @@ export interface FileRoutesById {
   '/_authenticated/newsletters': typeof AuthenticatedNewslettersRoute
   '/_authenticated/reports': typeof AuthenticatedReportsRoute
   '/_authenticated/rooms': typeof AuthenticatedRoomsRouteWithChildren
-  '/_authenticated/staff': typeof AuthenticatedStaffRoute
+  '/_authenticated/staff': typeof AuthenticatedStaffRouteWithChildren
   '/_authenticated/students': typeof AuthenticatedStudentsRouteWithChildren
   '/_authenticated/rooms/$roomId': typeof AuthenticatedRoomsRoomIdRouteWithChildren
   '/_authenticated/students/$studentId': typeof AuthenticatedStudentsStudentIdRouteWithChildren
   '/_authenticated/rooms/': typeof AuthenticatedRoomsIndexRoute
+  '/_authenticated/staff/': typeof AuthenticatedStaffIndexRoute
   '/_authenticated/students/': typeof AuthenticatedStudentsIndexRoute
   '/_authenticated/rooms/$roomId/': typeof AuthenticatedRoomsRoomIdIndexRoute
   '/_authenticated/students/$studentId/': typeof AuthenticatedStudentsStudentIdIndexRoute
@@ -243,6 +251,7 @@ export interface FileRouteTypes {
     | '/rooms/$roomId'
     | '/students/$studentId'
     | '/rooms/'
+    | '/staff/'
     | '/students/'
     | '/rooms/$roomId/'
     | '/students/$studentId/'
@@ -260,8 +269,8 @@ export interface FileRouteTypes {
     | '/news-activity'
     | '/newsletters'
     | '/reports'
-    | '/staff'
     | '/rooms'
+    | '/staff'
     | '/students'
     | '/rooms/$roomId'
     | '/students/$studentId'
@@ -287,6 +296,7 @@ export interface FileRouteTypes {
     | '/_authenticated/rooms/$roomId'
     | '/_authenticated/students/$studentId'
     | '/_authenticated/rooms/'
+    | '/_authenticated/staff/'
     | '/_authenticated/students/'
     | '/_authenticated/rooms/$roomId/'
     | '/_authenticated/students/$studentId/'
@@ -426,6 +436,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedStudentsIndexRouteImport
       parentRoute: typeof AuthenticatedStudentsRoute
     }
+    '/_authenticated/staff/': {
+      id: '/_authenticated/staff/'
+      path: '/'
+      fullPath: '/staff/'
+      preLoaderRoute: typeof AuthenticatedStaffIndexRouteImport
+      parentRoute: typeof AuthenticatedStaffRoute
+    }
     '/_authenticated/rooms/': {
       id: '/_authenticated/rooms/'
       path: '/'
@@ -501,6 +518,17 @@ const AuthenticatedRoomsRouteChildren: AuthenticatedRoomsRouteChildren = {
 const AuthenticatedRoomsRouteWithChildren =
   AuthenticatedRoomsRoute._addFileChildren(AuthenticatedRoomsRouteChildren)
 
+interface AuthenticatedStaffRouteChildren {
+  AuthenticatedStaffIndexRoute: typeof AuthenticatedStaffIndexRoute
+}
+
+const AuthenticatedStaffRouteChildren: AuthenticatedStaffRouteChildren = {
+  AuthenticatedStaffIndexRoute: AuthenticatedStaffIndexRoute,
+}
+
+const AuthenticatedStaffRouteWithChildren =
+  AuthenticatedStaffRoute._addFileChildren(AuthenticatedStaffRouteChildren)
+
 interface AuthenticatedStudentsStudentIdRouteChildren {
   AuthenticatedStudentsStudentIdIndexRoute: typeof AuthenticatedStudentsStudentIdIndexRoute
 }
@@ -544,7 +572,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedNewslettersRoute: typeof AuthenticatedNewslettersRoute
   AuthenticatedReportsRoute: typeof AuthenticatedReportsRoute
   AuthenticatedRoomsRoute: typeof AuthenticatedRoomsRouteWithChildren
-  AuthenticatedStaffRoute: typeof AuthenticatedStaffRoute
+  AuthenticatedStaffRoute: typeof AuthenticatedStaffRouteWithChildren
   AuthenticatedStudentsRoute: typeof AuthenticatedStudentsRouteWithChildren
 }
 
@@ -560,7 +588,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedNewslettersRoute: AuthenticatedNewslettersRoute,
   AuthenticatedReportsRoute: AuthenticatedReportsRoute,
   AuthenticatedRoomsRoute: AuthenticatedRoomsRouteWithChildren,
-  AuthenticatedStaffRoute: AuthenticatedStaffRoute,
+  AuthenticatedStaffRoute: AuthenticatedStaffRouteWithChildren,
   AuthenticatedStudentsRoute: AuthenticatedStudentsRouteWithChildren,
 }
 

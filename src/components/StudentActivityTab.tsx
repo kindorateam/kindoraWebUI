@@ -1,5 +1,5 @@
 import Button from './Button'
-import Chat from './Chat'
+import Chat from './Chat/Chat'
 import Chip from './Chip'
 import DetailCard from './DetailCard'
 import InfoCard from './InfoCard'

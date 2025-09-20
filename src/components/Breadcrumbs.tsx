@@ -2,15 +2,11 @@ import { BreadcrumbItem, Breadcrumbs as HeroUIBreadcrumbs } from '@heroui/react'
 import { Link } from '@tanstack/react-router'
 import { memo } from 'react'
 
+import Text from './Text'
 import usePageMetadata from '@/hooks/usePageMetadata'
 
-const breadcrumbClassNames = {
-  list: 'gap-2',
-}
-
 const breadcrumbItemClasses = {
-  item: 'text-sm',
-  separator: 'text-default-400',
+  separator: 'text-base text-neutral-500',
 }
 
 const Breadcrumbs = memo(() => {
@@ -28,7 +24,6 @@ const Breadcrumbs = memo(() => {
 
   return (
     <HeroUIBreadcrumbs
-      classNames={breadcrumbClassNames}
       itemClasses={breadcrumbItemClasses}
       separator="/"
       variant="light"
@@ -36,13 +31,12 @@ const Breadcrumbs = memo(() => {
       {filteredBreadcrumbs.map((crumb, index) => (
         <BreadcrumbItem key={crumb.path}>
           {index === filteredBreadcrumbs.length - 1 ? (
-            <span className="text-default-700 font-medium">{crumb.title}</span>
+            <Text color="neutral-600">{crumb.title}</Text>
           ) : (
-            <Link
-              className="text-default-500 hover:text-default-700 transition-colors"
-              to={crumb.path}
-            >
-              {crumb.title}
+            <Link to={crumb.path}>
+              <Text color="neutral-500" weight="medium">
+                {crumb.title}
+              </Text>
             </Link>
           )}
         </BreadcrumbItem>
