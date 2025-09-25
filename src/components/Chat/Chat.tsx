@@ -1,4 +1,5 @@
 import { Avatar, Image, Input } from '@heroui/react'
+import { useCallback } from 'react'
 
 import ChatMessage from './ChatMessage'
 import EmojiGroup from './EmojiGroup'
@@ -6,8 +7,19 @@ import SocialMetrics from './SocialMetrics'
 import Button from '@/components/Button'
 import FilterIcon from '@/components/icons/FilterIcon'
 import Text from '@/components/Text'
+import useAppDrawer from '@/hooks/useAppDrawer'
 
 const Chat = () => {
+  const { openDrawer } = useAppDrawer()
+
+  const handleAddActivity = useCallback(() => {
+    openDrawer({
+      initialTabKey: 'photo',
+      size: 'lg',
+      title: 'Add activity',
+    })
+  }, [openDrawer])
+
   return (
     <div>
       <div className="flex items-center justify-between">
@@ -20,7 +32,9 @@ const Chat = () => {
             color="secondary"
             startContent={<FilterIcon />}
           />
-          <Button color="secondary">Add activity</Button>
+          <Button color="secondary" onPress={handleAddActivity}>
+            Add activity
+          </Button>
         </div>
       </div>
       <hr className="my-7 h-0.5 border-0 bg-black/5" />
