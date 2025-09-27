@@ -1,6 +1,4 @@
-import type { SVGProps } from 'react'
-
-const RefreshIcon = (props: SVGProps<SVGSVGElement>) => (
+const RefreshIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
     aria-hidden="true"
     fill="none"

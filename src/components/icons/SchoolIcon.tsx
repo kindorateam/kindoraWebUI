@@ -1,6 +1,4 @@
-import type { SVGProps } from 'react'
-
-const SchoolIcon = (props: SVGProps<SVGSVGElement>) => (
+const SchoolIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
     fill="none"
     height="16"

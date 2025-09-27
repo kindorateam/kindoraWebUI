@@ -76,7 +76,7 @@ const MessagesPage = () => {
         }
       />
 
-      <div className="container mt-10.5 max-w-4xl">
+      <div className="container max-w-4xl pt-10.5">
         {tab === 'parents' && <ParentsMessagesTable />}
         {tab === 'rooms' && <SentPanel />}
       </div>

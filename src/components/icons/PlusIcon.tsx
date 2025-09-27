@@ -1,6 +1,4 @@
-import type { SVGProps } from 'react'
-
-const PlusIcon = (props: SVGProps<SVGSVGElement>) => (
+const PlusIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
     aria-hidden="true"
     fill="none"

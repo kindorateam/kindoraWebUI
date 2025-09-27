@@ -1,6 +1,4 @@
-import type { SVGProps } from 'react'
-
-const LikeIcon = (props: SVGProps<SVGSVGElement>) => (
+const LikeIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
     fill="none"
     height="20"

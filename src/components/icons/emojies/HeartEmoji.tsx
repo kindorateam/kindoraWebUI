@@ -1,6 +1,4 @@
-import type { SVGProps } from 'react'
-
-const HeartEmoji = (props: SVGProps<SVGSVGElement>) => (
+const HeartEmoji = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
     fill="none"
     height="20"

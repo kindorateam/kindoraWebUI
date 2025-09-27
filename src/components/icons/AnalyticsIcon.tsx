@@ -1,6 +1,4 @@
-import type { SVGProps } from 'react'
-
-const AnalyticsIcon = (props: SVGProps<SVGSVGElement>) => (
+const AnalyticsIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
     fill="none"
     height="16"

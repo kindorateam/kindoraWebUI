@@ -1,6 +1,4 @@
-import type { SVGProps } from 'react'
-
-const AlertTriangleIcon = (props: SVGProps<SVGSVGElement>) => (
+const AlertTriangleIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
     aria-hidden="true"
     fill="none"

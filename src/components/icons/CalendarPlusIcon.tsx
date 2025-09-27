@@ -1,6 +1,4 @@
-import type { SVGProps } from 'react'
-
-const CalendarPlusIcon = (props: SVGProps<SVGSVGElement>) => {
+const CalendarPlusIcon = (props: React.SVGProps<SVGSVGElement>) => {
   return (
     <svg
       fill="none"

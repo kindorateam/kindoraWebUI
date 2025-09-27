@@ -1,6 +1,4 @@
-import type { SVGProps } from 'react'
-
-const AbsentIcon = (props: SVGProps<SVGSVGElement>) => (
+const AbsentIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
     fill="none"
     height="16"

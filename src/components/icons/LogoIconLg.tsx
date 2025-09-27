@@ -1,6 +1,4 @@
-import type { SVGProps } from 'react'
-
-const LogoIconLg = (props: SVGProps<SVGSVGElement>) => (
+const LogoIconLg = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
     fill="none"
     height="51"

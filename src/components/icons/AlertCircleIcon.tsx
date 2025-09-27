@@ -1,6 +1,4 @@
-import type { SVGProps } from 'react'
-
-const AlertCircleIcon = (props: SVGProps<SVGSVGElement>) => (
+const AlertCircleIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
     aria-hidden="true"
     fill="none"

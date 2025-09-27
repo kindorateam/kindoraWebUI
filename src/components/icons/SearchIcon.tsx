@@ -1,6 +1,4 @@
-import type { SVGProps } from 'react'
-
-const SearchIcon = (props: SVGProps<SVGSVGElement>) => (
+const SearchIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
     fill="none"
     height="16"

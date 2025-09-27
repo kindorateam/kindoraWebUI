@@ -1,6 +1,4 @@
-import type { SVGProps } from 'react'
-
-const LaughEmoji = (props: SVGProps<SVGSVGElement>) => {
+const LaughEmoji = (props: React.SVGProps<SVGSVGElement>) => {
   return (
     <svg
       fill="none"

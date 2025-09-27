@@ -91,7 +91,7 @@ const LoginPage = () => {
   }, [initializeGoogleSignIn])
 
   return (
-    <div className="grid h-screen grid-cols-1 lg:grid-cols-[55fr_73fr]">
+    <div className="grid h-screen grid-cols-1 lg:grid-cols-[2fr_3fr]">
       <div className="bg-brand flex items-center justify-center">
         <LogoIconLg />
       </div>

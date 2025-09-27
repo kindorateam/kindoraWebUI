@@ -1,6 +1,4 @@
-import type { SVGProps } from 'react'
-
-const DashboardIcon = (props: SVGProps<SVGSVGElement>) => (
+const DashboardIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
     fill="none"
     height="16"

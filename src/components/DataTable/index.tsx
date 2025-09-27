@@ -17,7 +17,6 @@ const DataTable = <T,>({
   onRowClick,
   getRowKey,
   className = '',
-  tableClassName = '',
 }: DataTableProps<T>) => {
   if (isLoading) {
     return (
@@ -42,7 +41,8 @@ const DataTable = <T,>({
         classNames={{
           wrapper: 'min-w-full p-0 shadow-none! bg-transparent',
           base: 'p-0',
-          table: `border-spacing-y-2! ${tableClassName}`,
+          thead: '[&>tr]:first:rounded-none [&>[aria-hidden="true"]]:hidden',
+          tr: 'border-b last:border-b-0 border-black/4! data-[first=true]:pt-2!',
           th: 'p-0 pb-4 bg-transparent text-xs!',
           td: 'p-0 py-2.5',
         }}
@@ -60,11 +60,7 @@ const DataTable = <T,>({
         </TableHeader>
         <TableBody items={data}>
           {(item) => (
-            <TableRow
-              className={onRowClick ? 'cursor-pointer hover:bg-gray-50' : ''}
-              key={getRowKey(item)}
-              onClick={() => onRowClick?.(item)}
-            >
+            <TableRow key={getRowKey(item)} onClick={() => onRowClick?.(item)}>
               {(columnKey) => {
                 const column = columns.find((col) => col.key === columnKey)
                 return (

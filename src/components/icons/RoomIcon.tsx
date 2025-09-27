@@ -1,6 +1,4 @@
-import type { SVGProps } from 'react'
-
-const RoomIcon = (props: SVGProps<SVGSVGElement>) => (
+const RoomIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
     fill="none"
     height="16"

@@ -1,6 +1,4 @@
-import type { SVGProps } from 'react'
-
-const EyeIcon = (props: SVGProps<SVGSVGElement>) => (
+const EyeIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
     aria-hidden="true"
     fill="none"

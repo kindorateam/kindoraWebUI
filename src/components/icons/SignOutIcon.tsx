@@ -1,6 +1,4 @@
-import type { SVGProps } from 'react'
-
-const SignOutIcon = (props: SVGProps<SVGSVGElement>) => (
+const SignOutIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
     fill="none"
     height="17"

@@ -1,6 +1,4 @@
-import type { SVGProps } from 'react'
-
-const BillingIcon = (props: SVGProps<SVGSVGElement>) => (
+const BillingIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
     fill="none"
     height="16"

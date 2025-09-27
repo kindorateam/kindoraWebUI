@@ -1,6 +1,4 @@
-import type { SVGProps } from 'react'
-
-const ProfileIcon = (props: SVGProps<SVGSVGElement>) => (
+const ProfileIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
     fill="none"
     height="17"

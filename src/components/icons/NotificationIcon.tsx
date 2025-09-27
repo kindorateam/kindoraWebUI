@@ -1,6 +1,4 @@
-import type { SVGProps } from 'react'
-
-const NotificationIcon = (props: SVGProps<SVGSVGElement>) => (
+const NotificationIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
     fill="none"
     height="16"

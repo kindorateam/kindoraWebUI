@@ -1,6 +1,4 @@
-import type { SVGProps } from 'react'
-
-const HomeIcon = (props: SVGProps<SVGSVGElement>) => (
+const HomeIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
     aria-hidden="true"
     fill="none"

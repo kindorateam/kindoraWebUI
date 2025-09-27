@@ -1,8 +1,12 @@
-import { Button, Tab, Tabs } from '@heroui/react'
+import { Tab, Tabs } from '@heroui/react'
 import { useNavigate } from '@tanstack/react-router'
 
+import Button from '@/components/Button'
 import DataTable from '@/components/DataTable'
+import NewsIcon from '@/components/icons/NewsIcon'
+import NewsIconAdd from '@/components/icons/NewsIconAdd'
 import SubHeader from '@/components/SubHeader'
+import Text from '@/components/Text'
 import { useTabNavigation } from '@/hooks/useTabNavigation'
 import { Route as NewslettersRoute } from '@/routes/_authenticated/newsletters'
 
@@ -56,10 +60,14 @@ const NewslettersPage = () => {
             <Tab key="drafts" title="Drafts" />
           </Tabs>
         }
-        endSlot={<Button>Create New</Button>}
+        endSlot={
+          <Button color="primary" startContent={<NewsIconAdd />}>
+            Create New
+          </Button>
+        }
       />
 
-      <div className="container mt-10.5 max-w-4xl">
+      <div className="container max-w-4xl pt-10.5">
         {tab === 'sent' && (
           <DataTable<Newsletter>
             columns={[
@@ -68,14 +76,24 @@ const NewslettersPage = () => {
                 label: 'Title',
                 renderCell: (item) => (
                   <div className="flex items-center gap-3">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-200">
-                      <span className="text-[12px]">📄</span>
+                    <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gray-200">
+                      <NewsIcon />
                     </div>
-                    <span className="font-medium">{item.title}</span>
+                    <Text color="black" size={14}>
+                      {item.title}
+                    </Text>
                   </div>
                 ),
               },
-              { key: 'sentDate', label: 'Sent date' },
+              {
+                key: 'sentDate',
+                label: 'Sent date',
+                renderCell: (item) => (
+                  <Text color="neutral-500" size={12}>
+                    {item.sentDate}
+                  </Text>
+                ),
+              },
             ]}
             data={newslettersData}
             emptyMessage="No newsletters sent"

@@ -1,6 +1,4 @@
-import type { SVGProps } from 'react'
-
-const FilterIcon = (props: SVGProps<SVGSVGElement>) => {
+const FilterIcon = (props: React.SVGProps<SVGSVGElement>) => {
   return (
     <svg
       fill="none"

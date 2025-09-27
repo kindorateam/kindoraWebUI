@@ -1,6 +1,4 @@
-import type { SVGProps } from 'react'
-
-const EditIcon = (props: SVGProps<SVGSVGElement>) => (
+const EditIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
     aria-hidden="true"
     fill="none"
