@@ -1,9 +1,9 @@
-import type { ReactNode } from 'react'
+import type { ReactNode } from "react"
 
 export interface NavDrawerItem {
-  label: string
-  path: string
-  icon?: ReactNode
-  badge?: number
-  children?: NavDrawerItem[]
+	label: string
+	path: string
+	icon?: ReactNode
+	badge?: number
+	children?: NavDrawerItem[]
 }

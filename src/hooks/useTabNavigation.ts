@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback } from "react"
 
 /**
  * Custom hook for handling tab navigation in detail pages.
@@ -9,25 +9,25 @@ import { useCallback } from 'react'
  * @returns handleTabChange - Function to change the tab
  */
 export function useTabNavigation<T extends string>(
-  currentTab: T,
-  defaultTab: T,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  navigate: any,
+	currentTab: T,
+	defaultTab: T,
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	navigate: any,
 ) {
-  const handleTabChange = useCallback(
-    (newTab: T) => {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-      void navigate({
-        replace: true,
-        // Preserve any existing search params
-        search: (prev: Record<string, unknown>) => ({
-          ...prev,
-          tab: newTab,
-        }),
-      })
-    },
-    [navigate],
-  )
+	const handleTabChange = useCallback(
+		(newTab: T) => {
+			// eslint-disable-next-line @typescript-eslint/no-unsafe-call
+			void navigate({
+				replace: true,
+				// Preserve any existing search params
+				search: (prev: Record<string, unknown>) => ({
+					...prev,
+					tab: newTab,
+				}),
+			})
+		},
+		[navigate],
+	)
 
-  return handleTabChange
+	return handleTabChange
 }

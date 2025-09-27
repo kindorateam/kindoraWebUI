@@ -1,9 +1,7 @@
 interface PlaceholderPageProps {
-  name: string
+	name: string
 }
 
-const PlaceholderPage = ({ name }: PlaceholderPageProps) => (
-  <div className="p-6">{name} Page (Coming Soon)</div>
-)
+const PlaceholderPage = ({ name }: PlaceholderPageProps) => <div className="p-6">{name} Page (Coming Soon)</div>
 
 export default PlaceholderPage

@@ -16,11 +16,11 @@
 // import useAuth from '@/hooks/useAuth'
 
 const DashboardPage = () => {
-  // const { user } = useAuth()
+	// const { user } = useAuth()
 
-  // const firstName = user?.name?.split(' ')[0] ?? 'there'
+	// const firstName = user?.name?.split(' ')[0] ?? 'there'
 
-  return <div>123321</div>
+	return <div>123321</div>
 }
 
 export default DashboardPage

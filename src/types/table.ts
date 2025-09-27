@@ -1,28 +1,28 @@
-import type { ReactNode } from 'react'
+import type { ReactNode } from "react"
 
 export interface TableColumn<T> {
-  key: string
-  label: string
-  align?: 'start' | 'center' | 'end'
-  sortable?: boolean
-  className?: string
-  renderCell?: (item: T, column: TableColumn<T>) => ReactNode
+	key: string
+	label: string
+	align?: "start" | "center" | "end"
+	sortable?: boolean
+	className?: string
+	renderCell?: (item: T, column: TableColumn<T>) => ReactNode
 }
 
 export interface DataTableProps<T> {
-  columns: TableColumn<T>[]
-  data: T[]
-  isLoading?: boolean
-  emptyMessage?: string
-  onRowClick?: (item: T) => void
-  getRowKey: (item: T) => string | number
-  className?: string
-  tableClassName?: string
+	columns: TableColumn<T>[]
+	data: T[]
+	isLoading?: boolean
+	emptyMessage?: string
+	onRowClick?: (item: T) => void
+	getRowKey: (item: T) => string | number
+	className?: string
+	tableClassName?: string
 }
 
 export interface TableConfig<T> {
-  columns: TableColumn<T>[]
-  getRowKey: (item: T) => string | number
-  queryKey: string[]
-  queryFn: () => Promise<T[]>
+	columns: TableColumn<T>[]
+	getRowKey: (item: T) => string | number
+	queryKey: string[]
+	queryFn: () => Promise<T[]>
 }

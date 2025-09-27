@@ -1,44 +1,44 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useState } from "react"
 
-import type { PinVisibility } from '@/types/staff'
+import type { PinVisibility } from "@/types/staff"
 
 const usePinVisibility = () => {
-  const [pinVisibility, setPinVisibility] = useState<PinVisibility>({})
+	const [pinVisibility, setPinVisibility] = useState<PinVisibility>({})
 
-  const togglePinVisibility = useCallback((staffId: string) => {
-    setPinVisibility((prev) => ({
-      ...prev,
-      [staffId]: !prev[staffId],
-    }))
-  }, [])
+	const togglePinVisibility = useCallback((staffId: string) => {
+		setPinVisibility((prev) => ({
+			...prev,
+			[staffId]: !prev[staffId],
+		}))
+	}, [])
 
-  const isPinVisible = useCallback(
-    (staffId: string): boolean => {
-      return pinVisibility[staffId] ?? false
-    },
-    [pinVisibility],
-  )
+	const isPinVisible = useCallback(
+		(staffId: string): boolean => {
+			return pinVisibility[staffId] ?? false
+		},
+		[pinVisibility],
+	)
 
-  const hidePinForStaff = useCallback((staffId: string) => {
-    setPinVisibility((prev) => ({
-      ...prev,
-      [staffId]: false,
-    }))
-  }, [])
+	const hidePinForStaff = useCallback((staffId: string) => {
+		setPinVisibility((prev) => ({
+			...prev,
+			[staffId]: false,
+		}))
+	}, [])
 
-  const showPinForStaff = useCallback((staffId: string) => {
-    setPinVisibility((prev) => ({
-      ...prev,
-      [staffId]: true,
-    }))
-  }, [])
+	const showPinForStaff = useCallback((staffId: string) => {
+		setPinVisibility((prev) => ({
+			...prev,
+			[staffId]: true,
+		}))
+	}, [])
 
-  return {
-    isPinVisible,
-    togglePinVisibility,
-    hidePinForStaff,
-    showPinForStaff,
-  }
+	return {
+		isPinVisible,
+		togglePinVisibility,
+		hidePinForStaff,
+		showPinForStaff,
+	}
 }
 
 export default usePinVisibility
