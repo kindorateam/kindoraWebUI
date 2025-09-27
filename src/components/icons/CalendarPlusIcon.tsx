@@ -1,6 +1,14 @@
 const CalendarPlusIcon = (props: React.SVGProps<SVGSVGElement>) => {
 	return (
-		<svg fill="none" height="16" viewBox="0 0 16 16" width="16" xmlns="http://www.w3.org/2000/svg" {...props}>
+		<svg
+			aria-hidden="true"
+			fill="none"
+			height="16"
+			viewBox="0 0 16 16"
+			width="16"
+			xmlns="http://www.w3.org/2000/svg"
+			{...props}
+		>
 			<g opacity="0.16">
 				<path
 					d="M12 1C13.6569 1 15 2.34315 15 4C15 6 15 9.34668 15 11H14V9.5L13.9922 9.34668C13.9154 8.59028 13.2767 8 12.5 8C11.6716 8 11 8.67157 11 9.5V11H9.5C8.72334 11 8.08461 11.5903 8.00781 12.3467L8 12.5L8.00781 12.6533C8.06727 13.239 8.4636 13.725 9 13.9146C9.15639 13.9699 9.32468 14 9.5 14H11V15C10.3476 15 9.67192 15 9 15C7.09697 15 5.22451 15 4 15C2.34315 15 1 13.6569 1 12V4C1 2.34315 2.34315 1 4 1H12Z"

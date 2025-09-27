@@ -1,5 +1,13 @@
 const SchoolIcon = (props: React.SVGProps<SVGSVGElement>) => (
-	<svg fill="none" height="16" viewBox="0 0 16 16" width="16" xmlns="http://www.w3.org/2000/svg" {...props}>
+	<svg
+		aria-hidden="true"
+		fill="none"
+		height="16"
+		viewBox="0 0 16 16"
+		width="16"
+		xmlns="http://www.w3.org/2000/svg"
+		{...props}
+	>
 		<path
 			d="M1 7.53027C1 6.66952 1.36972 5.85024 2.01514 5.28075L6.01514 1.75134C7.14921 0.750692 8.8508 0.750693 9.98487 1.75134L13.9849 5.28075C14.6303 5.85024 15 6.66952 15 7.53027V12C15 13.6568 13.6569 15 12 15H4C2.34315 15 1 13.6568 1 12V7.53027Z"
 			fill="#393B3F"

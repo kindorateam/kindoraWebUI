@@ -1,5 +1,13 @@
 const StudentIcon = (props: React.SVGProps<SVGSVGElement>) => (
-	<svg fill="none" height="16" viewBox="0 0 16 16" width="16" xmlns="http://www.w3.org/2000/svg" {...props}>
+	<svg
+		aria-hidden="true"
+		fill="none"
+		height="16"
+		viewBox="0 0 16 16"
+		width="16"
+		xmlns="http://www.w3.org/2000/svg"
+		{...props}
+	>
 		<g opacity="0.16">
 			<path
 				d="M4.5 4.5C4.5 2.567 6.067 1 8 1C9.933 1 11.5 2.567 11.5 4.5C11.5 6.433 9.933 8 8 8C6.067 8 4.5 6.433 4.5 4.5Z"

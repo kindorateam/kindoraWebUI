@@ -25,7 +25,7 @@ const NavItem = memo(({ item }: NavItemProps) => {
 			{item.icon}
 			<span>{item.label}</span>
 			{item.badge && (
-				<span className="ml-auto flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs text-white">
+				<span className="ml-auto flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-white text-xs">
 					{item.badge}
 				</span>
 			)}

@@ -1,5 +1,7 @@
 import { useCallback } from "react"
 
+import type { NavigateFn } from "@tanstack/react-router"
+
 /**
  * Custom hook for handling tab navigation in detail pages.
  * Manages redirect to default tab if no tab is specified and provides a handler for tab changes.
@@ -8,18 +10,12 @@ import { useCallback } from "react"
  * @param navigate - The navigate function from TanStack Router
  * @returns handleTabChange - Function to change the tab
  */
-export function useTabNavigation<T extends string>(
-	currentTab: T,
-	defaultTab: T,
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	navigate: any,
-) {
+export function useTabNavigation<T extends string>(_currentTab: T, _defaultTab: T, navigate: NavigateFn) {
 	const handleTabChange = useCallback(
 		(newTab: T) => {
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-call
 			void navigate({
 				replace: true,
-				// Preserve any existing search params
+				//@ts-expect-error
 				search: (prev: Record<string, unknown>) => ({
 					...prev,
 					tab: newTab,

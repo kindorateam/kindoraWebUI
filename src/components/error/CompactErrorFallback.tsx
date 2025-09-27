@@ -9,9 +9,9 @@ import type { ErrorFallbackProps } from "@/types/error"
 const CompactErrorFallback = ({ error, resetError }: ErrorFallbackProps) => {
 	return (
 		<div className="flex flex-col items-center justify-center p-8 text-center">
-			<AlertTriangleIcon className="text-warning mb-4 h-12 w-12" />
-			<h3 className="mb-2 text-lg font-semibold">Something went wrong</h3>
-			<p className="mb-4 text-sm text-gray-600 dark:text-gray-400">{getUserMessage(error)}</p>
+			<AlertTriangleIcon className="mb-4 h-12 w-12 text-warning" />
+			<h3 className="mb-2 font-semibold text-lg">Something went wrong</h3>
+			<p className="mb-4 text-gray-600 text-sm dark:text-gray-400">{getUserMessage(error)}</p>
 			<Button
 				color="primary"
 				onPress={resetError}

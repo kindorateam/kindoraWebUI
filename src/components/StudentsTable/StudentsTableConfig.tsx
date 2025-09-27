@@ -12,15 +12,15 @@ const createStudentsColumns = (): TableColumn<Student>[] => [
 		label: "Students",
 		renderCell: (student) => (
 			<Link
-				className="hover:text-primary flex items-center gap-3"
+				className="flex items-center gap-3 hover:text-primary"
 				params={{ studentId: student.id }}
 				search={{ tab: "activity" }}
 				to="/students/$studentId"
 			>
 				<Avatar alt={student.name} className="h-10 w-10" showFallback src={student.avatar} />
 				<div className="flex flex-col">
-					<span className="text-sm font-medium">{student.name}</span>
-					{student.status && <span className="text-xs text-green-500">{student.status}</span>}
+					<span className="font-medium text-sm">{student.name}</span>
+					{student.status && <span className="text-green-500 text-xs">{student.status}</span>}
 				</div>
 			</Link>
 		),
@@ -34,11 +34,11 @@ const createStudentsColumns = (): TableColumn<Student>[] => [
 			const remainingCount = parents.length - displayCount
 
 			if (parents.length === 0) {
-				return <span className="text-sm text-gray-400">No parents</span>
+				return <span className="text-gray-400 text-sm">No parents</span>
 			}
 
 			return (
-				<div className="flex items-center -space-x-2">
+				<div className="-space-x-2 flex items-center">
 					{parents.slice(0, displayCount).map((parent) => (
 						<Avatar
 							alt={parent.name}
@@ -50,7 +50,7 @@ const createStudentsColumns = (): TableColumn<Student>[] => [
 					))}
 					{remainingCount > 0 && (
 						<div className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-white bg-gray-200">
-							<span className="text-xs font-semibold text-gray-700">+{remainingCount}</span>
+							<span className="font-semibold text-gray-700 text-xs">+{remainingCount}</span>
 						</div>
 					)}
 				</div>
@@ -62,12 +62,12 @@ const createStudentsColumns = (): TableColumn<Student>[] => [
 		label: "Rooms",
 		renderCell: (student) => {
 			if (student.rooms.length === 0) {
-				return <span className="text-sm text-gray-400">No room assigned</span>
+				return <span className="text-gray-400 text-sm">No room assigned</span>
 			}
 
 			const room = student.rooms[0] // Assuming one primary room per student
 			if (!room) {
-				return <span className="text-sm text-gray-400">No room assigned</span>
+				return <span className="text-gray-400 text-sm">No room assigned</span>
 			}
 
 			return (
@@ -87,7 +87,7 @@ const createStudentsColumns = (): TableColumn<Student>[] => [
 			const remainingCount = tags.length - displayCount
 
 			if (tags.length === 0) {
-				return <span className="text-sm text-gray-400">No tags</span>
+				return <span className="text-gray-400 text-sm">No tags</span>
 			}
 
 			return (
@@ -98,7 +98,7 @@ const createStudentsColumns = (): TableColumn<Student>[] => [
 						</Chip>
 					))}
 					{remainingCount > 0 && (
-						<Chip className="bg-gray-100 text-xs text-gray-800" size="sm">
+						<Chip className="bg-gray-100 text-gray-800 text-xs" size="sm">
 							+{remainingCount}
 						</Chip>
 					)}

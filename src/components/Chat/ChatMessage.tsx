@@ -11,11 +11,12 @@ export interface ChatReply {
 	onReply?: (id: string) => void
 }
 
-export type ChatMessageProps = ChatReply & {
+export type ChatMessageProps = Omit<ChatReply, "id"> & {
+	messageId: string
 	replies?: ChatReply[]
 }
 
-const ChatMessage = ({ id, author, timestamp, text, onReply, replies = [] }: ChatMessageProps) => (
+const ChatMessage = ({ messageId, author, timestamp, text, onReply, replies = [] }: ChatMessageProps) => (
 	<article className="flex gap-3">
 		<Avatar className="shrink-0" name={author.name} size="sm" src={author.avatarUrl} />
 
@@ -36,7 +37,7 @@ const ChatMessage = ({ id, author, timestamp, text, onReply, replies = [] }: Cha
 			</div>
 
 			<div>
-				<Button color="text" disableRipple onPress={() => onReply?.(id)}>
+				<Button color="text" disableRipple onPress={() => onReply?.(messageId)}>
 					Reply
 				</Button>
 			</div>
@@ -46,11 +47,18 @@ const ChatMessage = ({ id, author, timestamp, text, onReply, replies = [] }: Cha
 					color="text"
 					disableRipple
 					endContent={
-						<svg fill="none" height="6" viewBox="0 0 8 6" width="8" xmlns="http://www.w3.org/2000/svg">
+						<svg
+							aria-hidden="true"
+							fill="none"
+							height="6"
+							viewBox="0 0 8 6"
+							width="8"
+							xmlns="http://www.w3.org/2000/svg"
+						>
 							<path d="M1 1L4 4L7 1" stroke="#792C41" strokeLinecap="round" strokeWidth="1.5" />
 						</svg>
 					}
-					onPress={() => onReply?.(id)}
+					onPress={() => onReply?.(messageId)}
 				>
 					See 5 more comments
 				</Button>
@@ -58,9 +66,9 @@ const ChatMessage = ({ id, author, timestamp, text, onReply, replies = [] }: Cha
 
 			{replies.length > 0 && (
 				<ul>
-					{replies.map((reply) => (
-						<li className="flex gap-3" key={reply.id}>
-							<ChatMessage {...reply} replies={[]} />
+					{replies.map(({ id: replyId, ...replyRest }) => (
+						<li className="flex gap-3" key={replyId}>
+							<ChatMessage messageId={replyId} {...replyRest} />
 						</li>
 					))}
 				</ul>

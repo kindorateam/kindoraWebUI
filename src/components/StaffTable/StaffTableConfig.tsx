@@ -22,8 +22,8 @@ const createStaffColumns = ({
 			<div className="flex items-center gap-3">
 				<Avatar alt={staff.name} className="h-10 w-10" showFallback src={staff.avatar} />
 				<div className="flex flex-col">
-					<span className="text-sm font-medium">{staff.name}</span>
-					{staff.isCurrentUser && <span className="text-xs text-green-500">My account</span>}
+					<span className="font-medium text-sm">{staff.name}</span>
+					{staff.isCurrentUser && <span className="text-green-500 text-xs">My account</span>}
 				</div>
 			</div>
 		),
@@ -42,7 +42,7 @@ const createStaffColumns = ({
 		key: "rooms",
 		label: "Rooms",
 		renderCell: () => (
-			<div className="text-text-secondary flex items-center gap-2">
+			<div className="flex items-center gap-2 text-text-secondary">
 				<RoomIcon roomType="turtle" />
 				<span className="text-xs">Baby turtles</span>
 			</div>
@@ -83,7 +83,7 @@ const createStaffColumns = ({
 				</Chip>
 			) : (
 				<Button
-					className="text-brand bg-[#792C4133] text-[11px] font-semibold"
+					className="bg-[#792C4133] font-semibold text-[11px] text-brand"
 					onPress={() => togglePinVisibility(staff.id)}
 					size="sm"
 				>

@@ -26,6 +26,7 @@ const StudentActivityTab = () => {
 						// className="mb-7"
 						rows={[
 							{
+								id: "email",
 								label: "Email",
 								value: (
 									<Text as="span" color="brand" size={12} weight="regular">
@@ -35,6 +36,7 @@ const StudentActivityTab = () => {
 								href: "mailto:j.hayes@example.com",
 							},
 							{
+								id: "phone",
 								label: "Phone",
 								value: (
 									<Text as="span" color="black" size={12} weight="regular">
@@ -44,9 +46,10 @@ const StudentActivityTab = () => {
 								href: "tel:+14155555678",
 							},
 							{
+								id: "pin",
 								label: "Pin",
 								value: (
-									<Chip className="bg-brand/20! text-[11px] font-semibold!">
+									<Chip className="bg-brand/20! font-semibold! text-[11px]">
 										<Text as="span" color="brand" size={11} weight="semibold">
 											4423
 										</Text>
@@ -63,6 +66,7 @@ const StudentActivityTab = () => {
 						}}
 						rows={[
 							{
+								id: "email-guardian",
 								label: "Email",
 								value: (
 									<Text as="span" color="brand" size={12} weight="regular">
@@ -72,6 +76,7 @@ const StudentActivityTab = () => {
 								href: "mailto:j.hayes@example.com",
 							},
 							{
+								id: "phone-guardian",
 								label: "Phone",
 								value: (
 									<Text as="span" color="black" size={12} weight="regular">
@@ -81,9 +86,10 @@ const StudentActivityTab = () => {
 								href: "tel:+14155555678",
 							},
 							{
+								id: "pin-guardian",
 								label: "Pin",
 								value: (
-									<Chip className="bg-brand/20! text-[11px] font-semibold!">
+									<Chip className="bg-brand/20! font-semibold! text-[11px]">
 										<Text as="span" color="brand" size={11} weight="semibold">
 											4423
 										</Text>
@@ -102,6 +108,7 @@ const StudentActivityTab = () => {
 						}}
 						rows={[
 							{
+								id: "guardian-phone",
 								label: "Phone",
 								value: (
 									<Text as="span" color="black" size={12} weight="regular">
@@ -111,9 +118,10 @@ const StudentActivityTab = () => {
 								href: "tel:+14155555678",
 							},
 							{
+								id: "guardian-pin",
 								label: "Pin",
 								value: (
-									<Chip className="bg-brand/20! text-[11px] font-semibold!">
+									<Chip className="bg-brand/20! font-semibold! text-[11px]">
 										<Text as="span" color="brand" size={11} weight="semibold">
 											4423
 										</Text>
@@ -128,6 +136,7 @@ const StudentActivityTab = () => {
 					<DetailCard
 						rows={[
 							{
+								id: "medical-allergies",
 								label: "Allergies",
 								value: (
 									<Text as="span" size={12} weight="regular">
@@ -136,6 +145,7 @@ const StudentActivityTab = () => {
 								),
 							},
 							{
+								id: "medical-doctor",
 								label: "Doctor",
 								value: (
 									<Text as="span" color="black" size={12} weight="semibold">
@@ -144,6 +154,7 @@ const StudentActivityTab = () => {
 								),
 							},
 							{
+								id: "medical-phone",
 								label: "Phone",
 								value: (
 									<Text as="span" color="black" size={12} weight="regular">

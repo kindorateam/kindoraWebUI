@@ -60,7 +60,6 @@ function StaffDetailLayout() {
 			<div>
 				<StaffDetailHeader
 					pin="1234"
-					role="Teacher"
 					rooms={["test1", "test2"]}
 					staffAvatar={staff?.avatar}
 					staffName={staff?.name}

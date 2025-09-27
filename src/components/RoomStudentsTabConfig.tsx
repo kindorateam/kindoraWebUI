@@ -22,7 +22,7 @@ const createStudentColumns = (): TableColumn<Student>[] => [
 			<div className="flex items-center gap-3">
 				<Avatar alt={student.name} className="h-10 w-10" showFallback src={student.avatar} />
 				<div className="flex flex-col">
-					<span className="text-sm font-medium">{student.name}</span>
+					<span className="font-medium text-sm">{student.name}</span>
 				</div>
 			</div>
 		),
@@ -35,13 +35,13 @@ const createStudentColumns = (): TableColumn<Student>[] => [
 			const totalParents = parents.length
 
 			if (totalParents === 0) {
-				return <span className="text-sm text-gray-400">No parents</span>
+				return <span className="text-gray-400 text-sm">No parents</span>
 			}
 
 			const displayCount = Math.min(2, totalParents)
 
 			return (
-				<div className="flex items-center -space-x-2">
+				<div className="-space-x-2 flex items-center">
 					{parents.slice(0, displayCount).map((parent) => (
 						<Avatar
 							alt={parent.name}
@@ -62,13 +62,13 @@ const createStudentColumns = (): TableColumn<Student>[] => [
 			const { tags } = student
 
 			if (tags.length === 0) {
-				return <span className="text-sm text-gray-400">No tags</span>
+				return <span className="text-gray-400 text-sm">No tags</span>
 			}
 
 			return (
 				<div className="flex flex-wrap gap-1">
-					{tags.slice(0, 3).map((tag, index) => (
-						<Chip className="bg-blue-50 text-xs text-blue-700" key={index} size="sm">
+					{tags.slice(0, 3).map((tag) => (
+						<Chip className="bg-blue-50 text-blue-700 text-xs" key={tag} size="sm">
 							{tag}
 						</Chip>
 					))}

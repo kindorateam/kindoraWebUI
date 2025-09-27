@@ -9,9 +9,10 @@ interface InlineStatProps {
 }
 
 export const InlineStat = ({ icon, count, label }: InlineStatProps) => (
-	<span aria-label={`${label}: ${count}`} className="inline-flex items-center gap-2" title={label}>
-		<span>{icon}</span>
+	<span className="inline-flex items-center gap-2" title={label}>
+		<span aria-hidden="true">{icon}</span>
 		<Text color="neutral-800" size={12} weight="bold">
+			<span className="sr-only">{`${label}: `}</span>
 			{count}
 		</Text>
 	</span>

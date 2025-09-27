@@ -9,7 +9,7 @@ import StudentIcon from "@/components/icons/StudentIcon"
 export const signInCardData = {
 	headerData: (
 		<div className="flex items-center">
-			<div className="bg-brand me-3 flex h-8.5 w-8.5 items-center justify-center rounded-full">
+			<div className="me-3 flex h-8.5 w-8.5 items-center justify-center rounded-full bg-brand">
 				<SignInIcon fill="#fff" />
 			</div>
 
@@ -41,7 +41,7 @@ export const signInCardData = {
 export const absentCardData = {
 	headerData: (
 		<div className="flex items-center">
-			<div className="bg-brand me-3 flex h-8.5 w-8.5 items-center justify-center rounded-full">
+			<div className="me-3 flex h-8.5 w-8.5 items-center justify-center rounded-full bg-brand">
 				<AbsentIcon fill="#fff" />
 			</div>
 

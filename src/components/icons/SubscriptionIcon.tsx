@@ -1,5 +1,13 @@
 const SubscriptionIcon = (props: React.SVGProps<SVGSVGElement>) => (
-	<svg fill="none" height="17" viewBox="0 0 16 17" width="16" xmlns="http://www.w3.org/2000/svg" {...props}>
+	<svg
+		aria-hidden="true"
+		fill="none"
+		height="17"
+		viewBox="0 0 16 17"
+		width="16"
+		xmlns="http://www.w3.org/2000/svg"
+		{...props}
+	>
 		<path
 			d="M4.5 5C4.5 3.067 6.067 1.5 8 1.5C9.933 1.5 11.5 3.067 11.5 5C11.5 6.933 9.933 8.5 8 8.5C6.067 8.5 4.5 6.933 4.5 5Z"
 			fill="black"

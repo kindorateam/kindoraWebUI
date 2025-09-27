@@ -1,5 +1,13 @@
 const AdmissionsIcon = (props: React.SVGProps<SVGSVGElement>) => (
-	<svg fill="none" height="16" viewBox="0 0 16 16" width="16" xmlns="http://www.w3.org/2000/svg" {...props}>
+	<svg
+		aria-hidden="true"
+		fill="none"
+		height="16"
+		viewBox="0 0 16 16"
+		width="16"
+		xmlns="http://www.w3.org/2000/svg"
+		{...props}
+	>
 		<path
 			d="M3 5V13C3 14.6569 4.13354 14.5 4.13354 14.5L13 5C13.5626 4.43739 13.1265 3.45564 12.6163 2.84507C12.1022 2.22977 11.1232 2 10 2H6C4.34315 2 3 2.5 3 5Z"
 			fill="#393B3F"

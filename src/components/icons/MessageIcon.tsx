@@ -1,5 +1,13 @@
 const MessageIcon = (props: React.SVGProps<SVGSVGElement>) => (
-	<svg fill="none" height="16" viewBox="0 0 16 16" width="16" xmlns="http://www.w3.org/2000/svg" {...props}>
+	<svg
+		aria-hidden="true"
+		fill="none"
+		height="16"
+		viewBox="0 0 16 16"
+		width="16"
+		xmlns="http://www.w3.org/2000/svg"
+		{...props}
+	>
 		<path
 			d="M15.0048 8C15.0048 11.866 11.8708 15 8.00478 15C6.93118 15 5.91403 14.7583 5.00478 14.3264C5.00478 14.3264 3.85704 14.6154 2.63887 14.9654C1.76987 15.215 0.789945 14.2351 1.03953 13.3661C1.38942 12.1479 1.67841 11 1.67841 11C1.24647 10.0907 1.00478 9.0736 1.00478 8C1.00478 4.13401 4.13878 1 8.00478 1C11.8708 1 15.0048 4.13401 15.0048 8Z"
 			fill="#393B3F"

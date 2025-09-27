@@ -6,6 +6,7 @@ import Text from "./Text"
 const cn = (...parts: (string | false | null | undefined)[]) => parts.filter(Boolean).join(" ")
 
 interface DetailCard {
+	id: string
 	label: React.ReactNode
 	value: React.ReactNode
 	href?: string
@@ -63,11 +64,11 @@ const DetailCard = ({ avatar, title, rows = [], headerAside, className, contentC
 
 				{rows.length > 0 && (
 					<dl className={cn("grid grid-cols-[max-content_1fr] items-center gap-x-2.5 gap-y-2")}>
-						{rows.map((r, i) => {
+						{rows.map((r) => {
 							const valueContent = r.href ? <Link href={r.href}>{r.value}</Link> : r.value
 
 							return (
-								<Fragment key={i}>
+								<Fragment key={r.id}>
 									<dt>
 										<Text as="span" color="neutral-500" size={12} weight="regular">
 											{r.label}

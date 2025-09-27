@@ -1,5 +1,13 @@
 const BillingIcon = (props: React.SVGProps<SVGSVGElement>) => (
-	<svg fill="none" height="16" viewBox="0 0 16 16" width="16" xmlns="http://www.w3.org/2000/svg" {...props}>
+	<svg
+		aria-hidden="true"
+		fill="none"
+		height="16"
+		viewBox="0 0 16 16"
+		width="16"
+		xmlns="http://www.w3.org/2000/svg"
+		{...props}
+	>
 		<path
 			d="M1 7C1 5.34315 2.34315 4 4 4H12C13.6569 4 15 5.34315 15 7V12C15 13.6569 13.6569 15 12 15H4C2.34315 15 1 13.6569 1 12V7Z"
 			fill="#393B3F"

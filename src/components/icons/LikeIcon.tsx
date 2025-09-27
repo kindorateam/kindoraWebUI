@@ -1,5 +1,13 @@
 const LikeIcon = (props: React.SVGProps<SVGSVGElement>) => (
-	<svg fill="none" height="20" viewBox="0 0 20 20" width="20" xmlns="http://www.w3.org/2000/svg" {...props}>
+	<svg
+		aria-hidden="true"
+		fill="none"
+		height="20"
+		viewBox="0 0 20 20"
+		width="20"
+		xmlns="http://www.w3.org/2000/svg"
+		{...props}
+	>
 		<path
 			d="M14.2632 2C16.6316 2 19 3.95775 19 6.89438C19 9.83101 17.4211 11.4625 16.6316 12.2782L10.2989 17.8868C10.1284 18.0377 9.87161 18.0377 9.70114 17.8868L3.36842 12.2782C2.57895 11.4625 1 9.83101 1 6.89438C1 3.95775 3.36842 2 5.73684 2C8.10526 2 10 3.95775 10 5.42607C10 3.95775 11.8947 2 14.2632 2Z"
 			fill="black"

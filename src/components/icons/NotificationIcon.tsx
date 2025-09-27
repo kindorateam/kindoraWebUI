@@ -1,5 +1,13 @@
 const NotificationIcon = (props: React.SVGProps<SVGSVGElement>) => (
-	<svg fill="none" height="16" viewBox="0 0 14 16" width="14" xmlns="http://www.w3.org/2000/svg" {...props}>
+	<svg
+		aria-hidden="true"
+		fill="none"
+		height="16"
+		viewBox="0 0 14 16"
+		width="14"
+		xmlns="http://www.w3.org/2000/svg"
+		{...props}
+	>
 		<path
 			d="M8 14C8 14.5523 7.55228 15 7 15C6.44772 15 6 14.5523 6 14H8Z"
 			fill="#222222"

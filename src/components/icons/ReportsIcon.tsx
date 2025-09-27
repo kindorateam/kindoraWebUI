@@ -1,5 +1,13 @@
 const ReportsIcon = (props: React.SVGProps<SVGSVGElement>) => (
-	<svg fill="none" height="16" viewBox="0 0 16 16" width="16" xmlns="http://www.w3.org/2000/svg" {...props}>
+	<svg
+		aria-hidden="true"
+		fill="none"
+		height="16"
+		viewBox="0 0 16 16"
+		width="16"
+		xmlns="http://www.w3.org/2000/svg"
+		{...props}
+	>
 		<path
 			d="M3 5.5C3 3.56701 4.34315 2 6 2H11C12.1046 2 13 3.04467 13 4.33333V11.5C13 13.4331 11.6569 15 10 15H5C3.89543 15 3 13.9554 3 12.6667V5.5Z"
 			fill="#393B3F"

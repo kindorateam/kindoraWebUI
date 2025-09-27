@@ -22,7 +22,7 @@ interface StudentDetailHeaderProps {
 
 const StudentDetailHeader = ({ age, roomName, studentAvatar, studentName, tags, tabs }: StudentDetailHeaderProps) => {
 	return (
-		<div className="border-b border-[#0000000D]">
+		<div className="border-[#0000000D] border-b">
 			<div className="container max-w-4xl">
 				<div className="mb-13 flex items-center">
 					<div className="flex items-center gap-7">

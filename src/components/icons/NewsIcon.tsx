@@ -1,6 +1,14 @@
 const NewsIcon = (props: React.SVGProps<SVGSVGElement>) => {
 	return (
-		<svg fill="none" height="16" viewBox="0 0 16 16" width="16" xmlns="http://www.w3.org/2000/svg" {...props}>
+		<svg
+			aria-hidden="true"
+			fill="none"
+			height="16"
+			viewBox="0 0 16 16"
+			width="16"
+			xmlns="http://www.w3.org/2000/svg"
+			{...props}
+		>
 			<g opacity="0.16">
 				<path d="M12 6H12.7C13.9703 6 15 7.02975 15 8.3V13C15 14.1046 14.1046 15 13 15H12V6Z" fill="#393B3F" />
 				<path

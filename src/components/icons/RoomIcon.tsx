@@ -1,5 +1,13 @@
 const RoomIcon = (props: React.SVGProps<SVGSVGElement>) => (
-	<svg fill="none" height="16" viewBox="0 0 16 16" width="16" xmlns="http://www.w3.org/2000/svg" {...props}>
+	<svg
+		aria-hidden="true"
+		fill="none"
+		height="16"
+		viewBox="0 0 16 16"
+		width="16"
+		xmlns="http://www.w3.org/2000/svg"
+		{...props}
+	>
 		<path d="M8 8.5L14.5 11.5V3.5L8 0.5V8.5Z" fill="black" opacity="0.08" />
 		<path
 			d="M9.5 6V9.4L12.5 10.8V7.08333C12.5 6.27593 12.0145 5.54772 11.2692 5.23718L10.8846 5.07692C10.2259 4.80247 9.5 5.28642 9.5 6Z"

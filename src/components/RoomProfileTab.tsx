@@ -7,7 +7,7 @@ interface RoomProfileTabProps {
 const RoomProfileTab = ({ roomId }: RoomProfileTabProps) => {
 	return (
 		<div className="space-y-4">
-			<h2 className="text-xl font-semibold">Room Profile - Room {roomId}</h2>
+			<h2 className="font-semibold text-xl">Room Profile - Room {roomId}</h2>
 
 			<Card>
 				<CardBody className="space-y-4">

@@ -42,7 +42,7 @@ const NavGroup = memo(({ item, isExpanded, onToggle }: NavGroupProps) => {
 			<button
 				aria-controls={controlsId}
 				aria-expanded={isExpanded}
-				className="hover:bg-brand/5 hover:text-brand flex w-full items-center rounded-2xl px-4 py-2 text-[15px] font-semibold text-neutral-800 transition-colors"
+				className="flex w-full items-center rounded-2xl px-4 py-2 font-semibold text-[15px] text-neutral-800 transition-colors hover:bg-brand/5 hover:text-brand"
 				onClick={handleToggle}
 				type="button"
 			>
@@ -50,6 +50,7 @@ const NavGroup = memo(({ item, isExpanded, onToggle }: NavGroupProps) => {
 					{item.icon}
 					<span>{item.label}</span>
 					<svg
+						aria-hidden="true"
 						className={clsx("h-4 w-4 transition-transform", {
 							"rotate-180": isExpanded,
 						})}
@@ -60,7 +61,7 @@ const NavGroup = memo(({ item, isExpanded, onToggle }: NavGroupProps) => {
 						<path d="M19 9l-7 7-7-7" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} />
 					</svg>
 					{item.badge && (
-						<span className="ml-auto flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs text-white">
+						<span className="ml-auto flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-white text-xs">
 							{item.badge}
 						</span>
 					)}

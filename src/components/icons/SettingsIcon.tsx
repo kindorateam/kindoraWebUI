@@ -1,5 +1,13 @@
 const SettingsIcon = (props: React.SVGProps<SVGSVGElement>) => (
-	<svg fill="none" height="16" viewBox="0 0 16 16" width="16" xmlns="http://www.w3.org/2000/svg" {...props}>
+	<svg
+		aria-hidden="true"
+		fill="none"
+		height="16"
+		viewBox="0 0 16 16"
+		width="16"
+		xmlns="http://www.w3.org/2000/svg"
+		{...props}
+	>
 		<circle cx="4.5" cy="10.5" fill="black" opacity="0.16" r="2.5" />
 		<circle cx="11.5" cy="5.5" fill="black" opacity="0.16" r="2.5" />
 		<path

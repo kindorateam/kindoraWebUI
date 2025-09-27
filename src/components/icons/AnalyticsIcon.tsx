@@ -1,5 +1,13 @@
 const AnalyticsIcon = (props: React.SVGProps<SVGSVGElement>) => (
-	<svg fill="none" height="16" viewBox="0 0 16 16" width="16" xmlns="http://www.w3.org/2000/svg" {...props}>
+	<svg
+		aria-hidden="true"
+		fill="none"
+		height="16"
+		viewBox="0 0 16 16"
+		width="16"
+		xmlns="http://www.w3.org/2000/svg"
+		{...props}
+	>
 		<path d="M14 4V14H4C3.44771 14 3 13.5523 3 13L3 9.05L6.5 4.9L9 9L13 4H14Z" fill="#393B3F" opacity="0.16" />
 		<path
 			d="M2 11.1498V1.84998C2 1.38053 2.38017 1.00037 2.84961 1.00037C3.31905 1.00037 3.69922 1.38053 3.69922 1.84998V11.1498C3.69922 12.3372 4.66219 13.3002 5.84961 13.3002H13.1504L13.2373 13.3041C13.6657 13.3478 13.9999 13.7099 14 14.1498C14 14.5897 13.6657 14.9518 13.2373 14.9955L13.1504 15.0004H5.84961C3.72333 15.0004 2 13.2761 2 11.1498Z"

@@ -19,8 +19,8 @@ const HomePage = () => {
 	return (
 		<div className="flex min-h-screen flex-col items-center justify-center gap-8 p-8">
 			<div className="text-center">
-				<h1 className="text-4xl font-bold text-gray-900">Welcome to Kindora</h1>
-				<p className="text-lg text-gray-600">Kindergarten Management System</p>
+				<h1 className="font-bold text-4xl text-gray-900">Welcome to Kindora</h1>
+				<p className="text-gray-600 text-lg">Kindergarten Management System</p>
 				<Button as={Link} color="primary" size="lg" to="/login">
 					Get Started
 				</Button>

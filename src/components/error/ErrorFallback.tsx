@@ -22,32 +22,32 @@ const ErrorFallback = ({ error, resetError, errorInfo }: ErrorFallbackProps) => 
 						<AlertCircleIcon className="h-10 w-10 text-red-600 dark:text-red-400" />
 					</div>
 
-					<h1 className="mb-2 text-2xl font-bold text-gray-900 dark:text-white">Oops! Something went wrong</h1>
+					<h1 className="mb-2 font-bold text-2xl text-gray-900 dark:text-white">Oops! Something went wrong</h1>
 
 					<p className="mb-6 text-gray-600 dark:text-gray-400">{getUserMessage(error)}</p>
 
 					{isDev && (
 						<details className="mb-6 w-full text-left">
-							<summary className="mb-2 cursor-pointer text-sm font-medium text-gray-700 dark:text-gray-300">
+							<summary className="mb-2 cursor-pointer font-medium text-gray-700 text-sm dark:text-gray-300">
 								Error Details (Development Only)
 							</summary>
 							<div className="rounded-lg bg-gray-100 p-4 dark:bg-gray-900">
 								<div>
-									<p className="text-xs font-semibold text-gray-500 dark:text-gray-400">Error Message:</p>
-									<p className="font-mono text-sm text-gray-700 dark:text-gray-300">{getErrorMessage(error)}</p>
+									<p className="font-semibold text-gray-500 text-xs dark:text-gray-400">Error Message:</p>
+									<p className="font-mono text-gray-700 text-sm dark:text-gray-300">{getErrorMessage(error)}</p>
 								</div>
 								{errorInfo?.componentStack && (
 									<div>
-										<p className="text-xs font-semibold text-gray-500 dark:text-gray-400">Component Stack:</p>
-										<pre className="overflow-x-auto text-xs text-gray-700 dark:text-gray-300">
+										<p className="font-semibold text-gray-500 text-xs dark:text-gray-400">Component Stack:</p>
+										<pre className="overflow-x-auto text-gray-700 text-xs dark:text-gray-300">
 											{errorInfo.componentStack}
 										</pre>
 									</div>
 								)}
 								{error.stack && (
 									<div>
-										<p className="text-xs font-semibold text-gray-500 dark:text-gray-400">Stack Trace:</p>
-										<pre className="overflow-x-auto text-xs text-gray-700 dark:text-gray-300">{error.stack}</pre>
+										<p className="font-semibold text-gray-500 text-xs dark:text-gray-400">Stack Trace:</p>
+										<pre className="overflow-x-auto text-gray-700 text-xs dark:text-gray-300">{error.stack}</pre>
 									</div>
 								)}
 							</div>

@@ -70,7 +70,7 @@ const AppDrawer = () => {
 		}, DRAWER_CLOSE_DELAY)
 
 		return () => window.clearTimeout(timeoutId)
-	}, [isOpen, options, resetDrawer, setActiveTab])
+	}, [isOpen, options, resetDrawer])
 
 	if (!options && !isOpen) {
 		return null
@@ -92,7 +92,7 @@ const AppDrawer = () => {
 			<DrawerContent>
 				{() => (
 					<div className="flex h-full flex-col px-25 pt-10">
-						<DrawerHeader className="border-b border-black/5 pb-6">
+						<DrawerHeader className="border-black/5 border-b pb-6">
 							<div className="flex flex-col gap-6">
 								<div className="flex flex-col gap-1">
 									<Text as="h2" size={30} weight="bold">
@@ -148,7 +148,7 @@ const AppDrawer = () => {
 							</div>
 						</DrawerBody>
 
-						<DrawerFooter className="border-t border-black/5 pt-4">
+						<DrawerFooter className="border-black/5 border-t pt-4">
 							<div className="flex w-full justify-end gap-2">
 								<Button color="secondary" onPress={closeDrawer}>
 									Cancel

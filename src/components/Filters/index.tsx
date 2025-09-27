@@ -18,7 +18,7 @@ const Filters = ({ filters, onFilterChange }: FiltersProps) => {
 			return (
 				<>
 					<span className="text-sm">{filter.label} </span>
-					<span className="text-sm font-medium">None</span>
+					<span className="font-medium text-sm">None</span>
 				</>
 			)
 		}
@@ -27,7 +27,7 @@ const Filters = ({ filters, onFilterChange }: FiltersProps) => {
 		return (
 			<>
 				<span className="text-sm">{filter.label} </span>
-				<span className={clsx([`${isActive ? "text-brand" : ""}`, "text-sm font-medium"])}>
+				<span className={clsx([`${isActive ? "text-brand" : ""}`, "font-medium text-sm"])}>
 					{selectedOption?.label ?? filter.value}
 				</span>
 			</>

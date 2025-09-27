@@ -90,7 +90,7 @@ const Chat = () => {
 								name: "Emily Hayes",
 								avatarUrl: "https://i.pravatar.cc/150?img=42",
 							}}
-							id="parent-1"
+							messageId="parent-1"
 							onReply={(messageId) => console.log("reply to", messageId)}
 							replies={[
 								{

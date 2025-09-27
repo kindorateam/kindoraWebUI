@@ -14,7 +14,7 @@ const DataTable = <T,>({
 	if (isLoading) {
 		return (
 			<div className="flex h-64 items-center justify-center">
-				<div className="h-8 w-8 animate-spin rounded-full border-b-2 border-gray-900"></div>
+				<div className="h-8 w-8 animate-spin rounded-full border-gray-900 border-b-2"></div>
 			</div>
 		)
 	}
@@ -40,7 +40,7 @@ const DataTable = <T,>({
 					{(column) => (
 						<TableColumn
 							align={column.align ?? "start"}
-							className={`text-text-secondary text-left text-sm font-medium tracking-wider ${column.className ?? ""}`}
+							className={`text-left font-medium text-sm text-text-secondary tracking-wider ${column.className ?? ""}`}
 							key={column.key}
 						>
 							{column.label}

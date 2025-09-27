@@ -1,6 +1,6 @@
 import { Card, CardBody, CardHeader } from "@heroui/react"
 import { useNavigate } from "@tanstack/react-router"
-import { useCallback, useEffect } from "react"
+import { useCallback, useEffect, useId } from "react"
 
 import LogoIconLg from "@/components/icons/LogoIconLg"
 import useAuth from "@/hooks/useAuth"
@@ -9,6 +9,7 @@ import { getReturnUrlFromLocation } from "@/services/redirect.service"
 const LoginPage = () => {
 	const { handleGoogleLogin, error, isAuthenticated } = useAuth()
 	const navigate = useNavigate()
+	const googleButtonId = useId().replace(/:/g, "")
 
 	// Store redirect URL in sessionStorage on component mount
 	useEffect(() => {
@@ -43,7 +44,7 @@ const LoginPage = () => {
 				callback: handleGoogleLogin,
 			})
 
-			const buttonDiv = document.getElementById("googleSignInButton")
+			const buttonDiv = document.getElementById(googleButtonId)
 
 			if (buttonDiv) {
 				window.google.accounts.id.renderButton(buttonDiv, {
@@ -54,7 +55,7 @@ const LoginPage = () => {
 				})
 			}
 		}
-	}, [handleGoogleLogin])
+	}, [googleButtonId, handleGoogleLogin])
 
 	useEffect(() => {
 		// Check if script is already loaded
@@ -89,16 +90,16 @@ const LoginPage = () => {
 
 	return (
 		<div className="grid h-screen grid-cols-1 lg:grid-cols-[2fr_3fr]">
-			<div className="bg-brand flex items-center justify-center">
+			<div className="flex items-center justify-center bg-brand">
 				<LogoIconLg />
 			</div>
 			<div className="flex items-center justify-center bg-[#F7F7F2]">
 				<Card className="w-full max-w-[352px] bg-transparent shadow-none">
-					<CardHeader className="p-0 text-[34px] font-bold">Sign in</CardHeader>
+					<CardHeader className="p-0 font-bold text-[34px]">Sign in</CardHeader>
 					<CardBody className="w-full px-0 py-10.5">
-						{error && <div className="rounded-md bg-red-50 p-3 text-sm text-red-600">{error}</div>}
+						{error && <div className="rounded-md bg-red-50 p-3 text-red-600 text-sm">{error}</div>}
 
-						<div className="flex w-full max-w-[352px] justify-center" id="googleSignInButton" />
+						<div className="flex w-full max-w-[352px] justify-center" id={googleButtonId} />
 					</CardBody>
 				</Card>
 			</div>

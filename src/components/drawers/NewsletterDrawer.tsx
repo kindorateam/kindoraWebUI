@@ -32,7 +32,7 @@ const NewsletterDrawer = ({ isOpen, onClose }: NewsletterDrawerProps) => {
 			<DrawerContent>
 				{() => (
 					<div className="flex h-full flex-col px-12 py-10">
-						<DrawerHeader className="flex flex-col gap-2 border-b border-black/5 pb-6">
+						<DrawerHeader className="flex flex-col gap-2 border-black/5 border-b pb-6">
 							<Text as="h2" size={30} weight="bold">
 								Create newsletter
 							</Text>
@@ -53,7 +53,7 @@ const NewsletterDrawer = ({ isOpen, onClose }: NewsletterDrawerProps) => {
 							</div>
 						</DrawerBody>
 
-						<DrawerFooter className="border-t border-black/5 pt-4">
+						<DrawerFooter className="border-black/5 border-t pt-4">
 							<div className="flex w-full justify-end gap-2">
 								<Button color="secondary" onPress={onClose}>
 									Cancel

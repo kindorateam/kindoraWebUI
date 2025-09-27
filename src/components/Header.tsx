@@ -83,7 +83,7 @@ const Header = memo(() => {
 						<DropdownSection className="m-0" dividerProps={{ className: "my-1.5" }} showDivider>
 							<DropdownItem className="p-0" key="profile">
 								<p className="font-semibold lg:text-lg">{user?.name}</p>
-								<p className="text-brand font-semibold lg:text-xs">{user?.email}</p>
+								<p className="font-semibold text-brand lg:text-xs">{user?.email}</p>
 							</DropdownItem>
 						</DropdownSection>
 

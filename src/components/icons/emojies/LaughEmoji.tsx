@@ -1,10 +1,28 @@
+import { useId } from "react"
+
+const sanitizeSvgId = (value: string) => value.replace(/[^a-zA-Z0-9_-]/g, "-")
+
 const LaughEmoji = (props: React.SVGProps<SVGSVGElement>) => {
+	const baseId = sanitizeSvgId(useId())
+	const gradientFaceId = `${baseId}-gradient-face`
+	const gradientMouthId = `${baseId}-gradient-mouth`
+	const gradientRightEyeId = `${baseId}-gradient-right-eye`
+	const gradientLeftEyeId = `${baseId}-gradient-left-eye`
+
 	return (
-		<svg fill="none" height="20" viewBox="0 0 21 20" width="21" xmlns="http://www.w3.org/2000/svg" {...props}>
-			<rect fill="url(#paint0_linear_621_3897)" height="20" rx="10" width="20" x="0.134674" />
+		<svg
+			aria-hidden="true"
+			fill="none"
+			height="20"
+			viewBox="0 0 21 20"
+			width="21"
+			xmlns="http://www.w3.org/2000/svg"
+			{...props}
+		>
+			<rect fill={`url(#${gradientFaceId})`} height="20" rx="10" width="20" x="0.134674" />
 			<path
 				d="M10.1347 16.9565C13.9766 16.9565 17.0912 14.2313 17.0912 10.8696H3.17815C3.17815 14.2313 6.29269 16.9565 10.1347 16.9565Z"
-				fill="url(#paint1_linear_621_3897)"
+				fill={`url(#${gradientMouthId})`}
 			/>
 			<path
 				d="M16.8334 11.1196C16.6832 14.1997 13.7725 16.7065 10.1342 16.7065C6.4961 16.7063 3.58619 14.1995 3.43596 11.1196H16.8334Z"
@@ -14,7 +32,7 @@ const LaughEmoji = (props: React.SVGProps<SVGSVGElement>) => {
 			/>
 			<rect fill="white" height="1.30435" width="13.0435" x="3.61292" y="9.99998" />
 			<rect
-				fill="url(#paint2_linear_621_3897)"
+				fill={`url(#${gradientRightEyeId})`}
 				height="5.21739"
 				rx="1.30435"
 				transform="rotate(-40 14.9173 8.99826)"
@@ -34,7 +52,7 @@ const LaughEmoji = (props: React.SVGProps<SVGSVGElement>) => {
 				y="9.02907"
 			/>
 			<rect
-				fill="url(#paint3_linear_621_3897)"
+				fill={`url(#${gradientLeftEyeId})`}
 				height="5.21739"
 				rx="1.30435"
 				transform="matrix(-0.766044 -0.642788 -0.642788 0.766044 5.35205 8.99826)"
@@ -64,20 +82,13 @@ const LaughEmoji = (props: React.SVGProps<SVGSVGElement>) => {
 				strokeWidth="1.5"
 			/>
 			<defs>
-				<linearGradient
-					gradientUnits="userSpaceOnUse"
-					id="paint0_linear_621_3897"
-					x1="10.1347"
-					x2="10.1347"
-					y1="0"
-					y2="20"
-				>
+				<linearGradient gradientUnits="userSpaceOnUse" id={gradientFaceId} x1="10.1347" x2="10.1347" y1="0" y2="20">
 					<stop stopColor="#F5DC30" />
 					<stop offset="1" stopColor="#F89B56" />
 				</linearGradient>
 				<linearGradient
 					gradientUnits="userSpaceOnUse"
-					id="paint1_linear_621_3897"
+					id={gradientMouthId}
 					x1="10.1347"
 					x2="10.1347"
 					y1="10.8696"
@@ -88,7 +99,7 @@ const LaughEmoji = (props: React.SVGProps<SVGSVGElement>) => {
 				</linearGradient>
 				<linearGradient
 					gradientUnits="userSpaceOnUse"
-					id="paint2_linear_621_3897"
+					id={gradientRightEyeId}
 					x1="16.2217"
 					x2="16.2217"
 					y1="8.99826"
@@ -99,7 +110,7 @@ const LaughEmoji = (props: React.SVGProps<SVGSVGElement>) => {
 				</linearGradient>
 				<linearGradient
 					gradientUnits="userSpaceOnUse"
-					id="paint3_linear_621_3897"
+					id={gradientLeftEyeId}
 					x1="1.30435"
 					x2="1.30435"
 					y1="0"

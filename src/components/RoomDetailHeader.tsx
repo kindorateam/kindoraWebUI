@@ -62,14 +62,14 @@ const RoomDetailHeader = ({ activeTab, initialFilters, roomId, onTabChange }: Ro
 	}
 
 	return (
-		<div className="border-b border-[#0000000D]">
+		<div className="border-[#0000000D] border-b">
 			<div className="container max-w-4xl">
 				<div className="mb-13 flex">
 					<div className="me-7">
 						<Avatar className="size-37.5" showFallback />
 					</div>
 					<div className="w-full">
-						<h1 className="mb-3.5 leading-none font-semibold lg:text-[36px]">{room?.name ?? `Room ${roomId}`}</h1>
+						<h1 className="mb-3.5 font-semibold leading-none lg:text-[36px]">{room?.name ?? `Room ${roomId}`}</h1>
 						<div className="mb-4 flex items-center">
 							<div className="flex flex-wrap gap-4">
 								{classroomStats.map((stat) => (

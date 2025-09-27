@@ -83,7 +83,7 @@ const MessagesPage = () => {
 
 const PanelBox = ({ title }: { title: string }) => (
 	<div className="rounded-lg border bg-white p-6 shadow-sm">
-		<h2 className="mb-2 text-xl font-semibold">{title}</h2>
+		<h2 className="mb-2 font-semibold text-xl">{title}</h2>
 		<p className="text-default-500 text-sm">Content goes here…</p>
 	</div>
 )
@@ -227,7 +227,7 @@ const columns: TableColumn<MessageRow>[] = [
 				<div className="relative">
 					<Avatar className="h-8 w-8" showFallback src={row.student.avatar} />
 					{row.student.online && (
-						<span className="absolute -bottom-0.5 -left-0.5 h-2.5 w-2.5 rounded-full border border-white bg-green-500" />
+						<span className="-bottom-0.5 -left-0.5 absolute h-2.5 w-2.5 rounded-full border border-white bg-green-500" />
 					)}
 				</div>
 				<span className="font-medium">{row.student.name}</span>
@@ -238,7 +238,7 @@ const columns: TableColumn<MessageRow>[] = [
 		key: "parents",
 		label: "Parents",
 		renderCell: (row) => (
-			<div className="flex -space-x-2">
+			<div className="-space-x-2 flex">
 				{row.parents.map((p) => (
 					<Avatar className="h-7 w-7 ring-2 ring-white" key={p.id} showFallback src={p.avatar} />
 				))}
@@ -248,7 +248,7 @@ const columns: TableColumn<MessageRow>[] = [
 	{
 		key: "preview",
 		label: "Messages",
-		renderCell: (row) => <div className="text-default-500 max-w-[640px] truncate">{row.preview || "—"}</div>,
+		renderCell: (row) => <div className="max-w-[640px] truncate text-default-500">{row.preview || "—"}</div>,
 	},
 	{
 		key: "time",

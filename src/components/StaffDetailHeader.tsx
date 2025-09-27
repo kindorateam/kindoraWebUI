@@ -18,7 +18,7 @@ interface StaffDetailHeaderProps {
 
 const StaffDetailHeader = ({ pin, role, rooms = [], staffName, staffAvatar, tabs }: StaffDetailHeaderProps) => {
 	return (
-		<div className="border-b border-[#0000000D]">
+		<div className="border-[#0000000D] border-b">
 			<div className="container max-w-4xl">
 				<div className="mb-13 flex items-center">
 					<div className="flex items-center gap-7">
@@ -36,7 +36,7 @@ const StaffDetailHeader = ({ pin, role, rooms = [], staffName, staffAvatar, tabs
 										<Text color="neutral-800" size={12}>
 											Role
 										</Text>
-										<Chip className="text-xs font-semibold">{role}</Chip>
+										<Chip className="font-semibold text-xs">{role}</Chip>
 									</div>
 								) : null}
 								{pin ? (
@@ -44,7 +44,7 @@ const StaffDetailHeader = ({ pin, role, rooms = [], staffName, staffAvatar, tabs
 										<Text color="neutral-800" size={12}>
 											Pin
 										</Text>
-										<Chip className="text-xs font-semibold">{pin}</Chip>
+										<Chip className="font-semibold text-xs">{pin}</Chip>
 									</div>
 								) : null}
 							</div>
