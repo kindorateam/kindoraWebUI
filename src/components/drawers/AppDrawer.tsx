@@ -10,8 +10,8 @@ import {
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback, useEffect, useState } from 'react'
 
-import Button from './Button'
-import Text from './Text'
+import Button from '@/components/Button'
+import Text from '@/components/Text'
 import {
   closeDrawerAtom,
   drawerIsOpenAtom,

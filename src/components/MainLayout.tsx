@@ -1,6 +1,6 @@
 import { Outlet } from '@tanstack/react-router'
 
-import AppDrawer from './AppDrawer'
+import AppDrawer from './drawers/AppDrawer'
 import Header from './Header'
 import NavDrawer from './NavDrawer'
 
