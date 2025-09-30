@@ -40,31 +40,47 @@ export const setTokens = (accessToken: string, refreshToken?: string): void => {
 	}
 }
 
+// Track in-flight refresh promise to prevent race conditions
+let refreshPromise: Promise<string | null> | null = null
+
 export const refreshAccessToken = async (): Promise<string | null> => {
+	// If already refreshing, return the existing promise
+	if (refreshPromise) {
+		return refreshPromise
+	}
+
 	const refreshToken = getRefreshToken()
 	if (!refreshToken) {
 		return null
 	}
 
-	try {
-		const { apiClient } = await import("./api.service")
-		// Assuming the refresh endpoint is /auth/refresh
-		const response = await apiClient.post<{
-			accessToken: string
-			refreshToken?: string
-		}>("/auth/refresh", { refreshToken })
+	// Create and store the refresh promise
+	refreshPromise = (async () => {
+		try {
+			const { apiClient } = await import("./api.service")
+			// Assuming the refresh endpoint is /auth/refresh
+			const response = await apiClient.post<{
+				accessToken: string
+				refreshToken?: string
+			}>("/auth/refresh", { refreshToken })
 
-		const { accessToken, refreshToken: newRefreshToken } = response
+			const { accessToken, refreshToken: newRefreshToken } = response
 
-		// Update tokens in store
-		setTokens(accessToken, newRefreshToken)
+			// Update tokens in store
+			setTokens(accessToken, newRefreshToken)
 
-		return accessToken
-	} catch {
-		// If refresh fails, clear all tokens
-		clearToken()
-		return null
-	}
+			return accessToken
+		} catch {
+			// If refresh fails, clear all tokens
+			clearToken()
+			return null
+		} finally {
+			// Clear promise after completion
+			refreshPromise = null
+		}
+	})()
+
+	return refreshPromise
 }
 
 const sanitizeToken = (token: string): string => {
