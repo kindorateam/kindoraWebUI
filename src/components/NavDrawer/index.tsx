@@ -2,12 +2,13 @@ import { Link, useRouterState } from "@tanstack/react-router"
 import { useAtom } from "jotai"
 import { memo, useCallback, useMemo } from "react"
 
+import Logo from "@/assets/svg/logo.svg?no-inline"
+import FAB from "@/components/FAB"
+import { navDrawerExpandedItemsAtom, toggleNavDrawerItemAtom } from "@/stores"
+
 import NavGroup from "./NavGroup"
 import NavItem from "./NavItem"
 import navDrawerData from "./navDrawer.data.tsx"
-
-import Logo from "@/assets/svg/logo.svg?no-inline"
-import { navDrawerExpandedItemsAtom, toggleNavDrawerItemAtom } from "@/stores"
 
 import type { NavDrawerItem } from "./navDrawer.types"
 
@@ -65,6 +66,7 @@ const NavDrawer = memo(() => {
 					</Link>
 				</div>
 				<nav aria-label="Primary" className="flex-1 overflow-y-auto px-[14px] py-4">
+					<FAB />
 					{menuItems}
 				</nav>
 			</aside>

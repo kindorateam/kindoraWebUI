@@ -1,4 +1,5 @@
-import type { Room } from "@/types/room"
+import type { ApiRoom, Room } from "@/types/room"
+import { apiClient } from "./api.service"
 
 const MOCK_ROOMS_DATA: Room[] = [
 	{
@@ -230,7 +231,16 @@ export const getRoomById = async (id: string): Promise<Room | undefined> => {
 	return MOCK_ROOMS_DATA.find((room) => room.id === id)
 }
 
+/**
+ * Fetches rooms from the API
+ * @returns Promise with array of ApiRoom objects
+ */
+export const fetchRoomsFromApi = async (): Promise<ApiRoom[]> => {
+	return apiClient.get<ApiRoom[]>("/rooms")
+}
+
 export default {
 	getRooms,
 	getRoomById,
+	fetchRoomsFromApi,
 }

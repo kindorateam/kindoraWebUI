@@ -1,15 +1,10 @@
 const PlusIcon = (props: React.SVGProps<SVGSVGElement>) => (
-	<svg
-		aria-hidden="true"
-		fill="none"
-		focusable="false"
-		height="1em"
-		role="presentation"
-		viewBox="0 0 24 24"
-		width="1em"
-		{...props}
-	>
-		<path d="M19 13H13V19H11V13H5V11H11V5H13V11H19V13Z" fill="currentColor" />
+	<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
+		<title>Plus</title>
+		<path
+			d="M8 1C8.55228 1 9 1.44772 9 2V7H14C14.5523 7 15 7.44772 15 8C15 8.55228 14.5523 9 14 9H9V14C9 14.5523 8.55228 15 8 15C7.44772 15 7 14.5523 7 14V9H2C1.44772 9 1 8.55228 1 8C1 7.44772 1.44772 7 2 7H7V2C7 1.44772 7.44772 1 8 1Z"
+			fill={props.fill ?? "#fff"}
+		/>
 	</svg>
 )
 

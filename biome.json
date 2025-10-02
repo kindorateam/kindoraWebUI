@@ -47,11 +47,11 @@
 						"groups": [
 							{ "type": false, "source": [":NODE:", ":PACKAGE:"] },
 							":BLANK_LINE:",
+							{ "type": false, "source": [":ALIAS:", "@/**"] },
+							":BLANK_LINE:",
 							{ "type": false, "source": ["../**"] },
 							":BLANK_LINE:",
 							{ "type": false, "source": ["./**"] },
-							":BLANK_LINE:",
-							{ "type": false, "source": [":ALIAS:", "@/**"] },
 							":BLANK_LINE:",
 							{ "type": false, "source": ["."] },
 							":BLANK_LINE:",

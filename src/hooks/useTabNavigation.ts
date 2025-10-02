@@ -1,4 +1,4 @@
-import { useCallback } from "react"
+import { useCallback, useEffect } from "react"
 
 import type { NavigateFn } from "@tanstack/react-router"
 
@@ -10,20 +10,36 @@ import type { NavigateFn } from "@tanstack/react-router"
  * @param navigate - The navigate function from TanStack Router
  * @returns handleTabChange - Function to change the tab
  */
-export function useTabNavigation<T extends string>(_currentTab: T, _defaultTab: T, navigate: NavigateFn) {
+export function useTabNavigation<T extends string>(currentTab: T | undefined, defaultTab: T, navigate: NavigateFn) {
+	type NavigateOptions = Parameters<typeof navigate>[0]
+	type SearchState = NavigateOptions extends { search?: infer TSearch }
+		? TSearch extends (prev: infer P) => unknown
+			? P
+			: Record<string, unknown>
+		: Record<string, unknown>
+
 	const handleTabChange = useCallback(
 		(newTab: T) => {
-			void navigate({
+			const searchUpdater = ((prev: SearchState) => ({
+				...prev,
+				tab: newTab,
+			})) as NavigateOptions["search"]
+
+			const options = {
 				replace: true,
-				//@ts-expect-error
-				search: (prev: Record<string, unknown>) => ({
-					...prev,
-					tab: newTab,
-				}),
-			})
+				search: searchUpdater,
+			} as NavigateOptions
+
+			void navigate(options)
 		},
 		[navigate],
 	)
+
+	useEffect(() => {
+		if (!currentTab) {
+			handleTabChange(defaultTab)
+		}
+	}, [currentTab, defaultTab, handleTabChange])
 
 	return handleTabChange
 }
