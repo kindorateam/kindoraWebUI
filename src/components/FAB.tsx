@@ -54,7 +54,7 @@ const FAB = ({ onAddStudent, onAddRoom, onAddStaff, onAddActivity, onAddEvent }:
 						base: "p-3.5",
 					}}
 					itemClasses={{
-						base: "py-2.5 px-4 gap-2.5 data-[hover=true]:bg-black/5 min-w-0!",
+						base: "py-2.5 px-4 gap-2.5 data-[hover=true]:bg-brand/5 data-[hover=true]:text-brand min-w-0!",
 					}}
 					onAction={(key) => handleAction(key as string)}
 				>

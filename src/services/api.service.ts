@@ -4,7 +4,7 @@ import { clearToken, getCleanToken, refreshAccessToken } from "./token.service"
 
 import { redirectToLogin } from "@/services/redirect.service"
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "https://your-backend-api.com/api/v1" // Update this to your actual backend URL
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "/api/v1"
 const API_TIMEOUT = 30000
 
 class ApiClient {

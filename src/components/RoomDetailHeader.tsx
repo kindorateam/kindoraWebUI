@@ -1,5 +1,4 @@
 import { Avatar, Tab, Tabs } from "@heroui/react"
-import { useQuery } from "@tanstack/react-query"
 import { useState } from "react"
 
 import Button from "./Button"
@@ -9,7 +8,7 @@ import StudentIcon from "./icons/StudentIcon"
 import LabeledNumberBadge from "./LabeledNumberBadge"
 
 import SmileEmoji from "@/components/icons/emojies/SmileEmoji"
-import { getRoomById } from "@/services/room.service"
+import { useRoom } from "@/hooks/useRooms"
 
 import type { FilterProps } from "@/types/TableFilters"
 
@@ -43,15 +42,7 @@ const classroomStats = [
 const staffNames = ["Emily Carter", "James Whiteker"]
 
 const RoomDetailHeader = ({ activeTab, initialFilters, roomId, onTabChange }: RoomDetailHeaderProps) => {
-	const { data: room } = useQuery({
-		queryKey: ["room", roomId],
-		queryFn: () => getRoomById(roomId),
-		staleTime: 5 * 60 * 1000, // Consider data fresh for 5 minutes
-		refetchOnWindowFocus: false, // Don't refetch when window regains focus
-		refetchOnMount: false, // Don't refetch on mount if data exists
-		refetchOnReconnect: false, // Don't refetch on reconnect
-		enabled: !!roomId, // Only run query if roomId exists
-	})
+	const { data: room } = useRoom(roomId)
 
 	const [filters, setFilters] = useState<FilterProps[]>(initialFilters)
 

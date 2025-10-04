@@ -11,30 +11,17 @@ import type { NavigateFn } from "@tanstack/react-router"
  * @returns handleTabChange - Function to change the tab
  */
 export function useTabNavigation<T extends string>(currentTab: T | undefined, defaultTab: T, navigate: NavigateFn) {
-	type NavigateOptions = Parameters<typeof navigate>[0]
-	type SearchState = NavigateOptions extends { search?: infer TSearch }
-		? TSearch extends (prev: infer P) => unknown
-			? P
-			: Record<string, unknown>
-		: Record<string, unknown>
-
 	const handleTabChange = useCallback(
 		(newTab: T) => {
-			const searchUpdater = ((prev: SearchState) => ({
-				...prev,
-				tab: newTab,
-			})) as NavigateOptions["search"]
-
-			const options = {
+			void navigate({
+				search: (prev: Record<string, unknown>) => ({ ...prev, tab: newTab }) as never,
 				replace: true,
-				search: searchUpdater,
-			} as NavigateOptions
-
-			void navigate(options)
+			})
 		},
 		[navigate],
 	)
 
+	// Redirect to default tab if none specified
 	useEffect(() => {
 		if (!currentTab) {
 			handleTabChange(defaultTab)

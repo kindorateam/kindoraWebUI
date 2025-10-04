@@ -10,14 +10,14 @@ export interface ApiStudent {
 	id: string
 	first_name: string
 	last_name: string
-	avatar: Asset
+	avatar?: Asset
 }
 
 export interface ApiStaff {
 	id: string
 	first_name: string
 	last_name: string
-	avatar: Asset
+	avatar?: Asset
 }
 
 export interface ApiRoom {
