@@ -1,11 +1,11 @@
-import MessageIcon from "../icons/MessageIcon"
-
 import AdmissionsIcon from "@/components/icons/AdmissionsIcon"
 import AnalyticsIcon from "@/components/icons/AnalyticsIcon"
 import BillingIcon from "@/components/icons/BillingIcon"
 import DashboardIcon from "@/components/icons/DashboardIcon"
 import ReportsIcon from "@/components/icons/ReportsIcon"
 import SchoolIcon from "@/components/icons/SchoolIcon"
+
+import MessageIcon from "../icons/MessageIcon"
 
 import type { NavDrawerItem } from "./navDrawer.types"
 

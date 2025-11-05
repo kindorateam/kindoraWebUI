@@ -1,10 +1,10 @@
 import { useQuery } from "@tanstack/react-query"
 import { useMemo } from "react"
 
-import createStudentsColumns from "./StudentsTableConfig"
-
 import DataTable from "@/components/DataTable"
 import { getStudents } from "@/services/student.service"
+
+import createStudentsColumns from "./StudentsTableConfig"
 
 const StudentsTable = () => {
 	const { data: students = [], isLoading } = useQuery({

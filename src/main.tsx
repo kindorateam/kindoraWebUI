@@ -1,3 +1,4 @@
+import { GoogleOAuthProvider } from "@react-oauth/google"
 import { HeroUIProvider } from "@heroui/react"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { Provider as JotaiProvider } from "jotai"
@@ -31,12 +32,14 @@ createRoot(rootElement).render(
 			console.error("Root Application Error:", error, errorInfo)
 		}}
 	>
-		<JotaiProvider store={appStore}>
-			<QueryClientProvider client={queryClient}>
-				<HeroUIProvider>
-					<App />
-				</HeroUIProvider>
-			</QueryClientProvider>
-		</JotaiProvider>
+		<GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+			<JotaiProvider store={appStore}>
+				<QueryClientProvider client={queryClient}>
+					<HeroUIProvider>
+						<App />
+					</HeroUIProvider>
+				</QueryClientProvider>
+			</JotaiProvider>
+		</GoogleOAuthProvider>
 	</ErrorBoundary>,
 )

@@ -1,14 +1,14 @@
 import { Avatar, Image, Input } from "@heroui/react"
 import { useCallback } from "react"
 
-import ChatMessage from "./ChatMessage"
-import EmojiGroup from "./EmojiGroup"
-import SocialMetrics from "./SocialMetrics"
-
 import Button from "@/components/Button"
 import FilterIcon from "@/components/icons/FilterIcon"
 import Text from "@/components/Text"
 import useAppDrawer from "@/hooks/useAppDrawer"
+
+import ChatMessage from "./ChatMessage"
+import EmojiGroup from "./EmojiGroup"
+import SocialMetrics from "./SocialMetrics"
 
 const Chat = () => {
 	const { openDrawer } = useAppDrawer()

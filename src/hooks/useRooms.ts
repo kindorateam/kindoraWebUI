@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query"
 
-import type { Room } from "@/types/room"
-
 import { getRoomById, getRooms } from "@/services/room.service"
+
+import type { Room } from "@/types/room"
 
 /**
  * Hook to fetch all rooms from the API using TanStack Query

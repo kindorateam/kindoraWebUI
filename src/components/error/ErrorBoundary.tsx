@@ -1,8 +1,8 @@
 import { Component } from "react"
 
-import ErrorFallback from "./ErrorFallback"
-
 import { logError } from "@/utils/error"
+
+import ErrorFallback from "./ErrorFallback"
 
 import type { ReactNode } from "react"
 import type { ErrorBoundaryState, ErrorInfo } from "@/types/error"

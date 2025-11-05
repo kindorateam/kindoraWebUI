@@ -2,9 +2,9 @@ import { BreadcrumbItem, Breadcrumbs as HeroUIBreadcrumbs } from "@heroui/react"
 import { Link } from "@tanstack/react-router"
 import { memo } from "react"
 
-import Text from "./Text"
-
 import usePageMetadata from "@/hooks/usePageMetadata"
+
+import Text from "./Text"
 
 const breadcrumbItemClasses = {
 	separator: "text-base text-neutral-500",

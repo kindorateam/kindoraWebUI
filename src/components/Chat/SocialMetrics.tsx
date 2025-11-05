@@ -1,7 +1,7 @@
-import InlineStat from "./InlineStat"
-
 import LikeIcon from "@/components/icons/LikeIcon"
 import MessageIcon from "@/components/icons/MessageIcon"
+
+import InlineStat from "./InlineStat"
 
 const SocialMetrics = () => (
 	<div className="flex items-center gap-4">

@@ -1,8 +1,8 @@
 import { useMemo } from "react"
 
-import createStudentColumns from "./RoomStudentsTabConfig"
-
 import DataTable from "@/components/DataTable"
+
+import createStudentColumns from "./RoomStudentsTabConfig"
 
 import type { Student } from "./RoomStudentsTabConfig"
 

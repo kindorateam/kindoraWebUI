@@ -1,9 +1,9 @@
 import { useMemo } from "react"
 
-import createRoomsColumns from "./RoomsTableConfig"
-
 import DataTable from "@/components/DataTable"
 import { useRooms } from "@/hooks/useRooms"
+
+import createRoomsColumns from "./RoomsTableConfig"
 
 const RoomsTable = () => {
 	const { data: rooms = [], isLoading } = useRooms()

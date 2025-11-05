@@ -1,8 +1,8 @@
 import axios, { type AxiosInstance, type AxiosRequestConfig, type AxiosResponse } from "axios"
 
-import { clearToken, getCleanToken, refreshAccessToken } from "./token.service"
-
 import { redirectToLogin } from "@/services/redirect.service"
+
+import { clearToken, getCleanToken, refreshAccessToken } from "./token.service"
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "/api/v1"
 const API_TIMEOUT = 30000

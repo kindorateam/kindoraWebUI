@@ -45,7 +45,7 @@ const NewsletterDrawer = ({ isOpen, onClose }: NewsletterDrawerProps) => {
 				</DrawerHeader>
 
 				<DrawerBody className="flex flex-row gap-10 overflow-y-hidden py-6">
-					<div className="max-w-[232px] w-full! overscroll-contain">
+					<div className="w-full! max-w-[232px] overscroll-contain">
 						<Tabs
 							aria-label="Room details tabs"
 							classNames={{
@@ -597,7 +597,7 @@ const NewsletterDrawer = ({ isOpen, onClose }: NewsletterDrawerProps) => {
 						</Tabs>
 					</div>
 
-					<div className="h-full! w-full! bg-[#BCD1D6] rounded-[30px]"></div>
+					<div className="h-full! w-full! rounded-[30px] bg-[#BCD1D6]"></div>
 				</DrawerBody>
 
 				<DrawerFooter className="border-black/5 border-t pt-3.5 pb-39">
