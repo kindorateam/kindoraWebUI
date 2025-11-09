@@ -9,32 +9,36 @@ import type { SignInFormData } from "../types"
 
 interface SignInFormProps {
 	onForgotPassword: () => void
+	onSignInSuccess: (email: string) => void
 }
 
-export default function SignInForm({ onForgotPassword }: SignInFormProps) {
+export default function SignInForm({ onForgotPassword, onSignInSuccess }: SignInFormProps) {
 	const { handleGoogleLogin, error } = useAuth()
 
 	const {
 		control,
 		handleSubmit,
-		formState: { errors, isSubmitting },
+		formState: { errors, isSubmitting, isValid },
 	} = useForm<SignInFormData>({
 		defaultValues: {
 			email: "",
 			password: "",
 			rememberMe: false,
 		},
-		mode: "onBlur",
+		mode: "onChange",
 	})
 
 	// TODO: Integrate with API
-	const onSubmit = useCallback(async (data: SignInFormData) => {
-		console.log("Sign in form data:", data)
-		// TODO: Call API endpoint for email/password authentication
-		// TODO: Handle success/error responses
-		// TODO: Store tokens and user data
-		// TODO: Call onSuccess callback if provided
-	}, [])
+	const onSubmit = useCallback(
+		async (data: SignInFormData) => {
+			console.log("Sign in form data:", data)
+			// TODO: Call API endpoint for email/password authentication
+			// TODO: Handle success/error responses
+			// TODO: On successful authentication, trigger OTP verification
+			onSignInSuccess(data.email)
+		},
+		[onSignInSuccess],
+	)
 
 	return (
 		<>
@@ -96,10 +100,6 @@ export default function SignInForm({ onForgotPassword }: SignInFormProps) {
 							)}
 							rules={{
 								required: "Password is required",
-								minLength: {
-									value: 6,
-									message: "Password must be at least 6 characters",
-								},
 							}}
 						/>
 					</div>
@@ -113,12 +113,23 @@ export default function SignInForm({ onForgotPassword }: SignInFormProps) {
 								</Checkbox>
 							)}
 						/>
-						<Link className="text-sm" onPress={onForgotPassword} underline="hover">
+						<Link
+							className="cursor-pointer rounded-xl px-3 py-0 text-default-400 text-xs font-normal leading-4"
+							onPress={onForgotPassword}
+							underline="none"
+						>
 							Forgot password?
 						</Link>
 					</div>
 
-					<Button className="mt-5 w-full" color="primary" isLoading={isSubmitting} size="md" type="submit">
+					<Button
+						className="mt-5 w-full"
+						color="primary"
+						isDisabled={!isValid}
+						isLoading={isSubmitting}
+						size="md"
+						type="submit"
+					>
 						Sign In
 					</Button>
 				</form>
@@ -129,7 +140,7 @@ export default function SignInForm({ onForgotPassword }: SignInFormProps) {
 						<div className="w-full border-gray-300 border-t" />
 					</div>
 					<div className="relative flex justify-center text-base">
-						<span className="bg-white px-4 text-gray-500">OR</span>
+						<span className="bg-white px-4 text-default-400">OR</span>
 					</div>
 				</div>
 

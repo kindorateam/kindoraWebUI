@@ -7,3 +7,7 @@ export interface SignInFormData {
 export interface ForgotPasswordFormData {
 	email: string
 }
+
+export interface OTPVerificationFormData {
+	otp: string
+}
