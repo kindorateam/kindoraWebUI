@@ -1,6 +1,8 @@
 import { Button, CardBody, CardFooter, CardHeader, Input } from "@heroui/react"
-import { useCallback } from "react"
+import { useCallback, useState } from "react"
 import { Controller, useForm } from "react-hook-form"
+
+import ForgotPasswordConfirmation from "./ForgotPasswordConfirmation"
 
 import type { ForgotPasswordFormData } from "../types"
 
@@ -8,7 +10,10 @@ interface ForgotPasswordFormProps {
 	onBack: () => void
 }
 
-export default function ForgotPasswordForm({ onBack }: ForgotPasswordFormProps) {
+const ForgotPasswordForm = ({ onBack }: ForgotPasswordFormProps) => {
+	const [emailSent, setEmailSent] = useState(false)
+	const [submittedEmail, setSubmittedEmail] = useState("")
+
 	const {
 		control,
 		handleSubmit,
@@ -25,8 +30,18 @@ export default function ForgotPasswordForm({ onBack }: ForgotPasswordFormProps) 
 		console.log("Forgot password form data:", data)
 		// TODO: Call API endpoint to send password reset email
 		// TODO: Handle success/error responses
-		// TODO: Show next step (confirmation screen)
+		setSubmittedEmail(data.email)
+		setEmailSent(true)
 	}, [])
+
+	const handleNext = useCallback(() => {
+		// TODO: Navigate to next step or back to sign in
+		onBack()
+	}, [onBack])
+
+	if (emailSent) {
+		return <ForgotPasswordConfirmation email={submittedEmail} onNext={handleNext} />
+	}
 
 	return (
 		<>
@@ -85,3 +100,5 @@ export default function ForgotPasswordForm({ onBack }: ForgotPasswordFormProps) 
 		</>
 	)
 }
+
+export default ForgotPasswordForm

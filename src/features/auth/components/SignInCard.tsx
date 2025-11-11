@@ -3,9 +3,10 @@ import { useState } from "react"
 
 import ForgotPasswordForm from "./ForgotPasswordForm"
 import OTPVerificationForm from "./OTPVerificationForm"
+import ResetPasswordForm from "./ResetPasswordForm"
 import SignInForm from "./SignInForm"
 
-export default function SignInCard() {
+const SignInCard = () => {
 	const [view, setView] = useState<"signin" | "forgot-password" | "otp-verification">("signin")
 	const [userEmail, setUserEmail] = useState("")
 
@@ -21,13 +22,16 @@ export default function SignInCard() {
 
 	return (
 		<Card className="w-full max-w-[396px] bg-white shadow-md">
-			{view === "signin" && (
+			<ResetPasswordForm onBack={() => setView("signin")} onResetSuccess={() => setView("signin")} />
+			{/* {view === "signin" && (
 				<SignInForm onForgotPassword={() => setView("forgot-password")} onSignInSuccess={handleSignInSuccess} />
 			)}
 			{view === "forgot-password" && <ForgotPasswordForm onBack={() => setView("signin")} />}
 			{view === "otp-verification" && (
 				<OTPVerificationForm email={userEmail} onBack={() => setView("signin")} onSuccess={handleOTPSuccess} />
-			)}
+			)} */}
 		</Card>
 	)
 }
+
+export default SignInCard

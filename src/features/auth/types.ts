@@ -11,3 +11,8 @@ export interface ForgotPasswordFormData {
 export interface OTPVerificationFormData {
 	otp: string
 }
+
+export interface ResetPasswordFormData {
+	password: string
+	confirmPassword: string
+}

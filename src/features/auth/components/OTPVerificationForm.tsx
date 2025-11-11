@@ -10,7 +10,7 @@ interface OTPVerificationFormProps {
 	onSuccess: () => void
 }
 
-export default function OTPVerificationForm({ email, onBack, onSuccess }: OTPVerificationFormProps) {
+const OTPVerificationForm = ({ email, onBack, onSuccess }: OTPVerificationFormProps) => {
 	const [timeLeft, setTimeLeft] = useState(300) // 5 minutes in seconds
 	const [canResend, setCanResend] = useState(false)
 
@@ -177,3 +177,5 @@ export default function OTPVerificationForm({ email, onBack, onSuccess }: OTPVer
 		</>
 	)
 }
+
+export default OTPVerificationForm

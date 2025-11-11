@@ -12,7 +12,7 @@ interface SignInFormProps {
 	onSignInSuccess: (email: string) => void
 }
 
-export default function SignInForm({ onForgotPassword, onSignInSuccess }: SignInFormProps) {
+const SignInForm = ({ onForgotPassword, onSignInSuccess }: SignInFormProps) => {
 	const { handleGoogleLogin, error } = useAuth()
 
 	const {
@@ -114,7 +114,7 @@ export default function SignInForm({ onForgotPassword, onSignInSuccess }: SignIn
 							)}
 						/>
 						<Link
-							className="cursor-pointer rounded-xl px-3 py-0 text-default-400 text-xs font-normal leading-4"
+							className="cursor-pointer rounded-xl px-3 py-0 font-normal text-default-400 text-xs leading-4"
 							onPress={onForgotPassword}
 							underline="none"
 						>
@@ -163,3 +163,5 @@ export default function SignInForm({ onForgotPassword, onSignInSuccess }: SignIn
 		</>
 	)
 }
+
+export default SignInForm
