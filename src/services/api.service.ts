@@ -83,6 +83,10 @@ class ApiClient {
 		return response.data
 	}
 
+	async postRaw<T>(url: string, data?: unknown, config?: AxiosRequestConfig): Promise<AxiosResponse<T>> {
+		return this.instance.post(url, data, config)
+	}
+
 	async put<T>(url: string, data?: unknown, config?: AxiosRequestConfig): Promise<T> {
 		const response: AxiosResponse<T> = await this.instance.put(url, data, config)
 		return response.data

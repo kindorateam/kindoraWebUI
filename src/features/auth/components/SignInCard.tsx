@@ -1,35 +1,106 @@
 import { Card } from "@heroui/react"
-import { useState } from "react"
 
 import ForgotPasswordForm from "./ForgotPasswordForm"
 import OTPVerificationForm from "./OTPVerificationForm"
 import ResetPasswordForm from "./ResetPasswordForm"
 import SignInForm from "./SignInForm"
 
-const SignInCard = () => {
-	const [view, setView] = useState<"signin" | "forgot-password" | "otp-verification">("signin")
-	const [userEmail, setUserEmail] = useState("")
+type AuthView = "signin" | "forgot-password" | "otp-verification" | "otp-password-reset" | "reset-password"
 
-	const handleSignInSuccess = (email: string) => {
+interface SignInCardProps {
+	view: AuthView
+	setView: (view: AuthView) => void
+	userEmail: string
+	setUserEmail: (email: string) => void
+	resetToken: string
+	setResetToken: (token: string) => void
+}
+
+const SignInCard = ({ view, setView, userEmail, setUserEmail, resetToken, setResetToken }: SignInCardProps) => {
+	// Called when user successfully logs in (verified user)
+	const handleSignInSuccess = (_email: string) => {
+		// User is already logged in, no need to show OTP
+		// Navigation is handled by router
+	}
+
+	// Called when new user needs to verify OTP for first login
+	const handleVerificationRequired = (email: string, _message: string) => {
 		setUserEmail(email)
 		setView("otp-verification")
 	}
 
+	// Called after OTP is verified successfully for first login
 	const handleOTPSuccess = () => {
-		// TODO: Navigate to dashboard or next screen
-		console.log("OTP verified successfully")
+		// User is now logged in, navigation is handled by router
+	}
+
+	// Called when user requests password reset
+	const handleForgotPassword = () => {
+		setView("forgot-password")
+	}
+
+	// Called after forgot password email is sent and user clicks "Next"
+	const handleForgotPasswordNext = (email: string) => {
+		setUserEmail(email)
+		setView("otp-password-reset")
+	}
+
+	// Called after OTP is verified successfully for password reset
+	const handlePasswordResetOTPSuccess = (token?: string) => {
+		if (token) {
+			setResetToken(token)
+			setView("reset-password")
+		}
+	}
+
+	// Called after password is successfully reset
+	const handleResetPasswordSuccess = () => {
+		// Clear reset token and navigate back to sign in
+		setResetToken("")
+		setView("signin")
 	}
 
 	return (
 		<Card className="w-full max-w-[396px] bg-white shadow-md">
-			<ResetPasswordForm onBack={() => setView("signin")} onResetSuccess={() => setView("signin")} />
-			{/* {view === "signin" && (
-				<SignInForm onForgotPassword={() => setView("forgot-password")} onSignInSuccess={handleSignInSuccess} />
+			{view === "signin" && (
+				<SignInForm
+					defaultEmail={userEmail}
+					onForgotPassword={handleForgotPassword}
+					onSignInSuccess={handleSignInSuccess}
+					onVerificationRequired={handleVerificationRequired}
+				/>
 			)}
-			{view === "forgot-password" && <ForgotPasswordForm onBack={() => setView("signin")} />}
+
+			{view === "forgot-password" && (
+				<ForgotPasswordForm onBack={() => setView("signin")} onNext={handleForgotPasswordNext} />
+			)}
+
 			{view === "otp-verification" && (
-				<OTPVerificationForm email={userEmail} onBack={() => setView("signin")} onSuccess={handleOTPSuccess} />
-			)} */}
+				<OTPVerificationForm
+					context="login"
+					email={userEmail}
+					onBack={() => setView("signin")}
+					onSuccess={handleOTPSuccess}
+				/>
+			)}
+
+			{view === "otp-password-reset" && (
+				<OTPVerificationForm
+					context="password-reset"
+					email={userEmail}
+					onBack={() => setView("forgot-password")}
+					onSuccess={handlePasswordResetOTPSuccess}
+				/>
+			)}
+
+			{view === "reset-password" && (
+				<ResetPasswordForm
+					email={userEmail}
+					onBack={() => setView("otp-password-reset")}
+					onResetSuccess={handleResetPasswordSuccess}
+					token={resetToken}
+				/>
+			)}
 		</Card>
 	)
 }

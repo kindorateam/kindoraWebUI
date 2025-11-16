@@ -2,17 +2,23 @@ import { Button, CardBody, CardFooter, CardHeader, InputOtp, Link } from "@herou
 import { useCallback, useEffect, useState } from "react"
 import { Controller, useForm } from "react-hook-form"
 
+import useAuth from "@/hooks/useAuth"
+import { verifyPasswordResetOTP } from "@/services/auth.service"
+
 import type { OTPVerificationFormData } from "../types"
 
 interface OTPVerificationFormProps {
 	email: string
 	onBack: () => void
-	onSuccess: () => void
+	onSuccess: (token?: string) => void
+	context?: "login" | "password-reset"
 }
 
-const OTPVerificationForm = ({ email, onBack, onSuccess }: OTPVerificationFormProps) => {
+const OTPVerificationForm = ({ email, onBack, onSuccess, context = "login" }: OTPVerificationFormProps) => {
+	const { handleVerifyFirstLogin, error: authError } = useAuth()
 	const [timeLeft, setTimeLeft] = useState(300) // 5 minutes in seconds
 	const [canResend, setCanResend] = useState(false)
+	const [localError, setLocalError] = useState<string | null>(null)
 
 	const {
 		control,
@@ -47,23 +53,43 @@ const OTPVerificationForm = ({ email, onBack, onSuccess }: OTPVerificationFormPr
 	}
 
 	const handleResendCode = useCallback(() => {
-		// TODO: Call API to resend OTP
-		console.log("Resending code to:", email)
+		// TODO: Call API to resend OTP - mock implementation for now
+		console.log("Resend code requested for:", email)
 		setTimeLeft(300) // Reset timer to 5 minutes
 		setCanResend(false)
+		setLocalError(null)
+		// Show success feedback
+		alert("A new verification code has been sent to your email")
 	}, [email])
 
-	// TODO: Integrate with API
 	const onSubmit = useCallback(
 		async (data: OTPVerificationFormData) => {
-			console.log("OTP verification data:", data)
-			// TODO: Call API endpoint to verify OTP
-			// TODO: Handle success/error responses
-			// TODO: Call onSuccess callback if verification succeeds
-			onSuccess()
+			try {
+				setLocalError(null)
+
+				if (context === "login") {
+					// First login verification flow
+					await handleVerifyFirstLogin(email, data.otp)
+					onSuccess()
+				} else {
+					// Password reset verification flow
+					await verifyPasswordResetOTP(email, data.otp)
+					// Pass the OTP token to the next step for password reset
+					onSuccess(data.otp)
+				}
+			} catch (error) {
+				const errorMessage = error instanceof Error ? error.message : "Verification failed. Please try again."
+				if (context === "password-reset") {
+					setLocalError(errorMessage)
+				}
+				console.error("Verification failed:", error)
+			}
 		},
-		[onSuccess],
+		[context, email, handleVerifyFirstLogin, onSuccess],
 	)
+
+	// Use local error for password reset, auth error for login
+	const displayError = context === "password-reset" ? localError : authError
 
 	return (
 		<>
@@ -72,6 +98,12 @@ const OTPVerificationForm = ({ email, onBack, onSuccess }: OTPVerificationFormPr
 			</CardHeader>
 
 			<CardBody className="gap-4 px-7 pt-4 pb-4">
+				{displayError && (
+					<div className="rounded-md bg-red-50 p-3 text-red-600 text-sm" role="alert">
+						{displayError}
+					</div>
+				)}
+
 				<div className="flex flex-col gap-4">
 					<div className="flex flex-col gap-1">
 						<p className="text-default-600 text-sm">Enter the verification code sent to</p>

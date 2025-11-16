@@ -3,11 +3,17 @@ import { Icon } from "@iconify/react"
 import { useCallback, useMemo, useState } from "react"
 import { Controller, useForm } from "react-hook-form"
 
+import { resetPassword } from "@/services/auth.service"
+
+import ResetPasswordConfirmation from "./ResetPasswordConfirmation"
+
 import type { ResetPasswordFormData } from "../types"
 
 interface ResetPasswordFormProps {
+	email: string
+	token: string
 	onBack: () => void
-	onResetSuccess?: () => void
+	onResetSuccess: () => void
 }
 
 type StrengthLabel = "weak" | "fair" | "good" | "strong"
@@ -51,9 +57,11 @@ const strengthColorMap: Record<StrengthLabel | "empty", string> = {
 	empty: "text-default-400",
 }
 
-const ResetPasswordForm = ({ onBack, onResetSuccess }: ResetPasswordFormProps) => {
+const ResetPasswordForm = ({ email, token, onBack, onResetSuccess }: ResetPasswordFormProps) => {
 	const [isPasswordVisible, setIsPasswordVisible] = useState(false)
 	const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false)
+	const [resetComplete, setResetComplete] = useState(false)
+	const [error, setError] = useState<string | null>(null)
 
 	const formId = "reset-password-form"
 
@@ -130,23 +138,32 @@ const ResetPasswordForm = ({ onBack, onResetSuccess }: ResetPasswordFormProps) =
 
 	const onSubmit = useCallback(
 		async (data: ResetPasswordFormData) => {
-			console.log("Reset password form data:", data)
-			// TODO: Call API endpoint to update password
-			// TODO: Handle success/error responses
-			onResetSuccess?.()
+			try {
+				setError(null)
+				await resetPassword(email, token, data.password)
+				setResetComplete(true)
+			} catch (err) {
+				setError(err instanceof Error ? err.message : "Failed to reset password. Please try again.")
+			}
 		},
-		[onResetSuccess],
+		[email, token],
 	)
+
+	if (resetComplete) {
+		return <ResetPasswordConfirmation onBackToSignIn={onResetSuccess} />
+	}
 
 	return (
 		<>
 			<CardHeader className="px-7 pt-8 pb-4">
-				<h1 className="text-[20px] leading-[28px] font-medium">Create a new password</h1>
+				<h1 className="font-medium text-xl leading-7">Create a new password</h1>
 			</CardHeader>
 
 			<CardBody className="px-7 pt-4 pb-0">
-				<form className="flex flex-col gap-[32px]" id={formId} onSubmit={handleSubmit(onSubmit)}>
-					<div className="flex flex-col gap-[12px]">
+				<form className="flex flex-col gap-8" id={formId} onSubmit={handleSubmit(onSubmit)}>
+					{error && <div className="rounded-md bg-danger-50 p-3 text-danger text-sm">{error}</div>}
+
+					<div className="flex flex-col gap-3">
 						<Controller
 							control={control}
 							name="password"
@@ -209,15 +226,15 @@ const ResetPasswordForm = ({ onBack, onResetSuccess }: ResetPasswordFormProps) =
 						/>
 					</div>
 
-					<div className="flex items-center gap-[32px]">
-						<div className="flex items-center gap-1 text-sm leading-[20px]">
+					<div className="flex items-center gap-8">
+						<div className="flex items-center gap-1 text-sm leading-5">
 							<p className="text-foreground">Strength:</p>
 							<span className={`capitalize ${strength.colorClass}`}>{strength.label}</span>
 						</div>
-						<div className="flex flex-1 items-center gap-[8px]">
+						<div className="flex flex-1 items-center gap-2">
 							{Array.from({ length: 4 }).map((_, index) => (
 								<div
-									className={`h-[4px] flex-1 rounded-xl ${
+									className={`h-1 flex-1 rounded-xl ${
 										index < strength.barsFilled ? strength.barColorClass : barColorMap.empty
 									}`}
 									key={`strength-bar-${index}`}
@@ -228,7 +245,7 @@ const ResetPasswordForm = ({ onBack, onResetSuccess }: ResetPasswordFormProps) =
 
 					<div className="flex flex-col">
 						{requirementStatuses.map((requirement) => (
-							<div className="flex items-center gap-[8px] p-[8px]" key={requirement.id}>
+							<div className="flex items-center gap-2 p-2" key={requirement.id}>
 								<span
 									className={`flex size-4 items-center justify-center rounded-lg border-2 ${
 										requirement.isMet ? "border-success bg-success" : "border-default bg-default"
@@ -243,9 +260,9 @@ const ResetPasswordForm = ({ onBack, onResetSuccess }: ResetPasswordFormProps) =
 				</form>
 			</CardBody>
 
-			<CardFooter className="flex-col gap-[12px] px-7 pt-6 pb-8">
+			<CardFooter className="flex-col gap-3 px-7 pt-6 pb-8">
 				<Button
-					className="w-full h-[40px]"
+					className="h-10 w-full"
 					color="primary"
 					form={formId}
 					isDisabled={!isValid}
@@ -255,7 +272,7 @@ const ResetPasswordForm = ({ onBack, onResetSuccess }: ResetPasswordFormProps) =
 				>
 					Reset password
 				</Button>
-				<Button className="w-full h-[40px]" onPress={onBack} radius="lg" variant="bordered">
+				<Button className="h-10 w-full" onPress={onBack} radius="lg" variant="bordered">
 					Back
 				</Button>
 			</CardFooter>

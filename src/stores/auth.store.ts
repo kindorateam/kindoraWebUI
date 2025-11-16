@@ -1,22 +1,25 @@
 import { atom } from "jotai"
 import { atomWithStorage } from "jotai/utils"
 
-import { decodeJWT, isTokenExpired, transformGoogleUser, validateAndDecodeToken } from "@/utils/auth"
+import { fetchUserProfile, login, logout, verifyFirstLogin } from "@/services/auth.service"
+import { decodeJWT, transformGoogleUser } from "@/utils/auth"
 
 import type { GoogleAuthResponse, User } from "@/types/auth"
 
 // Atoms for state - using atomWithStorage handles localStorage automatically
 export const userAtom = atomWithStorage<User | null>("auth-user", null)
 export const tokenAtom = atomWithStorage<string | null>("auth-token", null)
-export const refreshTokenAtom = atomWithStorage<string | null>("auth-refresh-token", null)
+// Note: Refresh token is stored as HttpOnly cookie by backend, not in localStorage
 
 export const isLoadingAtom = atom(true)
 export const errorAtom = atom<string | null>(null)
+export const authInitializedAtom = atom(false)
 
 const isAuthenticatedAtom = atom((get) => {
 	const token = get(tokenAtom)
 	const user = get(userAtom)
-	return !!user && !!token && !isTokenExpired(token)
+	// Simply check if both exist - expiration handled by API interceptor
+	return !!user && !!token
 })
 
 // Token expiration atom
@@ -37,6 +40,7 @@ export const authStateAtom = atom((get) => ({
 	isAuthenticated: get(isAuthenticatedAtom),
 	isLoading: get(isLoadingAtom),
 	error: get(errorAtom),
+	isInitialized: get(authInitializedAtom),
 }))
 
 // Action atoms
@@ -57,48 +61,142 @@ export const handleGoogleLoginAtom = atom(null, (_get, set, response: GoogleAuth
 	} catch (error) {
 		set(userAtom, null)
 		set(tokenAtom, null)
-		set(refreshTokenAtom, null)
 		set(isLoadingAtom, false)
 		set(errorAtom, error instanceof Error ? error.message : "Login failed")
 	}
 })
 
-export const logoutAtom = atom(null, (_get, set) => {
-	// atomWithStorage handles localStorage automatically
-	set(userAtom, null)
-	set(tokenAtom, null)
-	set(refreshTokenAtom, null)
-	set(isLoadingAtom, false)
-	set(errorAtom, null)
+export const logoutAtom = atom(null, async (_get, set) => {
+	try {
+		// Call backend to clear HttpOnly refresh token cookie
+		await logout()
+	} catch (error) {
+		// Log error but still clear local state
+		if (import.meta.env.DEV) {
+			console.error("[auth.store] Logout API call failed:", error)
+		}
+	} finally {
+		// Always clear local state regardless of API call result
+		// atomWithStorage handles localStorage automatically
+		set(userAtom, null)
+		set(tokenAtom, null)
+		set(isLoadingAtom, false)
+		set(errorAtom, null)
+	}
 })
 
 export const updateUserAtom = atom(null, (_get, set, user: User) => {
 	set(userAtom, user)
 })
 
+type LoginResult =
+	| { needsVerification: true; email: string; message: string }
+	| { needsVerification: false; user: User }
+
+export const handleEmailLoginAtom = atom(
+	null,
+	async (_get, set, credentials: { email: string; password: string }): Promise<LoginResult> => {
+		try {
+			set(isLoadingAtom, true)
+			set(errorAtom, null)
+
+			// Login - may return tokens or verification required
+			const response = await login(credentials)
+
+			// Case 1: New user - verification required
+			if ("status" in response && response.status === "verification_required") {
+				set(isLoadingAtom, false)
+				// Return verification required status to trigger OTP UI
+				return { needsVerification: true, email: credentials.email, message: response.message }
+			}
+
+			// Case 2: Verified user - tokens received
+			// Fetch user profile with the new access token
+			const userResponse = await fetchUserProfile()
+
+			// Handle nested user object from backend
+			const user = "user" in userResponse ? (userResponse as any).user : userResponse
+
+			if (import.meta.env.DEV) {
+				console.log("[Auth Debug] fetchUserProfile response:", userResponse)
+				console.log("[Auth Debug] normalized user:", user)
+			}
+
+			// Update user in store
+			set(userAtom, user)
+			set(isLoadingAtom, false)
+
+			return { needsVerification: false, user }
+		} catch (error) {
+			set(userAtom, null)
+			set(tokenAtom, null)
+			set(isLoadingAtom, false)
+			set(errorAtom, error instanceof Error ? error.message : "Login failed")
+			throw error
+		}
+	},
+)
+
+export const handleVerifyFirstLoginAtom = atom(null, async (_get, set, payload: { email: string; code: string }) => {
+	try {
+		set(isLoadingAtom, true)
+		set(errorAtom, null)
+
+		// Verify OTP and get tokens
+		await verifyFirstLogin(payload.email, payload.code)
+
+		// Fetch user profile with the new access token
+		const userResponse = await fetchUserProfile()
+
+		// Handle nested user object from backend
+		const user = "user" in userResponse ? (userResponse as any).user : userResponse
+
+		if (import.meta.env.DEV) {
+			console.log("[Auth Debug] Verification successful")
+			console.log("[Auth Debug] fetchUserProfile response:", userResponse)
+			console.log("[Auth Debug] normalized user:", user)
+		}
+
+		// Update user in store
+		set(userAtom, user)
+		set(isLoadingAtom, false)
+
+		return user
+	} catch (error) {
+		set(userAtom, null)
+		set(tokenAtom, null)
+		set(isLoadingAtom, false)
+		set(errorAtom, error instanceof Error ? error.message : "Verification failed")
+		throw error
+	}
+})
+
 export const checkAuthAtom = atom(null, (get, set) => {
 	const token = get(tokenAtom)
 	const user = get(userAtom)
 
-	// If we have a token, validate it
-	if (!token) {
-		if (user) set(userAtom, null)
-		set(errorAtom, null)
-		set(isLoadingAtom, false) // Important: Set loading to false when no token
-	} else {
-		const validationResult = validateAndDecodeToken(token)
-		if (validationResult) {
-			const { decodedUser } = validationResult
+	// Simple check: if we have both token and user, assume logged in
+	// Token expiration is handled by API interceptor on actual requests
+	const isAuthenticated = !!token && !!user
 
-			if (!user || user.id !== decodedUser.id) set(userAtom, decodedUser)
-
-			set(errorAtom, null)
-		} else {
-			set(userAtom, null)
-			set(tokenAtom, null)
-			set(refreshTokenAtom, null)
-			set(errorAtom, "Invalid authentication token")
-		}
-		set(isLoadingAtom, false)
+	if (import.meta.env.DEV) {
+		console.log("[Auth Debug] checkAuth - isAuthenticated:", isAuthenticated)
 	}
+
+	// Clear orphaned data if inconsistent
+	if (token && !user) {
+		// Token exists but no user - clear token
+		set(tokenAtom, null)
+		set(errorAtom, "User data not found")
+	} else if (!token && user) {
+		// User exists but no token - clear user
+		set(userAtom, null)
+		set(errorAtom, null)
+	} else {
+		// Either both exist (logged in) or both null (logged out)
+		set(errorAtom, null)
+	}
+
+	set(isLoadingAtom, false)
+	set(authInitializedAtom, true)
 })

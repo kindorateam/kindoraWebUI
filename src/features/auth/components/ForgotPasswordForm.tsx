@@ -2,17 +2,21 @@ import { Button, CardBody, CardFooter, CardHeader, Input } from "@heroui/react"
 import { useCallback, useState } from "react"
 import { Controller, useForm } from "react-hook-form"
 
+import { requestPasswordReset } from "@/services/auth.service"
+
 import ForgotPasswordConfirmation from "./ForgotPasswordConfirmation"
 
 import type { ForgotPasswordFormData } from "../types"
 
 interface ForgotPasswordFormProps {
 	onBack: () => void
+	onNext: (email: string) => void
 }
 
-const ForgotPasswordForm = ({ onBack }: ForgotPasswordFormProps) => {
+const ForgotPasswordForm = ({ onBack, onNext }: ForgotPasswordFormProps) => {
 	const [emailSent, setEmailSent] = useState(false)
 	const [submittedEmail, setSubmittedEmail] = useState("")
+	const [error, setError] = useState<string | null>(null)
 
 	const {
 		control,
@@ -25,19 +29,20 @@ const ForgotPasswordForm = ({ onBack }: ForgotPasswordFormProps) => {
 		mode: "onChange",
 	})
 
-	// TODO: Integrate with API
 	const onSubmit = useCallback(async (data: ForgotPasswordFormData) => {
-		console.log("Forgot password form data:", data)
-		// TODO: Call API endpoint to send password reset email
-		// TODO: Handle success/error responses
-		setSubmittedEmail(data.email)
-		setEmailSent(true)
+		try {
+			setError(null)
+			await requestPasswordReset(data.email)
+			setSubmittedEmail(data.email)
+			setEmailSent(true)
+		} catch (err) {
+			setError(err instanceof Error ? err.message : "Failed to send reset email. Please try again.")
+		}
 	}, [])
 
 	const handleNext = useCallback(() => {
-		// TODO: Navigate to next step or back to sign in
-		onBack()
-	}, [onBack])
+		onNext(submittedEmail)
+	}, [onNext, submittedEmail])
 
 	if (emailSent) {
 		return <ForgotPasswordConfirmation email={submittedEmail} onNext={handleNext} />
@@ -51,6 +56,8 @@ const ForgotPasswordForm = ({ onBack }: ForgotPasswordFormProps) => {
 
 			<CardBody className="gap-4 px-7 pt-4 pb-4">
 				<p className="text-gray-600 text-sm">We will email you a code to your email address</p>
+
+				{error && <div className="rounded-md bg-danger-50 p-3 text-danger text-sm">{error}</div>}
 
 				<Controller
 					control={control}

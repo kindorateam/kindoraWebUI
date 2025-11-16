@@ -2,13 +2,22 @@ import { useLocation, useNavigate } from "@tanstack/react-router"
 import { useAtom, useAtomValue } from "jotai"
 import { useCallback } from "react"
 
-import { authStateAtom, handleGoogleLoginAtom, logoutAtom, updateUserAtom } from "@/stores/auth.store"
+import {
+	authStateAtom,
+	handleEmailLoginAtom,
+	handleGoogleLoginAtom,
+	handleVerifyFirstLoginAtom,
+	logoutAtom,
+	updateUserAtom,
+} from "@/stores/auth.store"
 
 import type { GoogleAuthResponse } from "@/types/auth"
 
 const useAuth = () => {
 	const authState = useAtomValue(authStateAtom)
 	const [, handleGoogleLogin] = useAtom(handleGoogleLoginAtom)
+	const [, handleEmailLogin] = useAtom(handleEmailLoginAtom)
+	const [, handleVerifyFirstLogin] = useAtom(handleVerifyFirstLoginAtom)
 	const [, logout] = useAtom(logoutAtom)
 	const [, updateUser] = useAtom(updateUserAtom)
 	const navigate = useNavigate()
@@ -21,8 +30,22 @@ const useAuth = () => {
 		[handleGoogleLogin],
 	)
 
-	const handleLogout = useCallback(() => {
-		logout()
+	const handleEmailPasswordLogin = useCallback(
+		async (credentials: { email: string; password: string }) => {
+			return handleEmailLogin(credentials)
+		},
+		[handleEmailLogin],
+	)
+
+	const handleVerification = useCallback(
+		async (email: string, code: string) => {
+			return handleVerifyFirstLogin({ email, code })
+		},
+		[handleVerifyFirstLogin],
+	)
+
+	const handleLogout = useCallback(async () => {
+		await logout()
 	}, [logout])
 
 	interface LogoutOptions {
@@ -32,8 +55,8 @@ const useAuth = () => {
 	}
 
 	const logoutAndRedirect = useCallback(
-		(opts?: LogoutOptions) => {
-			logout()
+		async (opts?: LogoutOptions) => {
+			await logout()
 
 			const replace = opts?.replace ?? true
 			const baseTo = opts?.to ?? "/login"
@@ -56,6 +79,8 @@ const useAuth = () => {
 		isLoading: authState.isLoading,
 		error: authState.error,
 		handleGoogleLogin: handleLogin,
+		handleEmailLogin: handleEmailPasswordLogin,
+		handleVerifyFirstLogin: handleVerification,
 		logout: handleLogout,
 		logoutAndRedirect,
 		updateUser,

@@ -37,8 +37,8 @@ const inputClassNames = {
 const Header = memo(() => {
 	const { user, logoutAndRedirect } = useAuth()
 
-	const handleLogout = useCallback(() => {
-		logoutAndRedirect()
+	const handleLogout = useCallback(async () => {
+		await logoutAndRedirect()
 	}, [logoutAndRedirect])
 
 	return (

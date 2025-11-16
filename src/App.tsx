@@ -4,18 +4,18 @@ import { useEffect } from "react"
 
 import { router } from "./router"
 
-import { authStateAtom, checkAuthAtom } from "@/stores"
+import { authInitializedAtom, checkAuthAtom } from "@/stores"
 
 const App = () => {
 	const [, checkAuth] = useAtom(checkAuthAtom)
-	const authState = useAtomValue(authStateAtom)
+	const isAuthInitialized = useAtomValue(authInitializedAtom)
 
 	useEffect(() => {
 		checkAuth()
 	}, [checkAuth])
 
 	// Don't render router until initial auth check is complete
-	if (authState.isLoading) {
+	if (!isAuthInitialized) {
 		return (
 			<div className="flex min-h-screen items-center justify-center">
 				<div>Loading...</div>

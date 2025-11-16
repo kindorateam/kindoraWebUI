@@ -1,6 +1,6 @@
 import { Button, CardBody, CardFooter, CardHeader, Checkbox, Input, Link } from "@heroui/react"
 import { GoogleLogin } from "@react-oauth/google"
-import { useCallback } from "react"
+import { useCallback, useState } from "react"
 import { Controller, useForm } from "react-hook-form"
 
 import useAuth from "@/hooks/useAuth"
@@ -10,10 +10,16 @@ import type { SignInFormData } from "../types"
 interface SignInFormProps {
 	onForgotPassword: () => void
 	onSignInSuccess: (email: string) => void
+	onVerificationRequired?: (email: string, message: string) => void
+	defaultEmail?: string
 }
 
-const SignInForm = ({ onForgotPassword, onSignInSuccess }: SignInFormProps) => {
-	const { handleGoogleLogin, error } = useAuth()
+const SignInForm = ({ onForgotPassword, onSignInSuccess, onVerificationRequired, defaultEmail }: SignInFormProps) => {
+	const { handleGoogleLogin, handleEmailLogin, error } = useAuth()
+	const [_verificationState, setVerificationState] = useState<{
+		email: string
+		message: string
+	} | null>(null)
 
 	const {
 		control,
@@ -21,23 +27,41 @@ const SignInForm = ({ onForgotPassword, onSignInSuccess }: SignInFormProps) => {
 		formState: { errors, isSubmitting, isValid },
 	} = useForm<SignInFormData>({
 		defaultValues: {
-			email: "",
+			email: defaultEmail || "",
 			password: "",
 			rememberMe: false,
 		},
 		mode: "onChange",
 	})
 
-	// TODO: Integrate with API
 	const onSubmit = useCallback(
 		async (data: SignInFormData) => {
-			console.log("Sign in form data:", data)
-			// TODO: Call API endpoint for email/password authentication
-			// TODO: Handle success/error responses
-			// TODO: On successful authentication, trigger OTP verification
-			onSignInSuccess(data.email)
+			try {
+				const result = await handleEmailLogin({
+					email: data.email,
+					password: data.password,
+				})
+
+				// Case 1: Verification required (new user)
+				if (result?.needsVerification) {
+					setVerificationState({ email: result.email, message: result.message })
+					if (onVerificationRequired) {
+						onVerificationRequired(result.email, result.message)
+					} else {
+						console.warn("[SignInForm] onVerificationRequired callback is not defined!")
+					}
+					return
+				}
+
+				// Case 2: Login successful (verified user)
+				onSignInSuccess(data.email)
+			} catch (error) {
+				// Error is already handled in the auth store and displayed via error state
+				console.error("[SignInForm] Login failed with error:", error)
+				console.error("[SignInForm] Error stack:", error instanceof Error ? error.stack : "No stack trace")
+			}
 		},
-		[onSignInSuccess],
+		[handleEmailLogin, onSignInSuccess, onVerificationRequired],
 	)
 
 	return (

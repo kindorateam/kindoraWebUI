@@ -1,20 +1,12 @@
-import { refreshTokenAtom, tokenAtom } from "@/stores/auth.store"
+import { tokenAtom } from "@/stores/auth.store"
 import { appStore } from "@/stores/jotaiStore"
-import { validateAndDecodeToken } from "@/utils/auth"
+
+import { apiClient } from "./api.service"
 
 const store = appStore
 
 export const getToken = (): string | null => {
-	const token = store.get(tokenAtom)
-	if (!token) return null
-
-	const validationResult = validateAndDecodeToken(token)
-	if (!validationResult) {
-		clearToken()
-		return null
-	}
-
-	return token
+	return store.get(tokenAtom)
 }
 
 export const getCleanToken = (): string | null => {
@@ -24,20 +16,12 @@ export const getCleanToken = (): string | null => {
 	return sanitizeToken(token)
 }
 
-export const getRefreshToken = (): string | null => {
-	return store.get(refreshTokenAtom)
-}
-
 export const clearToken = (): void => {
 	store.set(tokenAtom, null)
-	store.set(refreshTokenAtom, null)
 }
 
-export const setTokens = (accessToken: string, refreshToken?: string): void => {
+export const setTokens = (accessToken: string): void => {
 	store.set(tokenAtom, accessToken)
-	if (refreshToken) {
-		store.set(refreshTokenAtom, refreshToken)
-	}
 }
 
 // Track in-flight refresh promise to prevent race conditions
@@ -49,29 +33,24 @@ export const refreshAccessToken = async (): Promise<string | null> => {
 		return refreshPromise
 	}
 
-	const refreshToken = getRefreshToken()
-	if (!refreshToken) {
-		return null
-	}
-
 	// Create and store the refresh promise
 	refreshPromise = (async () => {
 		try {
-			const { apiClient } = await import("./api.service")
-			// Assuming the refresh endpoint is /auth/refresh
+			// Call refresh endpoint
+			// Refresh token is sent automatically as HttpOnly cookie by browser
 			const response = await apiClient.post<{
-				accessToken: string
-				refreshToken?: string
-			}>("/auth/refresh", { refreshToken })
+				AccessToken: string
+				ExpiresAt: string
+			}>("/auth/refresh")
 
-			const { accessToken, refreshToken: newRefreshToken } = response
+			// Store new access token
+			// New refresh token is set as HttpOnly cookie by backend
+			setTokens(response.AccessToken)
 
-			// Update tokens in store
-			setTokens(accessToken, newRefreshToken)
-
-			return accessToken
+			return response.AccessToken
 		} catch {
-			// If refresh fails, clear all tokens
+			// If refresh fails, clear access token
+			// This could be due to: expired refresh token, token reuse, or revoked session
 			clearToken()
 			return null
 		} finally {
