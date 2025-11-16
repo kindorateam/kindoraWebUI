@@ -11,8 +11,6 @@ import {
 	updateUserAtom,
 } from "@/stores/auth.store"
 
-import type { GoogleAuthResponse } from "@/types/auth"
-
 const useAuth = () => {
 	const authState = useAtomValue(authStateAtom)
 	const [, handleGoogleLogin] = useAtom(handleGoogleLoginAtom)
@@ -23,12 +21,14 @@ const useAuth = () => {
 	const navigate = useNavigate()
 	const location = useLocation()
 
-	const handleLogin = useCallback(
-		(response: GoogleAuthResponse) => {
-			handleGoogleLogin(response)
-		},
-		[handleGoogleLogin],
-	)
+	const handleLogin = useCallback(async () => {
+		try {
+			await handleGoogleLogin()
+			void navigate({ to: "/dashboard" })
+		} catch (error) {
+			console.error("[useAuth] Google OAuth failed:", error)
+		}
+	}, [handleGoogleLogin, navigate])
 
 	const handleEmailPasswordLogin = useCallback(
 		async (credentials: { email: string; password: string }) => {

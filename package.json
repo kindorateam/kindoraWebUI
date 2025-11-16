@@ -52,7 +52,6 @@
 	"dependencies": {
 		"@heroui/react": "^2.8.4",
 		"@iconify/react": "^6.0.2",
-		"@react-oauth/google": "^0.12.2",
 		"@tanstack/react-query": "^5.82.0",
 		"@tanstack/react-router": "^1.125.6",
 		"@tanstack/react-router-devtools": "^1.123.2",

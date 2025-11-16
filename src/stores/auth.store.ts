@@ -1,10 +1,18 @@
 import { atom } from "jotai"
 import { atomWithStorage } from "jotai/utils"
+import { jwtDecode } from "jwt-decode"
 
-import { fetchUserProfile, login, logout, verifyFirstLogin } from "@/services/auth.service"
-import { decodeJWT, transformGoogleUser } from "@/utils/auth"
+import { fetchUserProfile, login, logout, verifyFirstLogin, type UserProfileResponse } from "@/services/auth.service"
+import { openOAuthPopup } from "@/utils/oauth"
 
-import type { GoogleAuthResponse, User } from "@/types/auth"
+import type { User } from "@/types/auth"
+
+const mapUserResponse = (data: UserProfileResponse): User => {
+	if (data && typeof data === "object" && "user" in data && data.user) {
+		return data.user
+	}
+	return data as User
+}
 
 // Atoms for state - using atomWithStorage handles localStorage automatically
 export const userAtom = atomWithStorage<User | null>("auth-user", null)
@@ -27,8 +35,8 @@ export const tokenExpirationAtom = atom((get) => {
 	const token = get(tokenAtom)
 	if (!token) return null
 	try {
-		const { exp } = decodeJWT(token)
-		return typeof exp === "number" ? exp * 1000 : null
+		const decoded = jwtDecode<{ exp?: number }>(token)
+		return typeof decoded.exp === "number" ? decoded.exp * 1000 : null
 	} catch {
 		return null
 	}
@@ -43,26 +51,93 @@ export const authStateAtom = atom((get) => ({
 	isInitialized: get(authInitializedAtom),
 }))
 
+const getOAuthStartUrl = (): string => {
+	const base = import.meta.env.VITE_API_BASE_URL
+	const path = "/auth/oauth/google"
+
+	if (typeof window === "undefined") {
+		throw new Error("OAuth flow requires browser environment.")
+	}
+
+	if (base && /^https?:\/\//i.test(base)) {
+		const normalizedBase = base.endsWith("/") ? base.slice(0, -1) : base
+		return `${normalizedBase}${path}`
+	}
+
+	if (base && base.startsWith("/")) {
+		const normalizedBase = base.endsWith("/") ? base.slice(0, -1) : base
+		return `${window.location.origin}${normalizedBase}${path}`
+	}
+
+	// Default dev proxy path
+	return `${window.location.origin}/api/v1${path}`
+}
+
+const getOAuthAllowedOrigins = (): string[] => {
+	if (typeof window === "undefined") {
+		return []
+	}
+
+	const origins = new Set<string>()
+	origins.add(window.location.origin)
+
+	const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
+	if (apiBaseUrl && apiBaseUrl.startsWith("http")) {
+		try {
+			origins.add(new URL(apiBaseUrl).origin)
+		} catch {
+			// ignore invalid URL
+		}
+	}
+
+	const additionalOrigins = import.meta.env.VITE_GOOGLE_OAUTH_ALLOWED_ORIGINS
+	if (additionalOrigins) {
+		additionalOrigins.split(",").forEach((entry) => {
+			try {
+				if (entry.trim()) {
+					origins.add(new URL(entry.trim()).origin)
+				}
+			} catch {
+				// ignore invalid custom origin
+			}
+		})
+	}
+
+	return Array.from(origins).filter(Boolean)
+}
+
 // Action atoms
-export const handleGoogleLoginAtom = atom(null, (_get, set, response: GoogleAuthResponse) => {
+export const handleGoogleLoginAtom = atom(null, async (_get, set) => {
 	try {
 		set(isLoadingAtom, true)
 		set(errorAtom, null)
 
-		const decodedToken = decodeJWT(response.credential)
-		const user = transformGoogleUser(decodedToken)
+		const url = getOAuthStartUrl()
 
-		// atomWithStorage handles localStorage automatically
+		const tokens = await openOAuthPopup({
+			url,
+			allowedOrigins: getOAuthAllowedOrigins(),
+		})
+
+		if (!tokens?.AccessToken) {
+			throw new Error("Google login did not return an access token.")
+		}
+
+		set(tokenAtom, tokens.AccessToken)
+
+		const userResponse = await fetchUserProfile()
+		const user = mapUserResponse(userResponse)
+
 		set(userAtom, user)
-		set(tokenAtom, response.credential)
-		// Note: Google OAuth doesn't provide refresh tokens directly
-		// You may need to exchange the credential with your backend for tokens
 		set(isLoadingAtom, false)
+
+		return user
 	} catch (error) {
 		set(userAtom, null)
 		set(tokenAtom, null)
 		set(isLoadingAtom, false)
-		set(errorAtom, error instanceof Error ? error.message : "Login failed")
+		set(errorAtom, error instanceof Error ? error.message : "Google login failed")
+		throw error
 	}
 })
 
@@ -115,7 +190,7 @@ export const handleEmailLoginAtom = atom(
 			const userResponse = await fetchUserProfile()
 
 			// Handle nested user object from backend
-			const user = "user" in userResponse ? (userResponse as any).user : userResponse
+			const user = mapUserResponse(userResponse)
 
 			if (import.meta.env.DEV) {
 				console.log("[Auth Debug] fetchUserProfile response:", userResponse)
@@ -146,10 +221,10 @@ export const handleVerifyFirstLoginAtom = atom(null, async (_get, set, payload: 
 		await verifyFirstLogin(payload.email, payload.code)
 
 		// Fetch user profile with the new access token
-		const userResponse = await fetchUserProfile()
+			const userResponse = await fetchUserProfile()
 
-		// Handle nested user object from backend
-		const user = "user" in userResponse ? (userResponse as any).user : userResponse
+			// Handle nested user object from backend
+			const user = mapUserResponse(userResponse)
 
 		if (import.meta.env.DEV) {
 			console.log("[Auth Debug] Verification successful")

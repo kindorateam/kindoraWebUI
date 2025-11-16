@@ -1,5 +1,4 @@
 import { Button, CardBody, CardFooter, CardHeader, Checkbox, Input, Link } from "@heroui/react"
-import { GoogleLogin } from "@react-oauth/google"
 import { useCallback, useState } from "react"
 import { Controller, useForm } from "react-hook-form"
 
@@ -15,7 +14,7 @@ interface SignInFormProps {
 }
 
 const SignInForm = ({ onForgotPassword, onSignInSuccess, onVerificationRequired, defaultEmail }: SignInFormProps) => {
-	const { handleGoogleLogin, handleEmailLogin, error } = useAuth()
+	const { handleGoogleLogin, handleEmailLogin, error, isLoading } = useAuth()
 	const [_verificationState, setVerificationState] = useState<{
 		email: string
 		message: string
@@ -168,21 +167,17 @@ const SignInForm = ({ onForgotPassword, onSignInSuccess, onVerificationRequired,
 					</div>
 				</div>
 
-				<div className="w-full">
-					<GoogleLogin
-						onSuccess={(credentialResponse) => {
-							if (credentialResponse.credential) {
-								handleGoogleLogin({ credential: credentialResponse.credential })
-							}
-						}}
-						onError={() => {
-							console.error("Google login failed")
-						}}
-						theme="outline"
-						size="large"
-						width="340"
-					/>
-				</div>
+				<Button
+					className="w-full"
+					isDisabled={isLoading}
+					isLoading={isLoading}
+					onPress={() => {
+						void handleGoogleLogin()
+					}}
+					variant="bordered"
+				>
+					Continue with Google
+				</Button>
 			</CardFooter>
 		</>
 	)

@@ -1,6 +1,8 @@
 import { apiClient } from "./api.service"
 import { clearToken, setTokens } from "./token.service"
 
+import type { User } from "@/types/auth"
+
 interface LoginCredentials {
 	email: string
 	password: string
@@ -20,12 +22,7 @@ interface VerificationRequiredResponse {
 
 type LoginResponse = AuthTokenResponse | VerificationRequiredResponse
 
-interface User {
-	id: string
-	email: string
-	name: string
-	// Add other user fields as needed
-}
+export type UserProfileResponse = User | { user: User }
 
 /**
  * Sign in with email and password
@@ -87,8 +84,8 @@ export async function login(credentials: LoginCredentials): Promise<LoginRespons
  * Fetch user profile after successful login
  * Call this after login() to get user details
  */
-export async function fetchUserProfile(): Promise<User> {
-	return apiClient.get<User>("/users/profile")
+export async function fetchUserProfile(): Promise<UserProfileResponse> {
+	return apiClient.get<UserProfileResponse>("/users/profile")
 }
 
 /**
