@@ -1,13 +1,12 @@
 import { createFileRoute, redirect } from "@tanstack/react-router"
 
 import GuestRoute from "@/components/GuestRoute"
-import { getToken } from "@/services/token.service"
 
 export const Route = createFileRoute("/_auth")({
 	component: GuestRoute,
-	beforeLoad: ({ location }) => {
-		const token = getToken()
-		if (token) {
+	beforeLoad: ({ context, location }) => {
+		// If user is already authenticated, redirect to dashboard
+		if (context.auth.isAuthenticated) {
 			// If an explicit return URL is present, honor it; otherwise go home
 			const href = location.href
 			let returnTo: string | undefined

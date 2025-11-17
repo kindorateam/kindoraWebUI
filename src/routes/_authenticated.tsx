@@ -1,13 +1,12 @@
 import { createFileRoute, redirect } from "@tanstack/react-router"
 
 import MainLayout from "@/components/MainLayout"
-import { getToken } from "@/services/token.service"
 
 export const Route = createFileRoute("/_authenticated")({
 	component: MainLayout,
-	beforeLoad: ({ location }) => {
-		const token = getToken()
-		if (!token) {
+	beforeLoad: ({ context, location }) => {
+		// If user is not authenticated, redirect to login
+		if (!context.auth.isAuthenticated) {
 			throw redirect({
 				to: "/login",
 				search: { redirect: location.href },

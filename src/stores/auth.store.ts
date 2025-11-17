@@ -274,8 +274,40 @@ export const handleVerifyFirstLoginAtom = atom(null, async (_get, set, payload: 
 })
 
 export const checkAuthAtom = atom(null, (get, set) => {
-	const token = get(tokenAtom)
-	const user = get(userAtom)
+	// Ensure localStorage is synced with atoms before checking
+	// atomWithStorage should hydrate synchronously, but double-check
+	const storedToken = localStorage.getItem("auth-token")
+	const storedUser = localStorage.getItem("auth-user")
+
+	if (import.meta.env.DEV) {
+		console.log("[Auth Debug] localStorage - token exists:", !!storedToken)
+		console.log("[Auth Debug] localStorage - user exists:", !!storedUser)
+	}
+
+	// Get current atom values (should be hydrated from localStorage)
+	let token = get(tokenAtom)
+	let user = get(userAtom)
+
+	// If atoms are null but localStorage has values, force sync
+	if (!token && storedToken && storedToken !== "null") {
+		try {
+			token = JSON.parse(storedToken)
+			set(tokenAtom, token)
+		} catch {
+			// Invalid token in localStorage, clear it
+			localStorage.removeItem("auth-token")
+		}
+	}
+
+	if (!user && storedUser && storedUser !== "null") {
+		try {
+			user = JSON.parse(storedUser)
+			set(userAtom, user)
+		} catch {
+			// Invalid user in localStorage, clear it
+			localStorage.removeItem("auth-user")
+		}
+	}
 
 	// Simple check: if we have both token and user, assume logged in
 	// Token expiration is handled by API interceptor on actual requests
@@ -283,6 +315,8 @@ export const checkAuthAtom = atom(null, (get, set) => {
 
 	if (import.meta.env.DEV) {
 		console.log("[Auth Debug] checkAuth - isAuthenticated:", isAuthenticated)
+		console.log("[Auth Debug] checkAuth - token:", !!token)
+		console.log("[Auth Debug] checkAuth - user:", !!user)
 	}
 
 	// Clear orphaned data if inconsistent

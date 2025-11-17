@@ -4,7 +4,13 @@ import { useEffect } from "react"
 
 import { router } from "./router"
 
-import { authInitializedAtom, checkAuthAtom } from "@/stores"
+import { authInitializedAtom, authStateAtom, checkAuthAtom } from "@/stores"
+
+function InnerApp() {
+	const auth = useAtomValue(authStateAtom)
+
+	return <RouterProvider router={router} context={{ auth }} />
+}
 
 const App = () => {
 	const [, checkAuth] = useAtom(checkAuthAtom)
@@ -23,7 +29,7 @@ const App = () => {
 		)
 	}
 
-	return <RouterProvider router={router} />
+	return <InnerApp />
 }
 
 export default App
