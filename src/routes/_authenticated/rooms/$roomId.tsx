@@ -1,7 +1,7 @@
 import { Outlet, createFileRoute, useNavigate } from "@tanstack/react-router"
 
 import { RouteErrorBoundary } from "@/components/error"
-import RoomDetailHeader from "@/components/RoomDetailHeader"
+import RoomDetailHeader from "@/features/rooms/components/RoomDetailHeader"
 import { useTabNavigation } from "@/hooks/useTabNavigation"
 
 type TabType = "students" | "activity" | "profile"

@@ -1,14 +1,14 @@
 import { Avatar, Tab, Tabs } from "@heroui/react"
 import { useState } from "react"
 
+import Button from "@/components/Button"
+import Filters from "@/components/Filters"
+import IdentityChip from "@/components/IdentityChip"
 import SmileEmoji from "@/components/icons/emojies/SmileEmoji"
-import { useRoom } from "@/hooks/useRooms"
+import StudentIcon from "@/components/icons/StudentIcon"
+import LabeledNumberBadge from "@/components/LabeledNumberBadge"
 
-import Button from "./Button"
-import Filters from "./Filters"
-import IdentityChip from "./IdentityChip"
-import StudentIcon from "./icons/StudentIcon"
-import LabeledNumberBadge from "./LabeledNumberBadge"
+import { useRoom } from "../hooks/useRooms"
 
 import type { FilterProps } from "@/types/TableFilters"
 

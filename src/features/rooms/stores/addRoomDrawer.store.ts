@@ -1,6 +1,6 @@
 import { atom } from "jotai"
 
-import { appStore } from "./jotaiStore"
+import { appStore } from "@/stores/jotaiStore"
 
 interface AddRoomDrawerState {
 	isOpen: boolean

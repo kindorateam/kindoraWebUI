@@ -1,8 +1,8 @@
 import { Navigate, createFileRoute } from "@tanstack/react-router"
 
-import RoomActivityTab from "@/components/RoomActivityTab"
-import RoomProfileTab from "@/components/RoomProfileTab"
-import RoomStudentsTab from "@/components/RoomStudentsTab"
+import RoomActivityTab from "@/features/rooms/components/RoomActivityTab"
+import RoomProfileTab from "@/features/rooms/components/RoomProfileTab"
+import RoomStudentsTab from "@/features/rooms/components/RoomStudentsTab"
 
 export const Route = createFileRoute("/_authenticated/rooms/$roomId/")({
 	component: RoomDetailContent,

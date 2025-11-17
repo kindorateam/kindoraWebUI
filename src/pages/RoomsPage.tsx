@@ -1,8 +1,8 @@
 import { useState } from "react"
 
 import Filters from "@/components/Filters"
-import RoomsTable from "@/components/RoomsTable"
 import SubHeader from "@/components/SubHeader"
+import RoomsTable from "@/features/rooms/components/RoomsTable"
 
 import type { FilterProps } from "@/types/TableFilters"
 

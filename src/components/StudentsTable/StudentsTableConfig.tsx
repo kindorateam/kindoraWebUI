@@ -1,7 +1,7 @@
 import { Avatar, Chip } from "@heroui/react"
 import { Link } from "@tanstack/react-router"
 
-import RoomIcon from "@/components/RoomIcon"
+import RoomIcon from "@/features/rooms/components/RoomIcon"
 
 import type { Student } from "@/types/student"
 import type { TableColumn } from "@/types/table"

@@ -5,7 +5,7 @@ import { Controller, useForm } from "react-hook-form"
 
 import Button from "@/components/Button"
 import Text from "@/components/Text"
-import { addRoomDrawerIsOpenAtom, closeAddRoomDrawerAtom } from "@/stores/addRoomDrawer.store"
+import { addRoomDrawerIsOpenAtom, closeAddRoomDrawerAtom } from "@/features/rooms/stores/addRoomDrawer.store"
 
 import AvatarUpload from "./AvatarUpload"
 

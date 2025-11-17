@@ -2,7 +2,7 @@ import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@heroui/r
 import { useSetAtom } from "jotai"
 import { useState } from "react"
 
-import { openAddRoomDrawerAtom } from "@/stores/addRoomDrawer.store"
+import { openAddRoomDrawerAtom } from "@/features/rooms/stores/addRoomDrawer.store"
 
 import Button from "./Button"
 import AddRoomDrawer, { type AddRoomFormData } from "./drawers/AddRoomDrawer"

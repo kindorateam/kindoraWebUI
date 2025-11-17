@@ -1,6 +1,6 @@
-import { apiClient } from "./api.service"
+import { apiClient } from "@/services/api.service"
 
-import type { ApiRoom, ApiStaff, ApiStudent, Room, StaffMember, Student } from "@/types/room"
+import type { ApiRoom, ApiStaff, ApiStudent, Room, StaffMember, Student } from "../types"
 
 /**
  * Transforms API student data to UI format

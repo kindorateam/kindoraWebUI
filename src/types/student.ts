@@ -1,4 +1,4 @@
-import type { RoomType } from "@/types/RoomNames"
+import type { RoomType } from "@/features/rooms/types"
 
 export interface Student {
 	id: string

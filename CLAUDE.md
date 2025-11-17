@@ -19,9 +19,9 @@ bun run preview      # Preview production build
 
 **Critical paths:**
 - Routes → `src/routes/` (file-based, auto-generated tree)
-- Features → `src/features/` (feature-based component organization)
-- State → `src/stores/*.store.ts` (Jotai atoms)
-- API → `src/services/*.service.ts` (typed wrappers around `apiClient`)
+- Features → `src/features/` (feature-based organization with colocated code)
+- Global State → `src/stores/*.store.ts` (shared Jotai atoms only)
+- Global API → `src/services/*.service.ts` (shared API infrastructure only)
 - UI → HeroUI components (standard, minimal custom styling)
 - Generated → `src/routeTree.gen.ts` (do NOT edit directly)
 
@@ -64,13 +64,21 @@ src/
 │   ├── students/
 │   │   ├── components/    # StudentCard, StudentList, etc.
 │   │   ├── hooks/         # useStudents, useStudentForm
+│   │   ├── services/      # Feature-specific API calls
+│   │   ├── stores/        # Feature-specific UI state
+│   │   ├── utils/         # Feature-specific helpers
 │   │   └── types.ts       # Student, StudentFormData, etc.
 │   ├── rooms/
-│   │   ├── components/
-│   │   └── hooks/
+│   │   ├── components/    # RoomsTable, RoomDetailHeader, etc.
+│   │   ├── hooks/         # useRooms, useRoom
+│   │   ├── services/      # room.service.ts (API calls)
+│   │   ├── stores/        # addRoomDrawer.store.ts
+│   │   ├── utils/         # roomIcon.ts
+│   │   └── types.ts       # Room, RoomType, etc.
 │   └── auth/
 │       ├── components/
-│       └── hooks/
+│       ├── hooks/
+│       └── stores/
 │
 ├── components/             # Shared, generic UI components ONLY
 │   └── ui/
@@ -78,14 +86,16 @@ src/
 │       ├── ErrorBoundary.tsx
 │       └── EmptyState.tsx
 │
-├── stores/                 # Jotai atoms (global state)
+├── stores/                 # Global/shared state ONLY
 │   ├── jotaiStore.ts      # appStore for outside React
 │   └── auth.store.ts      # Auth atoms with localStorage
+│                           # NOTE: Feature-specific state goes in features/{name}/stores/
 │
-├── services/               # API & business logic layer
+├── services/               # Global/shared API infrastructure ONLY
 │   ├── api.service.ts     # ApiClient singleton
 │   ├── token.service.ts
 │   └── redirect.service.ts
+│                           # NOTE: Feature-specific API calls go in features/{name}/services/
 │
 ├── utils/                  # Helper functions
 └── routeTree.gen.ts        # Generated - do NOT edit
@@ -95,8 +105,9 @@ src/
 
 **Feature-Based Structure** (preferred):
 - Each feature (students, rooms, staff, etc.) gets its own folder
-- Colocate components, hooks, and types that belong together
-- Makes features easy to find, modify, and lazy-load
+- Colocate **all** related code: components, hooks, services, stores, utils, and types
+- Feature-specific services and state management live within the feature
+- Makes features self-contained, easy to find, modify, and lazy-load
 - Clear boundaries between feature-specific and shared code
 
 **When to use `components/ui/`**:
@@ -108,6 +119,29 @@ src/
 - If HeroUI provides a standard component, use it directly
 - Avoid wrapping HeroUI components unless adding significant shared logic
 - Keep styling minimal and prefer Tailwind utilities when needed
+
+### Feature-Specific vs Shared Code
+
+**Use `features/{name}/services/`** when:
+- ✅ Service is ONLY used by that feature (e.g., `room.service.ts` only used by rooms feature)
+- ✅ Service handles feature-specific domain logic
+- ❌ Service is used across multiple features → use `src/services/`
+
+**Use `features/{name}/stores/`** when:
+- ✅ State is feature-specific UI state (e.g., drawer open/closed, form state)
+- ✅ State is only consumed within that feature
+- ❌ State is global app state (auth, theme, config) → use `src/stores/`
+
+**Use `features/{name}/utils/`** when:
+- ✅ Utility is specific to that feature's domain (e.g., `roomIcon.ts` for room icons)
+- ✅ Utility is only used within that feature
+- ❌ Utility is generic and reusable → use `src/utils/`
+
+**Examples:**
+- ✅ `features/rooms/services/room.service.ts` - Only rooms feature calls this API
+- ✅ `features/rooms/stores/addRoomDrawer.store.ts` - UI state for rooms feature
+- ❌ `src/services/api.service.ts` - Shared infrastructure used everywhere
+- ❌ `src/stores/auth.store.ts` - Global auth state used everywhere
 
 ---
 
@@ -235,7 +269,7 @@ function CustomButton(props: ButtonProps) {
 
 ### 1. Add a New Feature
 
-**Step 1**: Create feature folder
+**Step 1**: Create feature folder (create only what you need)
 ```
 src/features/my-feature/
 ├── components/
@@ -243,6 +277,12 @@ src/features/my-feature/
 │   └── MyFeatureList.tsx      # default export
 ├── hooks/
 │   └── useMyFeature.ts        # named exports
+├── services/                   # Optional: if feature needs API calls
+│   └── myFeature.service.ts
+├── stores/                     # Optional: if feature needs UI state
+│   └── myFeature.store.ts
+├── utils/                      # Optional: if feature needs helpers
+│   └── myFeatureHelper.ts
 └── types.ts                    # named exports
 ```
 
@@ -307,11 +347,11 @@ function StudentsPage() {
 
 ### 3. Add a Data-Fetching Hook (React Query)
 
-**Service function** (`src/services/student.service.ts`):
+**Service function** (`src/features/students/services/student.service.ts`):
 ```ts
-import { apiClient } from './api.service'
+import { apiClient } from '@/services/api.service'
 
-import type { Student } from '@/features/students/types'
+import type { Student } from '../types'
 
 export async function fetchStudentById(studentId: string): Promise<Student> {
   return apiClient.get<Student>(`/students/${studentId}`)
@@ -326,7 +366,7 @@ export async function fetchStudents(): Promise<Student[]> {
 ```ts
 import { useQuery } from '@tanstack/react-query'
 
-import { fetchStudentById, fetchStudents } from '@/services/student.service'
+import { fetchStudentById, fetchStudents } from '../services/student.service'
 
 export function useStudents() {
   return useQuery({
@@ -369,6 +409,8 @@ export default function StudentList() {
 ```
 
 ### 4. Add Global State (Jotai Atom)
+
+**For GLOBAL state only** (theme, auth, etc.). For feature-specific state, use `features/{name}/stores/`.
 
 **File**: `src/stores/theme.store.ts`
 ```ts
@@ -429,13 +471,13 @@ function AdminDashboard() {
 
 ### 6. Handle API Errors Consistently
 
-**Service layer** (`src/services/student.service.ts`):
+**Service layer** (`src/features/students/services/student.service.ts`):
 ```ts
-import { apiClient } from './api.service'
-import { ApplicationError } from '@/utils/error'
-import { logError } from '@/utils/error'
+import { apiClient } from '@/services/api.service'
 
-import type { Student } from '@/features/students/types'
+import { ApplicationError, logError } from '@/utils/error'
+
+import type { Student } from '../types'
 
 export async function deleteStudent(studentId: string): Promise<void> {
   try {
@@ -452,7 +494,7 @@ export async function deleteStudent(studentId: string): Promise<void> {
 import { Button } from '@heroui/react'
 import { useMutation } from '@tanstack/react-query'
 
-import { deleteStudent } from '@/services/student.service'
+import { deleteStudent } from '../services/student.service'
 
 interface Props {
   studentId: string
@@ -694,5 +736,5 @@ When working in this codebase, apply these principles:
 
 ---
 
-**Last Updated**: 2025-10-30
+**Last Updated**: 2025-11-16
 **For**: Claude Code & AI Agents
