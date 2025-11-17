@@ -25,10 +25,10 @@ export default defineConfig({
 		tailwindcss(),
 	],
 	server: {
-		https: {
-			key: fs.readFileSync("./.certs/localhost-key.pem"),
-			cert: fs.readFileSync("./.certs/localhost.pem"),
-		},
+		// https: {
+		// 	key: fs.readFileSync("./.certs/localhost-key.pem"),
+		// 	cert: fs.readFileSync("./.certs/localhost.pem"),
+		// },
 		proxy: {
 			"/api": {
 				target: "http://localhost:8000",

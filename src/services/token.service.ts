@@ -39,15 +39,15 @@ export const refreshAccessToken = async (): Promise<string | null> => {
 			// Call refresh endpoint
 			// Refresh token is sent automatically as HttpOnly cookie by browser
 			const response = await apiClient.post<{
-				AccessToken: string
-				ExpiresAt: string
+				accessToken: string
+				expiresAt: string
 			}>("/auth/refresh")
 
 			// Store new access token
 			// New refresh token is set as HttpOnly cookie by backend
-			setTokens(response.AccessToken)
+			setTokens(response.accessToken)
 
-			return response.AccessToken
+			return response.accessToken
 		} catch {
 			// If refresh fails, clear access token
 			// This could be due to: expired refresh token, token reuse, or revoked session

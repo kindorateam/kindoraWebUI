@@ -23,12 +23,25 @@ const useAuth = () => {
 
 	const handleLogin = useCallback(async () => {
 		try {
-			await handleGoogleLogin()
-			void navigate({ to: "/dashboard" })
+			// Open popup IMMEDIATELY and synchronously to avoid popup blocker
+			// IMPORTANT: Do NOT use "noopener" - we need window.opener for OAuth postMessage callback
+			const popup = window.open("about:blank", "kindora-google-oauth", "popup=1,width=500,height=650")
+
+			if (import.meta.env.DEV) {
+				console.log("[useAuth] Popup opened:", !!popup)
+			}
+
+			if (!popup) {
+				throw new Error("Popup was blocked. Please allow popups for this site and try again.")
+			}
+
+			// Pass the already-opened popup to the atom
+			await handleGoogleLogin(popup)
+			// Note: Navigation is handled by LoginPage's useEffect when isAuthenticated changes
 		} catch (error) {
 			console.error("[useAuth] Google OAuth failed:", error)
 		}
-	}, [handleGoogleLogin, navigate])
+	}, [handleGoogleLogin])
 
 	const handleEmailPasswordLogin = useCallback(
 		async (credentials: { email: string; password: string }) => {

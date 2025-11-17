@@ -9,9 +9,9 @@ interface LoginCredentials {
 }
 
 interface AuthTokenResponse {
-	AccessToken: string
-	ExpiresAt: string
-	Role: string
+	accessToken: string
+	expiresAt: string
+	role: string
 	// Note: RefreshToken is sent as HttpOnly cookie, not in response body
 }
 
@@ -62,11 +62,11 @@ export async function login(credentials: LoginCredentials): Promise<LoginRespons
 		}
 
 		// Verified user - store access token (refresh token is in HttpOnly cookie)
-		if ("AccessToken" in responseData) {
+		if ("accessToken" in responseData) {
 			if (import.meta.env.DEV) {
 				console.log("[auth.service] Storing access token")
 			}
-			setTokens(responseData.AccessToken)
+			setTokens(responseData.accessToken)
 		}
 
 		return responseData
@@ -131,7 +131,7 @@ export async function verifyFirstLogin(email: string, code: string): Promise<Aut
 		})
 
 		// Store access token (refresh token is in HttpOnly cookie)
-		setTokens(response.AccessToken)
+		setTokens(response.accessToken)
 
 		return response
 	} catch (error) {

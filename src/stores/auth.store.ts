@@ -2,7 +2,7 @@ import { atom } from "jotai"
 import { atomWithStorage } from "jotai/utils"
 import { jwtDecode } from "jwt-decode"
 
-import { fetchUserProfile, login, logout, verifyFirstLogin, type UserProfileResponse } from "@/services/auth.service"
+import { type UserProfileResponse, fetchUserProfile, login, logout, verifyFirstLogin } from "@/services/auth.service"
 import { openOAuthPopup } from "@/utils/oauth"
 
 import type { User } from "@/types/auth"
@@ -64,7 +64,7 @@ const getOAuthStartUrl = (): string => {
 		return `${normalizedBase}${path}`
 	}
 
-	if (base && base.startsWith("/")) {
+	if (base?.startsWith("/")) {
 		const normalizedBase = base.endsWith("/") ? base.slice(0, -1) : base
 		return `${window.location.origin}${normalizedBase}${path}`
 	}
@@ -82,7 +82,7 @@ const getOAuthAllowedOrigins = (): string[] => {
 	origins.add(window.location.origin)
 
 	const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
-	if (apiBaseUrl && apiBaseUrl.startsWith("http")) {
+	if (apiBaseUrl?.startsWith("http")) {
 		try {
 			origins.add(new URL(apiBaseUrl).origin)
 		} catch {
@@ -107,32 +107,59 @@ const getOAuthAllowedOrigins = (): string[] => {
 }
 
 // Action atoms
-export const handleGoogleLoginAtom = atom(null, async (_get, set) => {
+export const handleGoogleLoginAtom = atom(null, async (_get, set, popupWindow?: Window | null) => {
+	// Build URL synchronously before any async operations
+	const url = getOAuthStartUrl()
+	const allowedOrigins = getOAuthAllowedOrigins()
+
 	try {
 		set(isLoadingAtom, true)
 		set(errorAtom, null)
 
-		const url = getOAuthStartUrl()
+		if (import.meta.env.DEV) {
+			console.log("[Auth] Starting Google OAuth flow...")
+			console.log("[Auth] Popup window provided:", !!popupWindow)
+		}
 
+		// Pass the already-opened popup window to avoid popup blocker
 		const tokens = await openOAuthPopup({
 			url,
-			allowedOrigins: getOAuthAllowedOrigins(),
+			allowedOrigins,
+			popupWindow,
 		})
 
-		if (!tokens?.AccessToken) {
+		if (import.meta.env.DEV) {
+			console.log("[Auth] Received tokens from popup:", { hasAccessToken: !!tokens?.accessToken })
+		}
+
+		if (!tokens?.accessToken) {
 			throw new Error("Google login did not return an access token.")
 		}
 
-		set(tokenAtom, tokens.AccessToken)
+		set(tokenAtom, tokens.accessToken)
+		if (import.meta.env.DEV) {
+			console.log("[Auth] Fetching user profile...")
+		}
 
 		const userResponse = await fetchUserProfile()
 		const user = mapUserResponse(userResponse)
 
+		if (import.meta.env.DEV) {
+			console.log("[Auth] User profile fetched:", user)
+		}
+
 		set(userAtom, user)
 		set(isLoadingAtom, false)
 
+		if (import.meta.env.DEV) {
+			console.log("[Auth] Google OAuth flow complete - user is now authenticated")
+		}
+
 		return user
 	} catch (error) {
+		if (import.meta.env.DEV) {
+			console.error("[Auth] Google OAuth failed:", error)
+		}
 		set(userAtom, null)
 		set(tokenAtom, null)
 		set(isLoadingAtom, false)
@@ -221,10 +248,10 @@ export const handleVerifyFirstLoginAtom = atom(null, async (_get, set, payload: 
 		await verifyFirstLogin(payload.email, payload.code)
 
 		// Fetch user profile with the new access token
-			const userResponse = await fetchUserProfile()
+		const userResponse = await fetchUserProfile()
 
-			// Handle nested user object from backend
-			const user = mapUserResponse(userResponse)
+		// Handle nested user object from backend
+		const user = mapUserResponse(userResponse)
 
 		if (import.meta.env.DEV) {
 			console.log("[Auth Debug] Verification successful")
