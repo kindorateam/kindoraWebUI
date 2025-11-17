@@ -3,7 +3,6 @@ import { Outlet, createFileRoute, useNavigate } from "@tanstack/react-router"
 import { RouteErrorBoundary } from "@/components/error"
 import RoomDetailHeader from "@/components/RoomDetailHeader"
 import { useTabNavigation } from "@/hooks/useTabNavigation"
-import { getRoomById } from "@/services/room.service"
 
 type TabType = "students" | "activity" | "profile"
 
@@ -46,12 +45,6 @@ export const Route = createFileRoute("/_authenticated/rooms/$roomId")({
 
 		return {
 			tab: validTabs.includes(tab as TabType) ? (tab as TabType) : "students",
-		}
-	},
-	beforeLoad: async ({ params }: { params: { roomId: string } }) => {
-		const room = await getRoomById(params.roomId)
-		return {
-			breadcrumb: room?.name ?? `Room ${params.roomId}`,
 		}
 	},
 })
