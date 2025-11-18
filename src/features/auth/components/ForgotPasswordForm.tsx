@@ -2,7 +2,7 @@ import { Button, CardBody, CardFooter, CardHeader, Input } from "@heroui/react"
 import { useCallback, useState } from "react"
 import { Controller, useForm } from "react-hook-form"
 
-import { requestPasswordReset } from "@/services/auth.service"
+import { requestPasswordReset } from "../services/auth.service"
 
 import ForgotPasswordConfirmation from "./ForgotPasswordConfirmation"
 

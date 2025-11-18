@@ -2,8 +2,8 @@ import { Button, CardBody, CardFooter, CardHeader, InputOtp, Link } from "@herou
 import { useCallback, useEffect, useState } from "react"
 import { Controller, useForm } from "react-hook-form"
 
-import useAuth from "@/hooks/useAuth"
-import { verifyPasswordResetOTP } from "@/services/auth.service"
+import useAuth from "../hooks/useAuth"
+import { verifyPasswordResetOTP } from "../services/auth.service"
 
 import type { OTPVerificationFormData } from "../types"
 

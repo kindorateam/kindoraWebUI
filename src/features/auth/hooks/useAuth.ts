@@ -1,3 +1,4 @@
+import { useGoogleLogin } from "@react-oauth/google"
 import { useLocation, useNavigate } from "@tanstack/react-router"
 import { useAtom, useAtomValue } from "jotai"
 import { useCallback } from "react"
@@ -9,39 +10,41 @@ import {
 	handleVerifyFirstLoginAtom,
 	logoutAtom,
 	updateUserAtom,
-} from "@/stores/auth.store"
+} from "../stores/auth.store"
+
+import type { CodeResponse } from "@react-oauth/google"
 
 const useAuth = () => {
 	const authState = useAtomValue(authStateAtom)
-	const [, handleGoogleLogin] = useAtom(handleGoogleLoginAtom)
 	const [, handleEmailLogin] = useAtom(handleEmailLoginAtom)
+	const [, handleGoogleLoginWithCode] = useAtom(handleGoogleLoginAtom)
 	const [, handleVerifyFirstLogin] = useAtom(handleVerifyFirstLoginAtom)
 	const [, logout] = useAtom(logoutAtom)
 	const [, updateUser] = useAtom(updateUserAtom)
 	const navigate = useNavigate()
 	const location = useLocation()
 
-	const handleLogin = useCallback(async () => {
-		try {
-			// Open popup IMMEDIATELY and synchronously to avoid popup blocker
-			// IMPORTANT: Do NOT use "noopener" - we need window.opener for OAuth postMessage callback
-			const popup = window.open("about:blank", "kindora-google-oauth", "popup=1,width=500,height=650")
-
-			if (import.meta.env.DEV) {
-				console.log("[useAuth] Popup opened:", !!popup)
+	const googleLogin = useGoogleLogin({
+		flow: "auth-code",
+		ux_mode: "popup",
+		redirect_uri: "http://localhost:5173", // Explicitly set redirect_uri
+		onSuccess: async (codeResponse: CodeResponse) => {
+			try {
+				console.log("[Auth] Received code from Google:", codeResponse.code)
+				console.log("[Auth] Full response:", codeResponse)
+				await handleGoogleLoginWithCode(codeResponse.code)
+			} catch (error) {
+				console.error("Google OAuth failed:", error)
 			}
+		},
+		onError: (error) => {
+			console.error("Google OAuth popup failed:", error)
+		},
+	})
 
-			if (!popup) {
-				throw new Error("Popup was blocked. Please allow popups for this site and try again.")
-			}
-
-			// Pass the already-opened popup to the atom
-			await handleGoogleLogin(popup)
-			// Note: Navigation is handled by LoginPage's useEffect when isAuthenticated changes
-		} catch (error) {
-			console.error("[useAuth] Google OAuth failed:", error)
-		}
-	}, [handleGoogleLogin])
+	const handleGoogleLogin = useCallback(() => {
+		googleLogin()
+	}, [googleLogin])
 
 	const handleEmailPasswordLogin = useCallback(
 		async (credentials: { email: string; password: string }) => {
@@ -91,7 +94,7 @@ const useAuth = () => {
 		isAuthenticated: authState.isAuthenticated,
 		isLoading: authState.isLoading,
 		error: authState.error,
-		handleGoogleLogin: handleLogin,
+		handleGoogleLogin,
 		handleEmailLogin: handleEmailPasswordLogin,
 		handleVerifyFirstLogin: handleVerification,
 		logout: handleLogout,

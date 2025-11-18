@@ -1,8 +1,8 @@
-import { Button, CardBody, CardFooter, CardHeader, Checkbox, Input, Link } from "@heroui/react"
+import { Button, CardBody, CardFooter, CardHeader, Checkbox, Divider, Input, Link } from "@heroui/react"
 import { useCallback, useState } from "react"
 import { Controller, useForm } from "react-hook-form"
 
-import useAuth from "@/hooks/useAuth"
+import useAuth from "../hooks/useAuth"
 
 import type { SignInFormData } from "../types"
 
@@ -158,13 +158,10 @@ const SignInForm = ({ onForgotPassword, onSignInSuccess, onVerificationRequired,
 				</form>
 			</CardBody>
 			<CardFooter className="flex-col px-7 pt-4 pb-8">
-				<div className="relative mb-8 w-full">
-					<div className="absolute inset-0 flex items-center">
-						<div className="w-full border-gray-300 border-t" />
-					</div>
-					<div className="relative flex justify-center text-base">
-						<span className="bg-white px-4 text-default-400">OR</span>
-					</div>
+				<div className="flex items-center gap-4 py-4">
+					<Divider className="flex-1" />
+					<span className="text-default-400 text-small">OR</span>
+					<Divider className="flex-1" />
 				</div>
 
 				<Button

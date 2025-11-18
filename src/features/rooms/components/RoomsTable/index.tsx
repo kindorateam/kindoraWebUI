@@ -155,7 +155,9 @@ const RoomsTable = () => {
 				{(column) => <TableColumn key={column.key}>{column.label}</TableColumn>}
 			</TableHeader>
 			<TableBody emptyContent="No rooms found" items={rooms}>
-				{(room) => <TableRow key={room.id}>{(columnKey) => <TableCell>{renderCell(room, columnKey)}</TableCell>}</TableRow>}
+				{(room) => (
+					<TableRow key={room.id}>{(columnKey) => <TableCell>{renderCell(room, columnKey)}</TableCell>}</TableRow>
+				)}
 			</TableBody>
 		</Table>
 	)

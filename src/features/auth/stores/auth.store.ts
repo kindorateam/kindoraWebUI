@@ -2,10 +2,11 @@ import { atom } from "jotai"
 import { atomWithStorage } from "jotai/utils"
 import { jwtDecode } from "jwt-decode"
 
-import { type UserProfileResponse, fetchUserProfile, login, logout, verifyFirstLogin } from "@/services/auth.service"
-import { openOAuthPopup } from "@/utils/oauth"
+import { apiClient } from "@/services/api.service"
 
-import type { User } from "@/types/auth"
+import { type UserProfileResponse, fetchUserProfile, login, logout, verifyFirstLogin } from "../services/auth.service"
+
+import type { User } from "../types"
 
 const mapUserResponse = (data: UserProfileResponse): User => {
 	if (data && typeof data === "object" && "user" in data && data.user) {
@@ -51,102 +52,27 @@ export const authStateAtom = atom((get) => ({
 	isInitialized: get(authInitializedAtom),
 }))
 
-const getOAuthStartUrl = (): string => {
-	const base = import.meta.env.VITE_API_BASE_URL
-	const path = "/auth/oauth/google"
-
-	if (typeof window === "undefined") {
-		throw new Error("OAuth flow requires browser environment.")
-	}
-
-	if (base && /^https?:\/\//i.test(base)) {
-		const normalizedBase = base.endsWith("/") ? base.slice(0, -1) : base
-		return `${normalizedBase}${path}`
-	}
-
-	if (base?.startsWith("/")) {
-		const normalizedBase = base.endsWith("/") ? base.slice(0, -1) : base
-		return `${window.location.origin}${normalizedBase}${path}`
-	}
-
-	// Default dev proxy path
-	return `${window.location.origin}/api/v1${path}`
-}
-
-const getOAuthAllowedOrigins = (): string[] => {
-	if (typeof window === "undefined") {
-		return []
-	}
-
-	const origins = new Set<string>()
-	origins.add(window.location.origin)
-
-	const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
-	if (apiBaseUrl?.startsWith("http")) {
-		try {
-			origins.add(new URL(apiBaseUrl).origin)
-		} catch {
-			// ignore invalid URL
-		}
-	}
-
-	const additionalOrigins = import.meta.env.VITE_GOOGLE_OAUTH_ALLOWED_ORIGINS
-	if (additionalOrigins) {
-		additionalOrigins.split(",").forEach((entry) => {
-			try {
-				if (entry.trim()) {
-					origins.add(new URL(entry.trim()).origin)
-				}
-			} catch {
-				// ignore invalid custom origin
-			}
-		})
-	}
-
-	return Array.from(origins).filter(Boolean)
-}
-
 // Action atoms
-export const handleGoogleLoginAtom = atom(null, async (_get, set, popupWindow?: Window | null) => {
-	// Build URL synchronously before any async operations
-	const url = getOAuthStartUrl()
-	const allowedOrigins = getOAuthAllowedOrigins()
+export const handleGoogleLoginAtom = atom(null, async (_get, set, code: string) => {
+	set(isLoadingAtom, true)
+	set(errorAtom, null)
 
 	try {
-		set(isLoadingAtom, true)
-		set(errorAtom, null)
+		// Call backend callback endpoint with authorization code
+		const response = await apiClient.get<{
+			accessToken: string
+			expiresAt: string
+			role: string
+		}>(`/auth/oauth/google/callback?code=${code}`)
 
-		if (import.meta.env.DEV) {
-			console.log("[Auth] Starting Google OAuth flow...")
-			console.log("[Auth] Popup window provided:", !!popupWindow)
-		}
+		const { accessToken } = response
 
-		// Pass the already-opened popup window to avoid popup blocker
-		const tokens = await openOAuthPopup({
-			url,
-			allowedOrigins,
-			popupWindow,
-		})
+		// Store access token (refresh token set as HttpOnly cookie by backend)
+		set(tokenAtom, accessToken)
 
-		if (import.meta.env.DEV) {
-			console.log("[Auth] Received tokens from popup:", { hasAccessToken: !!tokens?.accessToken })
-		}
-
-		if (!tokens?.accessToken) {
-			throw new Error("Google login did not return an access token.")
-		}
-
-		set(tokenAtom, tokens.accessToken)
-		if (import.meta.env.DEV) {
-			console.log("[Auth] Fetching user profile...")
-		}
-
+		// Fetch user profile
 		const userResponse = await fetchUserProfile()
 		const user = mapUserResponse(userResponse)
-
-		if (import.meta.env.DEV) {
-			console.log("[Auth] User profile fetched:", user)
-		}
 
 		set(userAtom, user)
 		set(isLoadingAtom, false)
@@ -155,7 +81,7 @@ export const handleGoogleLoginAtom = atom(null, async (_get, set, popupWindow?: 
 			console.log("[Auth] Google OAuth flow complete - user is now authenticated")
 		}
 
-		return user
+		return { success: true }
 	} catch (error) {
 		if (import.meta.env.DEV) {
 			console.error("[Auth] Google OAuth failed:", error)
@@ -163,7 +89,8 @@ export const handleGoogleLoginAtom = atom(null, async (_get, set, popupWindow?: 
 		set(userAtom, null)
 		set(tokenAtom, null)
 		set(isLoadingAtom, false)
-		set(errorAtom, error instanceof Error ? error.message : "Google login failed")
+		const message = error instanceof Error ? error.message : "Google login failed"
+		set(errorAtom, message)
 		throw error
 	}
 })

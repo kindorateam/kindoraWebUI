@@ -1,7 +1,7 @@
-import { tokenAtom } from "@/stores/auth.store"
+import { apiClient } from "@/services/api.service"
 import { appStore } from "@/stores/jotaiStore"
 
-import { apiClient } from "./api.service"
+import { tokenAtom } from "../stores/auth.store"
 
 const store = appStore
 

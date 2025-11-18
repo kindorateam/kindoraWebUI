@@ -1,7 +1,8 @@
-import { apiClient } from "./api.service"
+import { apiClient } from "@/services/api.service"
+
 import { clearToken, setTokens } from "./token.service"
 
-import type { User } from "@/types/auth"
+import type { User } from "../types"
 
 interface LoginCredentials {
 	email: string

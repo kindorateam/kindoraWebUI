@@ -3,7 +3,7 @@ import { Icon } from "@iconify/react"
 import { useCallback, useMemo, useState } from "react"
 import { Controller, useForm } from "react-hook-form"
 
-import { resetPassword } from "@/services/auth.service"
+import { resetPassword } from "../services/auth.service"
 
 import ResetPasswordConfirmation from "./ResetPasswordConfirmation"
 

@@ -3,7 +3,7 @@ import { Link, Navigate } from "@tanstack/react-router"
 import { useAtomValue } from "jotai"
 
 import PageLoader from "@/components/PageLoader"
-import { authStateAtom } from "@/stores/auth.store"
+import { authStateAtom } from "@/features/auth/stores/auth.store"
 
 const HomePage = () => {
 	const authState = useAtomValue(authStateAtom)

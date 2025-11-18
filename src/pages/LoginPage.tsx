@@ -2,8 +2,8 @@ import { useNavigate } from "@tanstack/react-router"
 import { useEffect, useState } from "react"
 
 import SignInCard from "@/features/auth/components/SignInCard"
-import useAuth from "@/hooks/useAuth"
-import { getReturnUrlFromLocation } from "@/services/redirect.service"
+import useAuth from "@/features/auth/hooks/useAuth"
+import { getReturnUrlFromLocation } from "@/features/auth/services/redirect.service"
 
 type AuthView = "signin" | "forgot-password" | "otp-verification" | "otp-password-reset" | "reset-password"
 

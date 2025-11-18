@@ -21,7 +21,7 @@ import SchoolIcon from "@/components/icons/SchoolIcon"
 import SearchIcon from "@/components/icons/SearchIcon"
 import SignOutIcon from "@/components/icons/SignOutIcon"
 import SubscriptionIcon from "@/components/icons/SubscriptionIcon"
-import useAuth from "@/hooks/useAuth"
+import useAuth from "@/features/auth/hooks/useAuth"
 
 const navbarClassNames = {
 	base: "h-20 w-full mb-7 px-7 bg-transparent",
