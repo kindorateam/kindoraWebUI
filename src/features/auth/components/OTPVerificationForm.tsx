@@ -54,7 +54,7 @@ const OTPVerificationForm = ({ email, onBack, onSuccess, context = "login" }: OT
 
 	const handleResendCode = useCallback(() => {
 		// TODO: Call API to resend OTP - mock implementation for now
-		console.log("Resend code requested for:", email)
+
 		setTimeLeft(300) // Reset timer to 5 minutes
 		setCanResend(false)
 		setLocalError(null)

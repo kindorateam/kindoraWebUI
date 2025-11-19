@@ -41,17 +41,11 @@ export async function login(credentials: LoginCredentials): Promise<LoginRespons
 		const isVerificationResponse =
 			response.status === 202 || ("status" in responseData && responseData.status === "verification_required")
 
-		if (import.meta.env.DEV) {
-			console.log("[auth.service] Login response:", response)
-			console.log("[auth.service] Parsed data:", responseData)
-			console.log("[auth.service] isVerificationResponse:", isVerificationResponse)
-		}
+
 
 		// Check if verification is required (202 response or explicit status field)
 		if (isVerificationResponse) {
-			if (import.meta.env.DEV) {
-				console.log("[auth.service] Verification required")
-			}
+
 			// Don't store any tokens - user needs to verify first
 			return {
 				status: "verification_required",
@@ -64,9 +58,7 @@ export async function login(credentials: LoginCredentials): Promise<LoginRespons
 
 		// Verified user - store access token (refresh token is in HttpOnly cookie)
 		if ("accessToken" in responseData) {
-			if (import.meta.env.DEV) {
-				console.log("[auth.service] Storing access token")
-			}
+
 			setTokens(responseData.accessToken)
 		}
 

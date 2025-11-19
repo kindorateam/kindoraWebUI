@@ -30,8 +30,7 @@ const useAuth = () => {
 		redirect_uri: "http://localhost:5173", // Explicitly set redirect_uri
 		onSuccess: async (codeResponse: CodeResponse) => {
 			try {
-				console.log("[Auth] Received code from Google:", codeResponse.code)
-				console.log("[Auth] Full response:", codeResponse)
+
 				await handleGoogleLoginWithCode(codeResponse.code)
 			} catch (error) {
 				console.error("Google OAuth failed:", error)

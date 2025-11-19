@@ -117,7 +117,7 @@ export const ProductTable = () => {
 			emptyMessage="No products in inventory"
 			getRowKey={(product) => product.sku}
 			isLoading={isLoading}
-			onRowClick={(product) => console.log("Selected product:", product)}
+
 		/>
 	)
 }

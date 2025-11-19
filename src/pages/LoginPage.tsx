@@ -23,17 +23,12 @@ const LoginPage = () => {
 		}
 	}, [])
 
-	// Debug auth state changes
-	useEffect(() => {
-		if (import.meta.env.DEV) {
-			console.log("[LoginPage] isAuthenticated changed to:", isAuthenticated)
-		}
-	}, [isAuthenticated])
+
 
 	// Navigate after successful authentication
 	useEffect(() => {
 		if (isAuthenticated) {
-			console.log("[LoginPage] User is authenticated - navigating away")
+
 			// First try to get from sessionStorage, then from URL
 			const storedUrl = sessionStorage.getItem("authRedirectUrl")
 			const urlParam = getReturnUrlFromLocation()
@@ -45,7 +40,7 @@ const LoginPage = () => {
 			}
 
 			const destination = returnUrl && returnUrl !== "/login" ? returnUrl : "/dashboard"
-			console.log("[LoginPage] Navigating to:", destination)
+
 			void navigate({ to: destination })
 		}
 	}, [isAuthenticated, navigate])

@@ -77,9 +77,7 @@ export const handleGoogleLoginAtom = atom(null, async (_get, set, code: string) 
 		set(userAtom, user)
 		set(isLoadingAtom, false)
 
-		if (import.meta.env.DEV) {
-			console.log("[Auth] Google OAuth flow complete - user is now authenticated")
-		}
+
 
 		return { success: true }
 	} catch (error) {
@@ -146,10 +144,7 @@ export const handleEmailLoginAtom = atom(
 			// Handle nested user object from backend
 			const user = mapUserResponse(userResponse)
 
-			if (import.meta.env.DEV) {
-				console.log("[Auth Debug] fetchUserProfile response:", userResponse)
-				console.log("[Auth Debug] normalized user:", user)
-			}
+
 
 			// Update user in store
 			set(userAtom, user)
@@ -180,11 +175,7 @@ export const handleVerifyFirstLoginAtom = atom(null, async (_get, set, payload: 
 		// Handle nested user object from backend
 		const user = mapUserResponse(userResponse)
 
-		if (import.meta.env.DEV) {
-			console.log("[Auth Debug] Verification successful")
-			console.log("[Auth Debug] fetchUserProfile response:", userResponse)
-			console.log("[Auth Debug] normalized user:", user)
-		}
+
 
 		// Update user in store
 		set(userAtom, user)
@@ -206,10 +197,7 @@ export const checkAuthAtom = atom(null, (get, set) => {
 	const storedToken = localStorage.getItem("auth-token")
 	const storedUser = localStorage.getItem("auth-user")
 
-	if (import.meta.env.DEV) {
-		console.log("[Auth Debug] localStorage - token exists:", !!storedToken)
-		console.log("[Auth Debug] localStorage - user exists:", !!storedUser)
-	}
+
 
 	// Get current atom values (should be hydrated from localStorage)
 	let token = get(tokenAtom)
@@ -240,11 +228,7 @@ export const checkAuthAtom = atom(null, (get, set) => {
 	// Token expiration is handled by API interceptor on actual requests
 	const isAuthenticated = !!token && !!user
 
-	if (import.meta.env.DEV) {
-		console.log("[Auth Debug] checkAuth - isAuthenticated:", isAuthenticated)
-		console.log("[Auth Debug] checkAuth - token:", !!token)
-		console.log("[Auth Debug] checkAuth - user:", !!user)
-	}
+
 
 	// Clear orphaned data if inconsistent
 	if (token && !user) {

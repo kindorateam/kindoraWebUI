@@ -91,7 +91,7 @@ const Chat = () => {
 								avatarUrl: "https://i.pravatar.cc/150?img=42",
 							}}
 							messageId="parent-1"
-							onReply={(messageId) => console.log("reply to", messageId)}
+							onReply={() => { }}
 							replies={[
 								{
 									id: "reply-1",
@@ -101,7 +101,7 @@ const Chat = () => {
 									},
 									timestamp: "11:40 AM",
 									text: "Absolutely agree. It's a great feeling knowing she's in good hands.",
-									onReply: (messageId) => console.log("reply to", messageId),
+									onReply: () => { },
 								},
 								{
 									id: "reply-2",
@@ -111,7 +111,7 @@ const Chat = () => {
 									},
 									timestamp: "11:45 AM",
 									text: "Thanks for sharing the update!",
-									onReply: (messageId) => console.log("reply to", messageId),
+									onReply: () => { },
 								},
 							]}
 							text="So glad to see Olivia had her lunch today..."

@@ -47,7 +47,7 @@ const FAB = ({ onAddStudent, onAddRoom, onAddStaff, onAddActivity, onAddEvent }:
 	}
 
 	const handleRoomSubmit = async (data: AddRoomFormData) => {
-		console.log("Room data:", data)
+
 		// API call will be implemented later
 		// For now, just simulate success
 	}
