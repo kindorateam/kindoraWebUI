@@ -1,3 +1,4 @@
+import fs from "node:fs"
 import tailwindcss from "@tailwindcss/vite"
 import { tanstackRouter } from "@tanstack/router-plugin/vite"
 import react from "@vitejs/plugin-react-swc"
@@ -24,10 +25,10 @@ export default defineConfig({
 		tailwindcss(),
 	],
 	server: {
-		// https: {
-		// 	key: fs.readFileSync("./.certs/localhost-key.pem"),
-		// 	cert: fs.readFileSync("./.certs/localhost.pem"),
-		// },
+		https: {
+			key: fs.readFileSync("./.certs/localhost-key.pem"),
+			cert: fs.readFileSync("./.certs/localhost.pem"),
+		},
 		proxy: {
 			"/api": {
 				target: "http://localhost:8000",

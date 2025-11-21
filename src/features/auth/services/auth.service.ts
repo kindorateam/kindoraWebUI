@@ -41,11 +41,8 @@ export async function login(credentials: LoginCredentials): Promise<LoginRespons
 		const isVerificationResponse =
 			response.status === 202 || ("status" in responseData && responseData.status === "verification_required")
 
-
-
 		// Check if verification is required (202 response or explicit status field)
 		if (isVerificationResponse) {
-
 			// Don't store any tokens - user needs to verify first
 			return {
 				status: "verification_required",
@@ -58,7 +55,6 @@ export async function login(credentials: LoginCredentials): Promise<LoginRespons
 
 		// Verified user - store access token (refresh token is in HttpOnly cookie)
 		if ("accessToken" in responseData) {
-
 			setTokens(responseData.accessToken)
 		}
 
@@ -107,8 +103,8 @@ export async function requestPasswordReset(email: string): Promise<void> {
  * Verify OTP code (for password reset flow)
  * Returns 200 status with success message if code is valid
  */
-export async function verifyPasswordResetOTP(email: string, token: string): Promise<void> {
-	await apiClient.post("/auth/password/reset/verify", { email, token })
+export async function verifyPasswordResetOTP(email: string, code: string): Promise<void> {
+	await apiClient.post("/auth/password/reset/verify", { email, code })
 }
 
 /**
@@ -140,10 +136,10 @@ export async function verifyFirstLogin(email: string, code: string): Promise<Aut
  * @param token - OTP code from password reset verification
  * @param newPassword - New password to set
  */
-export async function resetPassword(email: string, token: string, newPassword: string): Promise<void> {
+export async function resetPassword(email: string, code: string, newPassword: string): Promise<void> {
 	await apiClient.post("/auth/password/reset/set", {
 		email,
-		token,
-		new_password: newPassword,
+		code,
+		newPassword,
 	})
 }

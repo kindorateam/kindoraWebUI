@@ -4,6 +4,7 @@ import {
 	DropdownItem,
 	DropdownMenu,
 	DropdownTrigger,
+	Pagination,
 	Spinner,
 	Table,
 	TableBody,
@@ -13,25 +14,30 @@ import {
 	TableRow,
 } from "@heroui/react"
 import { Link } from "@tanstack/react-router"
-import { useCallback } from "react"
+import { useCallback, useMemo, useState } from "react"
+
+import TableError from "@/components/TableError"
 
 import { useRooms } from "../../hooks/useRooms"
 import RoomIcon from "../RoomIcon"
 
+import columns from "./columns"
+
 import type { Room } from "../../types"
 
-const columns = [
-	{ key: "room", label: "Rooms" },
-	{ key: "capacity", label: "Capacity" },
-	{ key: "students", label: "Students" },
-	{ key: "staff", label: "Staff" },
-	{ key: "signInStudents", label: "Sign in students" },
-	{ key: "signInStaff", label: "Sign in staff" },
-	{ key: "actions", label: "Actions" },
-]
-
 const RoomsTable = () => {
-	const { data: rooms = [], isLoading } = useRooms()
+	const { data: rooms = [], isLoading, error, refetch } = useRooms()
+	const [page, setPage] = useState(1)
+	const rowsPerPage = 10
+
+	const pages = Math.ceil(rooms.length / rowsPerPage)
+
+	const items = useMemo(() => {
+		const start = (page - 1) * rowsPerPage
+		const end = start + rowsPerPage
+
+		return rooms.slice(start, end)
+	}, [page, rooms])
 
 	const renderCell = useCallback((room: Room, columnKey: React.Key) => {
 		switch (columnKey) {
@@ -149,12 +155,33 @@ const RoomsTable = () => {
 		)
 	}
 
+	if (error) {
+		return <TableError onRetry={() => refetch()} />
+	}
+
 	return (
-		<Table aria-label="Rooms table">
+		<Table
+			aria-label="Rooms table"
+			bottomContent={
+				pages > 0 ? (
+					<div className="flex w-full justify-center">
+						<Pagination
+							isCompact
+							showControls
+							showShadow
+							color="primary"
+							page={page}
+							total={pages}
+							onChange={(page) => setPage(page)}
+						/>
+					</div>
+				) : null
+			}
+		>
 			<TableHeader columns={columns}>
 				{(column) => <TableColumn key={column.key}>{column.label}</TableColumn>}
 			</TableHeader>
-			<TableBody emptyContent="No rooms found" items={rooms}>
+			<TableBody emptyContent="No rooms found" items={items}>
 				{(room) => (
 					<TableRow key={room.id}>{(columnKey) => <TableCell>{renderCell(room, columnKey)}</TableCell>}</TableRow>
 				)}
