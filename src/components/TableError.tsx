@@ -1,43 +1,35 @@
 import { Button, Card, CardBody } from "@heroui/react"
 import { Icon } from "@iconify/react"
 
-import Text from "./Text"
-
 interface TableErrorProps {
-	title?: string
-	message?: string
 	onRetry?: () => void
 }
 
-const TableError = ({
-	title = "We couldn't load your table",
-	message = "There was a problem connecting to our server. Some data may be missing.",
-	onRetry,
-}: TableErrorProps) => {
+const TableError = ({ onRetry }: TableErrorProps) => {
 	return (
 		<Card className="w-full">
-			<CardBody className="items-center gap-4 py-10 text-center">
-				<div className="flex size-12 items-center justify-center rounded-full bg-danger-50 text-danger">
-					<Icon aria-hidden className="size-6" icon="solar:cloud-error-outline" />
+			<CardBody className="items-center gap-5 px-7 py-8 text-center">
+				<div className="relative h-[89px] w-20 overflow-clip">
+					<Icon aria-hidden className="size-full text-warning-500" icon="streamline-emojis:cloud-with-rain-2" />
 				</div>
 
-				<div className="flex max-w-xl flex-col gap-1">
-					<Text as="h3" className="text-xl" weight="semibold">
-						{title}
-					</Text>
-					<Text className="text-default-500" size={16}>
-						{message}
-					</Text>
+				<div className="flex max-w-xl flex-col gap-5">
+					<h3 className="font-semibold text-3xl leading-9">We couldn’t load the data.</h3>
+					<div>
+						<p className="text-default-700 text-lg leading-7">Try refreshing the page or checking your connection.</p>
+					</div>
 				</div>
 
 				{onRetry && (
 					<Button
+						className="w-full"
 						color="primary"
+						endContent={<Icon aria-hidden className="size-5" icon="tabler:refresh" />}
 						onPress={onRetry}
-						startContent={<Icon aria-hidden className="size-5" icon="solar:refresh-line-duotone" />}
+						size="lg"
 						variant="solid"
 					>
-						Try again
+						Try Again
 					</Button>
 				)}
 			</CardBody>

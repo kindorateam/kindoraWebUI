@@ -20,6 +20,7 @@ import TableError from "@/components/TableError"
 
 import { useRooms } from "../../hooks/useRooms"
 import RoomIcon from "../RoomIcon"
+import RoomsEmptyState from "../RoomsEmptyState"
 
 import columns from "./columns"
 
@@ -156,7 +157,7 @@ const RoomsTable = () => {
 	}
 
 	if (error) {
-		return <TableError onRetry={() => refetch()} />
+		return <TableError onRetry={refetch} />
 	}
 
 	return (
@@ -181,7 +182,7 @@ const RoomsTable = () => {
 			<TableHeader columns={columns}>
 				{(column) => <TableColumn key={column.key}>{column.label}</TableColumn>}
 			</TableHeader>
-			<TableBody emptyContent="No rooms found" items={items}>
+			<TableBody emptyContent={<RoomsEmptyState />} items={items}>
 				{(room) => (
 					<TableRow key={room.id}>{(columnKey) => <TableCell>{renderCell(room, columnKey)}</TableCell>}</TableRow>
 				)}

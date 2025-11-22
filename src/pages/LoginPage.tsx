@@ -23,12 +23,9 @@ const LoginPage = () => {
 		}
 	}, [])
 
-
-
 	// Navigate after successful authentication
 	useEffect(() => {
 		if (isAuthenticated) {
-
 			// First try to get from sessionStorage, then from URL
 			const storedUrl = sessionStorage.getItem("authRedirectUrl")
 			const urlParam = getReturnUrlFromLocation()

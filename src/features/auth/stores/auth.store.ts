@@ -77,8 +77,6 @@ export const handleGoogleLoginAtom = atom(null, async (_get, set, code: string) 
 		set(userAtom, user)
 		set(isLoadingAtom, false)
 
-
-
 		return { success: true }
 	} catch (error) {
 		if (import.meta.env.DEV) {
@@ -144,8 +142,6 @@ export const handleEmailLoginAtom = atom(
 			// Handle nested user object from backend
 			const user = mapUserResponse(userResponse)
 
-
-
 			// Update user in store
 			set(userAtom, user)
 			set(isLoadingAtom, false)
@@ -175,8 +171,6 @@ export const handleVerifyFirstLoginAtom = atom(null, async (_get, set, payload: 
 		// Handle nested user object from backend
 		const user = mapUserResponse(userResponse)
 
-
-
 		// Update user in store
 		set(userAtom, user)
 		set(isLoadingAtom, false)
@@ -196,8 +190,6 @@ export const checkAuthAtom = atom(null, (get, set) => {
 	// atomWithStorage should hydrate synchronously, but double-check
 	const storedToken = localStorage.getItem("auth-token")
 	const storedUser = localStorage.getItem("auth-user")
-
-
 
 	// Get current atom values (should be hydrated from localStorage)
 	let token = get(tokenAtom)
@@ -227,8 +219,6 @@ export const checkAuthAtom = atom(null, (get, set) => {
 	// Simple check: if we have both token and user, assume logged in
 	// Token expiration is handled by API interceptor on actual requests
 	const isAuthenticated = !!token && !!user
-
-
 
 	// Clear orphaned data if inconsistent
 	if (token && !user) {
