@@ -29,19 +29,19 @@ bun run preview      # Preview production build
 
 ## Tech Stack
 
-| Layer | Technology | Version |
-|-------|-----------|---------|
-| Runtime | Bun | Latest |
-| Framework | React | 19 |
-| Language | TypeScript | 5 (strict mode) |
-| Build Tool | Vite | 7 |
-| Routing | TanStack Router | 1.x (file-based) |
-| Data Fetching | TanStack Query | 5.x |
-| State | Jotai | 2.x (atoms with persistence) |
-| HTTP Client | Axios | 1.x (interceptors for auth) |
-| Styling | Tailwind CSS | 4.x |
-| UI Library | HeroUI | 2.x (standard components) |
-| Linting/Formatting | Biome | 2.x |
+| Layer              | Technology      | Version                      |
+| ------------------ | --------------- | ---------------------------- |
+| Runtime            | Bun             | Latest                       |
+| Framework          | React           | 19                           |
+| Language           | TypeScript      | 5 (strict mode)              |
+| Build Tool         | Vite            | 7                            |
+| Routing            | TanStack Router | 1.x (file-based)             |
+| Data Fetching      | TanStack Query  | 5.x                          |
+| State              | Jotai           | 2.x (atoms with persistence) |
+| HTTP Client        | Axios           | 1.x (interceptors for auth)  |
+| Styling            | Tailwind CSS    | 4.x                          |
+| UI Library         | HeroUI          | 2.x (standard components)    |
+| Linting/Formatting | Biome           | 2.x                          |
 
 ---
 
@@ -722,6 +722,9 @@ When working in this codebase, apply these principles:
 - Run `bun run check` to see all issues
 - Run `bun run fix` to auto-fix most issues
 - Check [biome.json](biome.json) for configuration
+
+## Commit rules:
+- Don't include internal comments like 🤖 Generated with [Claude Code](https://claude.com/claude-code) etc.
 
 ---
 

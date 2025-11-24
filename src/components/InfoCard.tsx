@@ -13,7 +13,7 @@ interface InfoCardProps {
 	children: React.ReactNode
 }
 
-export function InfoCard({
+function InfoCard({
 	title,
 	footer,
 	className,
