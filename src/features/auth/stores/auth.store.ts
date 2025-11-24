@@ -63,7 +63,11 @@ export const handleGoogleLoginAtom = atom(null, async (_get, set, code: string) 
 			accessToken: string
 			expiresAt: string
 			role: string
-		}>(`/auth/oauth/google/callback?code=${code}`)
+		}>(`/auth/oauth/google/callback?code=${code}`, {
+			headers: {
+				CustomOrigin: window.location.origin,
+			},
+		})
 
 		const { accessToken } = response
 
