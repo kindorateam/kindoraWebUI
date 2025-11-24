@@ -41,22 +41,23 @@ export function renderCell(room: Room, columnKey: React.Key) {
 			const remainingCount = totalStudents - displayCount
 
 			return (
-				<div className="-space-x-2 flex items-center">
-					{signedInStudents.slice(0, displayCount).map((student) => (
-						<Avatar
-							alt={student.name}
-							className="h-8 w-8 border-2 border-white"
-							key={student.id}
-							showFallback
-							src={student.avatar}
-						/>
-					))}
-					{remainingCount > 0 && (
-						<div className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-white bg-gray-200">
-							<span className="font-semibold text-gray-700 text-xs">+{remainingCount}</span>
-						</div>
-					)}
-					<span className="ml-3 text-gray-600 text-sm">({totalStudents})</span>
+				<div className="flex justify-center">
+					<div className="-space-x-2 flex items-center">
+						{signedInStudents.slice(0, displayCount).map((student) => (
+							<Avatar
+								alt={student.name}
+								className="h-8 w-8 border-2 border-white"
+								key={student.id}
+								showFallback
+								src={student.avatar}
+							/>
+						))}
+						{remainingCount > 0 && (
+							<div className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-white bg-gray-200">
+								<span className="font-semibold text-gray-700 text-xs">+{remainingCount}</span>
+							</div>
+						)}
+					</div>
 				</div>
 			)
 		}
@@ -72,41 +73,45 @@ export function renderCell(room: Room, columnKey: React.Key) {
 			const displayCount = Math.min(3, totalStaff)
 
 			return (
-				<div className="-space-x-2 flex items-center">
-					{signedInStaff.slice(0, displayCount).map((staff) => (
-						<Avatar
-							alt={staff.name}
-							className="h-8 w-8 border-2 border-white"
-							key={staff.id}
-							showFallback
-							src={staff.avatar}
-						/>
-					))}
+				<div className="flex justify-center">
+					<div className="-space-x-2 flex items-center">
+						{signedInStaff.slice(0, displayCount).map((staff) => (
+							<Avatar
+								alt={staff.name}
+								className="h-8 w-8 border-2 border-white"
+								key={staff.id}
+								showFallback
+								src={staff.avatar}
+							/>
+						))}
+					</div>
 				</div>
 			)
 		}
 
 		case "actions":
 			return (
-				<Dropdown>
-					<DropdownTrigger>
-						<button className="flex h-8 w-8 items-center justify-center rounded-lg hover:bg-gray-100" type="button">
-							<svg className="h-5 w-5 text-gray-600" fill="currentColor" viewBox="0 0 16 16">
-								<title>Room actions menu</title>
-								<circle cx="8" cy="3" r="1.5" />
-								<circle cx="8" cy="8" r="1.5" />
-								<circle cx="8" cy="13" r="1.5" />
-							</svg>
-						</button>
-					</DropdownTrigger>
-					<DropdownMenu aria-label="Room actions">
-						<DropdownItem key="view">View details</DropdownItem>
-						<DropdownItem key="edit">Edit room</DropdownItem>
-						<DropdownItem key="delete" className="text-danger" color="danger">
-							Delete room
-						</DropdownItem>
-					</DropdownMenu>
-				</Dropdown>
+				<div className="flex justify-center">
+					<Dropdown>
+						<DropdownTrigger>
+							<button className="flex h-8 w-8 items-center justify-center rounded-lg hover:bg-gray-100" type="button">
+								<svg className="h-5 w-5 text-gray-600" fill="currentColor" viewBox="0 0 16 16">
+									<title>Room actions menu</title>
+									<circle cx="8" cy="3" r="1.5" />
+									<circle cx="8" cy="8" r="1.5" />
+									<circle cx="8" cy="13" r="1.5" />
+								</svg>
+							</button>
+						</DropdownTrigger>
+						<DropdownMenu aria-label="Room actions">
+							<DropdownItem key="view">View details</DropdownItem>
+							<DropdownItem key="edit">Edit room</DropdownItem>
+							<DropdownItem key="delete" className="text-danger" color="danger">
+								Delete room
+							</DropdownItem>
+						</DropdownMenu>
+					</Dropdown>
+				</div>
 			)
 
 		default:

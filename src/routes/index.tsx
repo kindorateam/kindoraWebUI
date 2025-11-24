@@ -1,12 +1,10 @@
-import { createFileRoute } from "@tanstack/react-router"
-
-import { RouteErrorBoundary } from "@/components/error"
-import HomePage from "@/pages/HomePage"
+import { createFileRoute, redirect } from "@tanstack/react-router"
 
 export const Route = createFileRoute("/")({
-	component: () => (
-		<RouteErrorBoundary routeName="home">
-			<HomePage />
-		</RouteErrorBoundary>
-	),
+	beforeLoad: ({ context }) => {
+		if (context.auth.isAuthenticated) {
+			throw redirect({ to: "/dashboard", replace: true })
+		}
+		throw redirect({ to: "/login", replace: true })
+	},
 })

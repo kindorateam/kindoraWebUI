@@ -2,7 +2,7 @@ import { createFileRoute, redirect } from "@tanstack/react-router"
 
 import GuestRoute from "@/components/GuestRoute"
 
-export const Route = createFileRoute("/_auth")({
+export const Route = createFileRoute("/_guest")({
 	component: GuestRoute,
 	beforeLoad: ({ context, location }) => {
 		// If user is already authenticated, redirect to dashboard

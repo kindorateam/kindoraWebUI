@@ -220,10 +220,6 @@ export const checkAuthAtom = atom(null, (get, set) => {
 		}
 	}
 
-	// Simple check: if we have both token and user, assume logged in
-	// Token expiration is handled by API interceptor on actual requests
-	const isAuthenticated = !!token && !!user
-
 	// Clear orphaned data if inconsistent
 	if (token && !user) {
 		// Token exists but no user - clear token

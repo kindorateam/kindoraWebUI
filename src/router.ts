@@ -7,8 +7,12 @@ import type { RouterContext } from "./routes/__root"
 export const router = createRouter({
 	routeTree,
 	context: {
-		auth: undefined!,
-	},
+		auth: {
+			isAuthenticated: false,
+			user: null,
+			isLoading: true,
+		},
+	} satisfies RouterContext,
 })
 
 declare module "@tanstack/react-router" {

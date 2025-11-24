@@ -57,16 +57,18 @@ const RoomsTable = () => {
 					</div>
 				) : null
 			}
-			// rowHeight={44}
-			// maxTableHeight={678}
 			classNames={{
-				// table: "min-h-[698px]",
+				thead: "[&>tr]:h-auto",
+				tr: "h-[60px] border-b border-default-200 last:border-b-0",
 				td: "p-0",
 			}}
-			rowHeight={44}
 		>
 			<TableHeader columns={columns}>
-				{(column) => <TableColumn key={column.key}>{column.label}</TableColumn>}
+				{(column) => (
+					<TableColumn key={column.key} align={column.align}>
+						{column.label}
+					</TableColumn>
+				)}
 			</TableHeader>
 			<TableBody emptyContent={<RoomsEmptyState />} items={items} isLoading={true}>
 				{(room) => (
