@@ -1,7 +1,7 @@
 import { Button, Card, CardBody } from "@heroui/react"
 import { Icon } from "@iconify/react"
 
-import { openAddRoomDrawer } from "../stores/addRoomDrawer.store"
+import { openAddRoomModal } from "../stores/addRoomModal.store"
 
 const RoomsEmptyState = () => {
 	return (
@@ -20,7 +20,7 @@ const RoomsEmptyState = () => {
 					className="w-full"
 					color="primary"
 					endContent={<Icon aria-hidden className="size-5" icon="solar:add-circle-bold" />}
-					onPress={openAddRoomDrawer}
+					onPress={openAddRoomModal}
 					size="lg"
 					variant="solid"
 				>

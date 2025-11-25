@@ -1,10 +1,8 @@
 import { Tab, Tabs } from "@heroui/react"
 import { useNavigate } from "@tanstack/react-router"
-import { useCallback, useState } from "react"
 
 import Button from "@/components/Button"
 import DataTable from "@/components/DataTable"
-import NewsletterDrawer from "@/components/drawers/NewsletterDrawer"
 import NewsIcon from "@/components/icons/NewsIcon"
 import NewsIconAdd from "@/components/icons/NewsIconAdd"
 import SubHeader from "@/components/SubHeader"
@@ -35,17 +33,10 @@ const newslettersData: Newsletter[] = [
 const NewslettersPage = () => {
 	const search = NewslettersRoute.useSearch()
 	const navigate = useNavigate({ from: NewslettersRoute.fullPath })
-	const [isCreateDrawerOpen, setIsCreateDrawerOpen] = useState(false)
 
 	const tab = search.tab
 
 	const handleTabChange = useTabNavigation(tab, "sent", navigate)
-	const handleOpenCreateDrawer = useCallback(() => {
-		setIsCreateDrawerOpen(true)
-	}, [])
-	const handleCloseCreateDrawer = useCallback(() => {
-		setIsCreateDrawerOpen(false)
-	}, [])
 
 	return (
 		<div>
@@ -69,7 +60,7 @@ const NewslettersPage = () => {
 					</Tabs>
 				}
 				endSlot={
-					<Button color="primary" onPress={handleOpenCreateDrawer} startContent={<NewsIconAdd />}>
+					<Button color="primary" startContent={<NewsIconAdd />}>
 						Create New
 					</Button>
 				}
@@ -112,8 +103,6 @@ const NewslettersPage = () => {
 				{tab === "scheduled" && null}
 				{tab === "drafts" && null}
 			</div>
-
-			<NewsletterDrawer isOpen={isCreateDrawerOpen} onClose={handleCloseCreateDrawer} />
 		</div>
 	)
 }

@@ -58,3 +58,11 @@ export interface StaffMember {
 	name: string
 	avatar: string
 }
+
+// Add Room form types
+export interface AddRoomFormData {
+	name: string
+	capacity: number
+	avatarFile?: File
+	avatarPreview?: string
+}

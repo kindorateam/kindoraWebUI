@@ -1,65 +1,29 @@
-import { useState } from "react"
+import { Button } from "@heroui/react"
+import { Icon } from "@iconify/react"
 
-import Filters from "@/components/Filters"
 import SubHeader from "@/components/SubHeader"
+import AddRoomModal from "@/features/rooms/components/AddRoomModal"
 import RoomsTable from "@/features/rooms/components/RoomsTable"
-
-import type { FilterProps } from "@/types/TableFilters"
-
-const roomsFilters = [
-	{
-		id: "capacity",
-		label: "Capacity",
-		value: "",
-		options: [
-			{ value: "", label: "All Capacities" },
-			{ value: "1-10", label: "1-10 Students" },
-			{ value: "11-20", label: "11-20 Students" },
-			{ value: "21+", label: "21+ Students" },
-		],
-	},
-	{
-		id: "occupancy",
-		label: "Occupancy",
-		value: "",
-		options: [
-			{ value: "", label: "All" },
-			{ value: "empty", label: "Empty" },
-			{ value: "partial", label: "Partially Filled" },
-			{ value: "full", label: "Full" },
-		],
-	},
-	{
-		id: "roomType",
-		label: "Room Type",
-		value: "",
-		options: [
-			{ value: "", label: "All Rooms" },
-			{ value: "turtle", label: "Baby Turtles" },
-			{ value: "rabbit", label: "Happy Rabbits" },
-			{ value: "bear", label: "Curious Bears" },
-			{ value: "butterfly", label: "Bright Butterflies" },
-			{ value: "owl", label: "Wise Owls" },
-			{ value: "fox", label: "Clever Foxes" },
-		],
-	},
-]
+import { openAddRoomModal } from "@/features/rooms/stores/addRoomModal.store"
 
 const RoomsPage = () => {
-	const [filters, setFilters] = useState<FilterProps[]>(roomsFilters ?? [])
-
-	const handleFilterChange = (filterId: string, newValue: string) => {
-		setFilters((prevFilters) =>
-			prevFilters.map((filter) => (filter.id === filterId ? { ...filter, value: newValue } : filter)),
-		)
-	}
-
 	return (
 		<>
-			<SubHeader endSlot={<Filters filters={filters} onFilterChange={handleFilterChange} />} />
+			<SubHeader
+				endSlot={
+					<Button
+						color="primary"
+						endContent={<Icon aria-hidden className="size-5 text-white" icon="tabler:circle-plus-filled" />}
+						onPress={openAddRoomModal}
+					>
+						Add Room
+					</Button>
+				}
+			/>
 			<main className="container max-w-4xl pt-10">
 				<RoomsTable />
 			</main>
+			<AddRoomModal />
 		</>
 	)
 }
