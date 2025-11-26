@@ -13,8 +13,10 @@
 	"devDependencies": {
 		"@biomejs/biome": "^2.2.4",
 		"@eslint/js": "^9.34.0",
+		"@iconify/css-react": "^1.0.0",
 		"@iconify/json": "^2.2.405",
 		"@iconify/tailwind4": "^1.1.0",
+		"@iconify/unplugin": "^0.0.6",
 		"@tailwindcss/postcss": "^4.1.11",
 		"@tailwindcss/vite": "^4.1.11",
 		"@tanstack/router-plugin": "^1.130.1",

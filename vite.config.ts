@@ -1,4 +1,5 @@
 import fs from "node:fs"
+import Icons from "@iconify/unplugin/vite"
 import tailwindcss from "@tailwindcss/vite"
 import { tanstackRouter } from "@tanstack/router-plugin/vite"
 import react from "@vitejs/plugin-react-swc"
@@ -18,6 +19,9 @@ export default defineConfig({
 			quoteStyle: "single",
 		}),
 		react(),
+		Icons({
+			compiler: "react",
+		}),
 		tsconfigPaths(),
 		checker({
 			typescript: true,

@@ -1,5 +1,4 @@
 import { Avatar, Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@heroui/react"
-import { Icon } from "@iconify/react"
 import { Link } from "@tanstack/react-router"
 
 import RoomIcon from "../RoomIcon"
@@ -96,7 +95,20 @@ export function renderCell(room: Room, columnKey: React.Key) {
 					<Dropdown>
 						<DropdownTrigger>
 							<Button isIconOnly radius="md" variant="light">
-								<Icon className="text-gray-600" icon="tabler:dots-vertical" width={20} />
+								<svg
+									aria-hidden="true"
+									className="size-5 text-gray-600"
+									fill="none"
+									stroke="currentColor"
+									strokeLinecap="round"
+									strokeLinejoin="round"
+									strokeWidth={2}
+									viewBox="0 0 24 24"
+								>
+									<circle cx={12} cy={12} r={1} />
+									<circle cx={12} cy={5} r={1} />
+									<circle cx={12} cy={19} r={1} />
+								</svg>
 							</Button>
 						</DropdownTrigger>
 						<DropdownMenu aria-label="Room actions">
