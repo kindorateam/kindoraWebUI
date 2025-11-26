@@ -18,7 +18,7 @@ export interface RouterContext {
 const RootComponent = () => {
 	return (
 		<GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
-			<div className="bg-fade-cream">
+			<div>
 				<Suspense fallback={<PageLoader />}>
 					<Outlet />
 				</Suspense>

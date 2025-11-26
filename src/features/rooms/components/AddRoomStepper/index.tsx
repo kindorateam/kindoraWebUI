@@ -45,8 +45,7 @@ const AddRoomStepper = ({ onComplete, onCancel }: AddRoomStepperProps) => {
 
 	const handleNext = async () => {
 		// Validate current step fields before proceeding
-		const fieldsToValidate =
-			currentStep === 0 ? (["name", "capacity"] as const) : (["staffIds", "studentIds"] as const)
+		const fieldsToValidate = currentStep === 0 ? (["name", "capacity"] as const) : (["staffIds", "studentIds"] as const)
 		const stepValid = await trigger(fieldsToValidate)
 		if (stepValid) {
 			setCurrentStep((prev) => prev + 1)
