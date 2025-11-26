@@ -20,7 +20,7 @@ const RoomsPage = () => {
 					</Button>
 				}
 			/>
-			<main className="container max-w-4xl pt-10">
+			<main className="container mx-auto max-w-4xl px-4 pt-10">
 				<RoomsTable />
 			</main>
 			<AddRoomModal />

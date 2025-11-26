@@ -1,16 +1,21 @@
 import { Avatar, Input, NumberInput } from "@heroui/react"
 import { Icon } from "@iconify/react"
 import { useRef } from "react"
+import { Controller, useFormContext } from "react-hook-form"
 
 import type { AddRoomFormData } from "../../types"
 
-interface RoomDetailsStepProps {
-	formData: AddRoomFormData
-	onChange: (data: Partial<AddRoomFormData>) => void
-}
-
-const RoomDetailsStep = ({ formData, onChange }: RoomDetailsStepProps) => {
+const RoomDetailsStep = () => {
 	const fileInputRef = useRef<HTMLInputElement>(null)
+	const {
+		control,
+		watch,
+		setValue,
+		formState: { errors },
+	} = useFormContext<AddRoomFormData>()
+
+	const name = watch("name")
+	const avatarPreview = watch("avatarPreview")
 
 	const handleAvatarClick = () => {
 		fileInputRef.current?.click()
@@ -20,7 +25,8 @@ const RoomDetailsStep = ({ formData, onChange }: RoomDetailsStepProps) => {
 		const file = e.target.files?.[0]
 		if (file) {
 			const previewUrl = URL.createObjectURL(file)
-			onChange({ avatarFile: file, avatarPreview: previewUrl })
+			setValue("avatarFile", file)
+			setValue("avatarPreview", previewUrl)
 		}
 	}
 
@@ -34,10 +40,10 @@ const RoomDetailsStep = ({ formData, onChange }: RoomDetailsStepProps) => {
 					<Avatar
 						className="size-14 cursor-pointer text-lg"
 						color="primary"
-						name={formData.name || "R"}
+						name={name || "R"}
 						onClick={handleAvatarClick}
 						showFallback
-						src={formData.avatarPreview}
+						src={avatarPreview}
 					/>
 					<button
 						className="-right-1 -top-1 absolute flex size-6 cursor-pointer items-center justify-center rounded-full bg-warning"
@@ -53,24 +59,42 @@ const RoomDetailsStep = ({ formData, onChange }: RoomDetailsStepProps) => {
 
 			{/* Form Fields */}
 			<div className="flex flex-col gap-3">
-				<Input
-					label="Room Name"
-					labelPlacement="inside"
-					onChange={(e) => onChange({ name: e.target.value })}
-					placeholder="Enter room name"
-					radius="md"
-					value={formData.name}
-					variant="flat"
+				<Controller
+					control={control}
+					name="name"
+					render={({ field }) => (
+						<Input
+							{...field}
+							errorMessage={errors.name?.message}
+							isInvalid={!!errors.name}
+							isRequired
+							label="Room Name"
+							labelPlacement="inside"
+							placeholder="Enter room name"
+							radius="md"
+							variant="flat"
+						/>
+					)}
 				/>
-				<NumberInput
-					label="Room Capacity"
-					labelPlacement="inside"
-					minValue={0}
-					onValueChange={(value) => onChange({ capacity: value ?? 0 })}
-					placeholder="Enter capacity"
-					radius="md"
-					value={formData.capacity}
-					variant="flat"
+				<Controller
+					control={control}
+					name="capacity"
+					render={({ field }) => (
+						<NumberInput
+							errorMessage={errors.capacity?.message}
+							formatOptions={{ useGrouping: false }}
+							isInvalid={!!errors.capacity}
+							isRequired
+							label="Room Capacity"
+							labelPlacement="inside"
+							minValue={1}
+							onValueChange={(value) => field.onChange(value ?? 1)}
+							placeholder="Enter capacity"
+							radius="md"
+							value={field.value}
+							variant="flat"
+						/>
+					)}
 				/>
 			</div>
 		</div>

@@ -1,16 +1,16 @@
 import { Avatar } from "@heroui/react"
+import { zodResolver } from "@hookform/resolvers/zod"
 import { useState } from "react"
+import { FormProvider, useForm } from "react-hook-form"
 
 import Stepper from "@/components/Stepper"
 
+import { addRoomSchema } from "../../schemas/addRoom.schema"
+
+import AddStaffStudentsStep from "./AddStaffStudentsStep"
 import RoomDetailsStep from "./RoomDetailsStep"
 
 import type { AddRoomFormData } from "../../types"
-
-const DEFAULT_FORM_DATA: AddRoomFormData = {
-	name: "",
-	capacity: 0,
-}
 
 interface AddRoomStepperProps {
 	onComplete?: (data: AddRoomFormData) => void
@@ -19,14 +19,38 @@ interface AddRoomStepperProps {
 
 const AddRoomStepper = ({ onComplete, onCancel }: AddRoomStepperProps) => {
 	const [currentStep, setCurrentStep] = useState(0)
-	const [formData, setFormData] = useState<AddRoomFormData>(DEFAULT_FORM_DATA)
 
-	const handleFormChange = (data: Partial<AddRoomFormData>) => {
-		setFormData((prev) => ({ ...prev, ...data }))
-	}
+	const form = useForm<AddRoomFormData>({
+		resolver: zodResolver(addRoomSchema),
+		defaultValues: {
+			name: "",
+			capacity: 1,
+			staffIds: [],
+			studentIds: [],
+		},
+		mode: "onChange",
+	})
 
-	const handleNext = () => {
-		setCurrentStep((prev) => prev + 1)
+	const {
+		watch,
+		trigger,
+		handleSubmit,
+		formState: { errors },
+	} = form
+	const formData = watch()
+
+	const isStep1Valid = !errors.name && !errors.capacity && formData.name && formData.capacity >= 1
+	const isStep2Valid =
+		!errors.staffIds && !errors.studentIds && formData.staffIds?.length && formData.studentIds?.length
+
+	const handleNext = async () => {
+		// Validate current step fields before proceeding
+		const fieldsToValidate =
+			currentStep === 0 ? (["name", "capacity"] as const) : (["staffIds", "studentIds"] as const)
+		const stepValid = await trigger(fieldsToValidate)
+		if (stepValid) {
+			setCurrentStep((prev) => prev + 1)
+		}
 	}
 
 	const handleBack = () => {
@@ -37,21 +61,24 @@ const AddRoomStepper = ({ onComplete, onCancel }: AddRoomStepperProps) => {
 		}
 	}
 
-	const handleComplete = () => {
-		onComplete?.(formData)
-	}
-
-	const isStep1Valid = formData.name.trim() !== "" && formData.capacity > 0
+	const handleComplete = handleSubmit((data) => {
+		onComplete?.(data)
+	})
 
 	const steps = [
 		{
 			key: "details",
 			label: "Step 1",
-			content: <RoomDetailsStep formData={formData} onChange={handleFormChange} />,
+			content: <RoomDetailsStep />,
+		},
+		{
+			key: "staff-students",
+			label: "Step 2",
+			content: <AddStaffStudentsStep />,
 		},
 		{
 			key: "confirm",
-			label: "Step 2",
+			label: "Step 3",
 			content: (
 				<div className="flex flex-col gap-4">
 					<h2 className="font-medium text-xl">Confirm Room Details</h2>
@@ -70,6 +97,12 @@ const AddRoomStepper = ({ onComplete, onCancel }: AddRoomStepperProps) => {
 							<p>
 								<strong>Capacity:</strong> {formData.capacity}
 							</p>
+							<p>
+								<strong>Staff:</strong> {formData.staffIds?.length || 0} selected
+							</p>
+							<p>
+								<strong>Students:</strong> {formData.studentIds?.length || 0} selected
+							</p>
 						</div>
 					</div>
 				</div>
@@ -78,18 +111,20 @@ const AddRoomStepper = ({ onComplete, onCancel }: AddRoomStepperProps) => {
 	]
 
 	return (
-		<div className="w-full max-w-[496px] rounded-2xl bg-white p-7">
-			<Stepper
-				completeLabel="Add Room"
-				currentStep={currentStep}
-				hideBackOnFirstStep={false}
-				isNextDisabled={currentStep === 0 && !isStep1Valid}
-				onBack={handleBack}
-				onComplete={handleComplete}
-				onNext={handleNext}
-				steps={steps}
-			/>
-		</div>
+		<FormProvider {...form}>
+			<div className="w-full max-w-[496px] rounded-2xl bg-white p-7">
+				<Stepper
+					completeLabel="Add Room"
+					currentStep={currentStep}
+					hideBackOnFirstStep={false}
+					isNextDisabled={(currentStep === 0 && !isStep1Valid) || (currentStep === 1 && !isStep2Valid)}
+					onBack={handleBack}
+					onComplete={handleComplete}
+					onNext={handleNext}
+					steps={steps}
+				/>
+			</div>
+		</FormProvider>
 	)
 }
 

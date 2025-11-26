@@ -59,10 +59,5 @@ export interface StaffMember {
 	avatar: string
 }
 
-// Add Room form types
-export interface AddRoomFormData {
-	name: string
-	capacity: number
-	avatarFile?: File
-	avatarPreview?: string
-}
+// Add Room form types - defined in schemas/addRoom.schema.ts
+export type { AddRoomFormData } from "./schemas/addRoom.schema"
