@@ -1,5 +1,7 @@
 import {
 	Button,
+	Card,
+	CardBody,
 	Dropdown,
 	DropdownItem,
 	DropdownMenu,
@@ -133,60 +135,69 @@ const RoomsTable = () => {
 
 	if (isLoading) {
 		return (
-			<div className="flex h-[678px] items-center justify-center">
-				<Spinner size="lg" />
-			</div>
+			<Card>
+				<CardBody className="flex h-[762px] items-center justify-center">
+					<Spinner size="lg" />
+				</CardBody>
+			</Card>
 		)
 	}
 
 	if (error) {
 		return (
-			<div className="h-[678px]">
-				<TableError onRetry={refetch} />
-			</div>
+			<Card>
+				<CardBody className="h-[762px]">
+					<TableError onRetry={refetch} />
+				</CardBody>
+			</Card>
 		)
 	}
 
 	return (
-		<Table
-			aria-label="Rooms table"
-			bottomContent={
-				pages > 1 ? (
-					<div className="flex w-full justify-center">
-						<Pagination
-							isCompact
-							showControls
-							showShadow
-							color="primary"
-							page={page}
-							total={pages}
-							onChange={(page) => setPage(page)}
-						/>
-					</div>
-				) : null
-			}
-			bottomContentPlacement="outside"
-			classNames={{
-				thead: "[&>tr]:h-auto",
-				tr: "h-[60px] border-b border-default-200 last:border-b-0",
-				td: "p-0",
-			}}
-			topContent={topContent}
-			topContentPlacement="outside"
-		>
-			<TableHeader columns={columns}>
-				{(column) => (
-					<TableColumn key={column.key} align={column.align}>
-						{column.label}
-					</TableColumn>
-				)}
-			</TableHeader>
-			<TableBody emptyContent={<RoomsEmptyState />} items={items}>
-				{(room) => (
-					<TableRow key={room.id}>{(columnKey) => <TableCell>{renderCell(room, columnKey)}</TableCell>}</TableRow>
-				)}
-			</TableBody>
-		</Table>
+		<Card shadow="md">
+			<CardBody className="p-4">
+				<Table
+					aria-label="Rooms table"
+					removeWrapper
+					topContent={topContent}
+					topContentPlacement="outside"
+					bottomContent={
+						pages > 1 ? (
+							<div className="flex w-full justify-center">
+								<Pagination
+									isCompact
+									showControls
+									showShadow
+									color="primary"
+									page={page}
+									total={pages}
+									onChange={(newPage) => setPage(newPage)}
+								/>
+							</div>
+						) : null
+					}
+					bottomContentPlacement="outside"
+					classNames={{
+						tr: "border-b border-default-200 last:border-b-0",
+						td: "p-0",
+						tbody: "h-[550px] [&>tr]:h-[55px]",
+					}}
+				>
+					<TableHeader columns={columns}>
+						{(column) => (
+							<TableColumn key={column.key} align={column.align}>
+								{column.label}
+							</TableColumn>
+						)}
+					</TableHeader>
+					<TableBody emptyContent={<RoomsEmptyState />} items={items}>
+						{(room) => (
+							<TableRow key={room.id}>{(columnKey) => <TableCell>{renderCell(room, columnKey)}</TableCell>}</TableRow>
+						)}
+					</TableBody>
+				</Table>
+			</CardBody>
+		</Card>
 	)
 }
 

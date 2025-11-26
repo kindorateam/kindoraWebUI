@@ -1,4 +1,5 @@
-import { Avatar, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@heroui/react"
+import { Avatar, Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@heroui/react"
+import { Icon } from "@iconify/react"
 import { Link } from "@tanstack/react-router"
 
 import RoomIcon from "../RoomIcon"
@@ -94,14 +95,9 @@ export function renderCell(room: Room, columnKey: React.Key) {
 				<div className="flex justify-center">
 					<Dropdown>
 						<DropdownTrigger>
-							<button className="flex h-8 w-8 items-center justify-center rounded-lg hover:bg-gray-100" type="button">
-								<svg className="h-5 w-5 text-gray-600" fill="currentColor" viewBox="0 0 16 16">
-									<title>Room actions menu</title>
-									<circle cx="8" cy="3" r="1.5" />
-									<circle cx="8" cy="8" r="1.5" />
-									<circle cx="8" cy="13" r="1.5" />
-								</svg>
-							</button>
+							<Button isIconOnly radius="md" variant="light">
+								<Icon className="text-gray-600" icon="tabler:dots-vertical" width={20} />
+							</Button>
 						</DropdownTrigger>
 						<DropdownMenu aria-label="Room actions">
 							<DropdownItem key="view">View details</DropdownItem>
