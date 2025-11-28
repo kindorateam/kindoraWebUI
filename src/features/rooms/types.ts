@@ -12,6 +12,7 @@ export interface ApiStudent {
 	first_name: string
 	last_name: string
 	avatar?: Asset
+	checked_in: boolean
 }
 
 export interface ApiStaff {
@@ -19,6 +20,7 @@ export interface ApiStaff {
 	first_name: string
 	last_name: string
 	avatar?: Asset
+	checked_in: boolean
 }
 
 export interface ApiRoom {
@@ -51,12 +53,14 @@ export interface Student {
 	id: string
 	name: string
 	avatar: string
+	checkedIn: boolean
 }
 
 export interface StaffMember {
 	id: string
 	name: string
 	avatar: string
+	checkedIn: boolean
 }
 
 // Add Room form types - defined in schemas/addRoom.schema.ts

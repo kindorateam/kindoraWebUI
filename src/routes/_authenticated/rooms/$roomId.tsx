@@ -39,7 +39,7 @@ function RoomDetailLayout() {
 		<RouteErrorBoundary routeName="room-detail">
 			<div>
 				<RoomDetailHeader activeTab={tab} onTabChange={handleTabChange} roomId={roomId} />
-				<main className="container max-w-4xl pt-10">
+				<main className="container mx-auto max-w-4xl pt-10">
 					<Outlet />
 				</main>
 			</div>

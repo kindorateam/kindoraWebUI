@@ -2,7 +2,7 @@ import { Navigate, createFileRoute } from "@tanstack/react-router"
 
 import RoomActivityTab from "@/features/rooms/components/RoomActivityTab"
 import RoomProfileTab from "@/features/rooms/components/RoomProfileTab"
-import RoomStudentsTab from "@/features/rooms/components/RoomStudentsTab"
+import RoomStudentsTable from "@/features/rooms/components/RoomStudentsTable"
 
 export const Route = createFileRoute("/_authenticated/rooms/$roomId/")({
 	component: RoomDetailContent,
@@ -18,7 +18,7 @@ function RoomDetailContent() {
 	// Render content based on active tab
 	switch (tab) {
 		case "students":
-			return <RoomStudentsTab />
+			return <RoomStudentsTable roomId={roomId} />
 		case "activity":
 			return <RoomActivityTab roomId={roomId} />
 		case "profile":

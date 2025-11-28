@@ -54,11 +54,7 @@ const RoomsTable = () => {
 				<div className="flex items-center justify-end gap-3">
 					<div className="flex items-center gap-2">
 						<span className="text-neutral-600 text-sm">View deactivated</span>
-						<Switch
-							isSelected={showDeactivated}
-							onValueChange={setShowDeactivated}
-							size="sm"
-						/>
+						<Switch isSelected={showDeactivated} onValueChange={setShowDeactivated} size="sm" />
 					</div>
 					<Button
 						color="primary"

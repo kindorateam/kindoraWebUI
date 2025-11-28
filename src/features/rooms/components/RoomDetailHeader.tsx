@@ -41,7 +41,7 @@ const RoomDetailHeader = ({ activeTab, roomId, onTabChange }: RoomDetailHeaderPr
 
 	return (
 		<div className="border-[#0000000D] border-b">
-			<div className="container max-w-4xl">
+			<div className="container mx-auto max-w-4xl">
 				<div className="mb-13 flex">
 					<div className="me-7">
 						<Avatar className="size-37.5" showFallback />

@@ -1,9 +1,42 @@
-import { Avatar, Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@heroui/react"
+import { Avatar, AvatarGroup, Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@heroui/react"
 import { Link } from "@tanstack/react-router"
 
 import RoomIcon from "../RoomIcon"
 
 import type { Room } from "../../types"
+
+interface AvatarItem {
+	id: string
+	name: string
+	avatar: string
+}
+
+function renderAvatarGroup(items: AvatarItem[]) {
+	if (items.length === 0) {
+		return <span className="text-gray-400 text-sm">No one</span>
+	}
+
+	const extraCount = items.length - 2
+
+	return (
+		<div className="flex justify-center">
+			<AvatarGroup>
+				{items.slice(0, 2).map((item) => (
+					<Avatar
+						alt={item.name}
+						classNames={{ base: "ring-green-500" }}
+						isBordered
+						key={item.id}
+						showFallback
+						size="sm"
+						src={item.avatar}
+					/>
+				))}
+				{extraCount > 0 && <Avatar name={`${extraCount}`} size="sm" />}
+			</AvatarGroup>
+		</div>
+	)
+}
 
 export function renderCell(room: Room, columnKey: React.Key) {
 	switch (columnKey) {
@@ -30,63 +63,13 @@ export function renderCell(room: Room, columnKey: React.Key) {
 			return <span className="text-gray-600 text-sm">{room.staffCount}</span>
 
 		case "signInStudents": {
-			const { signedInStudents } = room
-			const totalStudents = signedInStudents.length
-
-			if (totalStudents === 0) {
-				return <span className="text-gray-400 text-sm">No students</span>
-			}
-
-			const displayCount = Math.min(2, totalStudents)
-			const remainingCount = totalStudents - displayCount
-
-			return (
-				<div className="flex justify-center">
-					<div className="-space-x-2 flex items-center">
-						{signedInStudents.slice(0, displayCount).map((student) => (
-							<Avatar
-								alt={student.name}
-								className="h-8 w-8 border-2 border-white"
-								key={student.id}
-								showFallback
-								src={student.avatar}
-							/>
-						))}
-						{remainingCount > 0 && (
-							<div className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-white bg-gray-200">
-								<span className="font-semibold text-gray-700 text-xs">+{remainingCount}</span>
-							</div>
-						)}
-					</div>
-				</div>
-			)
+			const checkedInStudents = room.signedInStudents.filter((student) => student.checkedIn)
+			return renderAvatarGroup(checkedInStudents)
 		}
 
 		case "signInStaff": {
-			const { signedInStaff } = room
-			const totalStaff = signedInStaff.length
-
-			if (totalStaff === 0) {
-				return <span className="text-gray-400 text-sm">No staff</span>
-			}
-
-			const displayCount = Math.min(3, totalStaff)
-
-			return (
-				<div className="flex justify-center">
-					<div className="-space-x-2 flex items-center">
-						{signedInStaff.slice(0, displayCount).map((staff) => (
-							<Avatar
-								alt={staff.name}
-								className="h-8 w-8 border-2 border-white"
-								key={staff.id}
-								showFallback
-								src={staff.avatar}
-							/>
-						))}
-					</div>
-				</div>
-			)
+			const checkedInStaff = room.signedInStaff.filter((staff) => staff.checkedIn)
+			return renderAvatarGroup(checkedInStaff)
 		}
 
 		case "actions":

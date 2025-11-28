@@ -9,6 +9,7 @@ const transformStudent = (apiStudent: ApiStudent): Student => ({
 	id: apiStudent.id,
 	name: `${apiStudent.first_name} ${apiStudent.last_name}`,
 	avatar: apiStudent.avatar?.path ?? "/assets/avatars/default.jpg",
+	checkedIn: apiStudent.checked_in,
 })
 
 /**
@@ -18,6 +19,7 @@ const transformStaff = (apiStaff: ApiStaff): StaffMember => ({
 	id: apiStaff.id,
 	name: `${apiStaff.first_name} ${apiStaff.last_name}`,
 	avatar: apiStaff.avatar?.path ?? "/assets/avatars/default.jpg",
+	checkedIn: apiStaff.checked_in,
 })
 
 /**
