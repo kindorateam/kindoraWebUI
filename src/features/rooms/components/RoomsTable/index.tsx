@@ -2,12 +2,9 @@ import {
 	Button,
 	Card,
 	CardBody,
-	Dropdown,
-	DropdownItem,
-	DropdownMenu,
-	DropdownTrigger,
 	Pagination,
 	Spinner,
+	Switch,
 	Table,
 	TableBody,
 	TableCell,
@@ -27,28 +24,16 @@ import RoomsEmptyState from "../RoomsEmptyState"
 import columns from "./columns"
 import { renderCell } from "./renderCell"
 
-import type { Selection } from "@heroui/react"
-
-//@ts-expect-error
-import ChevronDown from "/~iconify/tabler/chevron-down"
-
-const statusOptions = [
-	{ name: "Active", uid: "active" },
-	{ name: "Inactive", uid: "inactive" },
-]
-
 const RoomsTable = () => {
 	const { data: rooms = [], isLoading, error, refetch } = useRooms()
 	const [page, setPage] = useState(1)
-	const [statusFilter, setStatusFilter] = useState<Selection>("all")
+	const [showDeactivated, setShowDeactivated] = useState(false)
 	const rowsPerPage = 10
 
 	const filteredItems = useMemo(() => {
-		// Status filter - uncomment when rooms have status field
-		// if (statusFilter !== "all" && Array.from(statusFilter).length !== statusOptions.length) {
-		// 	return rooms.filter((room) =>
-		// 		Array.from(statusFilter).includes(room.status),
-		// 	)
+		// TODO: Filter by deactivated status when rooms have status field
+		// if (!showDeactivated) {
+		// 	return rooms.filter((room) => room.status === "active")
 		// }
 
 		return rooms
@@ -66,28 +51,15 @@ const RoomsTable = () => {
 	const topContent = useMemo(() => {
 		return (
 			<div className="flex flex-col gap-4">
-				<div className="flex items-end justify-end gap-3">
-					<Dropdown>
-						<DropdownTrigger className="hidden sm:flex">
-							<Button endContent={<ChevronDown height="14" />} variant="flat">
-								Status
-							</Button>
-						</DropdownTrigger>
-						<DropdownMenu
-							aria-label="Status filter"
-							closeOnSelect={false}
-							disallowEmptySelection
-							selectedKeys={statusFilter}
-							selectionMode="multiple"
-							onSelectionChange={setStatusFilter}
-						>
-							{statusOptions.map((status) => (
-								<DropdownItem key={status.uid} className="capitalize">
-									{status.name}
-								</DropdownItem>
-							))}
-						</DropdownMenu>
-					</Dropdown>
+				<div className="flex items-center justify-end gap-3">
+					<div className="flex items-center gap-2">
+						<span className="text-neutral-600 text-sm">View deactivated</span>
+						<Switch
+							isSelected={showDeactivated}
+							onValueChange={setShowDeactivated}
+							size="sm"
+						/>
+					</div>
 					<Button
 						color="primary"
 						endContent={<Icon className="size-5 text-white" icon="tabler:circle-plus-filled" />}
@@ -99,7 +71,7 @@ const RoomsTable = () => {
 				<span className="text-default-400 text-small">Total {filteredItems.length} rooms</span>
 			</div>
 		)
-	}, [statusFilter, filteredItems.length])
+	}, [showDeactivated, filteredItems.length])
 
 	return (
 		<Card shadow="md">

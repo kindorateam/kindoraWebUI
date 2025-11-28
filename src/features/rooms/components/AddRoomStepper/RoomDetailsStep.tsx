@@ -96,6 +96,26 @@ const RoomDetailsStep = () => {
 						/>
 					)}
 				/>
+				<Controller
+					control={control}
+					name="ratio"
+					render={({ field }) => (
+						<NumberInput
+							errorMessage={errors.ratio?.message}
+							formatOptions={{ useGrouping: false }}
+							isInvalid={!!errors.ratio}
+							isRequired
+							label="Ratio"
+							labelPlacement="inside"
+							minValue={1}
+							onValueChange={(value) => field.onChange(value ?? 1)}
+							placeholder="Enter ratio"
+							radius="md"
+							value={field.value}
+							variant="flat"
+						/>
+					)}
+				/>
 			</div>
 		</div>
 	)

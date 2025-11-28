@@ -25,6 +25,7 @@ const AddRoomStepper = ({ onComplete, onCancel }: AddRoomStepperProps) => {
 		defaultValues: {
 			name: "",
 			capacity: 1,
+			ratio: 1,
 			staffIds: [],
 			studentIds: [],
 		},
@@ -39,13 +40,15 @@ const AddRoomStepper = ({ onComplete, onCancel }: AddRoomStepperProps) => {
 	} = form
 	const formData = watch()
 
-	const isStep1Valid = !errors.name && !errors.capacity && formData.name && formData.capacity >= 1
+	const isStep1Valid =
+		!errors.name && !errors.capacity && !errors.ratio && formData.name && formData.capacity >= 1 && formData.ratio >= 1
 	const isStep2Valid =
 		!errors.staffIds && !errors.studentIds && formData.staffIds?.length && formData.studentIds?.length
 
 	const handleNext = async () => {
 		// Validate current step fields before proceeding
-		const fieldsToValidate = currentStep === 0 ? (["name", "capacity"] as const) : (["staffIds", "studentIds"] as const)
+		const fieldsToValidate =
+			currentStep === 0 ? (["name", "capacity", "ratio"] as const) : (["staffIds", "studentIds"] as const)
 		const stepValid = await trigger(fieldsToValidate)
 		if (stepValid) {
 			setCurrentStep((prev) => prev + 1)
@@ -95,6 +98,9 @@ const AddRoomStepper = ({ onComplete, onCancel }: AddRoomStepperProps) => {
 							</p>
 							<p>
 								<strong>Capacity:</strong> {formData.capacity}
+							</p>
+							<p>
+								<strong>Ratio:</strong> {formData.ratio}
 							</p>
 							<p>
 								<strong>Staff:</strong> {formData.staffIds?.length || 0} selected

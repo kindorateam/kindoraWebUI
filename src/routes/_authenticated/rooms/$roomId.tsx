@@ -10,30 +10,6 @@ interface RoomDetailSearch {
 	tab: TabType
 }
 
-const roomDetailsFilters = [
-	{
-		id: "tagsBy",
-		label: "Tags by",
-		value: "",
-		options: [
-			{ value: "", label: "All Tags" },
-			{ value: "1-10", label: "Fast learner" },
-			{ value: "11-20", label: "Loves Drawing" },
-			{ value: "21+", label: "Good memory" },
-		],
-	},
-	{
-		id: "statusBy",
-		label: "Status by",
-		value: "",
-		options: [
-			{ value: "", label: "All" },
-			{ value: "active", label: "Active" },
-			{ value: "inactive", label: "Inactive" },
-		],
-	},
-]
-
 export const Route = createFileRoute("/_authenticated/rooms/$roomId")({
 	component: RoomDetailLayout,
 	parseParams: (params) => ({
@@ -62,12 +38,7 @@ function RoomDetailLayout() {
 	return (
 		<RouteErrorBoundary routeName="room-detail">
 			<div>
-				<RoomDetailHeader
-					activeTab={tab}
-					initialFilters={roomDetailsFilters}
-					onTabChange={handleTabChange}
-					roomId={roomId}
-				/>
+				<RoomDetailHeader activeTab={tab} onTabChange={handleTabChange} roomId={roomId} />
 				<main className="container max-w-4xl pt-10">
 					<Outlet />
 				</main>

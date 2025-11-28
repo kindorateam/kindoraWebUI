@@ -1,8 +1,6 @@
 import { Avatar, Tab, Tabs } from "@heroui/react"
-import { useState } from "react"
 
 import Button from "@/components/Button"
-import Filters from "@/components/Filters"
 import IdentityChip from "@/components/IdentityChip"
 import SmileEmoji from "@/components/icons/emojies/SmileEmoji"
 import StudentIcon from "@/components/icons/StudentIcon"
@@ -10,15 +8,12 @@ import LabeledNumberBadge from "@/components/LabeledNumberBadge"
 
 import { useRoom } from "../hooks/useRooms"
 
-import type { FilterProps } from "@/types/TableFilters"
-
 type TabType = "students" | "activity" | "profile"
 
 interface RoomDetailHeaderProps {
 	roomId: string
 	activeTab: TabType
 	onTabChange: (tab: TabType) => void
-	initialFilters: FilterProps[]
 }
 
 const classroomStats = [
@@ -41,16 +36,8 @@ const classroomStats = [
 ]
 const staffNames = ["Emily Carter", "James Whiteker"]
 
-const RoomDetailHeader = ({ activeTab, initialFilters, roomId, onTabChange }: RoomDetailHeaderProps) => {
+const RoomDetailHeader = ({ activeTab, roomId, onTabChange }: RoomDetailHeaderProps) => {
 	const { data: room } = useRoom(roomId)
-
-	const [filters, setFilters] = useState<FilterProps[]>(initialFilters)
-
-	const handleFilterChange = (filterId: string, newValue: string) => {
-		setFilters((prevFilters) =>
-			prevFilters.map((filter) => (filter.id === filterId ? { ...filter, value: newValue } : filter)),
-		)
-	}
 
 	return (
 		<div className="border-[#0000000D] border-b">
@@ -83,25 +70,22 @@ const RoomDetailHeader = ({ activeTab, initialFilters, roomId, onTabChange }: Ro
 					</div>
 				</div>
 
-				<div className="flex items-center justify-between">
-					<Tabs
-						aria-label="Room details tabs"
-						classNames={{
-							tabList: "p-0 gap-7",
-							cursor: "w-full bg-brand",
-							tab: "p-0 pb-5",
-							tabContent: "group-data-[selected=true]:text-brand text-neutral-700 font-medium",
-						}}
-						onSelectionChange={(key) => onTabChange(key as TabType)}
-						selectedKey={activeTab}
-						variant="underlined"
-					>
-						<Tab key="students" title="Students" />
-						<Tab key="activity" title="Activity" />
-						<Tab key="profile" title="Profile" />
-					</Tabs>
-					<Filters filters={filters} onFilterChange={handleFilterChange} />
-				</div>
+				<Tabs
+					aria-label="Room details tabs"
+					classNames={{
+						tabList: "p-0 gap-7",
+						cursor: "w-full bg-brand",
+						tab: "p-0 pb-5",
+						tabContent: "group-data-[selected=true]:text-brand text-neutral-700 font-medium",
+					}}
+					onSelectionChange={(key) => onTabChange(key as TabType)}
+					selectedKey={activeTab}
+					variant="underlined"
+				>
+					<Tab key="students" title="Students" />
+					<Tab key="activity" title="Activity" />
+					<Tab key="profile" title="Profile" />
+				</Tabs>
 			</div>
 		</div>
 	)
