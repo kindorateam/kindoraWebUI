@@ -1,12 +1,14 @@
 import { Avatar, Input, NumberInput } from "@heroui/react"
 import { Icon } from "@iconify/react"
-import { useRef } from "react"
+import { useState } from "react"
 import { Controller, useFormContext } from "react-hook-form"
+
+import ImagePickerModal from "../ImagePickerModal"
 
 import type { AddRoomFormData } from "../../types"
 
 const RoomDetailsStep = () => {
-	const fileInputRef = useRef<HTMLInputElement>(null)
+	const [isImagePickerOpen, setIsImagePickerOpen] = useState(false)
 	const {
 		control,
 		watch,
@@ -18,17 +20,23 @@ const RoomDetailsStep = () => {
 	const avatarPreview = watch("avatarPreview")
 
 	const handleAvatarClick = () => {
-		fileInputRef.current?.click()
+		setIsImagePickerOpen(true)
 	}
 
-	const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		const file = e.target.files?.[0]
-		if (file) {
-			const previewUrl = URL.createObjectURL(file)
-			setValue("avatarFile", file)
+	const handleImageSelect = (image: string | File) => {
+		if (typeof image === "string") {
+			// It's a gradient
+			setValue("avatarPreview", image)
+			setValue("avatarFile", undefined)
+		} else {
+			// It's a file
+			const previewUrl = URL.createObjectURL(image)
+			setValue("avatarFile", image)
 			setValue("avatarPreview", previewUrl)
 		}
 	}
+
+	const isGradient = avatarPreview?.startsWith("linear-gradient")
 
 	return (
 		<div className="flex flex-col gap-6">
@@ -37,14 +45,23 @@ const RoomDetailsStep = () => {
 			{/* Room Avatar */}
 			<div className="flex flex-col items-center gap-2">
 				<div className="relative">
-					<Avatar
-						className="size-14 cursor-pointer text-lg"
-						color="primary"
-						name={name || "R"}
-						onClick={handleAvatarClick}
-						showFallback
-						src={avatarPreview}
-					/>
+					{isGradient ? (
+						<button
+							className="size-14 cursor-pointer rounded-full"
+							onClick={handleAvatarClick}
+							style={{ background: avatarPreview }}
+							type="button"
+						/>
+					) : (
+						<Avatar
+							className="size-14 cursor-pointer text-lg"
+							color="primary"
+							name={name || "R"}
+							onClick={handleAvatarClick}
+							showFallback
+							src={avatarPreview}
+						/>
+					)}
 					<button
 						className="-right-1 -top-1 absolute flex size-6 cursor-pointer items-center justify-center rounded-full bg-warning"
 						onClick={handleAvatarClick}
@@ -52,9 +69,13 @@ const RoomDetailsStep = () => {
 					>
 						<Icon className="size-4 text-white" icon="tabler:pencil" />
 					</button>
-					<input accept="image/*" className="hidden" onChange={handleFileChange} ref={fileInputRef} type="file" />
 				</div>
 				<span className="text-foreground text-sm">Room Avatar</span>
+				<ImagePickerModal
+					isOpen={isImagePickerOpen}
+					onClose={() => setIsImagePickerOpen(false)}
+					onSelect={handleImageSelect}
+				/>
 			</div>
 
 			{/* Form Fields */}
