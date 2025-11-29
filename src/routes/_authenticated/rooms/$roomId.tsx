@@ -4,7 +4,7 @@ import { RouteErrorBoundary } from "@/components/error"
 import RoomDetailHeader from "@/features/rooms/components/RoomDetailHeader"
 import { useTabNavigation } from "@/hooks/useTabNavigation"
 
-type TabType = "students" | "activity" | "profile"
+type TabType = "students" | "activity" | "settings"
 
 interface RoomDetailSearch {
 	tab: TabType
@@ -17,7 +17,7 @@ export const Route = createFileRoute("/_authenticated/rooms/$roomId")({
 	}),
 	validateSearch: (search: Record<string, unknown>): RoomDetailSearch => {
 		const tab = search.tab as string
-		const validTabs: TabType[] = ["students", "activity", "profile"]
+		const validTabs: TabType[] = ["students", "activity", "settings"]
 
 		return {
 			tab: validTabs.includes(tab as TabType) ? (tab as TabType) : "students",
@@ -39,7 +39,7 @@ function RoomDetailLayout() {
 		<RouteErrorBoundary routeName="room-detail">
 			<div>
 				<RoomDetailHeader activeTab={tab} onTabChange={handleTabChange} roomId={roomId} />
-				<main className="container mx-auto max-w-4xl pt-10">
+				<main className="container mx-auto max-w-4xl pt-6">
 					<Outlet />
 				</main>
 			</div>

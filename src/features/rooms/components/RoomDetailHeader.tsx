@@ -8,7 +8,7 @@ import LabeledNumberBadge from "@/components/LabeledNumberBadge"
 
 import { useRoom } from "../hooks/useRooms"
 
-type TabType = "students" | "activity" | "profile"
+type TabType = "students" | "activity" | "settings"
 
 interface RoomDetailHeaderProps {
 	roomId: string
@@ -40,7 +40,7 @@ const RoomDetailHeader = ({ activeTab, roomId, onTabChange }: RoomDetailHeaderPr
 	const { data: room } = useRoom(roomId)
 
 	return (
-		<div className="border-[#0000000D] border-b">
+		<div>
 			<div className="container mx-auto max-w-4xl">
 				<div className="mb-13 flex">
 					<div className="me-7">
@@ -72,19 +72,17 @@ const RoomDetailHeader = ({ activeTab, roomId, onTabChange }: RoomDetailHeaderPr
 
 				<Tabs
 					aria-label="Room details tabs"
-					classNames={{
-						tabList: "p-0 gap-7",
-						cursor: "w-full bg-brand",
-						tab: "p-0 pb-5",
-						tabContent: "group-data-[selected=true]:text-brand text-neutral-700 font-medium",
-					}}
+					classNames={{ tabList: "shadow-sm border-white" }}
+					color="primary"
 					onSelectionChange={(key) => onTabChange(key as TabType)}
 					selectedKey={activeTab}
-					variant="underlined"
+					radius="sm"
+					size="sm"
+					variant="bordered"
 				>
 					<Tab key="students" title="Students" />
 					<Tab key="activity" title="Activity" />
-					<Tab key="profile" title="Profile" />
+					<Tab key="settings" title="Settings" />
 				</Tabs>
 			</div>
 		</div>

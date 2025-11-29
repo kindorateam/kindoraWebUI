@@ -1,4 +1,5 @@
 import { Avatar, AvatarGroup, Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@heroui/react"
+import { Icon } from "@iconify/react"
 import { Link } from "@tanstack/react-router"
 
 import RoomIcon from "../RoomIcon"
@@ -75,7 +76,7 @@ export function renderCell(room: Room, columnKey: React.Key) {
 		case "actions":
 			return (
 				<div className="flex justify-center">
-					<Dropdown>
+					<Dropdown classNames={{ content: "min-w-0" }}>
 						<DropdownTrigger>
 							<Button isIconOnly radius="md" variant="light">
 								<svg
@@ -95,10 +96,14 @@ export function renderCell(room: Room, columnKey: React.Key) {
 							</Button>
 						</DropdownTrigger>
 						<DropdownMenu aria-label="Room actions">
-							<DropdownItem key="view">View details</DropdownItem>
-							<DropdownItem key="edit">Edit room</DropdownItem>
-							<DropdownItem key="delete" className="text-danger" color="danger">
-								Delete room
+							<DropdownItem key="view" className="text-success" startContent={<Icon aria-hidden className="size-5" icon="tabler:eye" />}>
+								View
+							</DropdownItem>
+							<DropdownItem key="edit" className="text-warning" startContent={<Icon aria-hidden className="size-5" icon="tabler:edit" />}>
+								Edit
+							</DropdownItem>
+							<DropdownItem key="deactivate" className="text-danger" startContent={<Icon aria-hidden className="size-5" icon="tabler:trash" />}>
+								Deactivate
 							</DropdownItem>
 						</DropdownMenu>
 					</Dropdown>

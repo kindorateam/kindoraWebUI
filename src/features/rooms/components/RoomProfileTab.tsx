@@ -1,43 +1,222 @@
-import { Card, CardBody, Input, Textarea } from "@heroui/react"
+import { Avatar, Button, Card, CardBody, Chip, Input, Select, SelectItem } from "@heroui/react"
+import { useRef, useState } from "react"
 
 interface RoomProfileTabProps {
 	roomId: string
 }
 
-const RoomProfileTab = ({ roomId }: RoomProfileTabProps) => {
+// Mock data - will be replaced with API data later
+const mockRoomData = {
+	name: "Baby Turtles",
+	bio: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+	minAge: "2 years",
+	maxAge: "4 years",
+	maxCapacity: "20",
+	studentsPerStaff: "10",
+	avatarUrl: "",
+}
+
+const mockStaff = [
+	{ id: "1", name: "James Whitaker" },
+	{ id: "2", name: "James Whitaker" },
+	{ id: "3", name: "James Whitaker" },
+	{ id: "4", name: "James Whitaker" },
+]
+
+const availableStaff = [
+	{ id: "5", name: "Emily Carter" },
+	{ id: "6", name: "Michael Brown" },
+	{ id: "7", name: "Sarah Johnson" },
+]
+
+const UploadIcon = () => (
+	<svg aria-hidden="true" className="size-5" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
+		<path
+			d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"
+			strokeLinecap="round"
+			strokeLinejoin="round"
+		/>
+	</svg>
+)
+
+const TrashIcon = () => (
+	<svg aria-hidden="true" className="size-5" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
+		<path
+			d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+			strokeLinecap="round"
+			strokeLinejoin="round"
+		/>
+	</svg>
+)
+
+const SaveIcon = () => (
+	<svg aria-hidden="true" className="size-5" fill="currentColor" viewBox="0 0 24 24">
+		<path
+			clipRule="evenodd"
+			d="M19.916 4.626a.75.75 0 01.208 1.04l-9 13.5a.75.75 0 01-1.154.114l-6-6a.75.75 0 011.06-1.06l5.353 5.353 8.493-12.739a.75.75 0 011.04-.208z"
+			fillRule="evenodd"
+		/>
+	</svg>
+)
+
+const RoomProfileTab = ({ roomId: _roomId }: RoomProfileTabProps) => {
+	const [assignedStaff, setAssignedStaff] = useState(mockStaff)
+	const [avatarPreview, setAvatarPreview] = useState<string | null>(null)
+	const fileInputRef = useRef<HTMLInputElement>(null)
+
+	const handleRemoveStaff = (staffId: string) => {
+		setAssignedStaff((prev) => prev.filter((s) => s.id !== staffId))
+	}
+
+	const handleUploadClick = () => {
+		fileInputRef.current?.click()
+	}
+
+	const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const file = e.target.files?.[0]
+		if (file) {
+			const previewUrl = URL.createObjectURL(file)
+			setAvatarPreview(previewUrl)
+		}
+	}
+
+	const handleDeletePicture = () => {
+		setAvatarPreview(null)
+		if (fileInputRef.current) {
+			fileInputRef.current.value = ""
+		}
+	}
+
 	return (
-		<div className="space-y-4">
-			<h2 className="font-semibold text-xl">Room Profile - Room {roomId}</h2>
-
-			<Card>
-				<CardBody className="space-y-4">
-					<div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-						<Input defaultValue={`Room ${roomId}`} isReadOnly label="Room Name" placeholder="Enter room name" />
-						<Input defaultValue="Classroom" isReadOnly label="Room Type" placeholder="Select room type" />
-						<Input defaultValue="20" isReadOnly label="Capacity" placeholder="Enter capacity" />
-						<Input defaultValue="15" isReadOnly label="Current Occupancy" placeholder="Current occupancy" />
+		<Card className="shadow-md" radius="lg">
+			<CardBody className="gap-8 p-5 md:p-8">
+				{/* Profile Picture + Bio Row */}
+				<div className="flex flex-col gap-8 md:flex-row">
+					{/* Profile Picture Section */}
+					<div className="flex flex-col gap-5 md:w-1/2">
+						<h3 className="font-medium text-xl">Profile Picture</h3>
+						<div className="flex items-center justify-between">
+							<Avatar className="size-25 shadow-md" showFallback src={avatarPreview || mockRoomData.avatarUrl} />
+							<div className="flex gap-5">
+								<input
+									accept="image/*"
+									className="hidden"
+									onChange={handleFileChange}
+									ref={fileInputRef}
+									type="file"
+								/>
+								<Button color="primary" endContent={<UploadIcon />} onPress={handleUploadClick} radius="md" size="sm">
+									Upload Picture
+								</Button>
+								<Button color="danger" endContent={<TrashIcon />} onPress={handleDeletePicture} radius="md" size="sm">
+									Delete Picture
+								</Button>
+							</div>
+						</div>
 					</div>
 
-					<Textarea
-						defaultValue="This room is designed for early childhood education with age-appropriate furniture and learning materials."
-						isReadOnly
-						label="Room Description"
-						minRows={3}
-						placeholder="Enter room description"
-					/>
-
-					<div className="pt-4">
-						<h3 className="mb-2 font-medium">Room Features</h3>
-						<ul className="list-disc space-y-1 pl-5 text-sm">
-							<li>Interactive whiteboard</li>
-							<li>Reading corner</li>
-							<li>Art supplies station</li>
-							<li>Natural lighting</li>
-						</ul>
+					{/* Bio Section */}
+					<div className="flex flex-col gap-5 md:w-1/2">
+						<h3 className="font-medium text-xl">Bio</h3>
+						<p className="text-neutral-700 text-sm leading-relaxed">{mockRoomData.bio}</p>
 					</div>
-				</CardBody>
-			</Card>
-		</div>
+				</div>
+
+				{/* Room Info + Staff Row */}
+				<div className="flex flex-col gap-8 md:flex-row">
+					{/* Room Info Section */}
+					<div className="flex flex-col gap-5 md:w-1/2">
+						<h3 className="font-medium text-xl">Room Info</h3>
+						<div className="flex flex-col gap-2">
+							<Input
+								defaultValue={mockRoomData.name}
+								label="Room Name"
+								labelPlacement="inside"
+								radius="md"
+								variant="flat"
+							/>
+							<div className="flex gap-3">
+								<Input
+									className="flex-1"
+									defaultValue={mockRoomData.minAge}
+									label="Min age"
+									labelPlacement="inside"
+									radius="md"
+									variant="flat"
+								/>
+								<Input
+									className="flex-1"
+									defaultValue={mockRoomData.maxAge}
+									label="Max age"
+									labelPlacement="inside"
+									radius="md"
+									variant="flat"
+								/>
+							</div>
+							<div className="flex gap-3">
+								<Input
+									className="flex-1"
+									defaultValue={mockRoomData.maxCapacity}
+									label="Max capacity"
+									labelPlacement="inside"
+									radius="md"
+									variant="flat"
+								/>
+								<Input
+									className="flex-1"
+									defaultValue={mockRoomData.studentsPerStaff}
+									label="Students per 1 staff"
+									labelPlacement="inside"
+									radius="md"
+									variant="flat"
+								/>
+							</div>
+						</div>
+					</div>
+
+					{/* Staff Section */}
+					<div className="flex flex-col gap-5 md:w-1/2">
+						<h3 className="font-medium text-xl">Staff</h3>
+						<div className="flex flex-wrap gap-3">
+							{assignedStaff.map((staff) => (
+								<Chip
+									avatar={<Avatar name={staff.name} size="sm" />}
+									classNames={{
+										base: "bg-primary-50 h-8 px-3",
+										content: "text-sm",
+									}}
+									key={staff.id}
+									onClose={() => handleRemoveStaff(staff.id)}
+									variant="flat"
+								>
+									{staff.name}
+								</Chip>
+							))}
+						</div>
+						<Select label="Select Staff" labelPlacement="inside" radius="md" variant="flat">
+							{availableStaff.map((staff) => (
+								<SelectItem key={staff.id}>{staff.name}</SelectItem>
+							))}
+						</Select>
+					</div>
+				</div>
+
+				{/* Footer */}
+				<div className="flex items-center justify-between pt-4">
+					<Button color="danger" endContent={<TrashIcon />} radius="md" size="md">
+						Deactivate Room
+					</Button>
+					<div className="flex gap-5">
+						<Button radius="md" size="md" variant="bordered">
+							Cancel
+						</Button>
+						<Button color="primary" endContent={<SaveIcon />} radius="md" size="md">
+							Save Changes
+						</Button>
+					</div>
+				</div>
+			</CardBody>
+		</Card>
 	)
 }
 

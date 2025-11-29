@@ -21,7 +21,7 @@ function RoomDetailContent() {
 			return <RoomStudentsTable roomId={roomId} />
 		case "activity":
 			return <RoomActivityTab roomId={roomId} />
-		case "profile":
+		case "settings":
 			return <RoomProfileTab roomId={roomId} />
 		default:
 			// Fallback to students tab if invalid tab
