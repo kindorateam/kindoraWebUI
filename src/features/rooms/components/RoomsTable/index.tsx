@@ -70,7 +70,7 @@ const RoomsTable = () => {
 	}, [showDeactivated, filteredItems.length])
 
 	return (
-		<Card shadow="md">
+		<Card>
 			<CardBody className="p-4">
 				<Table
 					aria-label="Rooms table"

@@ -9,7 +9,7 @@ interface StatsCardProps {
 
 const StatsCard = ({ headerContent, bodyContent }: StatsCardProps) => {
 	return (
-		<Card className="bg-white p-7 shadow-md">
+		<Card className="bg-white p-7">
 			<CardHeader className="mb-7 flex p-0">{headerContent}</CardHeader>
 			<CardBody className="p-0">{bodyContent}</CardBody>
 		</Card>

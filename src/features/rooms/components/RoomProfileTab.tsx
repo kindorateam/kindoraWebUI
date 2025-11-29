@@ -88,23 +88,15 @@ const RoomProfileTab = ({ roomId: _roomId }: RoomProfileTabProps) => {
 	}
 
 	return (
-		<Card className="shadow-md" radius="lg">
+		<Card>
 			<CardBody className="gap-8 p-5 md:p-8">
-				{/* Profile Picture + Bio Row */}
 				<div className="flex flex-col gap-8 md:flex-row">
-					{/* Profile Picture Section */}
 					<div className="flex flex-col gap-5 md:w-1/2">
 						<h3 className="font-medium text-xl">Profile Picture</h3>
 						<div className="flex items-center justify-between">
 							<Avatar className="size-25 shadow-md" showFallback src={avatarPreview || mockRoomData.avatarUrl} />
 							<div className="flex gap-5">
-								<input
-									accept="image/*"
-									className="hidden"
-									onChange={handleFileChange}
-									ref={fileInputRef}
-									type="file"
-								/>
+								<input accept="image/*" className="hidden" onChange={handleFileChange} ref={fileInputRef} type="file" />
 								<Button color="primary" endContent={<UploadIcon />} onPress={handleUploadClick} radius="md" size="sm">
 									Upload Picture
 								</Button>
@@ -115,16 +107,13 @@ const RoomProfileTab = ({ roomId: _roomId }: RoomProfileTabProps) => {
 						</div>
 					</div>
 
-					{/* Bio Section */}
 					<div className="flex flex-col gap-5 md:w-1/2">
 						<h3 className="font-medium text-xl">Bio</h3>
 						<p className="text-neutral-700 text-sm leading-relaxed">{mockRoomData.bio}</p>
 					</div>
 				</div>
 
-				{/* Room Info + Staff Row */}
 				<div className="flex flex-col gap-8 md:flex-row">
-					{/* Room Info Section */}
 					<div className="flex flex-col gap-5 md:w-1/2">
 						<h3 className="font-medium text-xl">Room Info</h3>
 						<div className="flex flex-col gap-2">
@@ -174,7 +163,6 @@ const RoomProfileTab = ({ roomId: _roomId }: RoomProfileTabProps) => {
 						</div>
 					</div>
 
-					{/* Staff Section */}
 					<div className="flex flex-col gap-5 md:w-1/2">
 						<h3 className="font-medium text-xl">Staff</h3>
 						<div className="flex flex-wrap gap-3">
@@ -201,7 +189,6 @@ const RoomProfileTab = ({ roomId: _roomId }: RoomProfileTabProps) => {
 					</div>
 				</div>
 
-				{/* Footer */}
 				<div className="flex items-center justify-between pt-4">
 					<Button color="danger" endContent={<TrashIcon />} radius="md" size="md">
 						Deactivate Room

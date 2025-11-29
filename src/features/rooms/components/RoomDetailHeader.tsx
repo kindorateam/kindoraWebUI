@@ -72,7 +72,7 @@ const RoomDetailHeader = ({ activeTab, roomId, onTabChange }: RoomDetailHeaderPr
 
 				<Tabs
 					aria-label="Room details tabs"
-					classNames={{ tabList: "shadow-sm border-white" }}
+					classNames={{ tabList: "shadow-md border-white" }}
 					color="primary"
 					onSelectionChange={(key) => onTabChange(key as TabType)}
 					selectedKey={activeTab}

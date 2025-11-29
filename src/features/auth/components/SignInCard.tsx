@@ -61,7 +61,7 @@ const SignInCard = ({ view, setView, userEmail, setUserEmail, resetToken, setRes
 	}
 
 	return (
-		<Card className="w-full max-w-[396px] bg-white shadow-md">
+		<Card className="w-full max-w-[396px] bg-white">
 			{view === "signin" && (
 				<SignInForm
 					defaultEmail={userEmail}

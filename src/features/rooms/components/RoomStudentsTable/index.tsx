@@ -15,7 +15,7 @@ const RoomStudentsTable = ({ roomId }: RoomStudentsTableProps) => {
 	const students = room?.signedInStudents ?? []
 
 	return (
-		<Card shadow="md">
+		<Card>
 			<CardBody className="p-4">
 				<Table
 					aria-label="Students table"
