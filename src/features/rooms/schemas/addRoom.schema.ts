@@ -6,8 +6,8 @@ export const addRoomSchema = z.object({
 	ratio: z.number().int().min(1, "Ratio must be at least 1"),
 	avatarFile: z.instanceof(File).optional(),
 	avatarPreview: z.string().optional(),
-	staffIds: z.array(z.string()).min(1, "At least one staff member is required"),
-	studentIds: z.array(z.string()).min(1, "At least one student is required"),
+	staffIds: z.array(z.string()),
+	studentIds: z.array(z.string()),
 })
 
 export type AddRoomFormData = z.infer<typeof addRoomSchema>

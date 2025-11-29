@@ -35,7 +35,6 @@ const AddStaffStudentsStep = () => {
 						<Select
 							errorMessage={errors.staffIds?.message}
 							isInvalid={!!errors.staffIds}
-							isRequired
 							label="Add staff"
 							labelPlacement="inside"
 							placeholder="Select staff members"
@@ -61,7 +60,6 @@ const AddStaffStudentsStep = () => {
 						<Select
 							errorMessage={errors.studentIds?.message}
 							isInvalid={!!errors.studentIds}
-							isRequired
 							label="Add students"
 							labelPlacement="inside"
 							placeholder="Select students"

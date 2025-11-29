@@ -42,8 +42,7 @@ const AddRoomStepper = ({ onComplete, onCancel }: AddRoomStepperProps) => {
 
 	const isStep1Valid =
 		!errors.name && !errors.capacity && !errors.ratio && formData.name && formData.capacity >= 1 && formData.ratio >= 1
-	const isStep2Valid =
-		!errors.staffIds && !errors.studentIds && formData.staffIds?.length && formData.studentIds?.length
+	const isStep2Valid = !errors.staffIds && !errors.studentIds
 
 	const handleNext = async () => {
 		// Validate current step fields before proceeding
@@ -82,9 +81,9 @@ const AddRoomStepper = ({ onComplete, onCancel }: AddRoomStepperProps) => {
 			key: "confirm",
 			label: "Step 3",
 			content: (
-				<div className="flex flex-col gap-4">
+				<div className="flex flex-col gap-6">
 					<h2 className="font-medium text-xl">Confirm Room Details</h2>
-					<div className="flex flex-col items-center gap-4 rounded-lg bg-default-100 p-4">
+					<div className="flex justify-center">
 						<Avatar
 							className="size-14 text-lg"
 							color="primary"
@@ -92,21 +91,30 @@ const AddRoomStepper = ({ onComplete, onCancel }: AddRoomStepperProps) => {
 							showFallback
 							src={formData.avatarPreview}
 						/>
-						<div className="w-full space-y-1">
-							<p>
-								<strong>Name:</strong> {formData.name}
+					</div>
+					<div className="flex justify-between">
+						<div className="flex flex-col gap-3">
+							<p className="text-base">
+								<span className="font-medium">Name:</span>{" "}
+								<span className="text-neutral-700">{formData.name}</span>
 							</p>
-							<p>
-								<strong>Capacity:</strong> {formData.capacity}
+							<p className="text-base">
+								<span className="font-medium">Capacity:</span>{" "}
+								<span className="text-neutral-700">{formData.capacity}</span>
 							</p>
-							<p>
-								<strong>Ratio:</strong> {formData.ratio}
+							<p className="text-base">
+								<span className="font-medium">Ratio:</span>{" "}
+								<span className="text-neutral-700">{formData.ratio}:1</span>
 							</p>
-							<p>
-								<strong>Staff:</strong> {formData.staffIds?.length || 0} selected
+						</div>
+						<div className="flex flex-col gap-3">
+							<p className="text-base">
+								<span className="font-medium">Staff:</span>{" "}
+								<span className="text-neutral-700">{formData.staffIds?.length || 0} selected</span>
 							</p>
-							<p>
-								<strong>Students:</strong> {formData.studentIds?.length || 0} selected
+							<p className="text-base">
+								<span className="font-medium">Students:</span>{" "}
+								<span className="text-neutral-700">{formData.studentIds?.length || 0} selected</span>
 							</p>
 						</div>
 					</div>
