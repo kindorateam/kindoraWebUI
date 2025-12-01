@@ -1,10 +1,13 @@
 import { Button, CardBody, CardFooter, CardHeader, Input } from "@heroui/react"
-import { Icon } from "@iconify/react"
 import { useCallback, useMemo, useState } from "react"
 import { Controller, useForm } from "react-hook-form"
 
+import TablerCheck from "~icons/tabler/check"
+
+import { barColorMap, passwordRequirements, strengthColorMap } from "../constants"
 import { resetPassword } from "../services/auth.service"
 
+import PasswordVisibilityToggle from "./PasswordVisibilityToggle"
 import ResetPasswordConfirmation from "./ResetPasswordConfirmation"
 
 import type { ResetPasswordFormData } from "../types"
@@ -14,47 +17,6 @@ interface ResetPasswordFormProps {
 	token: string
 	onBack: () => void
 	onResetSuccess: () => void
-}
-
-type StrengthLabel = "weak" | "fair" | "good" | "strong"
-
-const passwordRequirements = [
-	{
-		id: "length",
-		label: "At least 8 characters long",
-		test: (value: string) => value.length >= 8,
-	},
-	{
-		id: "lowercase",
-		label: "One lowercase character",
-		test: (value: string) => /[a-z]/.test(value),
-	},
-	{
-		id: "uppercase",
-		label: "One uppercase character",
-		test: (value: string) => /[A-Z]/.test(value),
-	},
-	{
-		id: "numberOrSymbol",
-		label: "One number or symbol",
-		test: (value: string) => /[\d\W_]/.test(value),
-	},
-]
-
-const barColorMap: Record<StrengthLabel | "empty", string> = {
-	weak: "bg-rose-500",
-	fair: "bg-amber-400",
-	good: "bg-lime-400",
-	strong: "bg-emerald-500",
-	empty: "bg-default-200",
-}
-
-const strengthColorMap: Record<StrengthLabel | "empty", string> = {
-	weak: "text-danger",
-	fair: "text-warning",
-	good: "text-success",
-	strong: "text-success",
-	empty: "text-default-400",
 }
 
 const ResetPasswordForm = ({ email, token, onBack, onResetSuccess }: ResetPasswordFormProps) => {
@@ -171,8 +133,7 @@ const ResetPasswordForm = ({ email, token, onBack, onResetSuccess }: ResetPasswo
 								<Input
 									{...field}
 									endContent={
-										<VisibilityToggleButton
-											fieldLabel="password"
+										<PasswordVisibilityToggle
 											isVisible={isPasswordVisible}
 											onToggle={() => setIsPasswordVisible((prev) => !prev)}
 										/>
@@ -201,9 +162,9 @@ const ResetPasswordForm = ({ email, token, onBack, onResetSuccess }: ResetPasswo
 								<Input
 									{...field}
 									endContent={
-										<VisibilityToggleButton
-											fieldLabel="confirmation password"
+										<PasswordVisibilityToggle
 											isVisible={isConfirmPasswordVisible}
+											label="confirmation password"
 											onToggle={() => setIsConfirmPasswordVisible((prev) => !prev)}
 										/>
 									}
@@ -251,7 +212,7 @@ const ResetPasswordForm = ({ email, token, onBack, onResetSuccess }: ResetPasswo
 										requirement.isMet ? "border-success bg-success" : "border-default bg-default"
 									}`}
 								>
-									{requirement.isMet && <CheckIcon />}
+									{requirement.isMet && <TablerCheck className="size-3 text-white" />}
 								</span>
 								<p className="text-default-600 text-sm">{requirement.label}</p>
 							</div>
@@ -281,41 +242,3 @@ const ResetPasswordForm = ({ email, token, onBack, onResetSuccess }: ResetPasswo
 }
 
 export default ResetPasswordForm
-
-interface VisibilityToggleButtonProps {
-	fieldLabel: string
-	isVisible: boolean
-	onToggle: () => void
-	visibleIcon?: string
-	hiddenIcon?: string
-}
-
-const VisibilityToggleButton = ({
-	fieldLabel,
-	isVisible,
-	onToggle,
-	visibleIcon = "tabler:eye",
-	hiddenIcon = "tabler:eye-closed",
-}: VisibilityToggleButtonProps) => {
-	const ariaLabel = `${isVisible ? "Hide" : "Show"} ${fieldLabel}`
-
-	return (
-		<button
-			aria-label={ariaLabel}
-			className="text-default-500"
-			onMouseDown={(event) => event.preventDefault()}
-			onClick={() => onToggle()}
-			type="button"
-		>
-			<Icon icon={isVisible ? visibleIcon : hiddenIcon} height="20" width="20" />
-		</button>
-	)
-}
-
-const CheckIcon = () => {
-	return (
-		<svg className="size-3.5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 16 16">
-			<path d="M3 8l3 3 7-7" strokeLinecap="round" strokeLinejoin="round" />
-		</svg>
-	)
-}

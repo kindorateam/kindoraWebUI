@@ -2,7 +2,11 @@ import { Button, CardBody, CardFooter, CardHeader, Checkbox, Divider, Input, Lin
 import { useCallback, useState } from "react"
 import { Controller, useForm } from "react-hook-form"
 
+import MaterialIconThemeGoogle from "~icons/material-icon-theme/google"
+
 import useAuth from "../hooks/useAuth"
+
+import PasswordVisibilityToggle from "./PasswordVisibilityToggle"
 
 import type { SignInFormData } from "../types"
 
@@ -15,6 +19,7 @@ interface SignInFormProps {
 
 const SignInForm = ({ onForgotPassword, onSignInSuccess, onVerificationRequired, defaultEmail }: SignInFormProps) => {
 	const { handleGoogleLogin, handleEmailLogin, error, isLoading } = useAuth()
+	const [isPasswordVisible, setIsPasswordVisible] = useState(false)
 	const [_verificationState, setVerificationState] = useState<{
 		email: string
 		message: string
@@ -110,14 +115,21 @@ const SignInForm = ({ onForgotPassword, onSignInSuccess, onVerificationRequired,
 							render={({ field }) => (
 								<Input
 									{...field}
+									endContent={
+										<PasswordVisibilityToggle
+											isVisible={isPasswordVisible}
+											onToggle={() => setIsPasswordVisible(!isPasswordVisible)}
+										/>
+									}
 									errorMessage={errors.password?.message}
 									isInvalid={!!errors.password}
+									isRequired
 									label="Password"
 									labelPlacement="inside"
 									placeholder="Enter your password"
 									radius="md"
 									size="sm"
-									type="password"
+									type={isPasswordVisible ? "text" : "password"}
 									variant="flat"
 								/>
 							)}
@@ -158,22 +170,23 @@ const SignInForm = ({ onForgotPassword, onSignInSuccess, onVerificationRequired,
 				</form>
 			</CardBody>
 			<CardFooter className="flex-col px-7 pt-4 pb-8">
-				<div className="flex items-center gap-4 py-4">
+				<div className="flex items-center gap-4 pb-4">
 					<Divider className="flex-1" />
 					<span className="text-default-400 text-small">OR</span>
 					<Divider className="flex-1" />
 				</div>
 
 				<Button
-					className="w-full"
+					className="h-12 w-full"
 					isDisabled={isLoading}
 					isLoading={isLoading}
 					onPress={() => {
 						void handleGoogleLogin()
 					}}
+					startContent={<MaterialIconThemeGoogle className="size-5" />}
 					variant="bordered"
 				>
-					Continue with Google
+					Sign in with Google
 				</Button>
 			</CardFooter>
 		</>

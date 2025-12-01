@@ -1,5 +1,7 @@
 import { Button, Card, CardBody } from "@heroui/react"
-import { Icon } from "@iconify/react"
+
+import StreamlineEmojisCloudWithRain2 from "~icons/streamline-emojis/cloud-with-rain-2"
+import TablerRefresh from "~icons/tabler/refresh"
 
 interface TableErrorProps {
 	onRetry?: () => void
@@ -10,7 +12,7 @@ const TableError = ({ onRetry }: TableErrorProps) => {
 		<Card className="w-full">
 			<CardBody className="items-center gap-5 px-7 py-8 text-center">
 				<div className="relative h-[89px] w-20 overflow-clip">
-					<Icon aria-hidden className="size-full text-warning-500" icon="streamline-emojis:cloud-with-rain-2" />
+					<StreamlineEmojisCloudWithRain2 aria-hidden className="size-full text-warning-500" />
 				</div>
 
 				<div className="flex max-w-xl flex-col gap-5">
@@ -24,7 +26,7 @@ const TableError = ({ onRetry }: TableErrorProps) => {
 					<Button
 						className="w-full"
 						color="primary"
-						endContent={<Icon aria-hidden className="size-5" icon="tabler:refresh" />}
+						endContent={<TablerRefresh aria-hidden className="size-5" />}
 						onPress={onRetry}
 						size="lg"
 						variant="solid"

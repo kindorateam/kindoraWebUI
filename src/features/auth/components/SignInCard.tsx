@@ -72,7 +72,7 @@ const SignInCard = ({ view, setView, userEmail, setUserEmail, resetToken, setRes
 			)}
 
 			{view === "forgot-password" && (
-				<ForgotPasswordForm onBack={() => setView("signin")} onNext={handleForgotPasswordNext} />
+				<ForgotPasswordForm defaultEmail={userEmail} onBack={() => setView("signin")} onNext={handleForgotPasswordNext} />
 			)}
 
 			{view === "otp-verification" && (

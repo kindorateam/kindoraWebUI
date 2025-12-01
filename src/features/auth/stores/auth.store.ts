@@ -1,6 +1,5 @@
 import { atom } from "jotai"
 import { atomWithStorage } from "jotai/utils"
-import { jwtDecode } from "jwt-decode"
 
 import { apiClient } from "@/services/api.service"
 
@@ -16,12 +15,12 @@ const mapUserResponse = (data: UserProfileResponse): User => {
 }
 
 // Atoms for state - using atomWithStorage handles localStorage automatically
-export const userAtom = atomWithStorage<User | null>("auth-user", null)
+const userAtom = atomWithStorage<User | null>("auth-user", null)
 export const tokenAtom = atomWithStorage<string | null>("auth-token", null)
 // Note: Refresh token is stored as HttpOnly cookie by backend, not in localStorage
 
-export const isLoadingAtom = atom(true)
-export const errorAtom = atom<string | null>(null)
+const isLoadingAtom = atom(true)
+const errorAtom = atom<string | null>(null)
 export const authInitializedAtom = atom(false)
 
 const isAuthenticatedAtom = atom((get) => {
@@ -29,18 +28,6 @@ const isAuthenticatedAtom = atom((get) => {
 	const user = get(userAtom)
 	// Simply check if both exist - expiration handled by API interceptor
 	return !!user && !!token
-})
-
-// Token expiration atom
-export const tokenExpirationAtom = atom((get) => {
-	const token = get(tokenAtom)
-	if (!token) return null
-	try {
-		const decoded = jwtDecode<{ exp?: number }>(token)
-		return typeof decoded.exp === "number" ? decoded.exp * 1000 : null
-	} catch {
-		return null
-	}
 })
 
 // Derived atoms

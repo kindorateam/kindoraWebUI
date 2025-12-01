@@ -1,5 +1,5 @@
 import { Button, CardBody, CardFooter, CardHeader, Input } from "@heroui/react"
-import { useCallback, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { Controller, useForm } from "react-hook-form"
 
 import { requestPasswordReset } from "../services/auth.service"
@@ -11,9 +11,10 @@ import type { ForgotPasswordFormData } from "../types"
 interface ForgotPasswordFormProps {
 	onBack: () => void
 	onNext: (email: string) => void
+	defaultEmail?: string
 }
 
-const ForgotPasswordForm = ({ onBack, onNext }: ForgotPasswordFormProps) => {
+const ForgotPasswordForm = ({ onBack, onNext, defaultEmail }: ForgotPasswordFormProps) => {
 	const [emailSent, setEmailSent] = useState(false)
 	const [submittedEmail, setSubmittedEmail] = useState("")
 	const [error, setError] = useState<string | null>(null)
@@ -21,13 +22,20 @@ const ForgotPasswordForm = ({ onBack, onNext }: ForgotPasswordFormProps) => {
 	const {
 		control,
 		handleSubmit,
+		reset,
 		formState: { errors, isSubmitting, isValid },
 	} = useForm<ForgotPasswordFormData>({
 		defaultValues: {
-			email: "",
+			email: defaultEmail || "",
 		},
 		mode: "onChange",
 	})
+
+	useEffect(() => {
+		if (defaultEmail) {
+			reset({ email: defaultEmail })
+		}
+	}, [defaultEmail, reset])
 
 	const onSubmit = useCallback(async (data: ForgotPasswordFormData) => {
 		try {

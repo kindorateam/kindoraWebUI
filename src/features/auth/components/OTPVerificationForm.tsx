@@ -1,6 +1,9 @@
-import { Button, CardBody, CardFooter, CardHeader, InputOtp, Link } from "@heroui/react"
+import { Button, CardBody, CardFooter, CardHeader, InputOtp, Link, Tooltip } from "@heroui/react"
 import { useCallback, useEffect, useState } from "react"
 import { Controller, useForm } from "react-hook-form"
+
+import PhClockCountdown from "~icons/ph/clock-countdown"
+import TablerEdit from "~icons/tabler/edit"
 
 import useAuth from "../hooks/useAuth"
 import { verifyPasswordResetOTP } from "../services/auth.service"
@@ -93,11 +96,11 @@ const OTPVerificationForm = ({ email, onBack, onSuccess, context = "login" }: OT
 
 	return (
 		<>
-			<CardHeader className="px-7 pt-8 pb-4">
+			<CardHeader className="px-7 pt-8 pb-0">
 				<h1 className="font-medium text-2xl">We email you a code</h1>
 			</CardHeader>
 
-			<CardBody className="gap-4 px-7 pt-4 pb-4">
+			<CardBody className="gap-4 px-7 pt-4 pb-5">
 				{displayError && (
 					<div className="rounded-md bg-red-50 p-3 text-red-600 text-sm" role="alert">
 						{displayError}
@@ -107,24 +110,13 @@ const OTPVerificationForm = ({ email, onBack, onSuccess, context = "login" }: OT
 				<div className="flex flex-col gap-4">
 					<div className="flex flex-col gap-1">
 						<p className="text-default-600 text-sm">Enter the verification code sent to</p>
-						<div className="flex items-center gap-2">
+						<div className="flex items-center gap-1">
 							<p className="text-sm text-warning">{email}</p>
-							<Button className="h-auto min-w-0 p-0" isIconOnly onPress={onBack} size="sm" variant="light">
-								<svg
-									className="size-4"
-									fill="none"
-									stroke="currentColor"
-									strokeWidth={2}
-									viewBox="0 0 24 24"
-									xmlns="http://www.w3.org/2000/svg"
-								>
-									<path
-										d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"
-										strokeLinecap="round"
-										strokeLinejoin="round"
-									/>
-								</svg>
-							</Button>
+							<Tooltip content="Change email">
+								<Button className="size-6 min-w-6" isIconOnly onPress={onBack} variant="light">
+									<TablerEdit className="size-4 text-warning" />
+								</Button>
+							</Tooltip>
 						</div>
 					</div>
 
@@ -140,8 +132,7 @@ const OTPVerificationForm = ({ email, onBack, onSuccess, context = "login" }: OT
 									isInvalid={!!errors.otp}
 									isRequired
 									length={6}
-									size="md"
-									variant="bordered"
+									size="lg"
 								/>
 							)}
 							rules={{
@@ -162,25 +153,14 @@ const OTPVerificationForm = ({ email, onBack, onSuccess, context = "login" }: OT
 						<p className="text-default-600 text-sm">This temporary code will expire in</p>
 						<div className="flex items-center gap-1">
 							<p className="text-sm text-warning">{formatTime(timeLeft)}</p>
-							<svg
-								className="size-5 text-warning"
-								fill="currentColor"
-								viewBox="0 0 20 20"
-								xmlns="http://www.w3.org/2000/svg"
-							>
-								<path
-									clipRule="evenodd"
-									d="M10 18a8 8 0 100-16 8 8 0 000 16zm.75-13a.75.75 0 00-1.5 0v5c0 .414.336.75.75.75h4a.75.75 0 000-1.5h-3.25V5z"
-									fillRule="evenodd"
-								/>
-							</svg>
+							<PhClockCountdown className="size-5 text-warning" />
 							<p className="text-sm text-warning">min</p>
 						</div>
 					</div>
 				</div>
 			</CardBody>
 
-			<CardFooter className="flex-col gap-3 px-7 pt-4 pb-8">
+			<CardFooter className="flex-col gap-4 px-7 pt-0 pb-8">
 				<form className="w-full" onSubmit={handleSubmit(onSubmit)}>
 					<Button
 						className="w-full"
