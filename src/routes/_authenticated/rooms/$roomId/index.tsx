@@ -1,8 +1,8 @@
 import { Navigate, createFileRoute } from "@tanstack/react-router"
 
-import RoomActivityTab from "@/features/rooms/components/RoomActivityTab"
-import RoomProfileTab from "@/features/rooms/components/RoomProfileTab"
 import RoomStudentsTable from "@/features/rooms/components/RoomStudentsTable"
+import RoomActivityTab from "@/features/rooms/components/RoomTabs/RoomActivityTab"
+import RoomProfileTab from "@/features/rooms/components/RoomTabs/RoomProfileTab"
 
 export const Route = createFileRoute("/_authenticated/rooms/$roomId/")({
 	component: RoomDetailContent,
@@ -21,7 +21,7 @@ function RoomDetailContent() {
 			return <RoomStudentsTable roomId={roomId} />
 		case "activity":
 			return <RoomActivityTab roomId={roomId} />
-		case "settings":
+		case "profile":
 			return <RoomProfileTab roomId={roomId} />
 		default:
 			// Fallback to students tab if invalid tab

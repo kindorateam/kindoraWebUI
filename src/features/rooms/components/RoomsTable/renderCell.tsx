@@ -1,6 +1,9 @@
 import { Avatar, AvatarGroup, Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@heroui/react"
-import { Icon } from "@iconify/react"
 import { Link } from "@tanstack/react-router"
+
+import TablerEdit from "~icons/tabler/edit"
+import TablerEye from "~icons/tabler/eye"
+import TablerTrash from "~icons/tabler/trash"
 
 import RoomIcon from "../RoomIcon"
 
@@ -96,13 +99,25 @@ export function renderCell(room: Room, columnKey: React.Key) {
 							</Button>
 						</DropdownTrigger>
 						<DropdownMenu aria-label="Room actions">
-							<DropdownItem key="view" className="text-success" startContent={<Icon aria-hidden className="size-5" icon="tabler:eye" />}>
+							<DropdownItem
+								key="view"
+								className="text-success"
+								startContent={<TablerEye aria-hidden className="size-5" />}
+							>
 								View
 							</DropdownItem>
-							<DropdownItem key="edit" className="text-warning" startContent={<Icon aria-hidden className="size-5" icon="tabler:edit" />}>
+							<DropdownItem
+								key="edit"
+								className="text-warning"
+								startContent={<TablerEdit aria-hidden className="size-5" />}
+							>
 								Edit
 							</DropdownItem>
-							<DropdownItem key="deactivate" className="text-danger" startContent={<Icon aria-hidden className="size-5" icon="tabler:trash" />}>
+							<DropdownItem
+								key="deactivate"
+								className="text-danger"
+								startContent={<TablerTrash aria-hidden className="size-5" />}
+							>
 								Deactivate
 							</DropdownItem>
 						</DropdownMenu>

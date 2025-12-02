@@ -1,7 +1,8 @@
 import { Avatar, Input, NumberInput } from "@heroui/react"
-import { Icon } from "@iconify/react"
 import { useState } from "react"
 import { Controller, useFormContext } from "react-hook-form"
+
+import TablerPencil from "~icons/tabler/pencil"
 
 import ImagePickerModal from "../ImagePickerModal"
 
@@ -67,7 +68,7 @@ const RoomDetailsStep = () => {
 						onClick={handleAvatarClick}
 						type="button"
 					>
-						<Icon className="size-4 text-white" icon="tabler:pencil" />
+						<TablerPencil className="size-4 text-white" />
 					</button>
 				</div>
 				<span className="text-foreground text-sm">Room Avatar</span>

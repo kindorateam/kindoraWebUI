@@ -95,16 +95,14 @@ const AddRoomStepper = ({ onComplete, onCancel }: AddRoomStepperProps) => {
 					<div className="flex justify-between">
 						<div className="flex flex-col gap-3">
 							<p className="text-base">
-								<span className="font-medium">Name:</span>{" "}
-								<span className="text-neutral-700">{formData.name}</span>
+								<span className="font-medium">Name:</span> <span className="text-neutral-700">{formData.name}</span>
 							</p>
 							<p className="text-base">
 								<span className="font-medium">Capacity:</span>{" "}
 								<span className="text-neutral-700">{formData.capacity}</span>
 							</p>
 							<p className="text-base">
-								<span className="font-medium">Ratio:</span>{" "}
-								<span className="text-neutral-700">{formData.ratio}:1</span>
+								<span className="font-medium">Ratio:</span> <span className="text-neutral-700">{formData.ratio}:1</span>
 							</p>
 						</div>
 						<div className="flex flex-col gap-3">

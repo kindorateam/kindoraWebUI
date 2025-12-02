@@ -1,5 +1,7 @@
 import { Avatar, Button, Card, CardBody, Chip, Input, Select, SelectItem } from "@heroui/react"
-import { useRef, useState } from "react"
+import { useState } from "react"
+
+import ImagePickerModal from "../ImagePickerModal"
 
 interface RoomProfileTabProps {
 	roomId: string
@@ -8,7 +10,6 @@ interface RoomProfileTabProps {
 // Mock data - will be replaced with API data later
 const mockRoomData = {
 	name: "Baby Turtles",
-	bio: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
 	minAge: "2 years",
 	maxAge: "4 years",
 	maxCapacity: "20",
@@ -62,42 +63,49 @@ const SaveIcon = () => (
 const RoomProfileTab = ({ roomId: _roomId }: RoomProfileTabProps) => {
 	const [assignedStaff, setAssignedStaff] = useState(mockStaff)
 	const [avatarPreview, setAvatarPreview] = useState<string | null>(null)
-	const fileInputRef = useRef<HTMLInputElement>(null)
+	const [isImagePickerOpen, setIsImagePickerOpen] = useState(false)
 
 	const handleRemoveStaff = (staffId: string) => {
 		setAssignedStaff((prev) => prev.filter((s) => s.id !== staffId))
 	}
 
-	const handleUploadClick = () => {
-		fileInputRef.current?.click()
-	}
-
-	const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		const file = e.target.files?.[0]
-		if (file) {
-			const previewUrl = URL.createObjectURL(file)
+	const handleImageSelect = (image: string | File) => {
+		if (typeof image === "string") {
+			// It's a gradient
+			setAvatarPreview(image)
+		} else {
+			// It's a file
+			const previewUrl = URL.createObjectURL(image)
 			setAvatarPreview(previewUrl)
 		}
 	}
 
 	const handleDeletePicture = () => {
 		setAvatarPreview(null)
-		if (fileInputRef.current) {
-			fileInputRef.current.value = ""
-		}
 	}
 
 	return (
 		<Card>
 			<CardBody className="gap-8 p-5 md:p-8">
-				<div className="flex flex-col gap-8 md:flex-row">
-					<div className="flex flex-col gap-5 md:w-1/2">
+				<div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+					<div className="flex flex-col gap-5">
 						<h3 className="font-medium text-xl">Profile Picture</h3>
-						<div className="flex items-center justify-between">
-							<Avatar className="size-25 shadow-md" showFallback src={avatarPreview || mockRoomData.avatarUrl} />
+						<div className="flex items-center gap-5">
+							<div>
+								{avatarPreview?.startsWith("linear-gradient") ? (
+									<div className="size-25 rounded-full shadow-md" style={{ background: avatarPreview }} />
+								) : (
+									<Avatar className="size-25 shadow-md" showFallback src={avatarPreview || mockRoomData.avatarUrl} />
+								)}
+							</div>
 							<div className="flex gap-5">
-								<input accept="image/*" className="hidden" onChange={handleFileChange} ref={fileInputRef} type="file" />
-								<Button color="primary" endContent={<UploadIcon />} onPress={handleUploadClick} radius="md" size="sm">
+								<Button
+									color="primary"
+									endContent={<UploadIcon />}
+									onPress={() => setIsImagePickerOpen(true)}
+									radius="md"
+									size="sm"
+								>
 									Upload Picture
 								</Button>
 								<Button color="danger" endContent={<TrashIcon />} onPress={handleDeletePicture} radius="md" size="sm">
@@ -105,65 +113,56 @@ const RoomProfileTab = ({ roomId: _roomId }: RoomProfileTabProps) => {
 								</Button>
 							</div>
 						</div>
+						<ImagePickerModal
+							isOpen={isImagePickerOpen}
+							onClose={() => setIsImagePickerOpen(false)}
+							onSelect={handleImageSelect}
+						/>
 					</div>
 
-					<div className="flex flex-col gap-5 md:w-1/2">
-						<h3 className="font-medium text-xl">Bio</h3>
-						<p className="text-neutral-700 text-sm leading-relaxed">{mockRoomData.bio}</p>
-					</div>
-				</div>
-
-				<div className="flex flex-col gap-8 md:flex-row">
-					<div className="flex flex-col gap-5 md:w-1/2">
+					<div className="flex flex-col gap-5">
 						<h3 className="font-medium text-xl">Room Info</h3>
-						<div className="flex flex-col gap-2">
+						<div className="grid grid-cols-2 gap-2">
 							<Input
+								className="col-span-2"
 								defaultValue={mockRoomData.name}
 								label="Room Name"
 								labelPlacement="inside"
 								radius="md"
 								variant="flat"
 							/>
-							<div className="flex gap-3">
-								<Input
-									className="flex-1"
-									defaultValue={mockRoomData.minAge}
-									label="Min age"
-									labelPlacement="inside"
-									radius="md"
-									variant="flat"
-								/>
-								<Input
-									className="flex-1"
-									defaultValue={mockRoomData.maxAge}
-									label="Max age"
-									labelPlacement="inside"
-									radius="md"
-									variant="flat"
-								/>
-							</div>
-							<div className="flex gap-3">
-								<Input
-									className="flex-1"
-									defaultValue={mockRoomData.maxCapacity}
-									label="Max capacity"
-									labelPlacement="inside"
-									radius="md"
-									variant="flat"
-								/>
-								<Input
-									className="flex-1"
-									defaultValue={mockRoomData.studentsPerStaff}
-									label="Students per 1 staff"
-									labelPlacement="inside"
-									radius="md"
-									variant="flat"
-								/>
-							</div>
+							<Input
+								defaultValue={mockRoomData.minAge}
+								label="Min age"
+								labelPlacement="inside"
+								radius="md"
+								variant="flat"
+							/>
+							<Input
+								defaultValue={mockRoomData.maxAge}
+								label="Max age"
+								labelPlacement="inside"
+								radius="md"
+								variant="flat"
+							/>
+							<Input
+								defaultValue={mockRoomData.maxCapacity}
+								label="Max capacity"
+								labelPlacement="inside"
+								radius="md"
+								variant="flat"
+							/>
+							<Input
+								defaultValue={mockRoomData.studentsPerStaff}
+								label="Students per 1 staff"
+								labelPlacement="inside"
+								radius="md"
+								variant="flat"
+							/>
 						</div>
 					</div>
 
-					<div className="flex flex-col gap-5 md:w-1/2">
+					<div className="flex flex-col gap-5">
 						<h3 className="font-medium text-xl">Staff</h3>
 						<div className="flex flex-wrap gap-3">
 							{assignedStaff.map((staff) => (
@@ -189,7 +188,7 @@ const RoomProfileTab = ({ roomId: _roomId }: RoomProfileTabProps) => {
 					</div>
 				</div>
 
-				<div className="flex items-center justify-between pt-4">
+				<div className="flex items-center justify-between">
 					<Button color="danger" endContent={<TrashIcon />} radius="md" size="md">
 						Deactivate Room
 					</Button>

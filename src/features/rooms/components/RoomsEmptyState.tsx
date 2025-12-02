@@ -1,5 +1,7 @@
 import { Button, Card, CardBody } from "@heroui/react"
-import { Icon } from "@iconify/react"
+
+import SolarAddCircleBold from "~icons/solar/add-circle-bold"
+import TwemojiEmptyNest from "~icons/twemoji/empty-nest"
 
 import { openAddRoomModal } from "../stores/addRoomModal.store"
 
@@ -8,7 +10,7 @@ const RoomsEmptyState = () => {
 		<Card className="w-full">
 			<CardBody className="items-center gap-5 px-7 py-8 text-center">
 				<div className="relative h-[89px] w-20 overflow-clip">
-					<Icon aria-hidden className="size-full text-primary" icon="twemoji:empty-nest" />
+					<TwemojiEmptyNest aria-hidden className="size-full text-primary" />
 				</div>
 
 				<div className="flex max-w-xl flex-col gap-5">
@@ -19,7 +21,7 @@ const RoomsEmptyState = () => {
 				<Button
 					className="w-full"
 					color="primary"
-					endContent={<Icon aria-hidden className="size-5" icon="solar:add-circle-bold" />}
+					endContent={<SolarAddCircleBold aria-hidden className="size-5" />}
 					onPress={openAddRoomModal}
 					size="lg"
 					variant="solid"

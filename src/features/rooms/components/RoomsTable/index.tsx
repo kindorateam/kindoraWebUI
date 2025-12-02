@@ -12,10 +12,10 @@ import {
 	TableHeader,
 	TableRow,
 } from "@heroui/react"
-import { Icon } from "@iconify/react"
 import { useMemo, useState } from "react"
 
 import TableError from "@/components/TableError"
+import TablerCirclePlusFilled from "~icons/tabler/circle-plus-filled"
 
 import { useRooms } from "../../hooks/useRooms"
 import { openAddRoomModal } from "../../stores/addRoomModal.store"
@@ -58,7 +58,7 @@ const RoomsTable = () => {
 					</div>
 					<Button
 						color="primary"
-						endContent={<Icon className="size-5 text-white" icon="tabler:circle-plus-filled" />}
+						endContent={<TablerCirclePlusFilled className="size-5 text-white" />}
 						onPress={openAddRoomModal}
 					>
 						Add Room

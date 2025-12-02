@@ -1,6 +1,7 @@
 import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Tab, Tabs } from "@heroui/react"
-import { Icon } from "@iconify/react"
 import { useCallback, useRef, useState } from "react"
+
+import TablerCloudUpload from "~icons/tabler/cloud-upload"
 
 interface ImagePickerModalProps {
 	isOpen: boolean
@@ -163,7 +164,7 @@ const ImagePickerModal = ({ isOpen, onClose, onSelect }: ImagePickerModalProps) 
 										onDrop={handleDrop}
 										type="button"
 									>
-										<Icon className="size-12 text-gray-400" icon="tabler:cloud-upload" />
+										<TablerCloudUpload className="size-12 text-gray-400" />
 										<div className="text-center">
 											<p className="font-medium text-gray-600">Drag & drop your image here</p>
 											<p className="text-gray-400 text-sm">or click to browse</p>
