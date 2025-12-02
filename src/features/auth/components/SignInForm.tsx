@@ -13,18 +13,13 @@ import type { SignInFormData } from "../types"
 
 interface SignInFormProps {
 	onForgotPassword: () => void
-	onSignInSuccess: (email: string) => void
 	onVerificationRequired?: (email: string, message: string, codeSentAt: number) => void
 	defaultEmail?: string
 }
 
-const SignInForm = ({ onForgotPassword, onSignInSuccess, onVerificationRequired, defaultEmail }: SignInFormProps) => {
+const SignInForm = ({ onForgotPassword, onVerificationRequired, defaultEmail }: SignInFormProps) => {
 	const { handleGoogleLogin, handleEmailLogin, error, isLoading } = useAuth()
 	const [isPasswordVisible, setIsPasswordVisible] = useState(false)
-	const [_verificationState, setVerificationState] = useState<{
-		email: string
-		message: string
-	} | null>(null)
 
 	const {
 		control,
@@ -47,27 +42,15 @@ const SignInForm = ({ onForgotPassword, onSignInSuccess, onVerificationRequired,
 					password: data.password,
 				})
 
-				// Case 1: Verification required (new user)
 				if (result?.needsVerification) {
 					const codeSentAt = Date.now()
-					setVerificationState({ email: result.email, message: result.message })
-					if (onVerificationRequired) {
-						onVerificationRequired(result.email, result.message, codeSentAt)
-					} else {
-						console.warn("[SignInForm] onVerificationRequired callback is not defined!")
-					}
-					return
+					onVerificationRequired?.(result.email, result.message, codeSentAt)
 				}
-
-				// Case 2: Login successful (verified user)
-				onSignInSuccess(data.email)
 			} catch (error) {
-				// Error is already handled in the auth store and displayed via error state
-				console.error("[SignInForm] Login failed with error:", error)
-				console.error("[SignInForm] Error stack:", error instanceof Error ? error.stack : "No stack trace")
+				console.error("[SignInForm] Login failed:", error)
 			}
 		},
-		[handleEmailLogin, onSignInSuccess, onVerificationRequired],
+		[handleEmailLogin, onVerificationRequired],
 	)
 
 	return (

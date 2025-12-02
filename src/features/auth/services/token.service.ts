@@ -3,10 +3,8 @@ import { appStore } from "@/stores/jotaiStore"
 
 import { tokenAtom } from "../stores/auth.store"
 
-const store = appStore
-
 export const getToken = (): string | null => {
-	return store.get(tokenAtom)
+	return appStore.get(tokenAtom)
 }
 
 export const getCleanToken = (): string | null => {
@@ -17,11 +15,11 @@ export const getCleanToken = (): string | null => {
 }
 
 export const clearToken = (): void => {
-	store.set(tokenAtom, null)
+	appStore.set(tokenAtom, null)
 }
 
 export const setTokens = (accessToken: string): void => {
-	store.set(tokenAtom, accessToken)
+	appStore.set(tokenAtom, accessToken)
 }
 
 // Track in-flight refresh promise to prevent race conditions

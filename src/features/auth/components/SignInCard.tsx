@@ -28,37 +28,22 @@ const SignInCard = ({
 	codeSentAt,
 	setCodeSentAt,
 }: SignInCardProps) => {
-	// Called when user successfully logs in (verified user)
-	const handleSignInSuccess = (_email: string) => {
-		// User is already logged in, no need to show OTP
-		// Navigation is handled by router
-	}
-
-	// Called when new user needs to verify OTP for first login
 	const handleVerificationRequired = (email: string, _message: string, sentAt: number) => {
 		setUserEmail(email)
 		setCodeSentAt(sentAt)
 		setView("otp-verification")
 	}
 
-	// Called after OTP is verified successfully for first login
-	const handleOTPSuccess = () => {
-		// User is now logged in, navigation is handled by router
-	}
-
-	// Called when user requests password reset
 	const handleForgotPassword = () => {
 		setView("forgot-password")
 	}
 
-	// Called after forgot password email is sent and user clicks "Next"
 	const handleForgotPasswordNext = (email: string, sentAt: number) => {
 		setUserEmail(email)
 		setCodeSentAt(sentAt)
 		setView("otp-password-reset")
 	}
 
-	// Called after OTP is verified successfully for password reset
 	const handlePasswordResetOTPSuccess = (token?: string) => {
 		if (token) {
 			setResetToken(token)
@@ -66,9 +51,7 @@ const SignInCard = ({
 		}
 	}
 
-	// Called after password is successfully reset
 	const handleResetPasswordSuccess = () => {
-		// Clear reset token and navigate back to sign in
 		setResetToken("")
 		setView("signin")
 	}
@@ -79,7 +62,6 @@ const SignInCard = ({
 				<SignInForm
 					defaultEmail={userEmail}
 					onForgotPassword={handleForgotPassword}
-					onSignInSuccess={handleSignInSuccess}
 					onVerificationRequired={handleVerificationRequired}
 				/>
 			)}
@@ -98,7 +80,6 @@ const SignInCard = ({
 					context="login"
 					email={userEmail}
 					onBack={() => setView("signin")}
-					onSuccess={handleOTPSuccess}
 				/>
 			)}
 

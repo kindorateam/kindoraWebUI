@@ -15,7 +15,7 @@ import type { OTPVerificationFormData } from "../types"
 interface OTPVerificationFormProps {
 	email: string
 	onBack: () => void
-	onSuccess: (token?: string) => void
+	onSuccess?: (token?: string) => void
 	context?: "login" | "password-reset"
 	codeSentAt: number | null
 }
@@ -25,14 +25,6 @@ const OTPVerificationForm = ({ email, onBack, onSuccess, context = "login", code
 	const [timeLeft, setTimeLeft] = useState(() => calculateTimeLeft(codeSentAt))
 	const [resendTimeLeft, setResendTimeLeft] = useState(() => calculateResendTimeLeft(codeSentAt))
 	const [localError, setLocalError] = useState<string | null>(null)
-
-	// Sync with prop when it changes (e.g., navigating back and sending a new code)
-	useEffect(() => {
-		if (codeSentAt) {
-			setTimeLeft(calculateTimeLeft(codeSentAt))
-			setResendTimeLeft(calculateResendTimeLeft(codeSentAt))
-		}
-	}, [codeSentAt])
 
 	const {
 		control,
@@ -45,7 +37,13 @@ const OTPVerificationForm = ({ email, onBack, onSuccess, context = "login", code
 		mode: "onChange",
 	})
 
-	// Timer countdown for both expiration and resend cooldown
+	useEffect(() => {
+		if (codeSentAt) {
+			setTimeLeft(calculateTimeLeft(codeSentAt))
+			setResendTimeLeft(calculateResendTimeLeft(codeSentAt))
+		}
+	}, [codeSentAt])
+
 	useEffect(() => {
 		if (timeLeft <= 0 && resendTimeLeft <= 0) {
 			return
@@ -80,14 +78,11 @@ const OTPVerificationForm = ({ email, onBack, onSuccess, context = "login", code
 				setLocalError(null)
 
 				if (context === "login") {
-					// First login verification flow
 					await handleVerifyFirstLogin(email, data.otp)
-					onSuccess()
+					onSuccess?.()
 				} else {
-					// Password reset verification flow
 					await verifyPasswordResetOTP(email, data.otp)
-					// Pass the OTP token to the next step for password reset
-					onSuccess(data.otp)
+					onSuccess?.(data.otp)
 				}
 			} catch (error) {
 				const errorMessage = error instanceof Error ? error.message : "Verification failed. Please try again."
@@ -100,7 +95,6 @@ const OTPVerificationForm = ({ email, onBack, onSuccess, context = "login", code
 		[context, email, handleVerifyFirstLogin, onSuccess],
 	)
 
-	// Use local error for password reset, auth error for login
 	const displayError = context === "password-reset" ? localError : authError
 
 	return (

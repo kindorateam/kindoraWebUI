@@ -20,13 +20,13 @@ interface ResetPasswordFormProps {
 	onResetSuccess: () => void
 }
 
+const formId = "reset-password-form"
+
 const ResetPasswordForm = ({ email, token, onBack, onResetSuccess }: ResetPasswordFormProps) => {
 	const [isPasswordVisible, setIsPasswordVisible] = useState(false)
 	const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false)
 	const [resetComplete, setResetComplete] = useState(false)
 	const [error, setError] = useState<string | null>(null)
-
-	const formId = "reset-password-form"
 
 	const {
 		control,
