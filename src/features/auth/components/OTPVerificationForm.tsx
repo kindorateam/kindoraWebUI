@@ -5,12 +5,12 @@ import { Controller, useForm } from "react-hook-form"
 import PhClockCountdown from "~icons/ph/clock-countdown"
 import TablerEdit from "~icons/tabler/edit"
 
+import { CODE_EXPIRATION_SECONDS, RESEND_COOLDOWN_SECONDS } from "../constants"
 import useAuth from "../hooks/useAuth"
-import { verifyPasswordResetOTP } from "../services/auth.service"
+import { requestPasswordReset, verifyPasswordResetOTP } from "../services/auth.service"
+import { calculateResendTimeLeft, calculateTimeLeft, formatTime } from "../utils/time"
 
 import type { OTPVerificationFormData } from "../types"
-
-const CODE_EXPIRATION_SECONDS = 300 // 5 minutes
 
 interface OTPVerificationFormProps {
 	email: string
@@ -20,23 +20,17 @@ interface OTPVerificationFormProps {
 	codeSentAt: number | null
 }
 
-const calculateTimeLeft = (codeSentAt: number | null): number => {
-	if (!codeSentAt) return CODE_EXPIRATION_SECONDS
-	const elapsed = Math.floor((Date.now() - codeSentAt) / 1000)
-	return Math.max(0, CODE_EXPIRATION_SECONDS - elapsed)
-}
-
 const OTPVerificationForm = ({ email, onBack, onSuccess, context = "login", codeSentAt }: OTPVerificationFormProps) => {
 	const { handleVerifyFirstLogin, error: authError } = useAuth()
 	const [timeLeft, setTimeLeft] = useState(() => calculateTimeLeft(codeSentAt))
-	const [canResend, setCanResend] = useState(() => calculateTimeLeft(codeSentAt) <= 0)
+	const [resendTimeLeft, setResendTimeLeft] = useState(() => calculateResendTimeLeft(codeSentAt))
 	const [localError, setLocalError] = useState<string | null>(null)
 
 	// Sync with prop when it changes (e.g., navigating back and sending a new code)
 	useEffect(() => {
 		if (codeSentAt) {
 			setTimeLeft(calculateTimeLeft(codeSentAt))
-			setCanResend(calculateTimeLeft(codeSentAt) <= 0)
+			setResendTimeLeft(calculateResendTimeLeft(codeSentAt))
 		}
 	}, [codeSentAt])
 
@@ -51,35 +45,34 @@ const OTPVerificationForm = ({ email, onBack, onSuccess, context = "login", code
 		mode: "onChange",
 	})
 
-	// Timer countdown
+	// Timer countdown for both expiration and resend cooldown
 	useEffect(() => {
-		if (timeLeft <= 0) {
-			setCanResend(true)
+		if (timeLeft <= 0 && resendTimeLeft <= 0) {
 			return
 		}
 
 		const timer = setInterval(() => {
-			setTimeLeft((prev) => prev - 1)
+			if (timeLeft > 0) {
+				setTimeLeft((prev) => prev - 1)
+			}
+			if (resendTimeLeft > 0) {
+				setResendTimeLeft((prev) => prev - 1)
+			}
 		}, 1000)
 
 		return () => clearInterval(timer)
-	}, [timeLeft])
+	}, [timeLeft, resendTimeLeft])
 
-	// Format time as MM:SS
-	const formatTime = (seconds: number) => {
-		const minutes = Math.floor(seconds / 60)
-		const secs = seconds % 60
-		return `${String(minutes).padStart(2, "0")}:${String(secs).padStart(2, "0")}`
-	}
-
-	const handleResendCode = useCallback(() => {
-		// TODO: Call API to resend OTP - mock implementation for now
-		setTimeLeft(CODE_EXPIRATION_SECONDS)
-		setCanResend(false)
-		setLocalError(null)
-		// Show success feedback
-		alert("A new verification code has been sent to your email")
-	}, [])
+	const handleResendCode = useCallback(async () => {
+		try {
+			setLocalError(null)
+			await requestPasswordReset(email)
+			setTimeLeft(CODE_EXPIRATION_SECONDS)
+			setResendTimeLeft(RESEND_COOLDOWN_SECONDS)
+		} catch (error) {
+			setLocalError(error instanceof Error ? error.message : "Failed to resend code. Please try again.")
+		}
+	}, [email])
 
 	const onSubmit = useCallback(
 		async (data: OTPVerificationFormData) => {
@@ -192,14 +185,13 @@ const OTPVerificationForm = ({ email, onBack, onSuccess, context = "login", code
 
 				<div className="flex w-full items-center justify-between">
 					<p className="text-default-600 text-sm">Didn't get your code?</p>
-					<Link
-						className="cursor-pointer text-primary text-xs"
-						isDisabled={!canResend && timeLeft > 0}
-						onPress={handleResendCode}
-						underline="none"
-					>
-						Send a new code
-					</Link>
+					{resendTimeLeft > 0 ? (
+						<span className="text-default-400 text-xs">Send a new code in {resendTimeLeft}s</span>
+					) : (
+						<Link className="cursor-pointer text-primary text-xs" onPress={handleResendCode} underline="none">
+							Send a new code
+						</Link>
+					)}
 				</div>
 			</CardFooter>
 		</>

@@ -1,3 +1,8 @@
+// OTP verification constants
+export const CODE_EXPIRATION_SECONDS = 300 // 5 minutes
+export const RESEND_COOLDOWN_SECONDS = 60 // 1 minute
+
+// Password strength constants
 export type StrengthLabel = "weak" | "fair" | "good" | "strong"
 
 export const passwordRequirements = [
