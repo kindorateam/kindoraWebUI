@@ -67,7 +67,7 @@ src/
 │   │   ├── services/      # Feature-specific API calls
 │   │   ├── stores/        # Feature-specific UI state
 │   │   ├── utils/         # Feature-specific helpers
-│   │   └── types.ts       # Student, StudentFormData, etc.
+│   │   └── types.ts       # Student, StudentFormData, etc. (or types/ folder)
 │   ├── rooms/
 │   │   ├── components/    # RoomsTable, RoomDetailHeader, etc.
 │   │   ├── hooks/         # useRooms, useRoom
@@ -75,10 +75,18 @@ src/
 │   │   ├── stores/        # addRoomDrawer.store.ts
 │   │   ├── utils/         # roomIcon.ts
 │   │   └── types.ts       # Room, RoomType, etc.
-│   └── auth/
-│       ├── components/
-│       ├── hooks/
-│       └── stores/
+│   └── auth/              # Reference implementation
+│       ├── components/    # SignInForm, OTPVerificationForm, etc.
+│       ├── constants.ts   # EMAIL_PATTERN, CODE_EXPIRATION_SECONDS
+│       ├── hooks/         # useAuth
+│       ├── services/      # auth.service.ts, token.service.ts
+│       ├── stores/        # auth.store.ts
+│       ├── utils/         # time.ts, password.ts
+│       └── types/         # Modular types (see Types Organization)
+│           ├── index.ts   # Re-exports all types
+│           ├── user.ts    # User, AuthUser, AuthState
+│           ├── api.ts     # Request/response types
+│           └── forms.ts   # Form data types
 │
 ├── components/             # Shared, generic UI components ONLY
 │   └── ui/
@@ -122,6 +130,19 @@ src/
 
 ### Feature-Specific vs Shared Code
 
+**Feature folder structure quick reference:**
+
+| Folder/File | Purpose | When to Create |
+|-------------|---------|----------------|
+| `components/` | UI components | Always |
+| `hooks/` | Custom hooks (data fetching, logic) | When using React Query or complex state |
+| `services/` | API calls | When feature has backend endpoints |
+| `stores/` | Jotai atoms (UI state) | When feature needs shared UI state |
+| `utils/` | Helper functions | When logic is reused across components |
+| `constants.ts` | Config, validation, mappings | When values are shared across files |
+| `types.ts` | Type definitions | Simple features (<15 types) |
+| `types/` | Modular type definitions | Complex features (15+ types) |
+
 **Use `features/{name}/services/`** when:
 - ✅ Service is ONLY used by that feature (e.g., `room.service.ts` only used by rooms feature)
 - ✅ Service handles feature-specific domain logic
@@ -142,6 +163,94 @@ src/
 - ✅ `features/rooms/stores/addRoomDrawer.store.ts` - UI state for rooms feature
 - ❌ `src/services/api.service.ts` - Shared infrastructure used everywhere
 - ❌ `src/stores/auth.store.ts` - Global auth state used everywhere
+
+### Types Organization
+
+**Single `types.ts`** (simple features):
+- Use when feature has < 10-15 types
+- Use when types don't have clear categories
+- Simpler imports: `import type { User } from "../types"`
+
+**`types/` folder** (complex features):
+- Use when feature has many types (15+)
+- Use when types have clear categories (user, api, forms)
+- Always include `index.ts` for re-exports (backwards compatible imports)
+
+**Types folder structure:**
+```
+types/
+├── index.ts      # Re-exports everything for clean imports
+├── entity.ts     # Domain/entity types (core models)
+├── api.ts        # API request/response types
+└── forms.ts      # Form data types (React Hook Form)
+```
+
+**Type categories:**
+| Category | File | Examples |
+|----------|------|----------|
+| Domain/Entity | `entity.ts` | `User`, `Room`, `Student`, `RoomType` |
+| API Request | `api.ts` | `CreateRoomPayload`, `UpdateStudentRequest` |
+| API Response | `api.ts` | `RoomListResponse`, `StudentDetailResponse` |
+| Store Results | `api.ts` | `LoginResult`, `MutationResult` |
+| Form Data | `forms.ts` | `RoomFormData`, `StudentFormData` |
+
+**DRY principle for types:**
+- Define types in ONE place, import everywhere
+- Never duplicate types in services or stores - move to `types/`
+- Use `import type` for type-only imports
+
+### Constants Organization
+
+**File:** `constants.ts` at feature root
+
+**Use `constants.ts`** for:
+- Validation patterns (email regex, phone regex)
+- Time values (timeouts, cooldowns, expiration)
+- Magic numbers with semantic meaning
+- Configuration values used across components
+- Color/style maps for dynamic styling
+
+**Common constant categories:**
+
+| Category | Examples |
+|----------|----------|
+| Validation patterns | `EMAIL_PATTERN`, `PHONE_PATTERN`, `URL_PATTERN` |
+| Time values | `TIMEOUT_MS`, `CACHE_DURATION_SECONDS`, `DEBOUNCE_MS` |
+| Limits/Sizes | `MAX_FILE_SIZE`, `PAGE_SIZE`, `MAX_ITEMS` |
+| Status/State maps | `statusColorMap`, `rolePermissions`, `stepConfig` |
+| Configuration arrays | `tableColumns`, `filterOptions`, `sortOptions` |
+
+**Example** (`features/rooms/constants.ts`):
+```ts
+// Validation
+export const ROOM_NAME_MAX_LENGTH = 100
+export const ROOM_CAPACITY_MAX = 50
+
+// Configuration
+export const roomTypeConfig = {
+  classroom: { icon: "classroom", label: "Classroom", color: "primary" },
+  office: { icon: "office", label: "Office", color: "secondary" },
+  lab: { icon: "lab", label: "Laboratory", color: "warning" },
+}
+
+// Table columns
+export const roomTableColumns = [
+  { key: "name", label: "Name", sortable: true },
+  { key: "type", label: "Type", sortable: true },
+  { key: "capacity", label: "Capacity", sortable: true },
+  { key: "actions", label: "Actions" },
+]
+```
+
+**When to use constants:**
+- ✅ Value is used in multiple files
+- ✅ Value has semantic meaning (not just a random number)
+- ✅ Value might change in the future
+- ❌ Value is only used once inline (keep it local)
+
+**Naming conventions:**
+- `SCREAMING_SNAKE_CASE` for primitive values (`CODE_EXPIRATION_SECONDS`)
+- `camelCase` for objects/arrays (`passwordRequirements`, `strengthColorMap`)
 
 ---
 
@@ -270,6 +379,8 @@ function CustomButton(props: ButtonProps) {
 ### 1. Add a New Feature
 
 **Step 1**: Create feature folder (create only what you need)
+
+**Simple feature** (few types):
 ```
 src/features/my-feature/
 ├── components/
@@ -283,7 +394,31 @@ src/features/my-feature/
 │   └── myFeature.store.ts
 ├── utils/                      # Optional: if feature needs helpers
 │   └── myFeatureHelper.ts
+├── constants.ts                # Optional: shared constants (patterns, timeouts)
 └── types.ts                    # named exports
+```
+
+**Complex feature** (many types with clear categories):
+```
+src/features/my-feature/
+├── components/
+│   ├── MyFeatureCard.tsx
+│   ├── MyFeatureList.tsx
+│   └── MyFeatureForm.tsx
+├── hooks/
+│   └── useMyFeature.ts
+├── services/
+│   └── myFeature.service.ts
+├── stores/
+│   └── myFeature.store.ts
+├── utils/
+│   └── myFeatureHelper.ts
+├── constants.ts               # Validation, config, column definitions
+└── types/
+    ├── index.ts               # Re-exports all types
+    ├── entity.ts              # Domain types (MyFeature, MyFeatureStatus)
+    ├── api.ts                 # API request/response types
+    └── forms.ts               # Form data types
 ```
 
 **Step 2**: Create route
@@ -739,5 +874,5 @@ When working in this codebase, apply these principles:
 
 ---
 
-**Last Updated**: 2025-11-16
+**Last Updated**: 2025-12-01
 **For**: Claude Code & AI Agents
