@@ -10,13 +10,14 @@ import type { ForgotPasswordFormData } from "../types"
 
 interface ForgotPasswordFormProps {
 	onBack: () => void
-	onNext: (email: string) => void
+	onNext: (email: string, codeSentAt: number) => void
 	defaultEmail?: string
 }
 
 const ForgotPasswordForm = ({ onBack, onNext, defaultEmail }: ForgotPasswordFormProps) => {
 	const [emailSent, setEmailSent] = useState(false)
 	const [submittedEmail, setSubmittedEmail] = useState("")
+	const [codeSentAt, setCodeSentAt] = useState<number | null>(null)
 	const [error, setError] = useState<string | null>(null)
 
 	const {
@@ -41,7 +42,9 @@ const ForgotPasswordForm = ({ onBack, onNext, defaultEmail }: ForgotPasswordForm
 		try {
 			setError(null)
 			await requestPasswordReset(data.email)
+			const sentAt = Date.now()
 			setSubmittedEmail(data.email)
+			setCodeSentAt(sentAt)
 			setEmailSent(true)
 		} catch (err) {
 			setError(err instanceof Error ? err.message : "Failed to send reset email. Please try again.")
@@ -49,8 +52,10 @@ const ForgotPasswordForm = ({ onBack, onNext, defaultEmail }: ForgotPasswordForm
 	}, [])
 
 	const handleNext = useCallback(() => {
-		onNext(submittedEmail)
-	}, [onNext, submittedEmail])
+		if (codeSentAt) {
+			onNext(submittedEmail, codeSentAt)
+		}
+	}, [onNext, submittedEmail, codeSentAt])
 
 	if (emailSent) {
 		return <ForgotPasswordConfirmation email={submittedEmail} onNext={handleNext} />

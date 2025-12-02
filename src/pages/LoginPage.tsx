@@ -14,6 +14,7 @@ const LoginPage = () => {
 	const [view, setView] = useState<AuthView>("signin")
 	const [userEmail, setUserEmail] = useState("")
 	const [resetToken, setResetToken] = useState("")
+	const [codeSentAt, setCodeSentAt] = useState<number | null>(null)
 
 	// Store redirect URL in sessionStorage on component mount
 	useEffect(() => {
@@ -45,7 +46,9 @@ const LoginPage = () => {
 	return (
 		<div className="grid h-screen place-items-center">
 			<SignInCard
+				codeSentAt={codeSentAt}
 				resetToken={resetToken}
+				setCodeSentAt={setCodeSentAt}
 				setResetToken={setResetToken}
 				setUserEmail={setUserEmail}
 				setView={setView}

@@ -13,7 +13,7 @@ import type { SignInFormData } from "../types"
 interface SignInFormProps {
 	onForgotPassword: () => void
 	onSignInSuccess: (email: string) => void
-	onVerificationRequired?: (email: string, message: string) => void
+	onVerificationRequired?: (email: string, message: string, codeSentAt: number) => void
 	defaultEmail?: string
 }
 
@@ -48,9 +48,10 @@ const SignInForm = ({ onForgotPassword, onSignInSuccess, onVerificationRequired,
 
 				// Case 1: Verification required (new user)
 				if (result?.needsVerification) {
+					const codeSentAt = Date.now()
 					setVerificationState({ email: result.email, message: result.message })
 					if (onVerificationRequired) {
-						onVerificationRequired(result.email, result.message)
+						onVerificationRequired(result.email, result.message, codeSentAt)
 					} else {
 						console.warn("[SignInForm] onVerificationRequired callback is not defined!")
 					}

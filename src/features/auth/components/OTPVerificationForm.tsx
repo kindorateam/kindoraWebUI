@@ -10,18 +10,35 @@ import { verifyPasswordResetOTP } from "../services/auth.service"
 
 import type { OTPVerificationFormData } from "../types"
 
+const CODE_EXPIRATION_SECONDS = 300 // 5 minutes
+
 interface OTPVerificationFormProps {
 	email: string
 	onBack: () => void
 	onSuccess: (token?: string) => void
 	context?: "login" | "password-reset"
+	codeSentAt: number | null
 }
 
-const OTPVerificationForm = ({ email, onBack, onSuccess, context = "login" }: OTPVerificationFormProps) => {
+const calculateTimeLeft = (codeSentAt: number | null): number => {
+	if (!codeSentAt) return CODE_EXPIRATION_SECONDS
+	const elapsed = Math.floor((Date.now() - codeSentAt) / 1000)
+	return Math.max(0, CODE_EXPIRATION_SECONDS - elapsed)
+}
+
+const OTPVerificationForm = ({ email, onBack, onSuccess, context = "login", codeSentAt }: OTPVerificationFormProps) => {
 	const { handleVerifyFirstLogin, error: authError } = useAuth()
-	const [timeLeft, setTimeLeft] = useState(300) // 5 minutes in seconds
-	const [canResend, setCanResend] = useState(false)
+	const [timeLeft, setTimeLeft] = useState(() => calculateTimeLeft(codeSentAt))
+	const [canResend, setCanResend] = useState(() => calculateTimeLeft(codeSentAt) <= 0)
 	const [localError, setLocalError] = useState<string | null>(null)
+
+	// Sync with prop when it changes (e.g., navigating back and sending a new code)
+	useEffect(() => {
+		if (codeSentAt) {
+			setTimeLeft(calculateTimeLeft(codeSentAt))
+			setCanResend(calculateTimeLeft(codeSentAt) <= 0)
+		}
+	}, [codeSentAt])
 
 	const {
 		control,
@@ -57,13 +74,12 @@ const OTPVerificationForm = ({ email, onBack, onSuccess, context = "login" }: OT
 
 	const handleResendCode = useCallback(() => {
 		// TODO: Call API to resend OTP - mock implementation for now
-
-		setTimeLeft(300) // Reset timer to 5 minutes
+		setTimeLeft(CODE_EXPIRATION_SECONDS)
 		setCanResend(false)
 		setLocalError(null)
 		// Show success feedback
 		alert("A new verification code has been sent to your email")
-	}, [email])
+	}, [])
 
 	const onSubmit = useCallback(
 		async (data: OTPVerificationFormData) => {

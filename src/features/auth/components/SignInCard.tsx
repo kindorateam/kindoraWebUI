@@ -14,9 +14,20 @@ interface SignInCardProps {
 	setUserEmail: (email: string) => void
 	resetToken: string
 	setResetToken: (token: string) => void
+	codeSentAt: number | null
+	setCodeSentAt: (timestamp: number | null) => void
 }
 
-const SignInCard = ({ view, setView, userEmail, setUserEmail, resetToken, setResetToken }: SignInCardProps) => {
+const SignInCard = ({
+	view,
+	setView,
+	userEmail,
+	setUserEmail,
+	resetToken,
+	setResetToken,
+	codeSentAt,
+	setCodeSentAt,
+}: SignInCardProps) => {
 	// Called when user successfully logs in (verified user)
 	const handleSignInSuccess = (_email: string) => {
 		// User is already logged in, no need to show OTP
@@ -24,8 +35,9 @@ const SignInCard = ({ view, setView, userEmail, setUserEmail, resetToken, setRes
 	}
 
 	// Called when new user needs to verify OTP for first login
-	const handleVerificationRequired = (email: string, _message: string) => {
+	const handleVerificationRequired = (email: string, _message: string, sentAt: number) => {
 		setUserEmail(email)
+		setCodeSentAt(sentAt)
 		setView("otp-verification")
 	}
 
@@ -40,8 +52,9 @@ const SignInCard = ({ view, setView, userEmail, setUserEmail, resetToken, setRes
 	}
 
 	// Called after forgot password email is sent and user clicks "Next"
-	const handleForgotPasswordNext = (email: string) => {
+	const handleForgotPasswordNext = (email: string, sentAt: number) => {
 		setUserEmail(email)
+		setCodeSentAt(sentAt)
 		setView("otp-password-reset")
 	}
 
@@ -72,11 +85,16 @@ const SignInCard = ({ view, setView, userEmail, setUserEmail, resetToken, setRes
 			)}
 
 			{view === "forgot-password" && (
-				<ForgotPasswordForm defaultEmail={userEmail} onBack={() => setView("signin")} onNext={handleForgotPasswordNext} />
+				<ForgotPasswordForm
+					defaultEmail={userEmail}
+					onBack={() => setView("signin")}
+					onNext={handleForgotPasswordNext}
+				/>
 			)}
 
 			{view === "otp-verification" && (
 				<OTPVerificationForm
+					codeSentAt={codeSentAt}
 					context="login"
 					email={userEmail}
 					onBack={() => setView("signin")}
@@ -86,6 +104,7 @@ const SignInCard = ({ view, setView, userEmail, setUserEmail, resetToken, setRes
 
 			{view === "otp-password-reset" && (
 				<OTPVerificationForm
+					codeSentAt={codeSentAt}
 					context="password-reset"
 					email={userEmail}
 					onBack={() => setView("forgot-password")}
