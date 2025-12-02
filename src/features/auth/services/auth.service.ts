@@ -2,35 +2,14 @@ import { apiClient } from "@/services/api.service"
 
 import { clearToken, setTokens } from "./token.service"
 
-import type { User } from "../types"
-
-interface LoginCredentials {
-	email: string
-	password: string
-}
-
-interface AuthTokenResponse {
-	accessToken: string
-	expiresAt: string
-	role: string
-	// Note: RefreshToken is sent as HttpOnly cookie, not in response body
-}
-
-interface VerificationRequiredResponse {
-	status: "verification_required"
-	message: string
-}
-
-type LoginResponse = AuthTokenResponse | VerificationRequiredResponse
-
-export type UserProfileResponse = User | { user: User }
+import type { AuthTokenResponse, EmailLoginCredentials, LoginResponse, UserProfileResponse } from "../types"
 
 /**
  * Sign in with email and password
  * Returns either tokens (verified user) or verification required status (new user)
  * Refresh token is set as HttpOnly cookie by backend (only for verified users)
  */
-export async function login(credentials: LoginCredentials): Promise<LoginResponse> {
+export async function login(credentials: EmailLoginCredentials): Promise<LoginResponse> {
 	try {
 		const response = await apiClient.postRaw<LoginResponse>("/auth/login", {
 			email: credentials.email,

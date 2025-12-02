@@ -1,4 +1,3 @@
-// Core Auth Types
 export interface User {
 	id: string
 	email: string
@@ -37,44 +36,4 @@ export interface DecodedBackendToken {
 	exp: number // expiration timestamp
 	iat: number // issued at timestamp
 	typ: "access_token"
-}
-
-export interface EmailLoginCredentials {
-	email: string
-	password: string
-}
-
-export interface EmailRegisterCredentials extends EmailLoginCredentials {
-	name: string
-}
-
-export interface AuthTokens {
-	accessToken: string
-	refreshToken: string
-	expiresIn: number
-}
-
-export interface RefreshTokenResponse {
-	accessToken: string
-	expiresIn: number
-}
-
-// Form Data Types
-export interface SignInFormData {
-	email: string
-	password: string
-	rememberMe: boolean
-}
-
-export interface ForgotPasswordFormData {
-	email: string
-}
-
-export interface OTPVerificationFormData {
-	otp: string
-}
-
-export interface ResetPasswordFormData {
-	password: string
-	confirmPassword: string
 }

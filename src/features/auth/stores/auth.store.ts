@@ -3,9 +3,9 @@ import { atomWithStorage } from "jotai/utils"
 
 import { apiClient } from "@/services/api.service"
 
-import { type UserProfileResponse, fetchUserProfile, login, logout, verifyFirstLogin } from "../services/auth.service"
+import { fetchUserProfile, login, logout, verifyFirstLogin } from "../services/auth.service"
 
-import type { User } from "../types"
+import type { LoginResult, User, UserProfileResponse } from "../types"
 
 const mapUserResponse = (data: UserProfileResponse): User => {
 	if (data && typeof data === "object" && "user" in data && data.user) {
@@ -104,10 +104,6 @@ export const logoutAtom = atom(null, async (_get, set) => {
 export const updateUserAtom = atom(null, (_get, set, user: User) => {
 	set(userAtom, user)
 })
-
-type LoginResult =
-	| { needsVerification: true; email: string; message: string }
-	| { needsVerification: false; user: User }
 
 export const handleEmailLoginAtom = atom(
 	null,

@@ -1,11 +1,8 @@
-// OTP verification constants
-export const CODE_EXPIRATION_SECONDS = 300 // 5 minutes
-export const RESEND_COOLDOWN_SECONDS = 60 // 1 minute
+export const CODE_EXPIRATION_SECONDS = 300
+export const RESEND_COOLDOWN_SECONDS = 60
 
-// Email validation
 export const EMAIL_PATTERN = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i
 
-// Password strength constants
 export type StrengthLabel = "weak" | "fair" | "good" | "strong"
 
 export const passwordRequirements = [
