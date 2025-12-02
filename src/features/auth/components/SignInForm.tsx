@@ -4,6 +4,7 @@ import { Controller, useForm } from "react-hook-form"
 
 import MaterialIconThemeGoogle from "~icons/material-icon-theme/google"
 
+import { EMAIL_PATTERN } from "../constants"
 import useAuth from "../hooks/useAuth"
 
 import PasswordVisibilityToggle from "./PasswordVisibilityToggle"
@@ -105,7 +106,7 @@ const SignInForm = ({ onForgotPassword, onSignInSuccess, onVerificationRequired,
 							rules={{
 								required: "Email is required",
 								pattern: {
-									value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+									value: EMAIL_PATTERN,
 									message: "Invalid email address",
 								},
 							}}

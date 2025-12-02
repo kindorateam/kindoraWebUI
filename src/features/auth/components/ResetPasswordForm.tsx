@@ -4,8 +4,9 @@ import { Controller, useForm } from "react-hook-form"
 
 import TablerCheck from "~icons/tabler/check"
 
-import { barColorMap, passwordRequirements, strengthColorMap } from "../constants"
+import { barColorMap } from "../constants"
 import { resetPassword } from "../services/auth.service"
+import { calculatePasswordStrength, getRequirementStatuses } from "../utils/password"
 
 import PasswordVisibilityToggle from "./PasswordVisibilityToggle"
 import ResetPasswordConfirmation from "./ResetPasswordConfirmation"
@@ -42,61 +43,9 @@ const ResetPasswordForm = ({ email, token, onBack, onResetSuccess }: ResetPasswo
 
 	const passwordValue = watch("password")
 
-	const requirementStatuses = useMemo(
-		() =>
-			passwordRequirements.map((requirement) => ({
-				...requirement,
-				isMet: requirement.test(passwordValue),
-			})),
-		[passwordValue],
-	)
+	const requirementStatuses = useMemo(() => getRequirementStatuses(passwordValue), [passwordValue])
 
-	const completedRequirements = requirementStatuses.filter((requirement) => requirement.isMet).length
-
-	const strength = useMemo(() => {
-		if (!passwordValue) {
-			return {
-				label: "weak",
-				barsFilled: 0,
-				colorClass: strengthColorMap.empty,
-				barColorClass: barColorMap.empty,
-			}
-		}
-
-		if (completedRequirements <= 1) {
-			return {
-				label: "weak",
-				barsFilled: 1,
-				colorClass: strengthColorMap.weak,
-				barColorClass: barColorMap.weak,
-			}
-		}
-
-		if (completedRequirements === 2) {
-			return {
-				label: "fair",
-				barsFilled: 2,
-				colorClass: strengthColorMap.fair,
-				barColorClass: barColorMap.fair,
-			}
-		}
-
-		if (completedRequirements === 3) {
-			return {
-				label: "good",
-				barsFilled: 3,
-				colorClass: strengthColorMap.good,
-				barColorClass: barColorMap.good,
-			}
-		}
-
-		return {
-			label: "strong",
-			barsFilled: 4,
-			colorClass: strengthColorMap.strong,
-			barColorClass: barColorMap.strong,
-		}
-	}, [completedRequirements, passwordValue])
+	const strength = useMemo(() => calculatePasswordStrength(passwordValue), [passwordValue])
 
 	const onSubmit = useCallback(
 		async (data: ResetPasswordFormData) => {

@@ -2,6 +2,7 @@ import { Button, CardBody, CardFooter, CardHeader, Input } from "@heroui/react"
 import { useCallback, useEffect, useState } from "react"
 import { Controller, useForm } from "react-hook-form"
 
+import { EMAIL_PATTERN } from "../constants"
 import { requestPasswordReset } from "../services/auth.service"
 
 import ForgotPasswordConfirmation from "./ForgotPasswordConfirmation"
@@ -93,7 +94,7 @@ const ForgotPasswordForm = ({ onBack, onNext, defaultEmail }: ForgotPasswordForm
 					rules={{
 						required: "Email is required",
 						pattern: {
-							value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+							value: EMAIL_PATTERN,
 							message: "Invalid email address",
 						},
 					}}
