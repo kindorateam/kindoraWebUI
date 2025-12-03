@@ -6,7 +6,7 @@ import TablerCheck from "~icons/tabler/check"
 
 import { barColorMap } from "../constants"
 import { resetPassword } from "../services/auth.service"
-import { calculatePasswordStrength, getRequirementStatuses } from "../utils/password"
+import { areRequiredRequirementsMet, calculatePasswordStrength, getRequirementStatuses } from "../utils/password"
 
 import PasswordVisibilityToggle from "./PasswordVisibilityToggle"
 import ResetPasswordConfirmation from "./ResetPasswordConfirmation"
@@ -32,7 +32,7 @@ const ResetPasswordForm = ({ email, token, onBack, onResetSuccess }: ResetPasswo
 		control,
 		handleSubmit,
 		watch,
-		formState: { errors, isSubmitting, isValid },
+		formState: { errors, isSubmitting },
 	} = useForm<ResetPasswordFormData>({
 		defaultValues: {
 			password: "",
@@ -42,10 +42,19 @@ const ResetPasswordForm = ({ email, token, onBack, onResetSuccess }: ResetPasswo
 	})
 
 	const passwordValue = watch("password")
+	const confirmPasswordValue = watch("confirmPassword")
 
 	const requirementStatuses = useMemo(() => getRequirementStatuses(passwordValue), [passwordValue])
 
 	const strength = useMemo(() => calculatePasswordStrength(passwordValue), [passwordValue])
+
+	const canSubmit = useMemo(() => {
+		return (
+			areRequiredRequirementsMet(passwordValue) &&
+			confirmPasswordValue === passwordValue &&
+			confirmPasswordValue.length > 0
+		)
+	}, [passwordValue, confirmPasswordValue])
 
 	const onSubmit = useCallback(
 		async (data: ResetPasswordFormData) => {
@@ -137,17 +146,19 @@ const ResetPasswordForm = ({ email, token, onBack, onResetSuccess }: ResetPasswo
 					</div>
 
 					<div className="flex items-center gap-8">
-						<div className="flex items-center gap-1 text-sm leading-5">
+						<div className="flex min-w-44 items-center gap-1 text-sm leading-5">
 							<p className="text-foreground">Strength:</p>
-							<span className={`capitalize ${strength.colorClass}`}>{strength.label}</span>
+							<span className={strength.barsFilled > 0 ? strength.colorClass : "text-default-400"}>
+								{strength.barsFilled > 0 ? strength.displayLabel : "None"}
+							</span>
 						</div>
 						<div className="flex flex-1 items-center gap-2">
-							{Array.from({ length: 4 }).map((_, index) => (
+							{[0, 1, 2, 3, 4].map((barIndex) => (
 								<div
 									className={`h-1 flex-1 rounded-xl ${
-										index < strength.barsFilled ? strength.barColorClass : barColorMap.empty
+										barIndex < strength.barsFilled ? strength.barColorClass : barColorMap.empty
 									}`}
-									key={`strength-bar-${index}`}
+									key={`strength-bar-${barIndex}`}
 								/>
 							))}
 						</div>
@@ -161,7 +172,7 @@ const ResetPasswordForm = ({ email, token, onBack, onResetSuccess }: ResetPasswo
 										requirement.isMet ? "border-success bg-success" : "border-default bg-default"
 									}`}
 								>
-									{requirement.isMet && <TablerCheck className="size-3 text-white" />}
+									<TablerCheck className={`size-3 ${requirement.isMet ? "text-white" : "text-black"}`} />
 								</span>
 								<p className="text-default-600 text-sm">{requirement.label}</p>
 							</div>
@@ -175,7 +186,7 @@ const ResetPasswordForm = ({ email, token, onBack, onResetSuccess }: ResetPasswo
 					className="h-10 w-full"
 					color="primary"
 					form={formId}
-					isDisabled={!isValid}
+					isDisabled={!canSubmit}
 					isLoading={isSubmitting}
 					radius="lg"
 					type="submit"
