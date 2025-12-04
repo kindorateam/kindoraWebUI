@@ -1,6 +1,6 @@
 import { apiClient } from "@/services/api.service"
 
-import type { ApiRoom, ApiStaff, ApiStudent, Room, StaffMember, Student } from "../types"
+import type { ApiRoom, ApiStaff, ApiStudent, Room, RoomCreatePayload, StaffMember, Student } from "../types"
 
 /**
  * Transforms API student data to UI format
@@ -51,5 +51,13 @@ export const getRooms = async (): Promise<Room[]> => {
  */
 export const getRoomById = async (roomId: string): Promise<Room> => {
 	const apiRoom = await apiClient.get<ApiRoom>(`/rooms/${roomId}`)
+	return transformApiRoom(apiRoom)
+}
+
+/**
+ * Creates a new room
+ */
+export const createRoom = async (payload: RoomCreatePayload): Promise<Room> => {
+	const apiRoom = await apiClient.post<ApiRoom>("/rooms", payload)
 	return transformApiRoom(apiRoom)
 }

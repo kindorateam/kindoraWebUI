@@ -1,6 +1,20 @@
 // Room types
 export type RoomType = "turtle" | "rabbit" | "bear" | "butterfly" | "owl" | "fox"
 
+export type RoomStatus = "active" | "inactive" | "archived"
+
+// API request types
+export interface RoomCreatePayload {
+	companyId: string
+	title: string
+	capacity: number
+	color?: string
+	logoId?: string | null
+	status?: RoomStatus
+	studentIds?: string[]
+	employeeIds?: string[]
+}
+
 // API response types
 export interface Asset {
 	id: string

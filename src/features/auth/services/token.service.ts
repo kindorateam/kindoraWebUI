@@ -3,6 +3,8 @@ import { appStore } from "@/stores/jotaiStore"
 
 import { tokenAtom } from "../stores/auth.store"
 
+import type { DecodedBackendToken } from "../types"
+
 export const getToken = (): string | null => {
 	return appStore.get(tokenAtom)
 }
@@ -84,4 +86,33 @@ const sanitizeToken = (token: string): string => {
 const isValidJWTFormat = (token: string): boolean => {
 	const parts = token.split(".")
 	return parts.length === 3 && parts.every((part) => part.length > 0)
+}
+
+/**
+ * Decodes JWT token payload without verification
+ * Note: This only decodes, it does NOT verify the signature
+ */
+export const decodeToken = (token: string): DecodedBackendToken | null => {
+	try {
+		const cleanToken = sanitizeToken(token)
+		const parts = cleanToken.split(".")
+		const payload = parts[1]
+		if (parts.length !== 3 || !payload) return null
+
+		const decoded = atob(payload.replace(/-/g, "+").replace(/_/g, "/"))
+		return JSON.parse(decoded) as DecodedBackendToken
+	} catch {
+		return null
+	}
+}
+
+/**
+ * Gets the company ID from the current auth token
+ */
+export const getCompanyId = (): string | null => {
+	const token = getCleanToken()
+	if (!token) return null
+
+	const decoded = decodeToken(token)
+	return decoded?.cid ?? null
 }

@@ -15,9 +15,10 @@ import type { AddRoomFormData } from "../../types"
 interface AddRoomStepperProps {
 	onComplete?: (data: AddRoomFormData) => void
 	onCancel?: () => void
+	isLoading?: boolean
 }
 
-const AddRoomStepper = ({ onComplete, onCancel }: AddRoomStepperProps) => {
+const AddRoomStepper = ({ onComplete, onCancel, isLoading = false }: AddRoomStepperProps) => {
 	const [currentStep, setCurrentStep] = useState(0)
 
 	const form = useForm<AddRoomFormData>({
@@ -129,6 +130,7 @@ const AddRoomStepper = ({ onComplete, onCancel }: AddRoomStepperProps) => {
 					currentStep={currentStep}
 					hideBackOnFirstStep={false}
 					isNextDisabled={(currentStep === 0 && !isStep1Valid) || (currentStep === 1 && !isStep2Valid)}
+					isNextLoading={isLoading}
 					onBack={handleBack}
 					onComplete={handleComplete}
 					onNext={handleNext}

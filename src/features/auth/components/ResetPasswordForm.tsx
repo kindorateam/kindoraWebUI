@@ -80,7 +80,7 @@ const ResetPasswordForm = ({ email, token, onBack, onResetSuccess }: ResetPasswo
 			</CardHeader>
 
 			<CardBody className="px-7 pt-4 pb-0">
-				<form className="flex flex-col gap-8" id={formId} onSubmit={handleSubmit(onSubmit)}>
+				<form className="flex flex-col gap-5" id={formId} onSubmit={handleSubmit(onSubmit)}>
 					{error && <div className="rounded-md bg-danger-50 p-3 text-danger text-sm">{error}</div>}
 
 					<div className="flex flex-col gap-3">
@@ -140,7 +140,8 @@ const ResetPasswordForm = ({ email, token, onBack, onResetSuccess }: ResetPasswo
 							)}
 							rules={{
 								required: "Please confirm your password",
-								validate: (value) => value === passwordValue || "Passwords do not match",
+								validate: (value) =>
+									value === passwordValue || "The passwords you entered don't match. Please try again.",
 							}}
 						/>
 					</div>
@@ -181,7 +182,7 @@ const ResetPasswordForm = ({ email, token, onBack, onResetSuccess }: ResetPasswo
 				</form>
 			</CardBody>
 
-			<CardFooter className="flex-col gap-3 px-7 pt-6 pb-8">
+			<CardFooter className="flex-col gap-3 px-7 pt-5 pb-8">
 				<Button
 					className="h-10 w-full"
 					color="primary"

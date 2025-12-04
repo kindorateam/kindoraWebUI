@@ -1,6 +1,7 @@
 import { Modal, ModalBody, ModalContent } from "@heroui/react"
 import { useAtomValue } from "jotai"
 
+import { useCreateRoom } from "../hooks/useRooms"
 import { closeAddRoomModal, isAddRoomModalOpenAtom } from "../stores/addRoomModal.store"
 
 import AddRoomStepper from "./AddRoomStepper"
@@ -9,11 +10,18 @@ import type { AddRoomFormData } from "../types"
 
 const AddRoomModal = () => {
 	const isOpen = useAtomValue(isAddRoomModalOpenAtom)
+	const createRoomMutation = useCreateRoom()
 
 	const handleComplete = (data: AddRoomFormData) => {
-		// TODO: Call API to create room
-		console.log("Room created:", data)
-		closeAddRoomModal()
+		createRoomMutation.mutate(data, {
+			onSuccess: () => {
+				closeAddRoomModal()
+			},
+			onError: (error) => {
+				// TODO: Show error toast
+				console.error("Failed to create room:", error)
+			},
+		})
 	}
 
 	const handleCancel = () => {
@@ -30,7 +38,11 @@ const AddRoomModal = () => {
 		>
 			<ModalContent>
 				<ModalBody className="p-0">
-					<AddRoomStepper onCancel={handleCancel} onComplete={handleComplete} />
+					<AddRoomStepper
+						isLoading={createRoomMutation.isPending}
+						onCancel={handleCancel}
+						onComplete={handleComplete}
+					/>
 				</ModalBody>
 			</ModalContent>
 		</Modal>
