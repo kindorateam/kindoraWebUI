@@ -8,13 +8,11 @@ interface IdentityChipProps {
 const IdentityChip = ({ fullName, src }: IdentityChipProps) => {
 	return (
 		<Chip
-			avatar={<Avatar fallback name={fullName} src={src} />}
-			className="text-xs hover:bg-brand/5 hover:text-brand"
+			avatar={<Avatar className="size-5" name={fullName} showFallback src={src} />}
 			classNames={{
-				base: "gap-2 ps-1.25 pe-3 py-1.25",
-				content: "px-0 font-medium",
+				base: "bg-primary-50 px-3 py-1.5",
+				content: "text-sm",
 			}}
-			size="lg"
 			variant="flat"
 		>
 			{fullName}

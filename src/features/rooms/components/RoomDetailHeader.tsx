@@ -1,9 +1,6 @@
 import { Avatar, Tab, Tabs } from "@heroui/react"
 
-import Button from "@/components/Button"
 import IdentityChip from "@/components/IdentityChip"
-import SmileEmoji from "@/components/icons/emojies/SmileEmoji"
-import StudentIcon from "@/components/icons/StudentIcon"
 import LabeledNumberBadge from "@/components/LabeledNumberBadge"
 
 import { useRoom } from "../hooks/useRooms"
@@ -16,28 +13,19 @@ interface RoomDetailHeaderProps {
 	onTabChange: (tab: TabType) => void
 }
 
-const classroomStats = [
-	{
-		label: "Capacity",
-		value: 30,
-	},
-	{
-		label: "Students",
-		value: 25,
-	},
-	{
-		label: "Sign In",
-		value: 5,
-	},
-	{
-		label: "Ratio",
-		icon: <SmileEmoji />,
-	},
-]
-const staffNames = ["Emily Carter", "James Whiteker"]
-
 const RoomDetailHeader = ({ activeTab, roomId, onTabChange }: RoomDetailHeaderProps) => {
 	const { data: room } = useRoom(roomId)
+
+	const signedInCount = room?.signedInStudents.filter((s) => s.checkedIn).length ?? 0
+
+	const stats = [
+		{ label: "Capacity", value: room?.capacity ?? 0 },
+		{ label: "Students", value: room?.studentsCount ?? 0 },
+		{ label: "Sign In", value: signedInCount },
+		{ label: "Ratio", value: room?.ratio ?? 0 },
+	]
+
+	const staffMembers = room?.signedInStaff ?? []
 
 	return (
 		<div>
@@ -50,22 +38,17 @@ const RoomDetailHeader = ({ activeTab, roomId, onTabChange }: RoomDetailHeaderPr
 						<h1 className="mb-3.5 font-semibold leading-none lg:text-[36px]">{room?.name ?? `Room ${roomId}`}</h1>
 						<div className="mb-4 flex items-center">
 							<div className="flex flex-wrap gap-4">
-								{classroomStats.map((stat) => (
-									<LabeledNumberBadge
-										key={stat.label}
-										label={stat.label}
-										{...(stat.icon ? { icon: stat.icon } : { value: stat.value })}
-									/>
+								{stats.map((stat) => (
+									<LabeledNumberBadge key={stat.label} label={stat.label} value={stat.value} />
 								))}
 							</div>
-							<Button className="ms-auto" startContent={<StudentIcon fill="#fff" />}>
-								Add student
-							</Button>
 						</div>
 						<div className="flex gap-3.5">
-							{staffNames.map((name) => (
-								<IdentityChip fullName={name} key={name} />
-							))}
+							{staffMembers.length > 0 ? (
+								staffMembers.map((staff) => <IdentityChip fullName={staff.name} key={staff.id} />)
+							) : (
+								<span className="text-default-400 text-sm">No staff assigned to this room</span>
+							)}
 						</div>
 					</div>
 				</div>

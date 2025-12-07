@@ -21,34 +21,39 @@ export interface Asset {
 	path: string
 }
 
+export interface ApiParent {
+	id: string
+	firstname: string
+	lastname: string
+}
+
 export interface ApiStudent {
 	id: string
-	first_name: string
-	last_name: string
-	avatar?: Asset
-	checked_in: boolean
+	firstname: string
+	lastname: string
+	avatar?: Asset | null
+	checkedIn: boolean
+	parents?: ApiParent[] | null
+	tags?: string[] | null
 }
 
 export interface ApiStaff {
 	id: string
-	first_name: string
-	last_name: string
-	avatar?: Asset
-	checked_in: boolean
+	firstname: string
+	lastname: string
+	avatar?: Asset | null
+	checkedIn: boolean
 }
 
 export interface ApiRoom {
 	id: string
-	company_id: string
 	title: string
 	capacity: number
-	logo_id: string
-	logo: Asset
+	ratio: number
+	logo?: Asset | null
 	status: string
-	checked_in_students: number
-	checked_in_employees: number
-	students: ApiStudent[]
-	staff: ApiStaff[]
+	students?: ApiStudent[] | null
+	staff?: ApiStaff[] | null
 }
 
 // UI types
@@ -57,10 +62,16 @@ export interface Room {
 	name: string
 	icon: RoomType
 	capacity: number
+	ratio: number
 	studentsCount: number
 	staffCount: number
 	signedInStudents: Student[]
 	signedInStaff: StaffMember[]
+}
+
+export interface Parent {
+	id: string
+	name: string
 }
 
 export interface Student {
@@ -68,6 +79,8 @@ export interface Student {
 	name: string
 	avatar: string
 	checkedIn: boolean
+	parents: Parent[]
+	tags: string[]
 }
 
 export interface StaffMember {

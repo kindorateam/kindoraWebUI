@@ -30,7 +30,7 @@ const AddRoomModal = () => {
 
 	return (
 		<Modal
-			hideCloseButton
+			classNames={{ closeButton: "cursor-pointer" }}
 			isOpen={isOpen}
 			onOpenChange={(open) => !open && closeAddRoomModal()}
 			placement="center"

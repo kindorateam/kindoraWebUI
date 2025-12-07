@@ -51,11 +51,15 @@ const RoomsTable = () => {
 	const topContent = useMemo(() => {
 		return (
 			<div className="flex flex-col gap-4">
-				<div className="flex items-center justify-end gap-3">
-					<div className="flex items-center gap-2">
-						<span className="text-neutral-600 text-sm">View deactivated</span>
-						<Switch isSelected={showDeactivated} onValueChange={setShowDeactivated} size="sm" />
-					</div>
+				<div className="flex items-center justify-end gap-5">
+					<Switch
+						classNames={{ label: "text-neutral-600 text-sm" }}
+						isSelected={showDeactivated}
+						onValueChange={setShowDeactivated}
+						size="sm"
+					>
+						View deactivated
+					</Switch>
 					<Button
 						color="primary"
 						endContent={<TablerCirclePlusFilled className="size-5 text-white" />}

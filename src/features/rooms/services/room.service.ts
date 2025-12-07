@@ -7,9 +7,14 @@ import type { ApiRoom, ApiStaff, ApiStudent, Room, RoomCreatePayload, StaffMembe
  */
 const transformStudent = (apiStudent: ApiStudent): Student => ({
 	id: apiStudent.id,
-	name: `${apiStudent.first_name} ${apiStudent.last_name}`,
+	name: `${apiStudent.firstname} ${apiStudent.lastname}`,
 	avatar: apiStudent.avatar?.path ?? "/assets/avatars/default.jpg",
-	checkedIn: apiStudent.checked_in,
+	checkedIn: apiStudent.checkedIn,
+	parents: (apiStudent.parents ?? []).map((p) => ({
+		id: p.id,
+		name: `${p.firstname} ${p.lastname}`,
+	})),
+	tags: apiStudent.tags ?? [],
 })
 
 /**
@@ -17,26 +22,32 @@ const transformStudent = (apiStudent: ApiStudent): Student => ({
  */
 const transformStaff = (apiStaff: ApiStaff): StaffMember => ({
 	id: apiStaff.id,
-	name: `${apiStaff.first_name} ${apiStaff.last_name}`,
+	name: `${apiStaff.firstname} ${apiStaff.lastname}`,
 	avatar: apiStaff.avatar?.path ?? "/assets/avatars/default.jpg",
-	checkedIn: apiStaff.checked_in,
+	checkedIn: apiStaff.checkedIn,
 })
 
 /**
  * Transforms API room data to UI format
  * Maps logo path to icon name (temporary until we have proper icon mapping)
  */
-export const transformApiRoom = (apiRoom: ApiRoom): Room => ({
-	id: apiRoom.id,
-	name: apiRoom.title,
-	// TODO: Map logo to proper icon type based on logo path or add icon field to API
-	icon: "turtle", // Default icon for now
-	capacity: apiRoom.capacity,
-	studentsCount: apiRoom.students.length,
-	staffCount: apiRoom.staff.length,
-	signedInStudents: apiRoom.students.map(transformStudent),
-	signedInStaff: apiRoom.staff.map(transformStaff),
-})
+export const transformApiRoom = (apiRoom: ApiRoom): Room => {
+	const students = apiRoom.students ?? []
+	const staff = apiRoom.staff ?? []
+
+	return {
+		id: apiRoom.id,
+		name: apiRoom.title,
+		// TODO: Map logo to proper icon type based on logo path or add icon field to API
+		icon: "turtle", // Default icon for now
+		capacity: apiRoom.capacity,
+		ratio: apiRoom.ratio,
+		studentsCount: students.length,
+		staffCount: staff.length,
+		signedInStudents: students.map(transformStudent),
+		signedInStaff: staff.map(transformStaff),
+	}
+}
 
 /**
  * Fetches all rooms from the API
