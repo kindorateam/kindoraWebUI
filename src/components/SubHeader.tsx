@@ -34,7 +34,7 @@ const SubHeader = ({
 	const topMb = underTitle ? "mb-13" : "mb-7"
 
 	return (
-		<div className="border-[#0000000D] border-b">
+		<div>
 			<div className="container mx-auto max-w-4xl px-4">
 				<div className={clsx("flex items-center justify-between", topMb)}>
 					<div className={clsx("flex gap-3", underTitle ? "items-start" : "items-center")}>

@@ -1,0 +1,162 @@
+.newsletter-editor {
+	min-height: 400px;
+	padding: 1rem;
+	outline: none;
+}
+
+.newsletter-editor:focus {
+	outline: none;
+}
+
+/* Headings */
+.newsletter-editor h1 {
+	font-size: 2rem;
+	font-weight: 700;
+	line-height: 1.2;
+	margin-bottom: 0.5rem;
+	margin-top: 1rem;
+}
+
+.newsletter-editor h2 {
+	font-size: 1.5rem;
+	font-weight: 600;
+	line-height: 1.3;
+	margin-bottom: 0.5rem;
+	margin-top: 1rem;
+}
+
+.newsletter-editor h3 {
+	font-size: 1.25rem;
+	font-weight: 600;
+	line-height: 1.4;
+	margin-bottom: 0.5rem;
+	margin-top: 0.75rem;
+}
+
+/* Paragraphs */
+.newsletter-editor p {
+	margin-bottom: 0.75rem;
+	line-height: 1.6;
+}
+
+/* Lists */
+.newsletter-editor ul {
+	list-style-type: disc;
+	padding-left: 1.5rem;
+	margin-bottom: 0.75rem;
+}
+
+.newsletter-editor ol {
+	list-style-type: decimal;
+	padding-left: 1.5rem;
+	margin-bottom: 0.75rem;
+}
+
+.newsletter-editor li {
+	margin-bottom: 0.25rem;
+	line-height: 1.6;
+}
+
+.newsletter-editor li p {
+	margin-bottom: 0.25rem;
+}
+
+/* Nested lists */
+.newsletter-editor ul ul,
+.newsletter-editor ol ul {
+	list-style-type: circle;
+	margin-top: 0.25rem;
+	margin-bottom: 0.25rem;
+}
+
+.newsletter-editor ul ol,
+.newsletter-editor ol ol {
+	margin-top: 0.25rem;
+	margin-bottom: 0.25rem;
+}
+
+/* Text formatting */
+.newsletter-editor strong {
+	font-weight: 700;
+}
+
+.newsletter-editor em {
+	font-style: italic;
+}
+
+.newsletter-editor u {
+	text-decoration: underline;
+}
+
+.newsletter-editor s {
+	text-decoration: line-through;
+}
+
+/* Links */
+.newsletter-editor a,
+.newsletter-link {
+	color: #2563eb;
+	text-decoration: underline;
+	cursor: pointer;
+}
+
+.newsletter-editor a:hover,
+.newsletter-link:hover {
+	color: #1d4ed8;
+}
+
+/* Images */
+.newsletter-editor img,
+.newsletter-image {
+	max-width: 100%;
+	height: auto;
+	border-radius: 0.5rem;
+	margin: 1rem 0;
+}
+
+/* Blockquote */
+.newsletter-editor blockquote {
+	border-left: 4px solid #e5e7eb;
+	padding-left: 1rem;
+	margin: 1rem 0;
+	font-style: italic;
+	color: #6b7280;
+}
+
+.newsletter-editor blockquote p {
+	margin-bottom: 0.5rem;
+}
+
+/* Horizontal rule */
+.newsletter-editor hr {
+	border: none;
+	border-top: 2px solid #e5e7eb;
+	margin: 1.5rem 0;
+}
+
+/* Text alignment */
+.newsletter-editor [style*="text-align: left"] {
+	text-align: left;
+}
+
+.newsletter-editor [style*="text-align: center"] {
+	text-align: center;
+}
+
+.newsletter-editor [style*="text-align: right"] {
+	text-align: right;
+}
+
+/* Placeholder */
+.newsletter-editor p.is-editor-empty:first-child::before {
+	color: #9ca3af;
+	content: attr(data-placeholder);
+	float: left;
+	height: 0;
+	pointer-events: none;
+}
+
+/* First element margin reset */
+.newsletter-editor > *:first-child {
+	margin-top: 0;
+}

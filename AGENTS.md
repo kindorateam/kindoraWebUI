@@ -1,6 +1,6 @@
 # AGENTS.md — AI Agent Guide for Kindora Web
 
-This document is for AI coding agents (particularly OpenAI/ChatGPT) working in this codebase. It encodes the tech stack, conventions, and safe operating procedures so you can ship changes quickly and correctly.
+This document is for AI coding agents (particularly GPT) working in this codebase. It encodes the tech stack, conventions, and safe operating procedures so you can ship changes quickly and correctly.
 
 ---
 
@@ -19,9 +19,9 @@ bun run preview      # Preview production build
 
 **Critical paths:**
 - Routes → `src/routes/` (file-based, auto-generated tree)
-- Features → `src/features/` (feature-based component organization)
-- State → `src/stores/*.store.ts` (Jotai atoms)
-- API → `src/services/*.service.ts` (typed wrappers around `apiClient`)
+- Features → `src/features/` (feature-based organization with colocated code)
+- Global State → `src/stores/*.store.ts` (shared Jotai atoms only)
+- Global API → `src/services/*.service.ts` (shared API infrastructure only)
 - UI → HeroUI components (standard, minimal custom styling)
 - Generated → `src/routeTree.gen.ts` (do NOT edit directly)
 
@@ -64,13 +64,29 @@ src/
 │   ├── students/
 │   │   ├── components/    # StudentCard, StudentList, etc.
 │   │   ├── hooks/         # useStudents, useStudentForm
-│   │   └── types.ts       # Student, StudentFormData, etc.
+│   │   ├── services/      # Feature-specific API calls
+│   │   ├── stores/        # Feature-specific UI state
+│   │   ├── utils/         # Feature-specific helpers
+│   │   └── types.ts       # Student, StudentFormData, etc. (or types/ folder)
 │   ├── rooms/
-│   │   ├── components/
-│   │   └── hooks/
-│   └── auth/
-│       ├── components/
-│       └── hooks/
+│   │   ├── components/    # RoomsTable, RoomDetailHeader, etc.
+│   │   ├── hooks/         # useRooms, useRoom
+│   │   ├── services/      # room.service.ts (API calls)
+│   │   ├── stores/        # addRoomDrawer.store.ts
+│   │   ├── utils/         # roomIcon.ts
+│   │   └── types.ts       # Room, RoomType, etc.
+│   └── auth/              # Reference implementation
+│       ├── components/    # SignInForm, OTPVerificationForm, etc.
+│       ├── constants.ts   # EMAIL_PATTERN, CODE_EXPIRATION_SECONDS
+│       ├── hooks/         # useAuth
+│       ├── services/      # auth.service.ts, token.service.ts
+│       ├── stores/        # auth.store.ts
+│       ├── utils/         # time.ts, password.ts
+│       └── types/         # Modular types (see Types Organization)
+│           ├── index.ts   # Re-exports all types
+│           ├── user.ts    # User, AuthUser, AuthState
+│           ├── api.ts     # Request/response types
+│           └── forms.ts   # Form data types
 │
 ├── components/             # Shared, generic UI components ONLY
 │   └── ui/
@@ -78,14 +94,16 @@ src/
 │       ├── ErrorBoundary.tsx
 │       └── EmptyState.tsx
 │
-├── stores/                 # Jotai atoms (global state)
+├── stores/                 # Global/shared state ONLY
 │   ├── jotaiStore.ts      # appStore for outside React
 │   └── auth.store.ts      # Auth atoms with localStorage
+│                           # NOTE: Feature-specific state goes in features/{name}/stores/
 │
-├── services/               # API & business logic layer
+├── services/               # Global/shared API infrastructure ONLY
 │   ├── api.service.ts     # ApiClient singleton
 │   ├── token.service.ts
 │   └── redirect.service.ts
+│                           # NOTE: Feature-specific API calls go in features/{name}/services/
 │
 ├── utils/                  # Helper functions
 └── routeTree.gen.ts        # Generated - do NOT edit
@@ -95,8 +113,9 @@ src/
 
 **Feature-Based Structure** (preferred):
 - Each feature (students, rooms, staff, etc.) gets its own folder
-- Colocate components, hooks, and types that belong together
-- Makes features easy to find, modify, and lazy-load
+- Colocate **all** related code: components, hooks, services, stores, utils, and types
+- Feature-specific services and state management live within the feature
+- Makes features self-contained, easy to find, modify, and lazy-load
 - Clear boundaries between feature-specific and shared code
 
 **When to use `components/ui/`**:
@@ -109,6 +128,130 @@ src/
 - Avoid wrapping HeroUI components unless adding significant shared logic
 - Keep styling minimal and prefer Tailwind utilities when needed
 
+### Feature-Specific vs Shared Code
+
+**Feature folder structure quick reference:**
+
+| Folder/File    | Purpose                             | When to Create                          |
+| -------------- | ----------------------------------- | --------------------------------------- |
+| `components/`  | UI components                       | Always                                  |
+| `hooks/`       | Custom hooks (data fetching, logic) | When using React Query or complex state |
+| `services/`    | API calls                           | When feature has backend endpoints      |
+| `stores/`      | Jotai atoms (UI state)              | When feature needs shared UI state      |
+| `utils/`       | Helper functions                    | When logic is reused across components  |
+| `constants.ts` | Config, validation, mappings        | When values are shared across files     |
+| `types.ts`     | Type definitions                    | Simple features (<15 types)             |
+| `types/`       | Modular type definitions            | Complex features (15+ types)            |
+
+**Use `features/{name}/services/`** when:
+- ✅ Service is ONLY used by that feature (e.g., `room.service.ts` only used by rooms feature)
+- ✅ Service handles feature-specific domain logic
+- ❌ Service is used across multiple features → use `src/services/`
+
+**Use `features/{name}/stores/`** when:
+- ✅ State is feature-specific UI state (e.g., drawer open/closed, form state)
+- ✅ State is only consumed within that feature
+- ❌ State is global app state (auth, theme, config) → use `src/stores/`
+
+**Use `features/{name}/utils/`** when:
+- ✅ Utility is specific to that feature's domain (e.g., `roomIcon.ts` for room icons)
+- ✅ Utility is only used within that feature
+- ❌ Utility is generic and reusable → use `src/utils/`
+
+**Examples:**
+- ✅ `features/rooms/services/room.service.ts` - Only rooms feature calls this API
+- ✅ `features/rooms/stores/addRoomDrawer.store.ts` - UI state for rooms feature
+- ❌ `src/services/api.service.ts` - Shared infrastructure used everywhere
+- ❌ `src/stores/auth.store.ts` - Global auth state used everywhere
+
+### Types Organization
+
+**Single `types.ts`** (simple features):
+- Use when feature has < 10-15 types
+- Use when types don't have clear categories
+- Simpler imports: `import type { User } from "../types"`
+
+**`types/` folder** (complex features):
+- Use when feature has many types (15+)
+- Use when types have clear categories (user, api, forms)
+- Always include `index.ts` for re-exports (backwards compatible imports)
+
+**Types folder structure:**
+```
+types/
+├── index.ts      # Re-exports everything for clean imports
+├── entity.ts     # Domain/entity types (core models)
+├── api.ts        # API request/response types
+└── forms.ts      # Form data types (React Hook Form)
+```
+
+**Type categories:**
+| Category      | File        | Examples                                    |
+| ------------- | ----------- | ------------------------------------------- |
+| Domain/Entity | `entity.ts` | `User`, `Room`, `Student`, `RoomType`       |
+| API Request   | `api.ts`    | `CreateRoomPayload`, `UpdateStudentRequest` |
+| API Response  | `api.ts`    | `RoomListResponse`, `StudentDetailResponse` |
+| Store Results | `api.ts`    | `LoginResult`, `MutationResult`             |
+| Form Data     | `forms.ts`  | `RoomFormData`, `StudentFormData`           |
+
+**DRY principle for types:**
+- Define types in ONE place, import everywhere
+- Never duplicate types in services or stores - move to `types/`
+- Use `import type` for type-only imports
+
+### Constants Organization
+
+**File:** `constants.ts` at feature root
+
+**Use `constants.ts`** for:
+- Validation patterns (email regex, phone regex)
+- Time values (timeouts, cooldowns, expiration)
+- Magic numbers with semantic meaning
+- Configuration values used across components
+- Color/style maps for dynamic styling
+
+**Common constant categories:**
+
+| Category             | Examples                                              |
+| -------------------- | ----------------------------------------------------- |
+| Validation patterns  | `EMAIL_PATTERN`, `PHONE_PATTERN`, `URL_PATTERN`       |
+| Time values          | `TIMEOUT_MS`, `CACHE_DURATION_SECONDS`, `DEBOUNCE_MS` |
+| Limits/Sizes         | `MAX_FILE_SIZE`, `PAGE_SIZE`, `MAX_ITEMS`             |
+| Status/State maps    | `statusColorMap`, `rolePermissions`, `stepConfig`     |
+| Configuration arrays | `tableColumns`, `filterOptions`, `sortOptions`        |
+
+**Example** (`features/rooms/constants.ts`):
+```ts
+// Validation
+export const ROOM_NAME_MAX_LENGTH = 100
+export const ROOM_CAPACITY_MAX = 50
+
+// Configuration
+export const roomTypeConfig = {
+  classroom: { icon: "classroom", label: "Classroom", color: "primary" },
+  office: { icon: "office", label: "Office", color: "secondary" },
+  lab: { icon: "lab", label: "Laboratory", color: "warning" },
+}
+
+// Table columns
+export const roomTableColumns = [
+  { key: "name", label: "Name", sortable: true },
+  { key: "type", label: "Type", sortable: true },
+  { key: "capacity", label: "Capacity", sortable: true },
+  { key: "actions", label: "Actions" },
+]
+```
+
+**When to use constants:**
+- ✅ Value is used in multiple files
+- ✅ Value has semantic meaning (not just a random number)
+- ✅ Value might change in the future
+- ❌ Value is only used once inline (keep it local)
+
+**Naming conventions:**
+- `SCREAMING_SNAKE_CASE` for primitive values (`CODE_EXPIRATION_SECONDS`)
+- `camelCase` for objects/arrays (`passwordRequirements`, `strengthColorMap`)
+
 ---
 
 ## Code Conventions
@@ -117,11 +260,9 @@ src/
 - **Prefer default export** when a module exports only one piece of code
   ```tsx
   // ✅ Good - single component
-  const StudentCard = ({ student }: Props) => {
+  export default function StudentCard({ student }: Props) {
     return <div>{student.name}</div>
   }
-
-  export default StudentCard;
   ```
   ```ts
   // ✅ Good - multiple related exports (hooks, utils)
@@ -205,7 +346,7 @@ Biome auto-organizes imports with these rules:
 // ✅ Good - standard HeroUI + minimal Tailwind
 import { Button, Card, CardBody } from '@heroui/react'
 
-const StudentCard = ({ student }: Props) => {
+export default function StudentCard({ student }: Props) {
   return (
     <Card>
       <CardBody className="gap-4">
@@ -215,8 +356,6 @@ const StudentCard = ({ student }: Props) => {
     </Card>
   )
 }
-
-export default StudentCard;
 ```
 
 ```tsx
@@ -239,7 +378,9 @@ function CustomButton(props: ButtonProps) {
 
 ### 1. Add a New Feature
 
-**Step 1**: Create feature folder
+**Step 1**: Create feature folder (create only what you need)
+
+**Simple feature** (few types):
 ```
 src/features/my-feature/
 ├── components/
@@ -247,7 +388,37 @@ src/features/my-feature/
 │   └── MyFeatureList.tsx      # default export
 ├── hooks/
 │   └── useMyFeature.ts        # named exports
+├── services/                   # Optional: if feature needs API calls
+│   └── myFeature.service.ts
+├── stores/                     # Optional: if feature needs UI state
+│   └── myFeature.store.ts
+├── utils/                      # Optional: if feature needs helpers
+│   └── myFeatureHelper.ts
+├── constants.ts                # Optional: shared constants (patterns, timeouts)
 └── types.ts                    # named exports
+```
+
+**Complex feature** (many types with clear categories):
+```
+src/features/my-feature/
+├── components/
+│   ├── MyFeatureCard.tsx
+│   ├── MyFeatureList.tsx
+│   └── MyFeatureForm.tsx
+├── hooks/
+│   └── useMyFeature.ts
+├── services/
+│   └── myFeature.service.ts
+├── stores/
+│   └── myFeature.store.ts
+├── utils/
+│   └── myFeatureHelper.ts
+├── constants.ts               # Validation, config, column definitions
+└── types/
+    ├── index.ts               # Re-exports all types
+    ├── entity.ts              # Domain types (MyFeature, MyFeatureStatus)
+    ├── api.ts                 # API request/response types
+    └── forms.ts               # Form data types
 ```
 
 **Step 2**: Create route
@@ -283,7 +454,7 @@ interface Props {
   onEdit?: (student: Student) => void
 }
 
-const StudentCard = ({ student, onEdit }: Props) => {
+export default function StudentCard({ student, onEdit }: Props) {
   return (
     <Card>
       <CardHeader>
@@ -298,8 +469,6 @@ const StudentCard = ({ student, onEdit }: Props) => {
     </Card>
   )
 }
-
-export default StudentCard;
 ```
 
 **Usage in route**:
@@ -313,11 +482,11 @@ function StudentsPage() {
 
 ### 3. Add a Data-Fetching Hook (React Query)
 
-**Service function** (`src/services/student.service.ts`):
+**Service function** (`src/features/students/services/student.service.ts`):
 ```ts
-import { apiClient } from './api.service'
+import { apiClient } from '@/services/api.service'
 
-import type { Student } from '@/features/students/types'
+import type { Student } from '../types'
 
 export async function fetchStudentById(studentId: string): Promise<Student> {
   return apiClient.get<Student>(`/students/${studentId}`)
@@ -332,7 +501,7 @@ export async function fetchStudents(): Promise<Student[]> {
 ```ts
 import { useQuery } from '@tanstack/react-query'
 
-import { fetchStudentById, fetchStudents } from '@/services/student.service'
+import { fetchStudentById, fetchStudents } from '../services/student.service'
 
 export function useStudents() {
   return useQuery({
@@ -358,7 +527,7 @@ import { Spinner } from '@heroui/react'
 import { useStudents } from '@/features/students/hooks/useStudents'
 import StudentCard from '@/features/students/components/StudentCard'
 
-const StudentList = () => {
+export default function StudentList() {
   const { data: students, isLoading, error } = useStudents()
 
   if (isLoading) return <Spinner />
@@ -372,11 +541,11 @@ const StudentList = () => {
     </div>
   )
 }
-
-export default StudentList;
 ```
 
 ### 4. Add Global State (Jotai Atom)
+
+**For GLOBAL state only** (theme, auth, etc.). For feature-specific state, use `features/{name}/stores/`.
 
 **File**: `src/stores/theme.store.ts`
 ```ts
@@ -391,7 +560,7 @@ import { useAtom } from 'jotai'
 
 import { themeAtom } from '@/stores/theme.store'
 
-const ThemeToggle = () => {
+export default function ThemeToggle() {
   const [theme, setTheme] = useAtom(themeAtom)
 
   return (
@@ -400,8 +569,6 @@ const ThemeToggle = () => {
     </Button>
   )
 }
-
-export default ThemeToggle;
 ```
 
 **Usage outside React**:
@@ -439,13 +606,13 @@ function AdminDashboard() {
 
 ### 6. Handle API Errors Consistently
 
-**Service layer** (`src/services/student.service.ts`):
+**Service layer** (`src/features/students/services/student.service.ts`):
 ```ts
-import { apiClient } from './api.service'
-import { ApplicationError } from '@/utils/error'
-import { logError } from '@/utils/error'
+import { apiClient } from '@/services/api.service'
 
-import type { Student } from '@/features/students/types'
+import { ApplicationError, logError } from '@/utils/error'
+
+import type { Student } from '../types'
 
 export async function deleteStudent(studentId: string): Promise<void> {
   try {
@@ -462,13 +629,13 @@ export async function deleteStudent(studentId: string): Promise<void> {
 import { Button } from '@heroui/react'
 import { useMutation } from '@tanstack/react-query'
 
-import { deleteStudent } from '@/services/student.service'
+import { deleteStudent } from '../services/student.service'
 
 interface Props {
   studentId: string
 }
 
-const DeleteStudentButton = ({ studentId }: Props) => {
+export default function DeleteStudentButton({ studentId }: Props) {
   const deleteMutation = useMutation({
     mutationFn: () => deleteStudent(studentId),
     onSuccess: () => {
@@ -490,8 +657,6 @@ const DeleteStudentButton = ({ studentId }: Props) => {
     </Button>
   )
 }
-
-export default DeleteStudentButton;
 ```
 
 ---
@@ -675,7 +840,7 @@ When working in this codebase, apply these principles:
 
 ### Component not found?
 - Check if it's in `features/[feature-name]/components/`
-- Verify default export: `const MyComponent = () => {}; export default MyComponent`
+- Verify default export: `export default function MyComponent() {}`
 - Use import: `import MyComponent from '@/features/[feature]/components/MyComponent'`
 
 ### API 401 errors?
@@ -706,5 +871,5 @@ When working in this codebase, apply these principles:
 
 ---
 
-**Last Updated**: 2025-11-09
-**For**: Codex & AI Agents
+**Last Updated**: 2025-12-01
+**For**: GPT & AI Agents

@@ -2,9 +2,9 @@ import { RouterProvider } from "@tanstack/react-router"
 import { useAtom, useAtomValue } from "jotai"
 import { useEffect } from "react"
 
-import { router } from "./router"
-
 import { authInitializedAtom, authStateAtom, checkAuthAtom } from "@/stores"
+
+import { router } from "./router"
 
 function InnerApp() {
 	const auth = useAtomValue(authStateAtom)

@@ -1,4 +1,15 @@
-import { Button, Card, CardBody, Spinner, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@heroui/react"
+import {
+	Button,
+	Card,
+	CardBody,
+	Spinner,
+	Table,
+	TableBody,
+	TableCell,
+	TableColumn,
+	TableHeader,
+	TableRow,
+} from "@heroui/react"
 
 import TablerCirclePlusFilled from "~icons/tabler/circle-plus-filled"
 

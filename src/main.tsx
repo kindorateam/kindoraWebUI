@@ -6,10 +6,10 @@ import "jotai-devtools/styles.css"
 
 import "./index.css"
 
+import { appStore } from "@/stores/jotaiStore"
+
 import App from "./App"
 import { ErrorBoundary } from "./components/error"
-
-import { appStore } from "@/stores/jotaiStore"
 
 const queryClient = new QueryClient({
 	defaultOptions: {

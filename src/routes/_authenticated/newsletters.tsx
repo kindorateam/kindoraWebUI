@@ -1,15 +1,30 @@
-import { createFileRoute } from "@tanstack/react-router"
+import { createFileRoute, useNavigate } from "@tanstack/react-router"
 
+import { useTabNavigation } from "@/hooks/useTabNavigation"
 import NewslettersPage from "@/pages/NewslettersPage"
 
+type TabType = "sent" | "scheduled" | "drafts"
+
+interface NewslettersSearch {
+	tab: TabType
+}
+
+function NewslettersLayout() {
+	const { tab } = Route.useSearch()
+	const navigate = useNavigate({ from: Route.fullPath })
+	const handleTabChange = useTabNavigation(tab, "sent", navigate)
+
+	return <NewslettersPage activeTab={tab} onTabChange={handleTabChange} />
+}
+
 export const Route = createFileRoute("/_authenticated/newsletters")({
-	component: () => <NewslettersPage />,
-	validateSearch: (s: Record<string, unknown>) => {
-		const t = String((s.tab ?? "") as string)
-		const allowed = ["sent", "scheduled", "drafts"] as const
+	component: NewslettersLayout,
+	validateSearch: (search: Record<string, unknown>): NewslettersSearch => {
+		const tab = search.tab as string
+		const validTabs: TabType[] = ["sent", "scheduled", "drafts"]
 
 		return {
-			tab: allowed.includes(t as (typeof allowed)[number]) ? t : "sent",
+			tab: validTabs.includes(tab as TabType) ? (tab as TabType) : "sent",
 		}
 	},
 	beforeLoad: () => ({ breadcrumb: "Newsletters" }),
