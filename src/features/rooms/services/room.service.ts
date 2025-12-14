@@ -72,3 +72,19 @@ export const createRoom = async (payload: RoomCreatePayload): Promise<Room> => {
 	const apiRoom = await apiClient.post<ApiRoom>("/rooms", payload)
 	return transformApiRoom(apiRoom)
 }
+
+/**
+ * Fetches all students available for room assignment
+ */
+export const getAllStudents = async (): Promise<Student[]> => {
+	const apiStudents = await apiClient.get<ApiStudent[]>("/rooms/all-students-list")
+	return apiStudents.map(transformStudent)
+}
+
+/**
+ * Fetches all employees available for room assignment
+ */
+export const getAllEmployees = async (): Promise<StaffMember[]> => {
+	const apiEmployees = await apiClient.get<ApiStaff[]>("/rooms/all-employees-list")
+	return apiEmployees.map(transformStaff)
+}
