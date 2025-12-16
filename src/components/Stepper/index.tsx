@@ -18,6 +18,7 @@ export interface StepperProps {
 	isNextDisabled?: boolean
 	isNextLoading?: boolean
 	hideBackOnFirstStep?: boolean
+	showValueLabel?: boolean
 	className?: string
 }
 
@@ -33,6 +34,7 @@ const Stepper = ({
 	isNextDisabled = false,
 	isNextLoading = false,
 	hideBackOnFirstStep = true,
+	showValueLabel = true,
 	className,
 }: StepperProps) => {
 	const isFirstStep = currentStep === 0
@@ -52,7 +54,6 @@ const Stepper = ({
 
 	return (
 		<div className={className}>
-			{/* Progress Bar Section */}
 			<div className="mb-8">
 				<Progress
 					aria-label="Step progress"
@@ -65,16 +66,14 @@ const Stepper = ({
 						value: "text-base text-foreground text-right",
 					}}
 					label={currentStepData?.label}
-					showValueLabel
+					showValueLabel={showValueLabel}
 					value={progressValue}
 					valueLabel={nextStepData?.label ?? currentStepData?.label}
 				/>
 			</div>
 
-			{/* Step Content */}
 			<div className="mb-6">{currentStepData?.content}</div>
 
-			{/* Navigation Buttons */}
 			<div className="flex flex-col gap-3">
 				<Button
 					color="primary"

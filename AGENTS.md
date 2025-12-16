@@ -260,9 +260,11 @@ export const roomTableColumns = [
 - **Prefer default export** when a module exports only one piece of code
   ```tsx
   // ✅ Good - single component
-  export default function StudentCard({ student }: Props) {
+  const StudentCard = ({ student }: Props) => {
     return <div>{student.name}</div>
   }
+
+  export default StudentCard
   ```
   ```ts
   // ✅ Good - multiple related exports (hooks, utils)

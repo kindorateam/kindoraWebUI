@@ -22,7 +22,7 @@ import { openAddRoomModal } from "../../stores/addRoomModal.store"
 import RoomsEmptyState from "../RoomsEmptyState"
 
 import columns from "./columns"
-import { renderCell } from "./renderCell"
+import RoomsTableCell from "./renderCell"
 
 const RoomsTable = () => {
 	const { data: rooms = [], isLoading, error, refetch } = useRooms()
@@ -117,7 +117,13 @@ const RoomsTable = () => {
 						loadingContent={<Spinner size="lg" />}
 					>
 						{(room) => (
-							<TableRow key={room.id}>{(columnKey) => <TableCell>{renderCell(room, columnKey)}</TableCell>}</TableRow>
+							<TableRow key={room.id}>
+								{(columnKey) => (
+									<TableCell>
+										<RoomsTableCell columnKey={columnKey} room={room} />
+									</TableCell>
+								)}
+							</TableRow>
 						)}
 					</TableBody>
 				</Table>

@@ -1,5 +1,5 @@
-import { Avatar, AvatarGroup, Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@heroui/react"
-import { Link } from "@tanstack/react-router"
+import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@heroui/react"
+import { Link, useRouter } from "@tanstack/react-router"
 
 import TablerEdit from "~icons/tabler/edit"
 import TablerEye from "~icons/tabler/eye"
@@ -7,42 +7,18 @@ import TablerTrash from "~icons/tabler/trash"
 
 import RoomIcon from "../RoomIcon"
 
+import { renderAvatarGroup } from "./renderAvatarGroup"
+
 import type { Room } from "../../types"
 
-interface AvatarItem {
-	id: string
-	name: string
-	avatar: string
+interface RoomsTableCellProps {
+	room: Room
+	columnKey: React.Key
 }
 
-function renderAvatarGroup(items: AvatarItem[]) {
-	if (items.length === 0) {
-		return <span className="text-gray-400 text-sm">No one</span>
-	}
+const RoomsTableCell = ({ room, columnKey }: RoomsTableCellProps) => {
+	const router = useRouter()
 
-	const extraCount = items.length - 2
-
-	return (
-		<div className="flex justify-center">
-			<AvatarGroup>
-				{items.slice(0, 2).map((item) => (
-					<Avatar
-						alt={item.name}
-						classNames={{ base: "ring-green-500" }}
-						isBordered
-						key={item.id}
-						showFallback
-						size="sm"
-						src={item.avatar}
-					/>
-				))}
-				{extraCount > 0 && <Avatar name={`${extraCount}`} size="sm" />}
-			</AvatarGroup>
-		</div>
-	)
-}
-
-export function renderCell(room: Room, columnKey: React.Key) {
 	switch (columnKey) {
 		case "room":
 			return (
@@ -68,12 +44,12 @@ export function renderCell(room: Room, columnKey: React.Key) {
 
 		case "signInStudents": {
 			const checkedInStudents = room.signedInStudents.filter((student) => student.checkedIn)
-			return renderAvatarGroup(checkedInStudents)
+			return renderAvatarGroup(checkedInStudents, "Signed-in students")
 		}
 
 		case "signInStaff": {
 			const checkedInStaff = room.signedInStaff.filter((staff) => staff.checkedIn)
-			return renderAvatarGroup(checkedInStaff)
+			return renderAvatarGroup(checkedInStaff, "Signed-in staff")
 		}
 
 		case "actions":
@@ -103,6 +79,13 @@ export function renderCell(room: Room, columnKey: React.Key) {
 								key="view"
 								className="text-success"
 								startContent={<TablerEye aria-hidden className="size-5" />}
+								onPress={() => {
+									void router.navigate({
+										to: "/rooms/$roomId",
+										params: { roomId: room.id },
+										search: { tab: "students" },
+									})
+								}}
 							>
 								View
 							</DropdownItem>
@@ -110,6 +93,13 @@ export function renderCell(room: Room, columnKey: React.Key) {
 								key="edit"
 								className="text-warning"
 								startContent={<TablerEdit aria-hidden className="size-5" />}
+								onPress={() => {
+									void router.navigate({
+										to: "/rooms/$roomId",
+										params: { roomId: room.id },
+										search: { tab: "profile" },
+									})
+								}}
 							>
 								Edit
 							</DropdownItem>
@@ -129,3 +119,5 @@ export function renderCell(room: Room, columnKey: React.Key) {
 			return null
 	}
 }
+
+export default RoomsTableCell

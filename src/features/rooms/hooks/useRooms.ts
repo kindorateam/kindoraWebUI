@@ -22,9 +22,15 @@ export const useRooms = () => {
  * Hook to fetch a single room by ID from the API using TanStack Query
  */
 export const useRoom = (roomId: string) => {
+	const queryClient = useQueryClient()
+
 	return useQuery<Room, Error>({
 		queryKey: ["rooms", roomId],
 		queryFn: () => getRoomById(roomId),
+		placeholderData: () => {
+			const rooms = queryClient.getQueryData<Room[]>(["rooms"])
+			return rooms?.find((room) => room.id === roomId)
+		},
 		staleTime: 5 * 60 * 1000, // 5 minutes
 		gcTime: 10 * 60 * 1000, // 10 minutes
 		enabled: !!roomId, // Only run query if roomId is provided
@@ -89,5 +95,8 @@ export const useAllStudentsAndEmployees = () => {
 		isLoading: studentsQuery.isLoading || employeesQuery.isLoading,
 		isError: studentsQuery.isError || employeesQuery.isError,
 		error: studentsQuery.error || employeesQuery.error,
+		refetchStudents: studentsQuery.refetch,
+		refetchEmployees: employeesQuery.refetch,
+		refetchAll: () => Promise.all([studentsQuery.refetch(), employeesQuery.refetch()]),
 	}
 }

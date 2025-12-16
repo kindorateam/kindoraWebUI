@@ -21,17 +21,17 @@ interface AddRoomStepperProps {
 const steps = [
 	{
 		key: "details",
-		label: "Step 1",
+		label: "Step 1/3",
 		content: <RoomDetailsStep />,
 	},
 	{
 		key: "staff-students",
-		label: "Step 2",
+		label: "Step 2/3",
 		content: <AddStaffStudentsStep />,
 	},
 	{
 		key: "confirm",
-		label: "Step 3",
+		label: "Step 3/3",
 		content: <ConfirmRoomStep />,
 	},
 ]
@@ -98,6 +98,7 @@ const AddRoomStepper = ({ onComplete, onCancel, isLoading = false }: AddRoomStep
 					onBack={handleBack}
 					onComplete={handleComplete}
 					onNext={handleNext}
+					showValueLabel={false}
 					steps={steps}
 				/>
 			</div>

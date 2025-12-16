@@ -1,5 +1,7 @@
-import { Select, SelectItem, Skeleton } from "@heroui/react"
+import { Button, Select, SelectItem, Skeleton } from "@heroui/react"
 import { Controller, useFormContext } from "react-hook-form"
+
+import { getErrorMessage } from "@/utils/error"
 
 import { useAllStudentsAndEmployees } from "../../hooks/useRooms"
 
@@ -21,10 +23,32 @@ const AddStaffStudentsStep = () => {
 		formState: { errors },
 	} = useFormContext<AddRoomFormData>()
 
-	const { students, employees, isLoading } = useAllStudentsAndEmployees()
+	const { students, employees, error, isError, isLoading, refetchAll } = useAllStudentsAndEmployees()
 
 	if (isLoading) {
 		return <AddStaffStudentsStepSkeleton />
+	}
+
+	if (isError) {
+		return (
+			<div className="flex flex-col gap-6">
+				<h2 className="font-medium text-xl">Add Staff & Students</h2>
+				<div className="rounded-lg bg-danger-50 p-4 text-danger-700 text-sm">
+					<p className="font-medium">Failed to load staff and students</p>
+					<p className="mt-1 text-danger-600">{getErrorMessage(error) ?? "Please try again."}</p>
+				</div>
+				<Button
+					color="primary"
+					onPress={() => {
+						void refetchAll()
+					}}
+					fullWidth
+					size="lg"
+				>
+					Retry
+				</Button>
+			</div>
+		)
 	}
 
 	return (

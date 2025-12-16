@@ -1,3 +1,5 @@
+import axios from "axios"
+
 import type { AppError, ErrorSeverity } from "@/types/error"
 
 export class ApplicationError extends Error implements AppError {
@@ -37,6 +39,15 @@ export const isApplicationError = (error: unknown): error is ApplicationError =>
 }
 
 export const getErrorMessage = (error: unknown): string => {
+	if (axios.isAxiosError(error)) {
+		const responseData: unknown = error.response?.data
+		if (responseData && typeof responseData === "object" && "message" in responseData) {
+			const message = responseData.message
+			if (typeof message === "string" && message.length > 0) {
+				return message
+			}
+		}
+	}
 	if (error instanceof Error) {
 		return error.message
 	}

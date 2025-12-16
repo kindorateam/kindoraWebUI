@@ -1,13 +1,17 @@
 import { Card, CardBody, CardHeader } from "@heroui/react"
 
+import { useRoom } from "../../hooks/useRooms"
+
 interface RoomActivityTabProps {
 	roomId: string
 }
 
 const RoomActivityTab = ({ roomId }: RoomActivityTabProps) => {
+	const { data: room } = useRoom(roomId)
+
 	return (
 		<div className="space-y-4">
-			<h2 className="font-semibold text-xl">Activity Log - Room {roomId}</h2>
+			<h2 className="font-semibold text-xl">Activity Log - {room?.name ?? "Room"}</h2>
 
 			<Card>
 				<CardHeader>
@@ -15,7 +19,7 @@ const RoomActivityTab = ({ roomId }: RoomActivityTabProps) => {
 				</CardHeader>
 				<CardBody>
 					<div className="space-y-3">
-						<p className="text-gray-600">Activity tracking for Room {roomId} will be displayed here.</p>
+						<p className="text-gray-600">Activity tracking for {room?.name ?? "this room"} will be displayed here.</p>
 						<ul className="space-y-2 text-sm">
 							<li className="border-primary border-l-2 pl-3">
 								<span className="font-medium">10:30 AM</span> - Student checked in

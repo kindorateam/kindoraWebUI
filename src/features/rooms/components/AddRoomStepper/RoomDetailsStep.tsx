@@ -127,7 +127,7 @@ const RoomDetailsStep = () => {
 							formatOptions={{ useGrouping: false }}
 							isInvalid={!!errors.ratio}
 							isRequired
-							label="Ratio"
+							label="Students per staff"
 							labelPlacement="inside"
 							minValue={1}
 							onValueChange={(value) => field.onChange(value ?? 1)}

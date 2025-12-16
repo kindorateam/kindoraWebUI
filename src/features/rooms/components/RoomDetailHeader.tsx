@@ -32,10 +32,10 @@ const RoomDetailHeader = ({ activeTab, roomId, onTabChange }: RoomDetailHeaderPr
 			<div className="container mx-auto max-w-4xl">
 				<div className="mb-13 flex">
 					<div className="me-7">
-						<Avatar className="size-37.5" showFallback />
+						<Avatar className="size-37.5" name={room?.name ?? "Room"} showFallback />
 					</div>
 					<div className="w-full">
-						<h1 className="mb-3.5 font-semibold leading-none lg:text-[36px]">{room?.name ?? `Room ${roomId}`}</h1>
+						<h1 className="mb-3.5 font-semibold leading-none lg:text-[36px]">{room?.name ?? "Room"}</h1>
 						<div className="mb-4 flex items-center">
 							<div className="flex flex-wrap gap-4">
 								{stats.map((stat) => (

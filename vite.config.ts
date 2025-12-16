@@ -27,6 +27,7 @@ export default defineConfig({
 		tailwindcss(),
 	],
 	server: {
+		hmr: true,
 		https: {
 			key: fs.readFileSync("./.certs/localhost-key.pem"),
 			cert: fs.readFileSync("./.certs/localhost.pem"),
