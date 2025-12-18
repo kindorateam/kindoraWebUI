@@ -5,9 +5,10 @@ import TablerEdit from "~icons/tabler/edit"
 import TablerEye from "~icons/tabler/eye"
 import TablerTrash from "~icons/tabler/trash"
 
+import { openDeactivateRoomModal } from "../../stores/deactivateRoomModal.store"
 import RoomIcon from "../RoomIcon"
 
-import { renderAvatarGroup } from "./renderAvatarGroup"
+import SignedInAvatarGroup from "./SignedInAvatarGroup"
 
 import type { Room } from "../../types"
 
@@ -44,12 +45,12 @@ const RoomsTableCell = ({ room, columnKey }: RoomsTableCellProps) => {
 
 		case "signInStudents": {
 			const checkedInStudents = room.signedInStudents.filter((student) => student.checkedIn)
-			return renderAvatarGroup(checkedInStudents, "Signed-in students")
+			return <SignedInAvatarGroup items={checkedInStudents} tooltipLabel="Signed-in students" />
 		}
 
 		case "signInStaff": {
 			const checkedInStaff = room.signedInStaff.filter((staff) => staff.checkedIn)
-			return renderAvatarGroup(checkedInStaff, "Signed-in staff")
+			return <SignedInAvatarGroup items={checkedInStaff} tooltipLabel="Signed-in staff" />
 		}
 
 		case "actions":
@@ -107,6 +108,7 @@ const RoomsTableCell = ({ room, columnKey }: RoomsTableCellProps) => {
 								key="deactivate"
 								className="text-danger"
 								startContent={<TablerTrash aria-hidden className="size-5" />}
+								onPress={() => openDeactivateRoomModal(room.id, room.name)}
 							>
 								Deactivate
 							</DropdownItem>

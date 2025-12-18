@@ -1,4 +1,5 @@
 import AddRoomModal from "@/features/rooms/components/AddRoomModal"
+import DeactivateRoomModal from "@/features/rooms/components/DeactivateRoomModal"
 import RoomsTable from "@/features/rooms/components/RoomsTable"
 
 const RoomsPage = () => {
@@ -9,6 +10,7 @@ const RoomsPage = () => {
 				<RoomsTable />
 			</main>
 			<AddRoomModal />
+			<DeactivateRoomModal />
 		</>
 	)
 }

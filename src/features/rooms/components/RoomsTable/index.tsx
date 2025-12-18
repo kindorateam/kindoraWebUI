@@ -12,6 +12,7 @@ import {
 	TableHeader,
 	TableRow,
 } from "@heroui/react"
+import { useAtom } from "jotai"
 import { useMemo, useState } from "react"
 
 import TableError from "@/components/TableError"
@@ -19,34 +20,27 @@ import TablerCirclePlusFilled from "~icons/tabler/circle-plus-filled"
 
 import { useRooms } from "../../hooks/useRooms"
 import { openAddRoomModal } from "../../stores/addRoomModal.store"
+import { viewDeactivatedRoomsAtom } from "../../stores/viewDeactivatedRooms.store"
 import RoomsEmptyState from "../RoomsEmptyState"
 
 import columns from "./columns"
-import RoomsTableCell from "./renderCell"
+import RoomsTableCell from "./RoomsTableCell"
 
 const RoomsTable = () => {
-	const { data: rooms = [], isLoading, error, refetch } = useRooms()
+	const [viewDeactivated, setViewDeactivated] = useAtom(viewDeactivatedRoomsAtom)
+	const status = viewDeactivated ? "inactive" : "active"
+	const { data: rooms = [], isLoading, error, refetch } = useRooms(status)
 	const [page, setPage] = useState(1)
-	const [showDeactivated, setShowDeactivated] = useState(false)
 	const rowsPerPage = 10
 
-	const filteredItems = useMemo(() => {
-		// TODO: Filter by deactivated status when rooms have status field
-		// if (!showDeactivated) {
-		// 	return rooms.filter((room) => room.status === "active")
-		// }
-
-		return rooms
-	}, [rooms])
-
-	const pages = Math.ceil(filteredItems.length / rowsPerPage) || 1
+	const pages = Math.ceil(rooms.length / rowsPerPage) || 1
 
 	const items = useMemo(() => {
 		const start = (page - 1) * rowsPerPage
 		const end = start + rowsPerPage
 
-		return filteredItems.slice(start, end)
-	}, [page, filteredItems])
+		return rooms.slice(start, end)
+	}, [page, rooms])
 
 	const topContent = useMemo(() => {
 		return (
@@ -54,8 +48,8 @@ const RoomsTable = () => {
 				<div className="flex items-center justify-end gap-5">
 					<Switch
 						classNames={{ label: "text-neutral-600 text-sm" }}
-						isSelected={showDeactivated}
-						onValueChange={setShowDeactivated}
+						isSelected={viewDeactivated}
+						onValueChange={setViewDeactivated}
 						size="sm"
 					>
 						View deactivated
@@ -68,10 +62,10 @@ const RoomsTable = () => {
 						Add Room
 					</Button>
 				</div>
-				<span className="text-default-400 text-small">Total {filteredItems.length} rooms</span>
+				<span className="text-default-400 text-small">Total {rooms.length} rooms</span>
 			</div>
 		)
-	}, [showDeactivated, filteredItems.length])
+	}, [viewDeactivated, setViewDeactivated, rooms.length])
 
 	return (
 		<Card>

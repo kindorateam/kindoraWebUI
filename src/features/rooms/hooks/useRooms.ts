@@ -2,17 +2,25 @@ import { useMutation, useQueries, useQuery, useQueryClient } from "@tanstack/rea
 
 import { getCompanyId } from "@/features/auth/services/token.service"
 
-import { createRoom, getAllEmployees, getAllStudents, getRoomById, getRooms } from "../services/room.service"
+import {
+	createRoom,
+	getAllEmployees,
+	getAllStudents,
+	getRoomById,
+	getRooms,
+	inactivateRoom,
+} from "../services/room.service"
 
+import type { RoomStatus } from "../services/room.service"
 import type { AddRoomFormData, Room } from "../types"
 
 /**
  * Hook to fetch all rooms from the API using TanStack Query
  */
-export const useRooms = () => {
+export const useRooms = (status: RoomStatus = "active") => {
 	return useQuery<Room[], Error>({
-		queryKey: ["rooms"],
-		queryFn: getRooms,
+		queryKey: ["rooms", { status }],
+		queryFn: () => getRooms({ status }),
 		staleTime: 5 * 60 * 1000, // 5 minutes
 		gcTime: 10 * 60 * 1000, // 10 minutes
 	})
@@ -99,4 +107,18 @@ export const useAllStudentsAndEmployees = () => {
 		refetchEmployees: employeesQuery.refetch,
 		refetchAll: () => Promise.all([studentsQuery.refetch(), employeesQuery.refetch()]),
 	}
+}
+
+/**
+ * Hook to deactivate a room using TanStack Query mutation
+ */
+export const useInactivateRoom = () => {
+	const queryClient = useQueryClient()
+
+	return useMutation({
+		mutationFn: (roomId: string) => inactivateRoom(roomId),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ["rooms"] })
+		},
+	})
 }

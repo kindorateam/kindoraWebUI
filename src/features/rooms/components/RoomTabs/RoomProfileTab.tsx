@@ -1,6 +1,8 @@
 import { Avatar, Button, Card, CardBody, Chip, Input, Select, SelectItem } from "@heroui/react"
 import { useState } from "react"
 
+import { useRoom } from "../../hooks/useRooms"
+import { openDeactivateRoomModal } from "../../stores/deactivateRoomModal.store"
 import ImagePickerModal from "../ImagePickerModal"
 
 interface RoomProfileTabProps {
@@ -60,7 +62,8 @@ const SaveIcon = () => (
 	</svg>
 )
 
-const RoomProfileTab = ({ roomId: _roomId }: RoomProfileTabProps) => {
+const RoomProfileTab = ({ roomId }: RoomProfileTabProps) => {
+	const { data: room } = useRoom(roomId)
 	const [assignedStaff, setAssignedStaff] = useState(mockStaff)
 	const [avatarPreview, setAvatarPreview] = useState<string | null>(null)
 	const [isImagePickerOpen, setIsImagePickerOpen] = useState(false)
@@ -189,7 +192,13 @@ const RoomProfileTab = ({ roomId: _roomId }: RoomProfileTabProps) => {
 				</div>
 
 				<div className="flex items-center justify-between">
-					<Button color="danger" endContent={<TrashIcon />} radius="md" size="md">
+					<Button
+						color="danger"
+						endContent={<TrashIcon />}
+						onPress={() => openDeactivateRoomModal(roomId, room?.name ?? "this room")}
+						radius="md"
+						size="md"
+					>
 						Deactivate Room
 					</Button>
 					<div className="flex gap-5">

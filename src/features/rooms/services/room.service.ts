@@ -49,11 +49,22 @@ export const transformApiRoom = (apiRoom: ApiRoom): Room => {
 	}
 }
 
+export type RoomStatus = "active" | "inactive" | "all"
+
+export interface GetRoomsParams {
+	limit?: number
+	offset?: number
+	status?: RoomStatus
+}
+
 /**
  * Fetches all rooms from the API
  */
-export const getRooms = async (): Promise<Room[]> => {
-	const apiRooms = await apiClient.get<ApiRoom[]>("/rooms")
+export const getRooms = async (params: GetRoomsParams = {}): Promise<Room[]> => {
+	const { limit = 20, offset = 0, status = "active" } = params
+	const apiRooms = await apiClient.get<ApiRoom[]>("/rooms", {
+		params: { limit, offset, status },
+	})
 	return apiRooms.map(transformApiRoom)
 }
 
@@ -87,4 +98,11 @@ export const getAllStudents = async (): Promise<Student[]> => {
 export const getAllEmployees = async (): Promise<StaffMember[]> => {
 	const apiEmployees = await apiClient.get<ApiStaff[]>("/rooms/all-employees-list")
 	return apiEmployees.map(transformStaff)
+}
+
+/**
+ * Deactivates a room by ID
+ */
+export const inactivateRoom = async (roomId: string): Promise<void> => {
+	await apiClient.post(`/rooms/${roomId}/inactivate`)
 }

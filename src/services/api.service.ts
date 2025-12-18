@@ -42,14 +42,10 @@ class ApiClient {
 				return response
 			},
 			async (error: unknown) => {
-				// Handle common errors
 				if (axios.isAxiosError(error) && error.response?.status === 401) {
-					const isAuthCheck =
-						error.config?.url?.includes("/auth/me") ??
-						error.config?.url?.includes("/auth/verify") ??
-						error.config?.url?.includes("/auth/refresh")
+					const isRefreshRequest = error.config?.url?.includes("/auth/refresh")
 
-					if (!isAuthCheck) {
+					if (!isRefreshRequest) {
 						// Try to refresh token first
 						const newToken = await refreshAccessToken()
 						if (newToken) {
@@ -61,7 +57,7 @@ class ApiClient {
 							}
 						}
 
-						// If refresh failed or no original request, redirect to login
+						// If refresh failed, redirect to login
 						clearToken()
 						redirectToLogin()
 					}

@@ -8,10 +8,15 @@ interface AvatarItem {
 	avatar: string
 }
 
+interface SignedInAvatarGroupProps {
+	items: AvatarItem[]
+	tooltipLabel: string
+}
+
 const avatarGroupNoHoverTranslateClassName =
 	"data-[hover=true]:!translate-x-0 data-[focus-visible=true]:!translate-x-0 rtl:data-[hover=true]:!translate-x-0 rtl:data-[focus-visible=true]:!translate-x-0"
 
-export function renderAvatarGroup(items: AvatarItem[], tooltipLabel: string) {
+const SignedInAvatarGroup = ({ items, tooltipLabel }: SignedInAvatarGroupProps) => {
 	if (items.length === 0) {
 		return <span className="text-gray-400 text-sm">No one</span>
 	}
@@ -50,3 +55,5 @@ export function renderAvatarGroup(items: AvatarItem[], tooltipLabel: string) {
 		</div>
 	)
 }
+
+export default SignedInAvatarGroup

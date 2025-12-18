@@ -1,6 +1,7 @@
 import { Outlet, createFileRoute, useNavigate } from "@tanstack/react-router"
 
 import { RouteErrorBoundary } from "@/components/error"
+import DeactivateRoomModal from "@/features/rooms/components/DeactivateRoomModal"
 import RoomDetailHeader from "@/features/rooms/components/RoomDetailHeader"
 import { useTabNavigation } from "@/hooks/useTabNavigation"
 
@@ -35,6 +36,10 @@ function RoomDetailLayout() {
 
 	const handleTabChange = useTabNavigation(tab, "students", navigate)
 
+	const handleDeactivateSuccess = () => {
+		void navigate({ to: "/rooms" })
+	}
+
 	return (
 		<RouteErrorBoundary routeName="room-detail">
 			<div>
@@ -43,6 +48,7 @@ function RoomDetailLayout() {
 					<Outlet />
 				</main>
 			</div>
+			<DeactivateRoomModal onSuccess={handleDeactivateSuccess} />
 		</RouteErrorBoundary>
 	)
 }
