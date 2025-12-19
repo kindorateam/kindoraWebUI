@@ -54,7 +54,7 @@ const RoomStudentsTable = ({ roomId }: RoomStudentsTableProps) => {
 						tr: "border-b border-default-200 last:border-b-0",
 						th: "py-0",
 						td: "py-0",
-						tbody: "[&>tr]:h-[55px]",
+						tbody: "h-[550px] [&>tr]:h-[55px]",
 					}}
 				>
 					<TableHeader columns={columns}>

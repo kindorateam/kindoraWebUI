@@ -69,12 +69,11 @@ const RoomsTable = () => {
 
 	return (
 		<Card>
-			<CardBody className="p-4">
+			<CardBody className="flex flex-col gap-4 p-4">
+				{topContent}
 				<Table
 					aria-label="Rooms table"
 					removeWrapper
-					topContent={topContent}
-					topContentPlacement="outside"
 					bottomContent={
 						pages > 1 ? (
 							<div className="flex w-full justify-center">
@@ -93,7 +92,8 @@ const RoomsTable = () => {
 					bottomContentPlacement="outside"
 					classNames={{
 						tr: "border-b border-default-200 last:border-b-0",
-						td: "p-0",
+						th: "py-0",
+						td: "py-0",
 						tbody: "h-[550px] [&>tr]:h-[55px]",
 					}}
 				>
