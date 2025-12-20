@@ -12,6 +12,9 @@ import RoomDetailsStep from "./RoomDetailsStep"
 
 import type { AddRoomFormData } from "../../types"
 
+const STEP1_FIELDS = ["name", "capacity", "ratio", "minAge", "maxAge"] as const
+const STEP2_FIELDS = ["staffIds", "studentIds"] as const
+
 interface AddRoomStepperProps {
 	onComplete?: (data: AddRoomFormData) => void
 	onCancel?: () => void
@@ -61,25 +64,15 @@ const AddRoomStepper = ({ onComplete, onCancel, isLoading = false }: AddRoomStep
 	} = form
 	const formData = watch()
 
+	const hasStep1Errors = STEP1_FIELDS.some((f) => errors[f])
+	const hasStep2Errors = STEP2_FIELDS.some((f) => errors[f])
+	// capacity/ratio have defaults, only need to check name and ages are filled
 	const isStep1Valid =
-		!errors.name &&
-		!errors.capacity &&
-		!errors.ratio &&
-		!errors.minAge &&
-		!errors.maxAge &&
-		formData.name &&
-		formData.capacity >= 1 &&
-		formData.ratio >= 1 &&
-		formData.minAge !== undefined &&
-		formData.maxAge !== undefined
-	const isStep2Valid = !errors.staffIds && !errors.studentIds
+		!hasStep1Errors && Boolean(formData.name) && formData.minAge !== undefined && formData.maxAge !== undefined
+	const isStep2Valid = !hasStep2Errors
 
 	const handleNext = async () => {
-		// Validate current step fields before proceeding
-		const fieldsToValidate =
-			currentStep === 0
-				? (["name", "capacity", "ratio", "minAge", "maxAge"] as const)
-				: (["staffIds", "studentIds"] as const)
+		const fieldsToValidate = currentStep === 0 ? STEP1_FIELDS : STEP2_FIELDS
 		const stepValid = await trigger(fieldsToValidate)
 		if (stepValid) {
 			setCurrentStep((prev) => prev + 1)
