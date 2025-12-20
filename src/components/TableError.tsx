@@ -9,7 +9,7 @@ interface TableErrorProps {
 
 const TableError = ({ onRetry }: TableErrorProps) => {
 	return (
-		<Card className="w-full">
+		<Card className="mx-auto max-w-[452px]">
 			<CardBody className="items-center gap-5 px-7 py-8 text-center">
 				<div className="relative h-[89px] w-20 overflow-clip">
 					<StreamlineEmojisCloudWithRain2 aria-hidden className="size-full text-warning-500" />

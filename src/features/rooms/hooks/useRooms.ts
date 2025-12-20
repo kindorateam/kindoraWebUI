@@ -62,6 +62,9 @@ export const useCreateRoom = () => {
 				companyId,
 				title: formData.name,
 				capacity: formData.capacity,
+				ratio: formData.ratio,
+				minAge: formData.minAge * 12, // Convert years to months
+				maxAge: formData.maxAge * 12, // Convert years to months
 				studentIds: formData.studentIds,
 				employeeIds: formData.staffIds,
 			})

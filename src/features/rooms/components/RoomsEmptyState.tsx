@@ -1,9 +1,6 @@
-import { Button, Card, CardBody } from "@heroui/react"
+import { Card, CardBody } from "@heroui/react"
 
-import SolarAddCircleBold from "~icons/solar/add-circle-bold"
 import TwemojiEmptyNest from "~icons/twemoji/empty-nest"
-
-import { openAddRoomModal } from "../stores/addRoomModal.store"
 
 const RoomsEmptyState = () => {
 	return (
@@ -17,17 +14,6 @@ const RoomsEmptyState = () => {
 					<h3 className="font-semibold text-3xl leading-9">No rooms added yet</h3>
 					<p className="text-default-700 text-lg leading-7">Please add your first room to get started.</p>
 				</div>
-
-				<Button
-					className="w-full"
-					color="primary"
-					endContent={<SolarAddCircleBold aria-hidden className="size-5" />}
-					onPress={openAddRoomModal}
-					size="lg"
-					variant="solid"
-				>
-					Add Room
-				</Button>
 			</CardBody>
 		</Card>
 	)

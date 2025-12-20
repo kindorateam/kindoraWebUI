@@ -94,7 +94,8 @@ const RoomsTable = () => {
 						tr: "border-b border-default-200 last:border-b-0",
 						th: "py-0",
 						td: "py-0",
-						tbody: "h-[550px] [&>tr]:h-[55px]",
+						tbody: "[&>tr]:h-[55px]",
+						emptyWrapper: "h-[550px]",
 					}}
 				>
 					<TableHeader columns={columns}>

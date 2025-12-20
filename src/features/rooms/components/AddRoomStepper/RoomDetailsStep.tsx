@@ -1,4 +1,4 @@
-import { Avatar, Input, NumberInput } from "@heroui/react"
+import { Avatar, Input, NumberInput, Select, SelectItem } from "@heroui/react"
 import { useState } from "react"
 import { Controller, useFormContext } from "react-hook-form"
 
@@ -7,6 +7,17 @@ import TablerPencil from "~icons/tabler/pencil"
 import ImagePickerModal from "../ImagePickerModal"
 
 import type { AddRoomFormData } from "../../types"
+
+const ageOptions = [
+	{ key: "0", label: "0 years" },
+	{ key: "1", label: "1 year" },
+	{ key: "2", label: "2 years" },
+	{ key: "3", label: "3 years" },
+	{ key: "4", label: "4 years" },
+	{ key: "5", label: "5 years" },
+	{ key: "6", label: "6 years" },
+	{ key: "7", label: "7 years" },
+]
 
 const RoomDetailsStep = () => {
 	const [isImagePickerOpen, setIsImagePickerOpen] = useState(false)
@@ -138,6 +149,60 @@ const RoomDetailsStep = () => {
 						/>
 					)}
 				/>
+				<div className="grid grid-cols-2 gap-3">
+					<Controller
+						control={control}
+						name="minAge"
+						render={({ field }) => (
+							<Select
+								errorMessage={errors.minAge?.message}
+								isInvalid={!!errors.minAge}
+								isRequired
+								label="Min Age"
+								labelPlacement="inside"
+								onSelectionChange={(keys) => {
+									const selected = Array.from(keys)[0]
+									if (selected !== undefined) {
+										field.onChange(Number(selected))
+									}
+								}}
+								radius="md"
+								selectedKeys={field.value !== undefined ? [String(field.value)] : []}
+								variant="flat"
+							>
+								{ageOptions.map((option) => (
+									<SelectItem key={option.key}>{option.label}</SelectItem>
+								))}
+							</Select>
+						)}
+					/>
+					<Controller
+						control={control}
+						name="maxAge"
+						render={({ field }) => (
+							<Select
+								errorMessage={errors.maxAge?.message}
+								isInvalid={!!errors.maxAge}
+								isRequired
+								label="Max Age"
+								labelPlacement="inside"
+								onSelectionChange={(keys) => {
+									const selected = Array.from(keys)[0]
+									if (selected !== undefined) {
+										field.onChange(Number(selected))
+									}
+								}}
+								radius="md"
+								selectedKeys={field.value !== undefined ? [String(field.value)] : []}
+								variant="flat"
+							>
+								{ageOptions.map((option) => (
+									<SelectItem key={option.key}>{option.label}</SelectItem>
+								))}
+							</Select>
+						)}
+					/>
+				</div>
 			</div>
 		</div>
 	)

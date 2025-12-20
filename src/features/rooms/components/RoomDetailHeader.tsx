@@ -4,6 +4,7 @@ import IdentityChip from "@/components/IdentityChip"
 import LabeledNumberBadge from "@/components/LabeledNumberBadge"
 
 import { useRoom } from "../hooks/useRooms"
+import { formatAgeRange } from "../utils/ageFormat"
 
 type TabType = "students" | "activity" | "profile"
 
@@ -35,8 +36,11 @@ const RoomDetailHeader = ({ activeTab, roomId, onTabChange }: RoomDetailHeaderPr
 						<Avatar className="size-37.5" name={room?.name ?? "Room"} showFallback />
 					</div>
 					<div className="w-full">
-						<h1 className="mb-3.5 font-semibold leading-none lg:text-[36px]">{room?.name ?? "Room"}</h1>
-						<div className="mb-4 flex items-center">
+						<h1 className="mb-2 font-semibold leading-none lg:text-[36px]">{room?.name ?? "Room"}</h1>
+						{room?.minAge != null && room?.maxAge != null && (
+							<p className="text-default-500 text-sm">Age range: {formatAgeRange(room.minAge, room.maxAge)}</p>
+						)}
+						<div className="mt-3.5 mb-4 flex items-center">
 							<div className="flex flex-wrap gap-4">
 								{stats.map((stat) => (
 									<LabeledNumberBadge key={stat.label} label={stat.label} value={stat.value} />

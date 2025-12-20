@@ -10,7 +10,9 @@ import {
 	TableHeader,
 	TableRow,
 } from "@heroui/react"
+import { useState } from "react"
 
+import MageExchangeA from "~icons/mage/exchange-a"
 import TablerCirclePlusFilled from "~icons/tabler/circle-plus-filled"
 
 import { useRoom } from "../../hooks/useRooms"
@@ -19,14 +21,18 @@ import { openAddStudentModal } from "../../stores/addStudentModal.store"
 import columns from "./columns"
 import { renderCell } from "./renderCell"
 
+import type { Selection } from "@heroui/react"
+
 interface RoomStudentsTableProps {
 	roomId: string
 }
 
 const RoomStudentsTable = ({ roomId }: RoomStudentsTableProps) => {
 	const { data: room, isLoading, error } = useRoom(roomId)
+	const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set([]))
 
 	const students = room?.signedInStudents ?? []
+	const hasSelection = selectedKeys === "all" || selectedKeys.size > 0
 
 	return (
 		<Card>
@@ -35,9 +41,17 @@ const RoomStudentsTable = ({ roomId }: RoomStudentsTableProps) => {
 					aria-label="Students table"
 					removeWrapper
 					selectionMode="multiple"
+					selectedKeys={selectedKeys}
+					onSelectionChange={setSelectedKeys}
 					topContent={
 						<div className="flex items-center justify-end gap-5">
-							<Button color="primary" variant="bordered" onPress={() => {}}>
+							<Button
+								color="primary"
+								variant="bordered"
+								isDisabled={!hasSelection}
+								endContent={<MageExchangeA className="size-5" />}
+								onPress={() => {}}
+							>
 								Move to another room
 							</Button>
 							<Button
@@ -54,7 +68,8 @@ const RoomStudentsTable = ({ roomId }: RoomStudentsTableProps) => {
 						tr: "border-b border-default-200 last:border-b-0",
 						th: "py-0",
 						td: "py-0",
-						tbody: "h-[550px] [&>tr]:h-[55px]",
+						tbody: "[&>tr]:h-[55px]",
+						emptyWrapper: "h-[550px]",
 					}}
 				>
 					<TableHeader columns={columns}>

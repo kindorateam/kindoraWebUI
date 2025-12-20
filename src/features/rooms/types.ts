@@ -8,6 +8,9 @@ export interface RoomCreatePayload {
 	companyId: string
 	title: string
 	capacity: number
+	ratio: number
+	minAge: number // in months (0-255)
+	maxAge: number // in months (0-255)
 	color?: string
 	logoId?: string | null
 	status?: RoomStatus
@@ -50,6 +53,8 @@ export interface ApiRoom {
 	title: string
 	capacity: number
 	ratio: number
+	minAge?: number | null
+	maxAge?: number | null
 	logo?: Asset | null
 	status: string
 	students?: ApiStudent[] | null
@@ -63,6 +68,8 @@ export interface Room {
 	icon: RoomType
 	capacity: number
 	ratio: number
+	minAge?: number | null // in months
+	maxAge?: number | null // in months
 	studentsCount: number
 	staffCount: number
 	signedInStudents: Student[]

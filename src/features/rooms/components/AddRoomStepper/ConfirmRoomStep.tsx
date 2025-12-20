@@ -36,6 +36,12 @@ const ConfirmRoomStep = () => {
 					<p className="text-base">
 						<span className="font-medium">Ratio:</span> <span className="text-neutral-700">{formData.ratio}:1</span>
 					</p>
+					<p className="text-base">
+						<span className="font-medium">Age Range:</span>{" "}
+						<span className="text-neutral-700">
+							{formData.minAge} - {formData.maxAge} years
+						</span>
+					</p>
 				</div>
 				<div className="flex flex-col gap-3">
 					<p className="text-base">

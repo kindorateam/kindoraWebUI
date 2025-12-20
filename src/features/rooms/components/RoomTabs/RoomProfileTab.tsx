@@ -32,6 +32,17 @@ const availableStaff = [
 	{ id: "7", name: "Sarah Johnson" },
 ]
 
+const ageOptions = [
+	{ key: "0", label: "0 years" },
+	{ key: "1", label: "1 year" },
+	{ key: "2", label: "2 years" },
+	{ key: "3", label: "3 years" },
+	{ key: "4", label: "4 years" },
+	{ key: "5", label: "5 years" },
+	{ key: "6", label: "6 years" },
+	{ key: "7", label: "7 years" },
+]
+
 const UploadIcon = () => (
 	<svg aria-hidden="true" className="size-5" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
 		<path
@@ -134,20 +145,16 @@ const RoomProfileTab = ({ roomId }: RoomProfileTabProps) => {
 								radius="md"
 								variant="flat"
 							/>
-							<Input
-								defaultValue={mockRoomData.minAge}
-								label="Min age"
-								labelPlacement="inside"
-								radius="md"
-								variant="flat"
-							/>
-							<Input
-								defaultValue={mockRoomData.maxAge}
-								label="Max age"
-								labelPlacement="inside"
-								radius="md"
-								variant="flat"
-							/>
+							<Select defaultSelectedKeys={["2"]} label="Min age" labelPlacement="inside" radius="md" variant="flat">
+								{ageOptions.map((option) => (
+									<SelectItem key={option.key}>{option.label}</SelectItem>
+								))}
+							</Select>
+							<Select defaultSelectedKeys={["4"]} label="Max age" labelPlacement="inside" radius="md" variant="flat">
+								{ageOptions.map((option) => (
+									<SelectItem key={option.key}>{option.label}</SelectItem>
+								))}
+							</Select>
 							<Input
 								defaultValue={mockRoomData.maxCapacity}
 								label="Max capacity"

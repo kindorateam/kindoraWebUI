@@ -42,6 +42,8 @@ export const transformApiRoom = (apiRoom: ApiRoom): Room => {
 		icon: "turtle", // Default icon for now
 		capacity: apiRoom.capacity,
 		ratio: apiRoom.ratio,
+		minAge: apiRoom.minAge,
+		maxAge: apiRoom.maxAge,
 		studentsCount: students.length,
 		staffCount: staff.length,
 		signedInStudents: students.map(transformStudent),
