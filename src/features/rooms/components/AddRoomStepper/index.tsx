@@ -68,7 +68,7 @@ const AddRoomStepper = ({ onComplete, onCancel, isLoading = false }: AddRoomStep
 	const hasStep2Errors = STEP2_FIELDS.some((f) => errors[f])
 	// capacity/ratio have defaults, only need to check name and ages are filled
 	const isStep1Valid =
-		!hasStep1Errors && Boolean(formData.name) && formData.minAge !== undefined && formData.maxAge !== undefined
+		!hasStep1Errors && formData.name.trim().length > 0 && formData.minAge !== undefined && formData.maxAge !== undefined
 	const isStep2Valid = !hasStep2Errors
 
 	const handleNext = async () => {

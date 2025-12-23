@@ -46,11 +46,15 @@ const StaffTable = () => {
 	const topContent = useMemo(() => {
 		return (
 			<div className="flex flex-col gap-4">
-				<div className="flex items-center justify-end gap-3">
-					<div className="flex items-center gap-2">
-						<span className="text-neutral-600 text-sm">View deactivated</span>
-						<Switch isSelected={showDeactivated} onValueChange={setShowDeactivated} size="sm" />
-					</div>
+				<div className="flex items-center justify-end gap-5">
+					<Switch
+						classNames={{ label: "text-neutral-600 text-sm" }}
+						isSelected={showDeactivated}
+						onValueChange={setShowDeactivated}
+						size="sm"
+					>
+						View deactivated
+					</Switch>
 					<Button color="primary" endContent={<TablerCirclePlusFilled className="size-5 text-white" />}>
 						Add Staff
 					</Button>
@@ -64,12 +68,11 @@ const StaffTable = () => {
 
 	return (
 		<Card>
-			<CardBody className="p-4">
+			<CardBody className="flex flex-col gap-4 p-4">
+				{topContent}
 				<Table
 					aria-label="Staff table"
 					removeWrapper
-					topContent={topContent}
-					topContentPlacement="outside"
 					bottomContent={
 						pages > 1 ? (
 							<div className="flex w-full justify-center">
@@ -87,9 +90,12 @@ const StaffTable = () => {
 					}
 					bottomContentPlacement="outside"
 					classNames={{
+						base: "min-h-[550px]",
 						tr: "border-b border-default-200 last:border-b-0",
-						td: "py-3",
-						tbody: "min-h-[400px]",
+						th: "py-0",
+						td: "py-0",
+						tbody: "[&>tr]:h-[55px]",
+						emptyWrapper: "h-[550px]",
 					}}
 				>
 					<TableHeader columns={columns}>

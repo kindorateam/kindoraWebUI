@@ -1,26 +1,17 @@
 import { Avatar, Input, NumberInput, Select, SelectItem } from "@heroui/react"
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { Controller, useFormContext } from "react-hook-form"
 
 import TablerPencil from "~icons/tabler/pencil"
 
+import { ROOM_AGE_OPTIONS } from "../../constants"
 import ImagePickerModal from "../ImagePickerModal"
 
 import type { AddRoomFormData } from "../../types"
 
-const ageOptions = [
-	{ key: "0", label: "0 years" },
-	{ key: "1", label: "1 year" },
-	{ key: "2", label: "2 years" },
-	{ key: "3", label: "3 years" },
-	{ key: "4", label: "4 years" },
-	{ key: "5", label: "5 years" },
-	{ key: "6", label: "6 years" },
-	{ key: "7", label: "7 years" },
-]
-
 const RoomDetailsStep = () => {
 	const [isImagePickerOpen, setIsImagePickerOpen] = useState(false)
+	const objectUrlRef = useRef<string | null>(null)
 	const {
 		control,
 		watch,
@@ -36,6 +27,11 @@ const RoomDetailsStep = () => {
 	}
 
 	const handleImageSelect = (image: string | File) => {
+		if (objectUrlRef.current) {
+			URL.revokeObjectURL(objectUrlRef.current)
+			objectUrlRef.current = null
+		}
+
 		if (typeof image === "string") {
 			// It's a gradient
 			setValue("avatarPreview", image)
@@ -43,12 +39,22 @@ const RoomDetailsStep = () => {
 		} else {
 			// It's a file
 			const previewUrl = URL.createObjectURL(image)
+			objectUrlRef.current = previewUrl
 			setValue("avatarFile", image)
 			setValue("avatarPreview", previewUrl)
 		}
 	}
 
 	const isGradient = avatarPreview?.startsWith("linear-gradient")
+
+	useEffect(() => {
+		return () => {
+			if (objectUrlRef.current) {
+				URL.revokeObjectURL(objectUrlRef.current)
+				objectUrlRef.current = null
+			}
+		}
+	}, [])
 
 	return (
 		<div className="flex flex-col gap-6">
@@ -170,7 +176,7 @@ const RoomDetailsStep = () => {
 								selectedKeys={field.value !== undefined ? [String(field.value)] : []}
 								variant="flat"
 							>
-								{ageOptions.map((option) => (
+								{ROOM_AGE_OPTIONS.map((option) => (
 									<SelectItem key={option.key}>{option.label}</SelectItem>
 								))}
 							</Select>
@@ -196,7 +202,7 @@ const RoomDetailsStep = () => {
 								selectedKeys={field.value !== undefined ? [String(field.value)] : []}
 								variant="flat"
 							>
-								{ageOptions.map((option) => (
+								{ROOM_AGE_OPTIONS.map((option) => (
 									<SelectItem key={option.key}>{option.label}</SelectItem>
 								))}
 							</Select>
