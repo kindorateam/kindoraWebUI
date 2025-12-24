@@ -20,9 +20,7 @@ export default function PinCell({ pinCode }: PinCellProps) {
 
 	return (
 		<div className="flex items-center gap-1">
-			<span className="min-w-10 text-gray-500 text-sm tabular-nums">
-				{isVisible ? pinString : maskedPin}
-			</span>
+			<span className="min-w-10 text-gray-500 text-sm tabular-nums">{isVisible ? pinString : maskedPin}</span>
 			<Button
 				isIconOnly
 				size="sm"
@@ -30,11 +28,7 @@ export default function PinCell({ pinCode }: PinCellProps) {
 				onPress={() => setIsVisible(!isVisible)}
 				aria-label={isVisible ? "Hide PIN" : "Show PIN"}
 			>
-				{isVisible ? (
-					<TablerEyeOff className="size-4 text-gray-400" />
-				) : (
-					<TablerEye className="size-4 text-gray-400" />
-				)}
+				{isVisible ? <TablerEyeOff className="size-4 text-gray-400" /> : <TablerEye className="size-4 text-gray-400" />}
 			</Button>
 		</div>
 	)

@@ -59,15 +59,13 @@ function StaffDetailLayout() {
 	const tabsContent = (
 		<Tabs
 			aria-label="Employee details tabs"
-			classNames={{
-				tabList: "p-0 gap-7",
-				cursor: "w-full bg-brand",
-				tab: "p-0 pb-5",
-				tabContent: "group-data-[selected=true]:text-brand text-neutral-700 font-medium",
-			}}
+			classNames={{ tabList: "shadow-md" }}
+			color="primary"
 			onSelectionChange={(key) => handleTabChange(key as TabType)}
+			radius="sm"
 			selectedKey={tab}
-			variant="underlined"
+			size="sm"
+			variant="solid"
 		>
 			<Tab key="profile" title="Profile" />
 			<Tab key="documents" title="Documents" />
@@ -86,7 +84,7 @@ function StaffDetailLayout() {
 		<RouteErrorBoundary routeName="employee-detail">
 			<div className="flex min-h-screen flex-col">
 				<StaffDetailHeader employeeData={employeeData} tabs={tabsContent} />
-				<main className="container max-w-4xl flex-1 py-10">
+				<main className="container mx-auto max-w-4xl flex-1 py-10">
 					{tab === "profile" ? (
 						<StaffProfileTab employeeData={employeeData} />
 					) : (
