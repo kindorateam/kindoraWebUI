@@ -7,7 +7,6 @@ import {
 	DropdownMenu,
 	DropdownSection,
 	DropdownTrigger,
-	Input,
 	Navbar,
 	NavbarContent,
 	NavbarItem,
@@ -18,7 +17,6 @@ import Breadcrumbs from "@/components/Breadcrumbs"
 import NotificationIcon from "@/components/icons/NotificationIcon"
 import ProfileIcon from "@/components/icons/ProfileIcon"
 import SchoolIcon from "@/components/icons/SchoolIcon"
-import SearchIcon from "@/components/icons/SearchIcon"
 import SignOutIcon from "@/components/icons/SignOutIcon"
 import SubscriptionIcon from "@/components/icons/SubscriptionIcon"
 import useAuth from "@/features/auth/hooks/useAuth"
@@ -26,12 +24,6 @@ import useAuth from "@/features/auth/hooks/useAuth"
 const navbarClassNames = {
 	base: "h-20 w-full mb-7 px-7 bg-transparent",
 	wrapper: "w-full max-w-none p-0",
-}
-
-const inputClassNames = {
-	base: "w-[150px]",
-	input: "ps-2! font-normal rounded-4xl text-sm",
-	inputWrapper: "h-9.5 ps-4 rounded-[20px] shadow-md bg-white",
 }
 
 const Header = memo(() => {
@@ -50,13 +42,6 @@ const Header = memo(() => {
 			</NavbarContent>
 
 			<NavbarContent className="items-center gap-5" justify="end">
-				<Input
-					classNames={inputClassNames}
-					placeholder="Search"
-					size="sm"
-					startContent={<SearchIcon />}
-					type="search"
-				/>
 				<Badge color="danger" content="3" shape="circle">
 					<Button
 						aria-label="more than 99 notifications"

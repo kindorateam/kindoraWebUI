@@ -12,27 +12,37 @@ import {
 	TableHeader,
 	TableRow,
 } from "@heroui/react"
-import { useMemo, useState } from "react"
+import { useNavigate } from "@tanstack/react-router"
+import { useCallback, useMemo, useState } from "react"
 
 import TableError from "@/components/TableError"
 import TablerCirclePlusFilled from "~icons/tabler/circle-plus-filled"
 
-import { usePinVisibility, useStaff } from "../../hooks/useStaff"
+import { useEmployees } from "../../hooks/useStaff"
 
 import columns from "./columns"
 import { renderCell } from "./renderCell"
 
 const StaffTable = () => {
-	const { data: staff = [], isLoading, error, refetch } = useStaff()
-	const { isPinVisible, togglePinVisibility } = usePinVisibility()
+	const navigate = useNavigate()
+	const { data: employees = [], isLoading, error, refetch } = useEmployees()
 	const [page, setPage] = useState(1)
 	const [showDeactivated, setShowDeactivated] = useState(false)
 	const rowsPerPage = 10
 
+	const handleEmployeeClick = useCallback(
+		(employeeId: string) => {
+			navigate({ to: "/staff/$staffId", params: { staffId: employeeId }, search: { tab: "profile" } })
+		},
+		[navigate],
+	)
+
 	const filteredItems = useMemo(() => {
-		// TODO: Filter by deactivated status when staff have status field
-		return staff
-	}, [staff])
+		if (showDeactivated) {
+			return employees
+		}
+		return employees.filter((employee) => employee.status === "active")
+	}, [employees, showDeactivated])
 
 	const pages = Math.ceil(filteredItems.length / rowsPerPage) || 1
 
@@ -59,38 +69,21 @@ const StaffTable = () => {
 						Add Staff
 					</Button>
 				</div>
-				<span className="text-default-400 text-small">Total {filteredItems.length} staff members</span>
+				<span className="text-default-400 text-small">Total {filteredItems.length} employees</span>
 			</div>
 		)
 	}, [showDeactivated, filteredItems.length])
 
-	const renderCellOptions = useMemo(() => ({ isPinVisible, togglePinVisibility }), [isPinVisible, togglePinVisibility])
+	const renderCellOptions = useMemo(() => ({ onEmployeeClick: handleEmployeeClick }), [handleEmployeeClick])
 
 	return (
 		<Card>
-			<CardBody className="flex flex-col gap-4 p-4">
+			<CardBody className="flex min-h-[700px] flex-col gap-4 p-4">
 				{topContent}
 				<Table
-					aria-label="Staff table"
+					aria-label="Employees table"
 					removeWrapper
-					bottomContent={
-						pages > 1 ? (
-							<div className="flex w-full justify-center">
-								<Pagination
-									isCompact
-									showControls
-									showShadow
-									color="primary"
-									page={page}
-									total={pages}
-									onChange={(newPage) => setPage(newPage)}
-								/>
-							</div>
-						) : null
-					}
-					bottomContentPlacement="outside"
 					classNames={{
-						base: "min-h-[550px]",
 						tr: "border-b border-default-200 last:border-b-0",
 						th: "py-0",
 						td: "py-0",
@@ -106,18 +99,31 @@ const StaffTable = () => {
 						)}
 					</TableHeader>
 					<TableBody
-						emptyContent={error ? <TableError onRetry={refetch} /> : "No staff members found"}
+						emptyContent={error ? <TableError onRetry={refetch} /> : "No employees found"}
 						items={error || isLoading ? [] : items}
 						isLoading={isLoading}
 						loadingContent={<Spinner size="lg" />}
 					>
-						{(staffMember) => (
-							<TableRow key={staffMember.id}>
-								{(columnKey) => <TableCell>{renderCell(staffMember, columnKey, renderCellOptions)}</TableCell>}
+						{(employee) => (
+							<TableRow key={employee.id}>
+								{(columnKey) => <TableCell>{renderCell(employee, columnKey, renderCellOptions)}</TableCell>}
 							</TableRow>
 						)}
 					</TableBody>
 				</Table>
+				{pages > 1 && (
+					<div className="mt-auto flex w-full justify-center">
+						<Pagination
+							isCompact
+							showControls
+							showShadow
+							color="primary"
+							page={page}
+							total={pages}
+							onChange={(newPage) => setPage(newPage)}
+						/>
+					</div>
+				)}
 			</CardBody>
 		</Card>
 	)

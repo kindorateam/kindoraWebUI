@@ -1,11 +1,13 @@
-import { Tab, Tabs } from "@heroui/react"
-import { useQuery } from "@tanstack/react-query"
-import { Outlet, createFileRoute, useNavigate } from "@tanstack/react-router"
+import { Spinner, Tab, Tabs } from "@heroui/react"
+import { createFileRoute, useNavigate } from "@tanstack/react-router"
 
 import { RouteErrorBoundary } from "@/components/error"
-import StaffDetailHeader from "@/components/StaffDetailHeader"
+import StaffDetailHeader from "@/features/staff/components/StaffDetailHeader"
+import StaffProfileTab from "@/features/staff/components/StaffProfileTab"
+import { useEmployee } from "@/features/staff/hooks/useStaff"
+import { getEmployeeById } from "@/features/staff/services/staff.service"
+import { getEmployeeFullName } from "@/features/staff/types"
 import { useTabNavigation } from "@/hooks/useTabNavigation"
-import { getStaffMemberById } from "@/services/staff.service"
 
 type TabType = "profile" | "documents"
 
@@ -27,10 +29,17 @@ export const Route = createFileRoute("/_authenticated/staff/$staffId")({
 		}
 	},
 	beforeLoad: async ({ params }: { params: { staffId: string } }) => {
-		const staff = await getStaffMemberById(params.staffId)
+		try {
+			const employeeData = await getEmployeeById(params.staffId)
+			const fullName = employeeData?.employee ? getEmployeeFullName(employeeData.employee) : null
 
-		return {
-			breadcrumb: staff?.name ?? `Staff ${params.staffId}`,
+			return {
+				breadcrumb: fullName ?? `Employee ${params.staffId}`,
+			}
+		} catch {
+			return {
+				breadcrumb: `Employee ${params.staffId}`,
+			}
 		}
 	},
 })
@@ -40,49 +49,49 @@ function StaffDetailLayout() {
 	const search = Route.useSearch()
 	const navigate = useNavigate({ from: Route.fullPath })
 
-	const staffId = params.staffId
+	const employeeId = params.staffId
 	const tab = search.tab
 
-	const { data: staff } = useQuery({
-		queryKey: ["staff", staffId],
-		queryFn: () => getStaffMemberById(staffId),
-		staleTime: 5 * 60 * 1000,
-		refetchOnWindowFocus: false,
-		refetchOnMount: false,
-		refetchOnReconnect: false,
-		enabled: !!staffId,
-	})
+	const { data: employeeData, isLoading } = useEmployee(employeeId)
 
 	const handleTabChange = useTabNavigation(tab, "profile", navigate)
 
+	const tabsContent = (
+		<Tabs
+			aria-label="Employee details tabs"
+			classNames={{
+				tabList: "p-0 gap-7",
+				cursor: "w-full bg-brand",
+				tab: "p-0 pb-5",
+				tabContent: "group-data-[selected=true]:text-brand text-neutral-700 font-medium",
+			}}
+			onSelectionChange={(key) => handleTabChange(key as TabType)}
+			selectedKey={tab}
+			variant="underlined"
+		>
+			<Tab key="profile" title="Profile" />
+			<Tab key="documents" title="Documents" />
+		</Tabs>
+	)
+
+	if (isLoading) {
+		return (
+			<div className="flex min-h-screen items-center justify-center">
+				<Spinner size="lg" />
+			</div>
+		)
+	}
+
 	return (
-		<RouteErrorBoundary routeName="staff-detail">
-			<div>
-				<StaffDetailHeader
-					pin="1234"
-					rooms={["test1", "test2"]}
-					staffAvatar={staff?.avatar}
-					staffName={staff?.name}
-					tabs={
-						<Tabs
-							aria-label="Staff details tabs"
-							classNames={{
-								tabList: "p-0 gap-7",
-								cursor: "w-full bg-brand",
-								tab: "p-0 pb-5",
-								tabContent: "group-data-[selected=true]:text-brand text-neutral-700 font-medium",
-							}}
-							onSelectionChange={(key) => handleTabChange(key as TabType)}
-							selectedKey={tab}
-							variant="underlined"
-						>
-							<Tab key="profile" title="Profile" />
-							<Tab key="documents" title="Documents" />
-						</Tabs>
-					}
-				/>
-				<main className="container max-w-4xl pt-10">
-					<Outlet />
+		<RouteErrorBoundary routeName="employee-detail">
+			<div className="flex min-h-screen flex-col">
+				<StaffDetailHeader employeeData={employeeData} tabs={tabsContent} />
+				<main className="container max-w-4xl flex-1 py-10">
+					{tab === "profile" ? (
+						<StaffProfileTab employeeData={employeeData} />
+					) : (
+						<div className="text-center text-neutral-500">Documents tab coming soon</div>
+					)}
 				</main>
 			</div>
 		</RouteErrorBoundary>

@@ -1,79 +1,54 @@
 import { Avatar, Button, Chip, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@heroui/react"
 
-import RoomIcon from "@/features/rooms/components/RoomIcon"
 import TablerEdit from "~icons/tabler/edit"
 import TablerEye from "~icons/tabler/eye"
 import TablerTrash from "~icons/tabler/trash"
 
-import type { Staff } from "../../types"
+import { getEmployeeAvatarUrl, getEmployeeFullName } from "../../types"
+
+import type { EmployeeSummary } from "../../types"
 
 interface RenderCellOptions {
-	isPinVisible: (id: string) => boolean
-	togglePinVisibility: (id: string) => void
+	onEmployeeClick: (id: string) => void
 }
 
-export function renderCell(staff: Staff, columnKey: React.Key, options: RenderCellOptions) {
-	const { isPinVisible, togglePinVisibility } = options
+export function renderCell(employee: EmployeeSummary, columnKey: React.Key, options: RenderCellOptions) {
+	const { onEmployeeClick } = options
+	const fullName = getEmployeeFullName(employee)
+	const avatarUrl = getEmployeeAvatarUrl(employee)
 
 	switch (columnKey) {
-		case "staff":
+		case "employee":
 			return (
-				<div className="flex items-center gap-3">
-					<Avatar alt={staff.name} showFallback size="sm" src={staff.avatar} />
+				<button
+					className="flex cursor-pointer items-center gap-3 text-left"
+					onClick={() => onEmployeeClick(employee.id)}
+					type="button"
+				>
+					<Avatar alt={fullName} showFallback size="sm" src={avatarUrl} />
 					<div className="flex flex-col">
-						<span className="font-medium text-sm">{staff.name}</span>
-						{staff.isCurrentUser && <span className="text-green-500 text-xs">My account</span>}
+						<span className="font-medium text-sm hover:text-brand hover:underline">{fullName}</span>
+						{employee.checkedIn && <span className="text-green-500 text-xs">Checked in</span>}
 					</div>
-				</div>
+				</button>
 			)
 
 		case "role":
-			return <span className="text-gray-600 text-sm">{staff.role}</span>
+			return <span className="text-gray-600 text-sm capitalize">{employee.role}</span>
 
 		case "email":
-			return <span className="text-gray-500 text-sm">{staff.email}</span>
+			return <span className="text-gray-500 text-sm">{employee.email ?? "—"}</span>
 
-		case "rooms":
+		case "status": {
+			const isActive = employee.status === "active"
 			return (
-				<div className="flex items-center gap-2">
-					<RoomIcon roomType="turtle" />
-					<span className="text-gray-600 text-sm">{staff.rooms[0] || "No room"}</span>
-				</div>
-			)
-
-		case "pin": {
-			const isVisible = isPinVisible(staff.id)
-
-			if (staff.isCurrentUser) {
-				return (
-					<div className="flex justify-center">
-						<Chip className="bg-gray-100 text-gray-800" size="sm">
-							{staff.pin}
-						</Chip>
-					</div>
-				)
-			}
-
-			return (
-				<div className="flex justify-center">
-					{isVisible ? (
-						<Chip
-							className="cursor-pointer bg-gray-100 text-gray-800"
-							onClick={() => togglePinVisibility(staff.id)}
-							size="sm"
-						>
-							{staff.pin}
-						</Chip>
-					) : (
-						<Button
-							className="bg-[#792C4133] font-semibold text-[11px] text-brand"
-							onPress={() => togglePinVisibility(staff.id)}
-							size="sm"
-						>
-							Reveal
-						</Button>
-					)}
-				</div>
+				<Chip
+					className={isActive ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-600"}
+					size="sm"
+					variant="flat"
+				>
+					{employee.status}
+				</Chip>
 			)
 		}
 
@@ -99,7 +74,7 @@ export function renderCell(staff: Staff, columnKey: React.Key, options: RenderCe
 								</svg>
 							</Button>
 						</DropdownTrigger>
-						<DropdownMenu aria-label="Staff actions">
+						<DropdownMenu aria-label="Employee actions">
 							<DropdownItem
 								key="view"
 								className="text-success"

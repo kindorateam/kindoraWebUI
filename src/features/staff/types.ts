@@ -1,18 +1,105 @@
-export interface Staff {
+// API Response Types - Employee Summary (list endpoint)
+export interface EmployeeAvatar {
 	id: string
-	name: string
-	role: "Admin" | "Manager" | "Staff"
-	email: string
-	avatar: string
-	pin: string
-	rooms: string[]
-	isCurrentUser?: boolean
+	path: string
 }
 
-export interface StaffRoom {
+export interface EmployeeSummary {
 	id: string
-	name: string
-	icon: string
+	firstname: string
+	lastname: string
+	checkedIn: boolean
+	email: string | null
+	phone?: string | null
+	role: string
+	status: string
+	accountStatus: string
+	roomId?: string | null
+	pinCode?: number | null
+	avatarId?: string | null
+	avatar?: EmployeeAvatar | null
 }
 
+// API Response Types - Employee Full (detail endpoint)
+export interface Employee {
+	id: string
+	firstname: string
+	lastname: string
+	checkedIn: boolean
+	email: string | null
+	phone?: string | null
+	role: string
+	status: string
+	accountStatus: string
+	roomId?: string | null
+	pinCode?: number | null
+	avatarId?: string | null
+	avatar?: EmployeeAvatar | null
+	hireDate?: string | null
+	streetAddress?: string | null
+	city?: string | null
+	state?: string | null
+	zipCode?: string | null
+}
+
+export interface EmployeeCertification {
+	id: number
+	employeeId: string
+	degree: string
+	certification: string
+}
+
+export interface EmployeeMedicalInfo {
+	id: number
+	employeeId: string
+	allergies: string[]
+	medications: string
+	doctorName: string
+	doctorPhone: string
+}
+
+export interface EmployeeEmergencyContact {
+	id: number
+	employeeId: string
+	name: string
+	phone: string
+	relationshipTo: string
+	avatarId: string | null
+}
+
+export interface EmployeeScheduleWeek {
+	mon: boolean
+	tue: boolean
+	wed: boolean
+	thu: boolean
+	fri: boolean
+	sat: boolean
+	sun: boolean
+}
+
+export interface EmployeeSchedule {
+	id: string
+	employeeId: string
+	week: EmployeeScheduleWeek
+}
+
+export interface EmployeeFull {
+	employee: Employee
+	certification: EmployeeCertification | null
+	medicalInfo: EmployeeMedicalInfo | null
+	emergencyContacts: EmployeeEmergencyContact[]
+	schedule: EmployeeSchedule | null
+}
+
+// UI Helper Types
 export type PinVisibility = Record<string, boolean>
+
+// Helper function to get full name
+export function getEmployeeFullName(employee: EmployeeSummary | Employee): string {
+	return `${employee.firstname} ${employee.lastname}`
+}
+
+// Helper function to get avatar URL
+export function getEmployeeAvatarUrl(employee: EmployeeSummary | Employee): string | undefined {
+	return employee.avatar?.path
+}

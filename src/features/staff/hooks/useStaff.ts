@@ -1,32 +1,42 @@
 import { useQuery } from "@tanstack/react-query"
 import { useCallback, useState } from "react"
 
-import { getStaffMembers } from "../services/staff.service"
+import { getEmployeeById, getEmployees } from "../services/staff.service"
 
-import type { PinVisibility, Staff } from "../types"
+import type { EmployeeFull, EmployeeSummary, PinVisibility } from "../types"
 
-export const useStaff = () => {
-	return useQuery<Staff[], Error>({
-		queryKey: ["staff"],
-		queryFn: getStaffMembers,
+export function useEmployees() {
+	return useQuery<EmployeeSummary[], Error>({
+		queryKey: ["employees"],
+		queryFn: getEmployees,
 		staleTime: 5 * 60 * 1000,
 		gcTime: 10 * 60 * 1000,
 	})
 }
 
-export const usePinVisibility = () => {
+export function useEmployee(employeeId: string) {
+	return useQuery<EmployeeFull, Error>({
+		queryKey: ["employees", employeeId],
+		queryFn: () => getEmployeeById(employeeId),
+		staleTime: 5 * 60 * 1000,
+		gcTime: 10 * 60 * 1000,
+		enabled: !!employeeId,
+	})
+}
+
+export function usePinVisibility() {
 	const [pinVisibility, setPinVisibility] = useState<PinVisibility>({})
 
-	const togglePinVisibility = useCallback((staffId: string) => {
+	const togglePinVisibility = useCallback((employeeId: string) => {
 		setPinVisibility((prev) => ({
 			...prev,
-			[staffId]: !prev[staffId],
+			[employeeId]: !prev[employeeId],
 		}))
 	}, [])
 
 	const isPinVisible = useCallback(
-		(staffId: string): boolean => {
-			return pinVisibility[staffId] ?? false
+		(employeeId: string): boolean => {
+			return pinVisibility[employeeId] ?? false
 		},
 		[pinVisibility],
 	)

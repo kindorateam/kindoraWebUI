@@ -1,9 +1,8 @@
 const columns = [
-	{ key: "staff", label: "Staff" },
+	{ key: "employee", label: "Employee" },
 	{ key: "role", label: "Role" },
 	{ key: "email", label: "Email" },
-	{ key: "rooms", label: "Rooms" },
-	{ key: "pin", label: "Pin", align: "center" as const },
+	{ key: "status", label: "Status" },
 	{ key: "actions", label: "Actions", align: "center" as const },
 ]
 
