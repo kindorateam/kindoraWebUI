@@ -78,12 +78,13 @@ const StaffTable = () => {
 
 	return (
 		<Card>
-			<CardBody className="flex min-h-[700px] flex-col gap-4 p-4">
+			<CardBody className="flex flex-col gap-4 p-4">
 				{topContent}
 				<Table
 					aria-label="Employees table"
 					removeWrapper
 					classNames={{
+						base: "min-h-[595.5px]",
 						tr: "border-b border-default-200 last:border-b-0",
 						th: "py-0",
 						td: "py-0",

@@ -67,7 +67,7 @@ const RoomStudentsTable = ({ roomId }: RoomStudentsTableProps) => {
 					selectedKeys={selectedKeys}
 					onSelectionChange={setSelectedKeys}
 					classNames={{
-						base: "min-h-[550px]",
+						base: "min-h-[595.5px]",
 						tr: "border-b border-default-200 last:border-b-0",
 						th: "py-0",
 						td: "py-0",

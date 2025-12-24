@@ -1,7 +1,5 @@
 import { useMutation, useQueries, useQuery, useQueryClient } from "@tanstack/react-query"
 
-import { getCompanyId } from "@/features/auth/services/token.service"
-
 import {
 	createRoom,
 	getAllEmployees,
@@ -53,13 +51,7 @@ export const useCreateRoom = () => {
 
 	return useMutation({
 		mutationFn: (formData: AddRoomFormData) => {
-			const companyId = getCompanyId()
-			if (!companyId) {
-				throw new Error("Company ID not found. Please log in again.")
-			}
-
 			return createRoom({
-				companyId,
 				title: formData.name,
 				capacity: formData.capacity,
 				ratio: formData.ratio,

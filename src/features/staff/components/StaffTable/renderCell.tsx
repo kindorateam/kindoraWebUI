@@ -1,10 +1,12 @@
-import { Avatar, Button, Chip, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@heroui/react"
+import { Avatar, Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@heroui/react"
 
 import TablerEdit from "~icons/tabler/edit"
 import TablerEye from "~icons/tabler/eye"
 import TablerTrash from "~icons/tabler/trash"
 
 import { getEmployeeAvatarUrl, getEmployeeFullName } from "../../types"
+
+import PinCell from "./PinCell"
 
 import type { EmployeeSummary } from "../../types"
 
@@ -36,21 +38,11 @@ export function renderCell(employee: EmployeeSummary, columnKey: React.Key, opti
 		case "role":
 			return <span className="text-gray-600 text-sm capitalize">{employee.role}</span>
 
+		case "pin":
+			return <PinCell pinCode={employee.pinCode} />
+
 		case "email":
 			return <span className="text-gray-500 text-sm">{employee.email ?? "—"}</span>
-
-		case "status": {
-			const isActive = employee.status === "active"
-			return (
-				<Chip
-					className={isActive ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-600"}
-					size="sm"
-					variant="flat"
-				>
-					{employee.status}
-				</Chip>
-			)
-		}
 
 		case "actions":
 			return (
