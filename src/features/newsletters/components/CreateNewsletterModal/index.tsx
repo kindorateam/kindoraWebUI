@@ -1,5 +1,7 @@
 import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from "@heroui/react"
-import { useState } from "react"
+import { useEffect, useState } from "react"
+
+import { hasNewsletterContent } from "../../utils/newsletter-content"
 
 import Step1Editor from "./Step1Editor"
 import Step2Preview from "./Step2Preview"
@@ -12,12 +14,14 @@ interface CreateNewsletterModalProps {
 const CreateNewsletterModal = ({ isOpen, onOpenChange }: CreateNewsletterModalProps) => {
 	const [currentStep, setCurrentStep] = useState<1 | 2>(1)
 	const [content, setContent] = useState("")
+	const hasContent = hasNewsletterContent(content)
 
-	const handleClose = () => {
-		onOpenChange(false)
-		setCurrentStep(1)
-		setContent("")
-	}
+	useEffect(() => {
+		if (!isOpen) {
+			setCurrentStep(1)
+			setContent("")
+		}
+	}, [isOpen])
 
 	const handleSaveDraft = () => {
 		// TODO: Implement save draft API
@@ -32,7 +36,7 @@ const CreateNewsletterModal = ({ isOpen, onOpenChange }: CreateNewsletterModalPr
 	const handleSend = () => {
 		// TODO: Implement send API
 		console.log("Sending newsletter:", content)
-		handleClose()
+		onOpenChange(false)
 	}
 
 	const nextStep = () => setCurrentStep(2)
@@ -45,10 +49,7 @@ const CreateNewsletterModal = ({ isOpen, onOpenChange }: CreateNewsletterModalPr
 				base: "max-h-[90vh]",
 			}}
 			isOpen={isOpen}
-			onOpenChange={(open) => {
-				if (!open) handleClose()
-				else onOpenChange(open)
-			}}
+			onOpenChange={onOpenChange}
 			placement="center"
 			size="5xl"
 			scrollBehavior="inside"
@@ -79,7 +80,7 @@ const CreateNewsletterModal = ({ isOpen, onOpenChange }: CreateNewsletterModalPr
 										<Button color="default" onPress={handleSaveDraft} variant="flat">
 											Save draft
 										</Button>
-										<Button color="primary" onPress={nextStep}>
+										<Button color="primary" isDisabled={!hasContent} onPress={nextStep}>
 											Preview →
 										</Button>
 									</div>
@@ -91,7 +92,7 @@ const CreateNewsletterModal = ({ isOpen, onOpenChange }: CreateNewsletterModalPr
 										<Button color="default" onPress={prevStep} variant="flat">
 											← Back
 										</Button>
-										<Button color="primary" onPress={handleSend}>
+										<Button color="primary" isDisabled={!hasContent} onPress={handleSend}>
 											Send
 										</Button>
 									</div>
