@@ -3,7 +3,7 @@ export type RoomType = "turtle" | "rabbit" | "bear" | "butterfly" | "owl" | "fox
 
 export type RoomStatus = "active" | "inactive" | "deleted"
 
-// API request types
+// API request types (matching swagger dto.CreateRoomDTO)
 export interface RoomCreatePayload {
 	title: string
 	capacity: number
@@ -11,58 +11,85 @@ export interface RoomCreatePayload {
 	minAge: number // in months (0-255)
 	maxAge: number // in months (0-255)
 	color?: string
-	status?: RoomStatus
+	logoId?: string
 	studentIds?: string[]
 	employeeIds?: string[]
 }
 
-// API response types
-export interface Asset {
+// API response types (matching swagger dto.*)
+export interface ApiAsset {
 	id: string
 	path: string
 }
 
-export interface ApiParent {
+export interface ApiRoomShort {
 	id: string
-	firstname: string
-	lastname: string
+	title: string
 }
 
+export interface ApiParent {
+	id: string
+	firstName: string
+	lastName: string
+	avatar?: ApiAsset
+}
+
+// dto.StudentDTO - used in RoomDTO.students
 export interface ApiStudent {
 	id: string
-	firstname: string
-	lastname: string
-	avatar?: Asset
+	firstName: string
+	lastName: string
+	roomId: string
 	checkedIn: boolean
-	roomId?: string
-	avatarId?: string
+	avatar?: ApiAsset
 	parents?: ApiParent[]
 	tags?: string[]
 }
 
-export interface ApiStaff {
+// dto.StudentShortDTO - used in /rooms/all-students-list
+export interface ApiStudentShort {
 	id: string
-	firstname: string
-	lastname: string
-	avatar?: Asset
+	firstName: string
+	lastName: string
+	roomId: string
 	checkedIn: boolean
-	roomId?: string
-	avatarId?: string
+	avatar?: ApiAsset
 }
 
+// dto.EmployeeShortDTO - used in RoomDTO.staff and /rooms/all-employees-list
+export interface ApiEmployeeShort {
+	id: string
+	firstName: string
+	lastName: string
+	roomId: string
+	checkedIn: boolean
+	role: string
+	status: string
+	accountStatus: string
+	avatar?: ApiAsset
+}
+
+// dto.RoomDTO
 export interface ApiRoom {
 	id: string
-	companyId: string
 	title: string
 	capacity: number
 	ratio: number
 	minAge: number
 	maxAge: number
+	status: string
 	color?: string
-	logo?: Asset
-	status: RoomStatus
+	logo?: ApiAsset
 	students?: ApiStudent[]
-	staff?: ApiStaff[]
+	staff?: ApiEmployeeShort[] // Uses EmployeeShortDTO, not full EmployeeDTO
+}
+
+// dto.RoomListResponse - response from GET /rooms
+export interface ApiRoomListResponse {
+	items: ApiRoom[]
+	total: number
+	limit: number
+	offset: number
 }
 
 // UI types
@@ -70,6 +97,7 @@ export interface Room {
 	id: string
 	name: string
 	icon: RoomType
+	status: RoomStatus
 	capacity: number
 	ratio: number
 	minAge: number // in months

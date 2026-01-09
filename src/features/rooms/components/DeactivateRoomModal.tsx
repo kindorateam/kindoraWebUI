@@ -31,6 +31,7 @@ const DeactivateRoomModal = ({ onSuccess }: DeactivateRoomModalProps) => {
 
 	const handleClose = () => {
 		if (!inactivateMutation.isPending) {
+			inactivateMutation.reset()
 			closeDeactivateRoomModal()
 		}
 	}
@@ -53,7 +54,7 @@ const DeactivateRoomModal = ({ onSuccess }: DeactivateRoomModalProps) => {
 					<p className="text-default-600">
 						Are you sure you want to deactivate <strong>{roomName}</strong>?
 					</p>
-					<p className="text-default-400 text-sm">This action can be reversed later by an administrator.</p>
+					<p className="text-default-400 text-sm">You can reactivate this room later from the deactivated list.</p>
 					{inactivateMutation.isError && (
 						<p className="text-danger text-sm">
 							{(inactivateMutation.error as { response?: { data?: { message?: string } } })?.response?.data?.message ||

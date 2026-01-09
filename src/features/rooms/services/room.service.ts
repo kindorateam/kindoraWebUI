@@ -1,30 +1,52 @@
 import { apiClient } from "@/services/api.service"
 
-import type { ApiRoom, ApiStaff, ApiStudent, Room, RoomCreatePayload, StaffMember, Student } from "../types"
+import type {
+	ApiEmployeeShort,
+	ApiRoom,
+	ApiRoomListResponse,
+	ApiStudent,
+	ApiStudentShort,
+	Room,
+	RoomCreatePayload,
+	StaffMember,
+	Student,
+} from "../types"
 
 /**
- * Transforms API student data to UI format
+ * Transforms API student (short) data to UI format
+ */
+const transformStudentShort = (apiStudent: ApiStudentShort): Student => ({
+	id: apiStudent.id,
+	name: `${apiStudent.firstName} ${apiStudent.lastName}`,
+	avatar: apiStudent.avatar?.path ?? "/assets/avatars/default.jpg",
+	checkedIn: apiStudent.checkedIn,
+	parents: [], // Short DTO doesn't include parents
+	tags: [], // Short DTO doesn't include tags
+})
+
+/**
+ * Transforms API student (full) data to UI format
  */
 const transformStudent = (apiStudent: ApiStudent): Student => ({
 	id: apiStudent.id,
-	name: `${apiStudent.firstname} ${apiStudent.lastname}`,
+	name: `${apiStudent.firstName} ${apiStudent.lastName}`,
 	avatar: apiStudent.avatar?.path ?? "/assets/avatars/default.jpg",
 	checkedIn: apiStudent.checkedIn,
 	parents: (apiStudent.parents ?? []).map((p) => ({
 		id: p.id,
-		name: `${p.firstname} ${p.lastname}`,
+		name: `${p.firstName} ${p.lastName}`,
 	})),
 	tags: apiStudent.tags ?? [],
 })
 
 /**
- * Transforms API staff data to UI format
+ * Transforms API employee (short) data to UI staff format
  */
-const transformStaff = (apiStaff: ApiStaff): StaffMember => ({
-	id: apiStaff.id,
-	name: `${apiStaff.firstname} ${apiStaff.lastname}`,
-	avatar: apiStaff.avatar?.path ?? "/assets/avatars/default.jpg",
-	checkedIn: apiStaff.checkedIn,
+const transformStaff = (apiEmployee: ApiEmployeeShort): StaffMember => ({
+	id: apiEmployee.id,
+	name: `${apiEmployee.firstName} ${apiEmployee.lastName}`,
+	avatar: apiEmployee.avatar?.path ?? "/assets/avatars/default.jpg",
+	checkedIn: apiEmployee.checkedIn,
 })
 
 /**
@@ -40,6 +62,7 @@ export const transformApiRoom = (apiRoom: ApiRoom): Room => {
 		name: apiRoom.title,
 		// TODO: Map logo to proper icon type based on logo path or add icon field to API
 		icon: "turtle", // Default icon for now
+		status: apiRoom.status as Room["status"],
 		capacity: apiRoom.capacity,
 		ratio: apiRoom.ratio,
 		minAge: apiRoom.minAge,
@@ -59,15 +82,27 @@ export interface GetRoomsParams {
 	status?: RoomStatus
 }
 
+export interface GetRoomsResult {
+	rooms: Room[]
+	total: number
+	limit: number
+	offset: number
+}
+
 /**
- * Fetches all rooms from the API
+ * Fetches rooms from the API with pagination
  */
-export const getRooms = async (params: GetRoomsParams = {}): Promise<Room[]> => {
-	const { limit = 20, offset = 0, status = "active" } = params
-	const apiRooms = await apiClient.get<ApiRoom[]>("/rooms", {
+export const getRooms = async (params: GetRoomsParams = {}): Promise<GetRoomsResult> => {
+	const { limit = 100, offset = 0, status = "active" } = params
+	const response = await apiClient.get<ApiRoomListResponse>("/rooms", {
 		params: { limit, offset, status },
 	})
-	return apiRooms.map(transformApiRoom)
+	return {
+		rooms: response.items.map(transformApiRoom),
+		total: response.total,
+		limit: response.limit,
+		offset: response.offset,
+	}
 }
 
 /**
@@ -90,21 +125,28 @@ export const createRoom = async (payload: RoomCreatePayload): Promise<Room> => {
  * Fetches all students available for room assignment
  */
 export const getAllStudents = async (): Promise<Student[]> => {
-	const apiStudents = await apiClient.get<ApiStudent[]>("/rooms/all-students-list")
-	return apiStudents.map(transformStudent)
+	const apiStudents = await apiClient.get<ApiStudentShort[]>("/rooms/all-students-list")
+	return apiStudents.map(transformStudentShort)
 }
 
 /**
  * Fetches all employees available for room assignment
  */
 export const getAllEmployees = async (): Promise<StaffMember[]> => {
-	const apiEmployees = await apiClient.get<ApiStaff[]>("/rooms/all-employees-list")
+	const apiEmployees = await apiClient.get<ApiEmployeeShort[]>("/rooms/all-employees-list")
 	return apiEmployees.map(transformStaff)
 }
 
 /**
- * Deactivates a room by ID
+ * Deactivates a room by ID (soft delete - can be reversed)
  */
 export const inactivateRoom = async (roomId: string): Promise<void> => {
 	await apiClient.post(`/rooms/${roomId}/inactivate`)
+}
+
+/**
+ * Activates an inactive room by ID
+ */
+export const activateRoom = async (roomId: string): Promise<void> => {
+	await apiClient.post(`/rooms/${roomId}/activate`)
 }

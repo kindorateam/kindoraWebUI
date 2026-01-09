@@ -28,19 +28,9 @@ import RoomsTableCell from "./RoomsTableCell"
 
 const RoomsTable = () => {
 	const [viewDeactivated, setViewDeactivated] = useAtom(viewDeactivatedRoomsAtom)
-	const status = viewDeactivated ? "inactive" : "active"
-	const { data: rooms = [], isLoading, error, refetch } = useRooms(status)
 	const [page, setPage] = useState(1)
-	const rowsPerPage = 10
-
-	const pages = Math.ceil(rooms.length / rowsPerPage) || 1
-
-	const items = useMemo(() => {
-		const start = (page - 1) * rowsPerPage
-		const end = start + rowsPerPage
-
-		return rooms.slice(start, end)
-	}, [page, rooms])
+	const status = viewDeactivated ? "inactive" : "active"
+	const { rooms, total, totalPages, isLoading, error, refetch } = useRooms({ status, page })
 
 	const topContent = useMemo(() => {
 		return (
@@ -49,7 +39,10 @@ const RoomsTable = () => {
 					<Switch
 						classNames={{ label: "text-neutral-600 text-sm" }}
 						isSelected={viewDeactivated}
-						onValueChange={setViewDeactivated}
+						onValueChange={(value) => {
+							setViewDeactivated(value)
+							setPage(1)
+						}}
 						size="sm"
 					>
 						View deactivated
@@ -62,10 +55,10 @@ const RoomsTable = () => {
 						Add Room
 					</Button>
 				</div>
-				<span className="text-default-400 text-small">Total {rooms.length} rooms</span>
+				<span className="text-default-400 text-small">Total {total} rooms</span>
 			</div>
 		)
-	}, [viewDeactivated, setViewDeactivated, rooms.length])
+	}, [viewDeactivated, setViewDeactivated, total])
 
 	return (
 		<Card>
@@ -75,7 +68,7 @@ const RoomsTable = () => {
 					aria-label="Rooms table"
 					removeWrapper
 					bottomContent={
-						pages > 1 ? (
+						totalPages > 1 ? (
 							<div className="flex w-full justify-center">
 								<Pagination
 									isCompact
@@ -83,7 +76,7 @@ const RoomsTable = () => {
 									showShadow
 									color="primary"
 									page={page}
-									total={pages}
+									total={totalPages}
 									onChange={(newPage) => setPage(newPage)}
 								/>
 							</div>
@@ -108,7 +101,7 @@ const RoomsTable = () => {
 					</TableHeader>
 					<TableBody
 						emptyContent={error ? <TableError onRetry={refetch} /> : <RoomsEmptyState />}
-						items={error || isLoading ? [] : items}
+						items={error || isLoading ? [] : rooms}
 						isLoading={isLoading}
 						loadingContent={<Spinner size="lg" />}
 					>

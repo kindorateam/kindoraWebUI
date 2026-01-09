@@ -3,8 +3,10 @@ import { Link, useRouter } from "@tanstack/react-router"
 
 import TablerEdit from "~icons/tabler/edit"
 import TablerEye from "~icons/tabler/eye"
+import TablerPlayerPlay from "~icons/tabler/player-play"
 import TablerTrash from "~icons/tabler/trash"
 
+import { useActivateRoom } from "../../hooks/useRooms"
 import { openDeactivateRoomModal } from "../../stores/deactivateRoomModal.store"
 import RoomIcon from "../RoomIcon"
 
@@ -19,6 +21,8 @@ interface RoomsTableCellProps {
 
 const RoomsTableCell = ({ room, columnKey }: RoomsTableCellProps) => {
 	const router = useRouter()
+	const activateMutation = useActivateRoom()
+	const isInactive = room.status === "inactive"
 
 	switch (columnKey) {
 		case "room":
@@ -104,14 +108,25 @@ const RoomsTableCell = ({ room, columnKey }: RoomsTableCellProps) => {
 							>
 								Edit
 							</DropdownItem>
-							<DropdownItem
-								key="deactivate"
-								className="text-danger"
-								startContent={<TablerTrash aria-hidden className="size-5" />}
-								onPress={() => openDeactivateRoomModal(room.id, room.name)}
-							>
-								Deactivate
-							</DropdownItem>
+							{isInactive ? (
+								<DropdownItem
+									key="activate"
+									className="text-success"
+									startContent={<TablerPlayerPlay aria-hidden className="size-5" />}
+									onPress={() => activateMutation.mutate(room.id)}
+								>
+									Activate
+								</DropdownItem>
+							) : (
+								<DropdownItem
+									key="deactivate"
+									className="text-danger"
+									startContent={<TablerTrash aria-hidden className="size-5" />}
+									onPress={() => openDeactivateRoomModal(room.id, room.name)}
+								>
+									Deactivate
+								</DropdownItem>
+							)}
 						</DropdownMenu>
 					</Dropdown>
 				</div>
