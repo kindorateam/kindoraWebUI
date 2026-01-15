@@ -38,7 +38,10 @@ const RoomDetailHeader = ({ activeTab, roomId, onTabChange }: RoomDetailHeaderPr
 					<div className="w-full">
 						<h1 className="mb-2 font-semibold leading-none lg:text-[36px]">{room?.name ?? "Room"}</h1>
 						{room?.minAge != null && room?.maxAge != null && (
-							<p className="text-default-500 text-sm">Age range: {formatAgeRange(room.minAge, room.maxAge)}</p>
+							<p className="flex items-center gap-2 text-sm">
+								<span className="text-default-500">Age range:</span>
+								<span className="font-medium text-neutral-800">{formatAgeRange(room.minAge, room.maxAge)}</span>
+							</p>
 						)}
 						<div className="mt-3.5 mb-4 flex items-center">
 							<div className="flex flex-wrap gap-4">

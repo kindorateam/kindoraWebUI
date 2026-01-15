@@ -100,7 +100,9 @@ const RoomsTable = () => {
 						)}
 					</TableHeader>
 					<TableBody
-						emptyContent={error ? <TableError onRetry={refetch} /> : <RoomsEmptyState />}
+						emptyContent={
+							error ? <TableError onRetry={refetch} /> : <RoomsEmptyState isDeactivatedView={viewDeactivated} />
+						}
 						items={error || isLoading ? [] : rooms}
 						isLoading={isLoading}
 						loadingContent={<Spinner size="lg" />}

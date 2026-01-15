@@ -10,6 +10,8 @@ import type {
 	RoomCreatePayload,
 	StaffMember,
 	Student,
+	StudentAbsenceDTO,
+	StudentAbsenceRequest,
 } from "../types"
 
 /**
@@ -149,4 +151,28 @@ export const inactivateRoom = async (roomId: string): Promise<void> => {
  */
 export const activateRoom = async (roomId: string): Promise<void> => {
 	await apiClient.post(`/rooms/${roomId}/activate`)
+}
+
+/**
+ * Checks in a student to a room
+ */
+export const checkInStudent = async (roomId: string, studentId: string): Promise<void> => {
+	await apiClient.post(`/rooms/${roomId}/students/${studentId}/check-in`)
+}
+
+/**
+ * Checks out a student from a room
+ */
+export const checkOutStudent = async (roomId: string, studentId: string): Promise<void> => {
+	await apiClient.post(`/rooms/${roomId}/students/${studentId}/check-out`)
+}
+
+/**
+ * Marks a student as absent for a date range
+ */
+export const markStudentAbsent = async (
+	studentId: string,
+	payload: StudentAbsenceRequest,
+): Promise<StudentAbsenceDTO> => {
+	return apiClient.post<StudentAbsenceDTO>(`/students/${studentId}/absence`, payload)
 }

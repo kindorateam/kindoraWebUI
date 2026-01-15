@@ -16,6 +16,22 @@ export interface RoomCreatePayload {
 	employeeIds?: string[]
 }
 
+// dto.StudentAbsenceRequest - used in POST /students/{studentId}/absence
+export interface StudentAbsenceRequest {
+	dateFrom: string
+	dateTo: string
+	reason: string
+}
+
+// dto.StudentAbsenceDTO - response from POST /students/{studentId}/absence
+export interface StudentAbsenceDTO {
+	id: number
+	studentId: string
+	dateFrom: string
+	dateTo: string
+	reason: string
+}
+
 // API response types (matching swagger dto.*)
 export interface ApiAsset {
 	id: string

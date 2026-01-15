@@ -5,3 +5,11 @@ export const ROOM_AGE_OPTIONS = Array.from({ length: MAX_ROOM_AGE - MIN_ROOM_AGE
 	const age = MIN_ROOM_AGE + index
 	return { key: String(age), label: `${age} ${age === 1 ? "year" : "years"}` }
 })
+
+export const ABSENCE_REASONS = [
+	{ key: "sick", label: "Sick" },
+	{ key: "family_emergency", label: "Family emergency" },
+	{ key: "vacation", label: "Vacation" },
+	{ key: "medical_appointment", label: "Medical appointment" },
+	{ key: "other", label: "Other" },
+]

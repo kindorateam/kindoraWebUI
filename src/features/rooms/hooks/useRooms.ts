@@ -2,16 +2,19 @@ import { useMutation, useQueries, useQuery, useQueryClient } from "@tanstack/rea
 
 import {
 	activateRoom,
+	checkInStudent,
+	checkOutStudent,
 	createRoom,
 	getAllEmployees,
 	getAllStudents,
 	getRoomById,
 	getRooms,
 	inactivateRoom,
+	markStudentAbsent,
 } from "../services/room.service"
 
 import type { GetRoomsResult, RoomStatus } from "../services/room.service"
-import type { AddRoomFormData, Room } from "../types"
+import type { AddRoomFormData, Room, StudentAbsenceRequest } from "../types"
 
 const DEFAULT_PAGE_SIZE = 10
 
@@ -192,5 +195,96 @@ export const useActivateRoom = () => {
 				},
 			})
 		},
+	})
+}
+
+export interface StudentCheckParams {
+	roomId: string
+	studentId: string
+}
+
+/**
+ * Updates the student's checkedIn status in the cached room data
+ */
+const updateStudentCheckStatus = (
+	queryClient: ReturnType<typeof useQueryClient>,
+	roomId: string,
+	studentId: string,
+	checkedIn: boolean,
+) => {
+	queryClient.setQueryData<Room>(["rooms", roomId], (oldData) => {
+		if (!oldData) return oldData
+		return {
+			...oldData,
+			signedInStudents: oldData.signedInStudents.map((student) =>
+				student.id === studentId ? { ...student, checkedIn } : student,
+			),
+		}
+	})
+}
+
+/**
+ * Hook to check in a student to a room (with optimistic update)
+ */
+export const useCheckInStudent = () => {
+	const queryClient = useQueryClient()
+
+	return useMutation({
+		mutationFn: ({ roomId, studentId }: StudentCheckParams) => checkInStudent(roomId, studentId),
+		onMutate: async ({ roomId, studentId }) => {
+			// Cancel any outgoing refetches
+			await queryClient.cancelQueries({ queryKey: ["rooms", roomId] })
+			// Snapshot the previous value
+			const previousRoom = queryClient.getQueryData<Room>(["rooms", roomId])
+			// Optimistically update
+			updateStudentCheckStatus(queryClient, roomId, studentId, true)
+			return { previousRoom }
+		},
+		onError: (_error, { roomId }, context) => {
+			// Rollback on error
+			if (context?.previousRoom) {
+				queryClient.setQueryData(["rooms", roomId], context.previousRoom)
+			}
+		},
+	})
+}
+
+/**
+ * Hook to check out a student from a room (with optimistic update)
+ */
+export const useCheckOutStudent = () => {
+	const queryClient = useQueryClient()
+
+	return useMutation({
+		mutationFn: ({ roomId, studentId }: StudentCheckParams) => checkOutStudent(roomId, studentId),
+		onMutate: async ({ roomId, studentId }) => {
+			// Cancel any outgoing refetches
+			await queryClient.cancelQueries({ queryKey: ["rooms", roomId] })
+			// Snapshot the previous value
+			const previousRoom = queryClient.getQueryData<Room>(["rooms", roomId])
+			// Optimistically update
+			updateStudentCheckStatus(queryClient, roomId, studentId, false)
+			return { previousRoom }
+		},
+		onError: (_error, { roomId }, context) => {
+			// Rollback on error
+			if (context?.previousRoom) {
+				queryClient.setQueryData(["rooms", roomId], context.previousRoom)
+			}
+		},
+	})
+}
+
+export interface MarkStudentAbsentParams {
+	studentId: string
+	payload: StudentAbsenceRequest
+}
+
+/**
+ * Hook to mark a student as absent for a date range
+ */
+export const useMarkStudentAbsent = () => {
+	return useMutation({
+		mutationFn: ({ studentId, payload }: MarkStudentAbsentParams) => markStudentAbsent(studentId, payload),
 	})
 }
