@@ -1,47 +1,27 @@
-import { Avatar, Button, Card, CardBody, Chip, Input, Select, SelectItem } from "@heroui/react"
-import { useState } from "react"
+import { Avatar, Button, Card, CardBody, Chip, Input, Select, SelectItem, Spinner } from "@heroui/react"
+import { useEffect, useState } from "react"
 
-import { useRoom } from "../../hooks/useRooms"
+import { useAllEmployees, useRoom } from "../../hooks/useRooms"
 import { openDeactivateRoomModal } from "../../stores/deactivateRoomModal.store"
 import ImagePickerModal from "../ImagePickerModal"
+
+import type { StaffMember } from "../../types"
 
 interface RoomProfileTabProps {
 	roomId: string
 }
 
-// Mock data - will be replaced with API data later
-const mockRoomData = {
-	name: "Baby Turtles",
-	minAge: "2 years",
-	maxAge: "4 years",
-	maxCapacity: "20",
-	studentsPerStaff: "10",
-	avatarUrl: "",
+const ageOptions = Array.from({ length: 13 }, (_, i) => ({
+	key: String(i),
+	label: i === 1 ? "1 year" : `${i} years`,
+}))
+
+/**
+ * Converts months to years (rounded down)
+ */
+const monthsToYears = (months: number): string => {
+	return String(Math.floor(months / 12))
 }
-
-const mockStaff = [
-	{ id: "1", name: "James Whitaker" },
-	{ id: "2", name: "James Whitaker" },
-	{ id: "3", name: "James Whitaker" },
-	{ id: "4", name: "James Whitaker" },
-]
-
-const availableStaff = [
-	{ id: "5", name: "Emily Carter" },
-	{ id: "6", name: "Michael Brown" },
-	{ id: "7", name: "Sarah Johnson" },
-]
-
-const ageOptions = [
-	{ key: "0", label: "0 years" },
-	{ key: "1", label: "1 year" },
-	{ key: "2", label: "2 years" },
-	{ key: "3", label: "3 years" },
-	{ key: "4", label: "4 years" },
-	{ key: "5", label: "5 years" },
-	{ key: "6", label: "6 years" },
-	{ key: "7", label: "7 years" },
-]
 
 const UploadIcon = () => (
 	<svg aria-hidden="true" className="size-5" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
@@ -74,21 +54,38 @@ const SaveIcon = () => (
 )
 
 const RoomProfileTab = ({ roomId }: RoomProfileTabProps) => {
-	const { data: room } = useRoom(roomId)
-	const [assignedStaff, setAssignedStaff] = useState(mockStaff)
+	const { data: room, isLoading } = useRoom(roomId)
+	const { data: allEmployees = [] } = useAllEmployees()
+
+	const [assignedStaff, setAssignedStaff] = useState<StaffMember[]>([])
 	const [avatarPreview, setAvatarPreview] = useState<string | null>(null)
 	const [isImagePickerOpen, setIsImagePickerOpen] = useState(false)
+
+	// Sync assigned staff when room data loads
+	useEffect(() => {
+		if (room?.signedInStaff) {
+			setAssignedStaff(room.signedInStaff)
+		}
+	}, [room?.signedInStaff])
+
+	// Filter out already assigned staff from available options
+	const availableStaff = allEmployees.filter((employee) => !assignedStaff.some((staff) => staff.id === employee.id))
 
 	const handleRemoveStaff = (staffId: string) => {
 		setAssignedStaff((prev) => prev.filter((s) => s.id !== staffId))
 	}
 
+	const handleAddStaff = (staffId: string) => {
+		const staffToAdd = allEmployees.find((e) => e.id === staffId)
+		if (staffToAdd) {
+			setAssignedStaff((prev) => [...prev, staffToAdd])
+		}
+	}
+
 	const handleImageSelect = (image: string | File) => {
 		if (typeof image === "string") {
-			// It's a gradient
 			setAvatarPreview(image)
 		} else {
-			// It's a file
 			const previewUrl = URL.createObjectURL(image)
 			setAvatarPreview(previewUrl)
 		}
@@ -96,6 +93,26 @@ const RoomProfileTab = ({ roomId }: RoomProfileTabProps) => {
 
 	const handleDeletePicture = () => {
 		setAvatarPreview(null)
+	}
+
+	if (isLoading) {
+		return (
+			<Card>
+				<CardBody className="flex h-96 items-center justify-center">
+					<Spinner size="lg" />
+				</CardBody>
+			</Card>
+		)
+	}
+
+	if (!room) {
+		return (
+			<Card>
+				<CardBody className="flex h-96 items-center justify-center">
+					<p className="text-default-500">Room not found</p>
+				</CardBody>
+			</Card>
+		)
 	}
 
 	return (
@@ -109,7 +126,12 @@ const RoomProfileTab = ({ roomId }: RoomProfileTabProps) => {
 								{avatarPreview?.startsWith("linear-gradient") ? (
 									<div className="size-25 rounded-full shadow-md" style={{ background: avatarPreview }} />
 								) : (
-									<Avatar className="size-25 shadow-md" showFallback src={avatarPreview || mockRoomData.avatarUrl} />
+									<Avatar
+										className="size-25 shadow-md"
+										name={room.name}
+										showFallback
+										src={avatarPreview ?? undefined}
+									/>
 								)}
 							</div>
 							<div className="flex gap-5">
@@ -139,34 +161,48 @@ const RoomProfileTab = ({ roomId }: RoomProfileTabProps) => {
 						<div className="grid grid-cols-2 gap-2">
 							<Input
 								className="col-span-2"
-								defaultValue={mockRoomData.name}
+								defaultValue={room.name}
 								label="Room Name"
 								labelPlacement="inside"
 								radius="md"
 								variant="flat"
 							/>
-							<Select defaultSelectedKeys={["2"]} label="Min age" labelPlacement="inside" radius="md" variant="flat">
-								{ageOptions.map((option) => (
-									<SelectItem key={option.key}>{option.label}</SelectItem>
-								))}
-							</Select>
-							<Select defaultSelectedKeys={["4"]} label="Max age" labelPlacement="inside" radius="md" variant="flat">
-								{ageOptions.map((option) => (
-									<SelectItem key={option.key}>{option.label}</SelectItem>
-								))}
-							</Select>
-							<Input
-								defaultValue={mockRoomData.maxCapacity}
-								label="Max capacity"
+							<Select
+								defaultSelectedKeys={[monthsToYears(room.minAge)]}
+								label="Min age"
 								labelPlacement="inside"
 								radius="md"
 								variant="flat"
+							>
+								{ageOptions.map((option) => (
+									<SelectItem key={option.key}>{option.label}</SelectItem>
+								))}
+							</Select>
+							<Select
+								defaultSelectedKeys={[monthsToYears(room.maxAge)]}
+								label="Max age"
+								labelPlacement="inside"
+								radius="md"
+								variant="flat"
+							>
+								{ageOptions.map((option) => (
+									<SelectItem key={option.key}>{option.label}</SelectItem>
+								))}
+							</Select>
+							<Input
+								defaultValue={String(room.capacity)}
+								label="Max capacity"
+								labelPlacement="inside"
+								radius="md"
+								type="number"
+								variant="flat"
 							/>
 							<Input
-								defaultValue={mockRoomData.studentsPerStaff}
+								defaultValue={String(room.ratio)}
 								label="Students per 1 staff"
 								labelPlacement="inside"
 								radius="md"
+								type="number"
 								variant="flat"
 							/>
 						</div>
@@ -175,24 +211,45 @@ const RoomProfileTab = ({ roomId }: RoomProfileTabProps) => {
 					<div className="flex flex-col gap-5">
 						<h3 className="font-medium text-xl">Staff</h3>
 						<div className="flex flex-wrap gap-3">
-							{assignedStaff.map((staff) => (
-								<Chip
-									avatar={<Avatar name={staff.name} size="sm" />}
-									classNames={{
-										base: "bg-primary-50 h-8 px-3",
-										content: "text-sm",
-									}}
-									key={staff.id}
-									onClose={() => handleRemoveStaff(staff.id)}
-									variant="flat"
-								>
-									{staff.name}
-								</Chip>
-							))}
+							{assignedStaff.length === 0 ? (
+								<p className="text-default-400 text-sm">No staff assigned</p>
+							) : (
+								assignedStaff.map((staff) => (
+									<Chip
+										avatar={<Avatar name={staff.name} showFallback size="sm" src={staff.avatar} />}
+										classNames={{
+											base: "bg-primary-50 h-8 px-3",
+											content: "text-sm",
+										}}
+										key={staff.id}
+										onClose={() => handleRemoveStaff(staff.id)}
+										variant="flat"
+									>
+										{staff.name}
+									</Chip>
+								))
+							)}
 						</div>
-						<Select label="Select Staff" labelPlacement="inside" radius="md" variant="flat">
+						<Select
+							label="Select Staff"
+							labelPlacement="inside"
+							radius="md"
+							variant="flat"
+							isDisabled={availableStaff.length === 0}
+							placeholder={availableStaff.length === 0 ? "No available staff" : "Select staff to add"}
+							onSelectionChange={(keys) => {
+								const selected = Array.from(keys)[0]
+								if (selected) handleAddStaff(String(selected))
+							}}
+							selectedKeys={[]}
+						>
 							{availableStaff.map((staff) => (
-								<SelectItem key={staff.id}>{staff.name}</SelectItem>
+								<SelectItem key={staff.id} textValue={staff.name}>
+									<div className="flex items-center gap-2">
+										<Avatar name={staff.name} showFallback size="sm" src={staff.avatar} />
+										<span>{staff.name}</span>
+									</div>
+								</SelectItem>
 							))}
 						</Select>
 					</div>
@@ -202,7 +259,7 @@ const RoomProfileTab = ({ roomId }: RoomProfileTabProps) => {
 					<Button
 						color="danger"
 						endContent={<TrashIcon />}
-						onPress={() => openDeactivateRoomModal(roomId, room?.name ?? "this room")}
+						onPress={() => openDeactivateRoomModal(roomId, room.name)}
 						radius="md"
 						size="md"
 					>

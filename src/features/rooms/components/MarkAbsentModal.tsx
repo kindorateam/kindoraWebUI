@@ -23,6 +23,13 @@ import { closeMarkAbsentModal, markAbsentModalAtom } from "../stores/markAbsentM
 import type { RangeValue } from "@heroui/react"
 import type { CalendarDate } from "@internationalized/date"
 
+/**
+ * Converts CalendarDate to RFC3339 timestamp string
+ */
+const toRFC3339 = (date: CalendarDate): string => {
+	return date.toDate(getLocalTimeZone()).toISOString()
+}
+
 const MarkAbsentModal = () => {
 	const { isOpen, studentId, studentName } = useAtomValue(markAbsentModalAtom)
 	const markAbsentMutation = useMarkStudentAbsent()
@@ -41,8 +48,8 @@ const MarkAbsentModal = () => {
 			{
 				studentId,
 				payload: {
-					dateFrom: dateRange.start.toString(),
-					dateTo: dateRange.end.toString(),
+					dateFrom: toRFC3339(dateRange.start),
+					dateTo: toRFC3339(dateRange.end),
 					reason,
 				},
 			},

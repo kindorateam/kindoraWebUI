@@ -113,6 +113,18 @@ export const useCreateRoom = () => {
 }
 
 /**
+ * Hook to fetch all employees for room staff assignment
+ */
+export const useAllEmployees = () => {
+	return useQuery({
+		queryKey: ["rooms", "all-employees"],
+		queryFn: getAllEmployees,
+		staleTime: 5 * 60 * 1000,
+		gcTime: 10 * 60 * 1000,
+	})
+}
+
+/**
  * Hook to fetch all students and employees in parallel for room assignment
  * Uses useQueries for proper TanStack Query parallel fetching with separate caches
  */
@@ -204,73 +216,44 @@ export interface StudentCheckParams {
 }
 
 /**
- * Updates the student's checkedIn status in the cached room data
+ * Invalidates room queries (individual room and room lists)
  */
-const updateStudentCheckStatus = (
-	queryClient: ReturnType<typeof useQueryClient>,
-	roomId: string,
-	studentId: string,
-	checkedIn: boolean,
-) => {
-	queryClient.setQueryData<Room>(["rooms", roomId], (oldData) => {
-		if (!oldData) return oldData
-		return {
-			...oldData,
-			signedInStudents: oldData.signedInStudents.map((student) =>
-				student.id === studentId ? { ...student, checkedIn } : student,
-			),
-		}
+const invalidateRoomQueries = (queryClient: ReturnType<typeof useQueryClient>, roomId: string) => {
+	// Invalidate individual room
+	queryClient.invalidateQueries({ queryKey: ["rooms", roomId] })
+	// Invalidate room lists (they contain student data)
+	queryClient.invalidateQueries({
+		predicate: (query) => {
+			const key = query.queryKey
+			return key[0] === "rooms" && typeof key[1] === "object" && key[1] !== null && "status" in key[1]
+		},
 	})
 }
 
 /**
- * Hook to check in a student to a room (with optimistic update)
+ * Hook to check in a student to a room
  */
 export const useCheckInStudent = () => {
 	const queryClient = useQueryClient()
 
 	return useMutation({
 		mutationFn: ({ roomId, studentId }: StudentCheckParams) => checkInStudent(roomId, studentId),
-		onMutate: async ({ roomId, studentId }) => {
-			// Cancel any outgoing refetches
-			await queryClient.cancelQueries({ queryKey: ["rooms", roomId] })
-			// Snapshot the previous value
-			const previousRoom = queryClient.getQueryData<Room>(["rooms", roomId])
-			// Optimistically update
-			updateStudentCheckStatus(queryClient, roomId, studentId, true)
-			return { previousRoom }
-		},
-		onError: (_error, { roomId }, context) => {
-			// Rollback on error
-			if (context?.previousRoom) {
-				queryClient.setQueryData(["rooms", roomId], context.previousRoom)
-			}
+		onSuccess: (_data, { roomId }) => {
+			invalidateRoomQueries(queryClient, roomId)
 		},
 	})
 }
 
 /**
- * Hook to check out a student from a room (with optimistic update)
+ * Hook to check out a student from a room
  */
 export const useCheckOutStudent = () => {
 	const queryClient = useQueryClient()
 
 	return useMutation({
 		mutationFn: ({ roomId, studentId }: StudentCheckParams) => checkOutStudent(roomId, studentId),
-		onMutate: async ({ roomId, studentId }) => {
-			// Cancel any outgoing refetches
-			await queryClient.cancelQueries({ queryKey: ["rooms", roomId] })
-			// Snapshot the previous value
-			const previousRoom = queryClient.getQueryData<Room>(["rooms", roomId])
-			// Optimistically update
-			updateStudentCheckStatus(queryClient, roomId, studentId, false)
-			return { previousRoom }
-		},
-		onError: (_error, { roomId }, context) => {
-			// Rollback on error
-			if (context?.previousRoom) {
-				queryClient.setQueryData(["rooms", roomId], context.previousRoom)
-			}
+		onSuccess: (_data, { roomId }) => {
+			invalidateRoomQueries(queryClient, roomId)
 		},
 	})
 }
