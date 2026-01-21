@@ -123,7 +123,7 @@ const MarkAbsentModal = () => {
 							minValue={todayDate}
 							classNames={{
 								base: "w-full",
-								gridWrapper: "w-full",
+								content: "w-full",
 							}}
 						/>
 					</div>

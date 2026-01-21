@@ -73,6 +73,8 @@ export const transformApiRoom = (apiRoom: ApiRoom): Room => {
 		staffCount: staff.length,
 		signedInStudents: students.map(transformStudent),
 		signedInStaff: staff.map(transformStaff),
+		logo: apiRoom.logo?.path,
+		color: apiRoom.color,
 	}
 }
 
@@ -175,4 +177,19 @@ export const markStudentAbsent = async (
 	payload: StudentAbsenceRequest,
 ): Promise<StudentAbsenceDTO> => {
 	return apiClient.post<StudentAbsenceDTO>(`/students/${studentId}/absence`, payload)
+}
+
+/**
+ * Updates a room's logo image
+ */
+export const updateRoomLogo = async (roomId: string, logoFile: File): Promise<Room> => {
+	const formData = new FormData()
+	formData.append("logo", logoFile)
+
+	const apiRoom = await apiClient.put<ApiRoom>(`/rooms/${roomId}/logo`, formData, {
+		headers: {
+			"Content-Type": "multipart/form-data",
+		},
+	})
+	return transformApiRoom(apiRoom)
 }

@@ -1,6 +1,7 @@
 import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@heroui/react"
 import { Link, useRouter } from "@tanstack/react-router"
 
+import { getMediaUrl } from "@/utils/media"
 import TablerEdit from "~icons/tabler/edit"
 import TablerEye from "~icons/tabler/eye"
 import TablerPlayerPlay from "~icons/tabler/player-play"
@@ -25,7 +26,17 @@ const RoomsTableCell = ({ room, columnKey }: RoomsTableCellProps) => {
 	const isInactive = room.status === "inactive"
 
 	switch (columnKey) {
-		case "room":
+		case "room": {
+			const renderRoomAvatar = () => {
+				if (room.logo) {
+					return <img alt={room.name} className="size-8 rounded-full object-cover" src={getMediaUrl(room.logo)} />
+				}
+				if (room.color) {
+					return <div className="size-8 rounded-full" style={{ background: room.color }} />
+				}
+				return <RoomIcon roomType={room.icon} />
+			}
+
 			return (
 				<Link
 					className="flex items-center gap-2 hover:text-primary"
@@ -33,10 +44,11 @@ const RoomsTableCell = ({ room, columnKey }: RoomsTableCellProps) => {
 					search={{ tab: "students" }}
 					to="/rooms/$roomId"
 				>
-					<RoomIcon roomType={room.icon} />
+					{renderRoomAvatar()}
 					<span className="font-medium text-sm">{room.name}</span>
 				</Link>
 			)
+		}
 
 		case "capacity":
 			return <span className="text-gray-600 text-sm">{room.capacity}</span>

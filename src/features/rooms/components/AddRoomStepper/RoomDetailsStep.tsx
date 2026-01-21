@@ -1,5 +1,5 @@
 import { Avatar, Input, NumberInput, Select, SelectItem } from "@heroui/react"
-import { useEffect, useRef, useState } from "react"
+import { useState } from "react"
 import { Controller, useFormContext } from "react-hook-form"
 
 import TablerPencil from "~icons/tabler/pencil"
@@ -11,7 +11,6 @@ import type { AddRoomFormData } from "../../types"
 
 const RoomDetailsStep = () => {
 	const [isImagePickerOpen, setIsImagePickerOpen] = useState(false)
-	const objectUrlRef = useRef<string | null>(null)
 	const {
 		control,
 		watch,
@@ -27,34 +26,21 @@ const RoomDetailsStep = () => {
 	}
 
 	const handleImageSelect = (image: string | File) => {
-		if (objectUrlRef.current) {
-			URL.revokeObjectURL(objectUrlRef.current)
-			objectUrlRef.current = null
-		}
-
 		if (typeof image === "string") {
 			// It's a gradient
 			setValue("avatarPreview", image)
 			setValue("avatarFile", undefined)
 		} else {
-			// It's a file
+			// It's a file - create preview URL
+			// Note: Object URLs are not revoked here because the component unmounts
+			// when navigating between steps. Browser cleans up when page unloads.
 			const previewUrl = URL.createObjectURL(image)
-			objectUrlRef.current = previewUrl
 			setValue("avatarFile", image)
 			setValue("avatarPreview", previewUrl)
 		}
 	}
 
 	const isGradient = avatarPreview?.startsWith("linear-gradient")
-
-	useEffect(() => {
-		return () => {
-			if (objectUrlRef.current) {
-				URL.revokeObjectURL(objectUrlRef.current)
-				objectUrlRef.current = null
-			}
-		}
-	}, [])
 
 	return (
 		<div className="flex flex-col gap-6">

@@ -11,6 +11,7 @@ import {
 	getRooms,
 	inactivateRoom,
 	markStudentAbsent,
+	updateRoomLogo,
 } from "../services/room.service"
 
 import type { GetRoomsResult, RoomStatus } from "../services/room.service"
@@ -84,6 +85,9 @@ export const useCreateRoom = () => {
 
 	return useMutation({
 		mutationFn: (formData: AddRoomFormData) => {
+			// Check if avatarPreview is a gradient color (not a file preview URL)
+			const isGradient = formData.avatarPreview?.startsWith("linear-gradient")
+
 			return createRoom({
 				title: formData.name,
 				capacity: formData.capacity,
@@ -92,6 +96,7 @@ export const useCreateRoom = () => {
 				maxAge: formData.maxAge * 12, // Convert years to months
 				studentIds: formData.studentIds,
 				employeeIds: formData.staffIds,
+				...(isGradient && { color: formData.avatarPreview }),
 			})
 		},
 		onSuccess: () => {
@@ -269,5 +274,24 @@ export interface MarkStudentAbsentParams {
 export const useMarkStudentAbsent = () => {
 	return useMutation({
 		mutationFn: ({ studentId, payload }: MarkStudentAbsentParams) => markStudentAbsent(studentId, payload),
+	})
+}
+
+export interface UpdateRoomLogoParams {
+	roomId: string
+	logoFile: File
+}
+
+/**
+ * Hook to update a room's logo image
+ */
+export const useUpdateRoomLogo = () => {
+	const queryClient = useQueryClient()
+
+	return useMutation({
+		mutationFn: ({ roomId, logoFile }: UpdateRoomLogoParams) => updateRoomLogo(roomId, logoFile),
+		onSuccess: (_data, { roomId }) => {
+			invalidateRoomQueries(queryClient, roomId)
+		},
 	})
 }

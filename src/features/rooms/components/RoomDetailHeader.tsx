@@ -2,6 +2,7 @@ import { Avatar, Tab, Tabs } from "@heroui/react"
 
 import IdentityChip from "@/components/IdentityChip"
 import LabeledNumberBadge from "@/components/LabeledNumberBadge"
+import { getMediaUrl } from "@/utils/media"
 
 import { useRoom } from "../hooks/useRooms"
 import { formatAgeRange } from "../utils/ageFormat"
@@ -33,7 +34,16 @@ const RoomDetailHeader = ({ activeTab, roomId, onTabChange }: RoomDetailHeaderPr
 			<div className="container mx-auto max-w-4xl">
 				<div className="mb-13 flex">
 					<div className="me-7">
-						<Avatar className="size-37.5" name={room?.name ?? "Room"} showFallback />
+						{room?.color ? (
+							<div className="size-37.5 rounded-full" style={{ background: room.color }} />
+						) : (
+							<Avatar
+								className="size-37.5"
+								name={room?.name ?? "Room"}
+								showFallback
+								src={room?.logo ? getMediaUrl(room.logo) : undefined}
+							/>
+						)}
 					</div>
 					<div className="w-full">
 						<h1 className="mb-2 font-semibold leading-none lg:text-[36px]">{room?.name ?? "Room"}</h1>

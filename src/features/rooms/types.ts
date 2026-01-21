@@ -122,6 +122,8 @@ export interface Room {
 	staffCount: number
 	signedInStudents: Student[]
 	signedInStaff: StaffMember[]
+	logo?: string // URL path to logo image
+	color?: string // Gradient color string
 }
 
 export interface Parent {

@@ -1,6 +1,8 @@
 import { Avatar, Button, Card, CardBody, Chip, Input, Select, SelectItem, Spinner } from "@heroui/react"
 import { useEffect, useState } from "react"
 
+import { getMediaUrl } from "@/utils/media"
+
 import { useAllEmployees, useRoom } from "../../hooks/useRooms"
 import { openDeactivateRoomModal } from "../../stores/deactivateRoomModal.store"
 import ImagePickerModal from "../ImagePickerModal"
@@ -67,6 +69,15 @@ const RoomProfileTab = ({ roomId }: RoomProfileTabProps) => {
 			setAssignedStaff(room.signedInStaff)
 		}
 	}, [room?.signedInStaff])
+
+	// Sync avatar preview when room data loads
+	useEffect(() => {
+		if (room?.color) {
+			setAvatarPreview(room.color)
+		} else if (room?.logo) {
+			setAvatarPreview(getMediaUrl(room.logo))
+		}
+	}, [room?.color, room?.logo])
 
 	// Filter out already assigned staff from available options
 	const availableStaff = allEmployees.filter((employee) => !assignedStaff.some((staff) => staff.id === employee.id))
