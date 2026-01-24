@@ -78,17 +78,19 @@ const RoomProfileTab = ({ roomId }: RoomProfileTabProps) => {
 		}
 	}, [room])
 
-	// Filter out already assigned staff from available options
-	const availableStaff = allEmployees.filter((employee) => !assignedStaff.some((staff) => staff.id === employee.id))
+	// Merge allEmployees with assignedStaff to include staff that might not be in allEmployees list
+	const staffOptions = [
+		...allEmployees,
+		...assignedStaff.filter((staff) => !allEmployees.some((e) => e.id === staff.id)),
+	]
 
-	const handleRemoveStaff = (staffId: string) => {
-		setAssignedStaff((prev) => prev.filter((s) => s.id !== staffId))
-	}
-
-	const handleAddStaff = (staffId: string) => {
-		const staffToAdd = allEmployees.find((e) => e.id === staffId)
-		if (staffToAdd) {
-			setAssignedStaff((prev) => [...prev, staffToAdd])
+	const handleStaffSelectionChange = (keys: "all" | Set<React.Key>) => {
+		if (keys === "all") {
+			setAssignedStaff(staffOptions)
+		} else {
+			const selectedIds = Array.from(keys) as string[]
+			const selectedStaff = staffOptions.filter((e) => selectedIds.includes(e.id))
+			setAssignedStaff(selectedStaff)
 		}
 	}
 
@@ -342,47 +344,43 @@ const RoomProfileTab = ({ roomId }: RoomProfileTabProps) => {
 
 					<div className="flex flex-col gap-5">
 						<h3 className="font-medium text-xl">Staff</h3>
-						<div className="flex flex-wrap gap-3">
-							{assignedStaff.length === 0 ? (
-								<p className="text-default-400 text-sm">No staff assigned</p>
-							) : (
-								assignedStaff.map((staff) => (
-									<Chip
-										avatar={<Avatar name={staff.name} showFallback size="sm" src={staff.avatar} />}
-										classNames={{
-											base: "bg-primary-50 h-8 px-3",
-											content: "text-sm",
-										}}
-										key={staff.id}
-										onClose={() => handleRemoveStaff(staff.id)}
-										variant="flat"
-									>
-										{staff.name}
-									</Chip>
-								))
-							)}
-						</div>
 						<Select
+							isMultiline
+							items={staffOptions}
 							label="Select Staff"
 							labelPlacement="inside"
+							onSelectionChange={handleStaffSelectionChange}
+							placeholder="Select staff to add"
 							radius="md"
+							renderValue={(items) => (
+								<div className="flex flex-wrap gap-2">
+									{items.map((item) => (
+										<Chip
+											avatar={<Avatar name={item.data?.name} showFallback size="sm" src={item.data?.avatar} />}
+											classNames={{
+												base: "bg-primary-50 h-7",
+												content: "text-sm",
+											}}
+											key={item.key}
+											variant="flat"
+										>
+											{item.data?.name}
+										</Chip>
+									))}
+								</div>
+							)}
+							selectedKeys={new Set(assignedStaff.map((s) => s.id))}
+							selectionMode="multiple"
 							variant="flat"
-							isDisabled={availableStaff.length === 0}
-							placeholder={availableStaff.length === 0 ? "No available staff" : "Select staff to add"}
-							onSelectionChange={(keys) => {
-								const selected = Array.from(keys)[0]
-								if (selected) handleAddStaff(String(selected))
-							}}
-							selectedKeys={[]}
 						>
-							{availableStaff.map((staff) => (
+							{(staff) => (
 								<SelectItem key={staff.id} textValue={staff.name}>
 									<div className="flex items-center gap-2">
 										<Avatar name={staff.name} showFallback size="sm" src={staff.avatar} />
 										<span>{staff.name}</span>
 									</div>
 								</SelectItem>
-							))}
+							)}
 						</Select>
 					</div>
 				</div>
