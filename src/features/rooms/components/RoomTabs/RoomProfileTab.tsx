@@ -1,9 +1,10 @@
-import { Avatar, Button, Card, CardBody, Chip, Input, Select, SelectItem, Spinner } from "@heroui/react"
+import { Avatar, Button, Card, CardBody, Chip, Input, Select, SelectItem, Spinner, addToast } from "@heroui/react"
 import { useEffect, useState } from "react"
 
 import { getMediaUrl } from "@/utils/media"
 
-import { useAllEmployees, useRoom } from "../../hooks/useRooms"
+import { ROOM_AGE_OPTIONS } from "../../constants"
+import { useAllEmployees, useRoom, useUpdateRoom, useUpdateRoomLogo } from "../../hooks/useRooms"
 import { openDeactivateRoomModal } from "../../stores/deactivateRoomModal.store"
 import ImagePickerModal from "../ImagePickerModal"
 
@@ -11,18 +12,6 @@ import type { StaffMember } from "../../types"
 
 interface RoomProfileTabProps {
 	roomId: string
-}
-
-const ageOptions = Array.from({ length: 13 }, (_, i) => ({
-	key: String(i),
-	label: i === 1 ? "1 year" : `${i} years`,
-}))
-
-/**
- * Converts months to years (rounded down)
- */
-const monthsToYears = (months: number): string => {
-	return String(Math.floor(months / 12))
 }
 
 const UploadIcon = () => (
@@ -58,26 +47,36 @@ const SaveIcon = () => (
 const RoomProfileTab = ({ roomId }: RoomProfileTabProps) => {
 	const { data: room, isLoading } = useRoom(roomId)
 	const { data: allEmployees = [] } = useAllEmployees()
+	const updateRoomMutation = useUpdateRoom()
+	const updateLogoMutation = useUpdateRoomLogo()
 
+	// Form state
+	const [name, setName] = useState("")
+	const [capacity, setCapacity] = useState("")
+	const [ratio, setRatio] = useState("")
+	const [minAge, setMinAge] = useState("")
+	const [maxAge, setMaxAge] = useState("")
 	const [assignedStaff, setAssignedStaff] = useState<StaffMember[]>([])
 	const [avatarPreview, setAvatarPreview] = useState<string | null>(null)
+	const [avatarFile, setAvatarFile] = useState<File | null>(null)
 	const [isImagePickerOpen, setIsImagePickerOpen] = useState(false)
 
-	// Sync assigned staff when room data loads
+	// Sync form state when room data loads
 	useEffect(() => {
-		if (room?.signedInStaff) {
+		if (room) {
+			setName(room.name)
+			setCapacity(String(room.capacity))
+			setRatio(String(room.ratio))
+			setMinAge(String(room.minAge))
+			setMaxAge(String(room.maxAge))
 			setAssignedStaff(room.signedInStaff)
+			if (room.color) {
+				setAvatarPreview(room.color)
+			} else if (room.logo) {
+				setAvatarPreview(getMediaUrl(room.logo))
+			}
 		}
-	}, [room?.signedInStaff])
-
-	// Sync avatar preview when room data loads
-	useEffect(() => {
-		if (room?.color) {
-			setAvatarPreview(room.color)
-		} else if (room?.logo) {
-			setAvatarPreview(getMediaUrl(room.logo))
-		}
-	}, [room?.color, room?.logo])
+	}, [room])
 
 	// Filter out already assigned staff from available options
 	const availableStaff = allEmployees.filter((employee) => !assignedStaff.some((staff) => staff.id === employee.id))
@@ -95,16 +94,104 @@ const RoomProfileTab = ({ roomId }: RoomProfileTabProps) => {
 
 	const handleImageSelect = (image: string | File) => {
 		if (typeof image === "string") {
+			// Gradient color
 			setAvatarPreview(image)
+			setAvatarFile(null)
 		} else {
+			// File upload
 			const previewUrl = URL.createObjectURL(image)
 			setAvatarPreview(previewUrl)
+			setAvatarFile(image)
 		}
 	}
 
 	const handleDeletePicture = () => {
 		setAvatarPreview(null)
+		setAvatarFile(null)
 	}
+
+	const handleCancel = () => {
+		// Reset to original values
+		if (room) {
+			setName(room.name)
+			setCapacity(String(room.capacity))
+			setRatio(String(room.ratio))
+			setMinAge(String(room.minAge))
+			setMaxAge(String(room.maxAge))
+			setAssignedStaff(room.signedInStaff)
+			setAvatarFile(null)
+			if (room.color) {
+				setAvatarPreview(room.color)
+			} else if (room.logo) {
+				setAvatarPreview(getMediaUrl(room.logo))
+			} else {
+				setAvatarPreview(null)
+			}
+		}
+	}
+
+	const handleSave = () => {
+		const isGradient = avatarPreview?.startsWith("linear-gradient")
+
+		updateRoomMutation.mutate(
+			{
+				roomId,
+				payload: {
+					title: name,
+					capacity: Number(capacity),
+					ratio: Number(ratio),
+					minAge: Number(minAge),
+					maxAge: Number(maxAge),
+					employeeIds: assignedStaff.map((s) => s.id),
+					...(isGradient && avatarPreview && { color: avatarPreview }),
+				},
+			},
+			{
+				onSuccess: () => {
+					// If there's a new logo file, upload it
+					if (avatarFile) {
+						updateLogoMutation.mutate(
+							{ roomId, logoFile: avatarFile },
+							{
+								onSuccess: () => {
+									setAvatarFile(null)
+									addToast({
+										title: "Room updated",
+										description: "Room details have been saved successfully.",
+										color: "success",
+									})
+								},
+								onError: (error) => {
+									addToast({
+										title: "Room updated but logo upload failed",
+										description: "You can try uploading the logo again.",
+										color: "warning",
+									})
+									console.error("Failed to upload logo:", error)
+								},
+							},
+						)
+					} else {
+						addToast({
+							title: "Room updated",
+							description: "Room details have been saved successfully.",
+							color: "success",
+						})
+					}
+				},
+				onError: (error) => {
+					addToast({
+						title: "Failed to update room",
+						description: "Please try again.",
+						color: "danger",
+					})
+					console.error("Failed to update room:", error)
+				},
+			},
+		)
+	}
+
+	const isSaving = updateRoomMutation.isPending || updateLogoMutation.isPending
 
 	if (isLoading) {
 		return (
@@ -172,48 +259,59 @@ const RoomProfileTab = ({ roomId }: RoomProfileTabProps) => {
 						<div className="grid grid-cols-2 gap-2">
 							<Input
 								className="col-span-2"
-								defaultValue={room.name}
 								label="Room Name"
 								labelPlacement="inside"
+								onValueChange={setName}
 								radius="md"
+								value={name}
 								variant="flat"
 							/>
 							<Select
-								defaultSelectedKeys={[monthsToYears(room.minAge)]}
 								label="Min age"
 								labelPlacement="inside"
+								onSelectionChange={(keys) => {
+									const selected = Array.from(keys)[0]
+									if (selected !== undefined) setMinAge(String(selected))
+								}}
 								radius="md"
+								selectedKeys={minAge ? [minAge] : []}
 								variant="flat"
 							>
-								{ageOptions.map((option) => (
+								{ROOM_AGE_OPTIONS.map((option) => (
 									<SelectItem key={option.key}>{option.label}</SelectItem>
 								))}
 							</Select>
 							<Select
-								defaultSelectedKeys={[monthsToYears(room.maxAge)]}
 								label="Max age"
 								labelPlacement="inside"
+								onSelectionChange={(keys) => {
+									const selected = Array.from(keys)[0]
+									if (selected !== undefined) setMaxAge(String(selected))
+								}}
 								radius="md"
+								selectedKeys={maxAge ? [maxAge] : []}
 								variant="flat"
 							>
-								{ageOptions.map((option) => (
+								{ROOM_AGE_OPTIONS.map((option) => (
 									<SelectItem key={option.key}>{option.label}</SelectItem>
 								))}
 							</Select>
 							<Input
-								defaultValue={String(room.capacity)}
 								label="Max capacity"
 								labelPlacement="inside"
+								onValueChange={setCapacity}
 								radius="md"
 								type="number"
+								value={capacity}
 								variant="flat"
 							/>
 							<Input
-								defaultValue={String(room.ratio)}
 								label="Students per 1 staff"
 								labelPlacement="inside"
+								onValueChange={setRatio}
 								radius="md"
 								type="number"
+								value={ratio}
 								variant="flat"
 							/>
 						</div>
@@ -270,6 +368,7 @@ const RoomProfileTab = ({ roomId }: RoomProfileTabProps) => {
 					<Button
 						color="danger"
 						endContent={<TrashIcon />}
+						isDisabled={isSaving}
 						onPress={() => openDeactivateRoomModal(roomId, room.name)}
 						radius="md"
 						size="md"
@@ -277,10 +376,17 @@ const RoomProfileTab = ({ roomId }: RoomProfileTabProps) => {
 						Deactivate Room
 					</Button>
 					<div className="flex gap-5">
-						<Button radius="md" size="md" variant="bordered">
+						<Button isDisabled={isSaving} onPress={handleCancel} radius="md" size="md" variant="bordered">
 							Cancel
 						</Button>
-						<Button color="primary" endContent={<SaveIcon />} radius="md" size="md">
+						<Button
+							color="primary"
+							endContent={!isSaving && <SaveIcon />}
+							isLoading={isSaving}
+							onPress={handleSave}
+							radius="md"
+							size="md"
+						>
 							Save Changes
 						</Button>
 					</div>

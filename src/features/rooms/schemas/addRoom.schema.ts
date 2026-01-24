@@ -1,6 +1,6 @@
 import { z } from "zod"
 
-import { MAX_ROOM_AGE, MIN_ROOM_AGE } from "../constants"
+import { MAX_ROOM_AGE_MONTHS, MIN_ROOM_AGE_MONTHS } from "../constants"
 
 export const addRoomSchema = z
 	.object({
@@ -10,13 +10,13 @@ export const addRoomSchema = z
 		minAge: z
 			.number({ message: "Min age is required" })
 			.int()
-			.min(MIN_ROOM_AGE, `Min age must be at least ${MIN_ROOM_AGE}`)
-			.max(MAX_ROOM_AGE, `Min age must be at most ${MAX_ROOM_AGE}`),
+			.min(MIN_ROOM_AGE_MONTHS, `Min age must be at least ${MIN_ROOM_AGE_MONTHS} month`)
+			.max(MAX_ROOM_AGE_MONTHS, `Min age must be at most ${MAX_ROOM_AGE_MONTHS} months`),
 		maxAge: z
 			.number({ message: "Max age is required" })
 			.int()
-			.min(MIN_ROOM_AGE, `Max age must be at least ${MIN_ROOM_AGE}`)
-			.max(MAX_ROOM_AGE, `Max age must be at most ${MAX_ROOM_AGE}`),
+			.min(MIN_ROOM_AGE_MONTHS, `Max age must be at least ${MIN_ROOM_AGE_MONTHS} month`)
+			.max(MAX_ROOM_AGE_MONTHS, `Max age must be at most ${MAX_ROOM_AGE_MONTHS} months`),
 		avatarFile: z.instanceof(File).optional(),
 		avatarPreview: z.string().optional(),
 		staffIds: z.array(z.string()),

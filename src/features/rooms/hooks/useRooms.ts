@@ -11,11 +11,12 @@ import {
 	getRooms,
 	inactivateRoom,
 	markStudentAbsent,
+	updateRoom,
 	updateRoomLogo,
 } from "../services/room.service"
 
 import type { GetRoomsResult, RoomStatus } from "../services/room.service"
-import type { AddRoomFormData, Room, StudentAbsenceRequest } from "../types"
+import type { AddRoomFormData, Room, RoomUpdatePayload, StudentAbsenceRequest } from "../types"
 
 const DEFAULT_PAGE_SIZE = 10
 
@@ -92,8 +93,8 @@ export const useCreateRoom = () => {
 				title: formData.name,
 				capacity: formData.capacity,
 				ratio: formData.ratio,
-				minAge: formData.minAge * 12, // Convert years to months
-				maxAge: formData.maxAge * 12, // Convert years to months
+				minAge: formData.minAge,
+				maxAge: formData.maxAge,
 				studentIds: formData.studentIds,
 				employeeIds: formData.staffIds,
 				...(isGradient && { color: formData.avatarPreview }),
@@ -290,6 +291,25 @@ export const useUpdateRoomLogo = () => {
 
 	return useMutation({
 		mutationFn: ({ roomId, logoFile }: UpdateRoomLogoParams) => updateRoomLogo(roomId, logoFile),
+		onSuccess: (_data, { roomId }) => {
+			invalidateRoomQueries(queryClient, roomId)
+		},
+	})
+}
+
+export interface UpdateRoomParams {
+	roomId: string
+	payload: RoomUpdatePayload
+}
+
+/**
+ * Hook to update room details
+ */
+export const useUpdateRoom = () => {
+	const queryClient = useQueryClient()
+
+	return useMutation({
+		mutationFn: ({ roomId, payload }: UpdateRoomParams) => updateRoom(roomId, payload),
 		onSuccess: (_data, { roomId }) => {
 			invalidateRoomQueries(queryClient, roomId)
 		},

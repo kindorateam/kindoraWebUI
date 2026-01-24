@@ -16,6 +16,20 @@ export interface RoomCreatePayload {
 	employeeIds?: string[]
 }
 
+// API request types (matching swagger dto.UpdateRoomDTO)
+export interface RoomUpdatePayload {
+	title?: string
+	capacity?: number
+	ratio?: number
+	minAge?: number // in months (0-255)
+	maxAge?: number // in months (0-255)
+	color?: string
+	logoId?: string
+	status?: string
+	studentIds?: string[]
+	employeeIds?: string[]
+}
+
 // dto.StudentAbsenceRequest - used in POST /students/{studentId}/absence
 export interface StudentAbsenceRequest {
 	dateFrom: string

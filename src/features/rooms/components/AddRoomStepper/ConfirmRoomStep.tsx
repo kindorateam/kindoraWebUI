@@ -1,6 +1,8 @@
 import { Avatar } from "@heroui/react"
 import { useFormContext } from "react-hook-form"
 
+import { formatAgeLabel } from "../../constants"
+
 import type { AddRoomFormData } from "../../types"
 
 const ConfirmRoomStep = () => {
@@ -39,7 +41,7 @@ const ConfirmRoomStep = () => {
 					<p className="text-base">
 						<span className="font-medium">Age Range:</span>{" "}
 						<span className="text-neutral-700">
-							{formData.minAge} - {formData.maxAge} years
+							{formatAgeLabel(formData.minAge)} - {formatAgeLabel(formData.maxAge)}
 						</span>
 					</p>
 				</div>

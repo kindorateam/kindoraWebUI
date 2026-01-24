@@ -8,6 +8,7 @@ import type {
 	ApiStudentShort,
 	Room,
 	RoomCreatePayload,
+	RoomUpdatePayload,
 	StaffMember,
 	Student,
 	StudentAbsenceDTO,
@@ -122,6 +123,14 @@ export const getRoomById = async (roomId: string): Promise<Room> => {
  */
 export const createRoom = async (payload: RoomCreatePayload): Promise<Room> => {
 	const apiRoom = await apiClient.post<ApiRoom>("/rooms", payload)
+	return transformApiRoom(apiRoom)
+}
+
+/**
+ * Updates an existing room
+ */
+export const updateRoom = async (roomId: string, payload: RoomUpdatePayload): Promise<Room> => {
+	const apiRoom = await apiClient.put<ApiRoom>(`/rooms/${roomId}`, payload)
 	return transformApiRoom(apiRoom)
 }
 
