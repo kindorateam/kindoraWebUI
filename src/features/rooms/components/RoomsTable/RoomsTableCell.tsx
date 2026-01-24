@@ -69,6 +69,9 @@ const RoomsTableCell = ({ room, columnKey }: RoomsTableCellProps) => {
 			return <SignedInAvatarGroup items={checkedInStaff} tooltipLabel="Signed-in staff" />
 		}
 
+		case "ratio":
+			return <span className="text-gray-600 text-sm">1:{room.ratio}</span>
+
 		case "actions":
 			return (
 				<div className="flex justify-center">
