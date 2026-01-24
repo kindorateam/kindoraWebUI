@@ -193,6 +193,29 @@ const RoomProfileTab = ({ roomId }: RoomProfileTabProps) => {
 
 	const isSaving = updateRoomMutation.isPending || updateLogoMutation.isPending
 
+	// Check if any changes were made
+	const hasChanges = (() => {
+		if (!room) return false
+		if (name !== room.name) return true
+		if (capacity !== String(room.capacity)) return true
+		if (ratio !== String(room.ratio)) return true
+		if (minAge !== String(room.minAge)) return true
+		if (maxAge !== String(room.maxAge)) return true
+		if (avatarFile) return true
+
+		// Check staff changes
+		const currentStaffIds = assignedStaff.map((s) => s.id).sort()
+		const originalStaffIds = room.signedInStaff.map((s) => s.id).sort()
+		if (currentStaffIds.length !== originalStaffIds.length) return true
+		if (currentStaffIds.some((id, i) => id !== originalStaffIds[i])) return true
+
+		// Check avatar/color changes
+		const originalAvatar = room.color ?? (room.logo ? getMediaUrl(room.logo) : null)
+		if (avatarPreview !== originalAvatar) return true
+
+		return false
+	})()
+
 	if (isLoading) {
 		return (
 			<Card>
@@ -217,43 +240,6 @@ const RoomProfileTab = ({ roomId }: RoomProfileTabProps) => {
 		<Card>
 			<CardBody className="gap-8 p-5 md:p-8">
 				<div className="grid grid-cols-1 gap-8 md:grid-cols-2">
-					<div className="flex flex-col gap-5">
-						<h3 className="font-medium text-xl">Profile Picture</h3>
-						<div className="flex items-center gap-5">
-							<div>
-								{avatarPreview?.startsWith("linear-gradient") ? (
-									<div className="size-25 rounded-full shadow-md" style={{ background: avatarPreview }} />
-								) : (
-									<Avatar
-										className="size-25 shadow-md"
-										name={room.name}
-										showFallback
-										src={avatarPreview ?? undefined}
-									/>
-								)}
-							</div>
-							<div className="flex gap-5">
-								<Button
-									color="primary"
-									endContent={<UploadIcon />}
-									onPress={() => setIsImagePickerOpen(true)}
-									radius="md"
-									size="sm"
-								>
-									Upload Picture
-								</Button>
-								<Button color="danger" endContent={<TrashIcon />} onPress={handleDeletePicture} radius="md" size="sm">
-									Delete Picture
-								</Button>
-							</div>
-						</div>
-						<ImagePickerModal
-							isOpen={isImagePickerOpen}
-							onClose={() => setIsImagePickerOpen(false)}
-							onSelect={handleImageSelect}
-						/>
-					</div>
-
 					<div className="flex flex-col gap-5">
 						<h3 className="font-medium text-xl">Room Info</h3>
 						<div className="grid grid-cols-2 gap-2">
@@ -315,6 +301,43 @@ const RoomProfileTab = ({ roomId }: RoomProfileTabProps) => {
 								variant="flat"
 							/>
 						</div>
+					</div>
+
+					<div className="flex flex-col gap-5">
+						<h3 className="font-medium text-xl">Profile Picture</h3>
+						<div className="flex items-center gap-5">
+							<div>
+								{avatarPreview?.startsWith("linear-gradient") ? (
+									<div className="size-25 rounded-full shadow-md" style={{ background: avatarPreview }} />
+								) : (
+									<Avatar
+										className="size-25 shadow-md"
+										name={room.name}
+										showFallback
+										src={avatarPreview ?? undefined}
+									/>
+								)}
+							</div>
+							<div className="flex gap-5">
+								<Button
+									color="primary"
+									endContent={<UploadIcon />}
+									onPress={() => setIsImagePickerOpen(true)}
+									radius="md"
+									size="sm"
+								>
+									Upload Picture
+								</Button>
+								<Button color="danger" endContent={<TrashIcon />} onPress={handleDeletePicture} radius="md" size="sm">
+									Delete Picture
+								</Button>
+							</div>
+						</div>
+						<ImagePickerModal
+							isOpen={isImagePickerOpen}
+							onClose={() => setIsImagePickerOpen(false)}
+							onSelect={handleImageSelect}
+						/>
 					</div>
 
 					<div className="flex flex-col gap-5">
@@ -382,6 +405,7 @@ const RoomProfileTab = ({ roomId }: RoomProfileTabProps) => {
 						<Button
 							color="primary"
 							endContent={!isSaving && <SaveIcon />}
+							isDisabled={!hasChanges}
 							isLoading={isSaving}
 							onPress={handleSave}
 							radius="md"
