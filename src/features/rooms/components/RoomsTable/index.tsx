@@ -64,60 +64,58 @@ const RoomsTable = () => {
 		<Card>
 			<CardBody className="flex flex-col gap-4 p-4">
 				{topContent}
-				<Table
-					aria-label="Rooms table"
-					removeWrapper
-					bottomContent={
-						totalPages > 1 ? (
-							<div className="flex w-full justify-center">
-								<Pagination
-									isCompact
-									showControls
-									showShadow
-									color="primary"
-									page={page}
-									total={totalPages}
-									onChange={(newPage) => setPage(newPage)}
-								/>
-							</div>
-						) : null
-					}
-					bottomContentPlacement="outside"
-					classNames={{
-						base: "min-h-[595.5px]",
-						tr: "border-b border-default-200 last:border-b-0",
-						th: "py-0",
-						td: "py-0",
-						tbody: "[&>tr]:h-[55px]",
-						emptyWrapper: "h-[550px]",
-					}}
-				>
-					<TableHeader columns={columns}>
-						{(column) => (
-							<TableColumn key={column.key} align={column.align}>
-								{column.label}
-							</TableColumn>
-						)}
-					</TableHeader>
-					<TableBody
-						emptyContent={
-							error ? <TableError onRetry={refetch} /> : <RoomsEmptyState isDeactivatedView={viewDeactivated} />
-						}
-						items={error || isLoading ? [] : rooms}
-						isLoading={isLoading}
-						loadingContent={<Spinner size="lg" />}
+				<div className="flex min-h-[647.5px] flex-col justify-between">
+					<Table
+						aria-label="Rooms table"
+						removeWrapper
+						classNames={{
+							tr: "border-b border-default-200 last:border-b-0",
+							th: "py-0",
+							td: "py-0",
+							tbody: "[&>tr]:h-[55px]",
+							emptyWrapper: "h-[550px]",
+						}}
 					>
-						{(room) => (
-							<TableRow key={room.id}>
-								{(columnKey) => (
-									<TableCell>
-										<RoomsTableCell columnKey={columnKey} room={room} />
-									</TableCell>
-								)}
-							</TableRow>
-						)}
-					</TableBody>
-				</Table>
+						<TableHeader columns={columns}>
+							{(column) => (
+								<TableColumn key={column.key} align={column.align}>
+									{column.label}
+								</TableColumn>
+							)}
+						</TableHeader>
+						<TableBody
+							emptyContent={
+								error ? <TableError onRetry={refetch} /> : <RoomsEmptyState isDeactivatedView={viewDeactivated} />
+							}
+							items={error || isLoading ? [] : rooms}
+							isLoading={isLoading}
+							loadingContent={<Spinner size="lg" />}
+						>
+							{(room) => (
+								<TableRow key={room.id}>
+									{(columnKey) => (
+										<TableCell>
+											<RoomsTableCell columnKey={columnKey} room={room} />
+										</TableCell>
+									)}
+								</TableRow>
+							)}
+						</TableBody>
+					</Table>
+					{totalPages > 1 && (
+						<div className="flex w-full justify-center pt-4">
+							<Pagination
+								isCompact
+								showControls
+								showShadow
+								color="primary"
+								page={page}
+								total={totalPages}
+								onChange={(newPage) => setPage(newPage)}
+							/>
+						</div>
+					)}
+				</div>
 			</CardBody>
 		</Card>
 	)
