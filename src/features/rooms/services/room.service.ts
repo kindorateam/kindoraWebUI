@@ -1,11 +1,14 @@
 import { apiClient } from "@/services/api.service"
 
 import type {
+	ApiEmployeeMinimalDTO,
 	ApiEmployeeShort,
+	ApiPaginatedResponse,
 	ApiRoom,
 	ApiRoomListResponse,
 	ApiStudent,
-	ApiStudentShort,
+	ApiStudentMinimalDTO,
+	EmployeeOption,
 	Room,
 	RoomCreatePayload,
 	RoomUpdatePayload,
@@ -13,19 +16,8 @@ import type {
 	Student,
 	StudentAbsenceDTO,
 	StudentAbsenceRequest,
+	StudentOption,
 } from "../types"
-
-/**
- * Transforms API student (short) data to UI format
- */
-const transformStudentShort = (apiStudent: ApiStudentShort): Student => ({
-	id: apiStudent.id,
-	name: `${apiStudent.firstName} ${apiStudent.lastName}`,
-	avatar: apiStudent.avatar?.path ?? "/assets/avatars/default.jpg",
-	checkedIn: apiStudent.checkedIn,
-	parents: [], // Short DTO doesn't include parents
-	tags: [], // Short DTO doesn't include tags
-})
 
 /**
  * Transforms API student (full) data to UI format
@@ -135,19 +127,65 @@ export const updateRoom = async (roomId: string, payload: RoomUpdatePayload): Pr
 }
 
 /**
- * Fetches all students available for room assignment
+ * Transforms API student minimal DTO to UI option format
  */
-export const getAllStudents = async (): Promise<Student[]> => {
-	const apiStudents = await apiClient.get<ApiStudentShort[]>("/rooms/all-students-list")
-	return apiStudents.map(transformStudentShort)
+const transformStudentMinimal = (apiStudent: ApiStudentMinimalDTO): StudentOption => ({
+	id: apiStudent.id,
+	name: `${apiStudent.firstName} ${apiStudent.lastName}`,
+})
+
+/**
+ * Transforms API employee minimal DTO to UI option format
+ */
+const transformEmployeeMinimal = (apiEmployee: ApiEmployeeMinimalDTO): EmployeeOption => ({
+	id: apiEmployee.id,
+	name: `${apiEmployee.firstName} ${apiEmployee.lastName}`,
+})
+
+export interface PaginationParams {
+	limit?: number
+	offset?: number
+}
+
+export interface PaginatedResult<T> {
+	items: T[]
+	total: number
+	limit: number
+	offset: number
 }
 
 /**
- * Fetches all employees available for room assignment
+ * Fetches students with pagination for room assignment
  */
-export const getAllEmployees = async (): Promise<StaffMember[]> => {
-	const apiEmployees = await apiClient.get<ApiEmployeeShort[]>("/rooms/all-employees-list")
-	return apiEmployees.map(transformStaff)
+export const getStudentsPaginated = async (params: PaginationParams = {}): Promise<PaginatedResult<StudentOption>> => {
+	const { limit = 10, offset = 0 } = params
+	const response = await apiClient.get<ApiPaginatedResponse<ApiStudentMinimalDTO>>("/rooms/all-students-list", {
+		params: { limit, offset },
+	})
+	return {
+		items: response.items.map(transformStudentMinimal),
+		total: response.total,
+		limit: response.limit,
+		offset: response.offset,
+	}
+}
+
+/**
+ * Fetches employees with pagination for room assignment
+ */
+export const getEmployeesPaginated = async (
+	params: PaginationParams = {},
+): Promise<PaginatedResult<EmployeeOption>> => {
+	const { limit = 10, offset = 0 } = params
+	const response = await apiClient.get<ApiPaginatedResponse<ApiEmployeeMinimalDTO>>("/rooms/all-employees-list", {
+		params: { limit, offset },
+	})
+	return {
+		items: response.items.map(transformEmployeeMinimal),
+		total: response.total,
+		limit: response.limit,
+		offset: response.offset,
+	}
 }
 
 /**

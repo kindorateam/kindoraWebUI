@@ -76,7 +76,7 @@ export interface ApiStudent {
 	tags?: string[]
 }
 
-// dto.StudentShortDTO - used in /rooms/all-students-list
+// dto.StudentShortDTO - used in RoomDTO.students (when nested in room)
 export interface ApiStudentShort {
 	id: string
 	firstName: string
@@ -86,7 +86,14 @@ export interface ApiStudentShort {
 	avatar?: ApiAsset
 }
 
-// dto.EmployeeShortDTO - used in RoomDTO.staff and /rooms/all-employees-list
+// dto.StudentMinimalDTO - used in /rooms/all-students-list
+export interface ApiStudentMinimalDTO {
+	id: string
+	firstName: string
+	lastName: string
+}
+
+// dto.EmployeeShortDTO - used in RoomDTO.staff (when nested in room)
 export interface ApiEmployeeShort {
 	id: string
 	firstName: string
@@ -97,6 +104,21 @@ export interface ApiEmployeeShort {
 	status: string
 	accountStatus: string
 	avatar?: ApiAsset
+}
+
+// dto.EmployeeMinimalDTO - used in /rooms/all-employees-list
+export interface ApiEmployeeMinimalDTO {
+	id: string
+	firstName: string
+	lastName: string
+}
+
+// Generic paginated response from API
+export interface ApiPaginatedResponse<T> {
+	items: T[]
+	total: number
+	limit: number
+	offset: number
 }
 
 // dto.RoomDTO
@@ -159,6 +181,20 @@ export interface StaffMember {
 	name: string
 	avatar: string
 	checkedIn: boolean
+}
+
+// Simple option types for select dropdowns (from minimal DTOs)
+// Note: avatar is optional because minimal DTOs from API don't include it
+export interface StudentOption {
+	id: string
+	name: string
+	avatar?: string
+}
+
+export interface EmployeeOption {
+	id: string
+	name: string
+	avatar?: string
 }
 
 // Add Room form types - defined in schemas/addRoom.schema.ts

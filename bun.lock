@@ -9,6 +9,7 @@
         "@dnd-kit/sortable": "^10.0.0",
         "@dnd-kit/utilities": "^3.2.2",
         "@heroui/react": "^2.8.4",
+        "@heroui/use-infinite-scroll": "^2.2.12",
         "@hookform/resolvers": "^5.2.2",
         "@iconify/react": "^6.0.2",
         "@react-oauth/google": "^0.12.2",
@@ -405,6 +406,8 @@
     "@heroui/use-form-reset": ["@heroui/use-form-reset@2.0.1", "", { "peerDependencies": { "react": ">=18 || >=19.0.0-rc.0" } }, "sha512-6slKWiLtVfgZnVeHVkM9eXgjwI07u0CUaLt2kQpfKPqTSTGfbHgCYJFduijtThhTdKBhdH6HCmzTcnbVlAxBXw=="],
 
     "@heroui/use-image": ["@heroui/use-image@2.1.13", "", { "dependencies": { "@heroui/react-utils": "2.1.14", "@heroui/use-safe-layout-effect": "2.1.8" }, "peerDependencies": { "react": ">=18 || >=19.0.0-rc.0" } }, "sha512-NLApz+xin2bKHEXr+eSrtB0lN8geKP5VOea5QGbOCiHq4DBXu4QctpRkSfCHGIQzWdBVaLPoV+5wd0lR2S2Egg=="],
+
+    "@heroui/use-infinite-scroll": ["@heroui/use-infinite-scroll@2.2.12", "", { "dependencies": { "@heroui/shared-utils": "2.1.12" }, "peerDependencies": { "react": ">=18 || >=19.0.0-rc.0" } }, "sha512-5yIrw6aP9eH6iU+bQmfixb6QM4qvcwrW3g8jaZJ5ce94nebglLs131B7rSqF/UK8Bp7OXsBM3j1pdBZM7lo/MA=="],
 
     "@heroui/use-intersection-observer": ["@heroui/use-intersection-observer@2.2.14", "", { "peerDependencies": { "react": ">=18 || >=19.0.0-rc.0" } }, "sha512-qYJeMk4cTsF+xIckRctazCgWQ4BVOpJu+bhhkB1NrN+MItx19Lcb7ksOqMdN5AiSf85HzDcAEPIQ9w9RBlt5sg=="],
 

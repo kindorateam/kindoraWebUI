@@ -15,11 +15,14 @@ const RoomDetailsStep = () => {
 		control,
 		watch,
 		setValue,
+		trigger,
 		formState: { errors },
 	} = useFormContext<AddRoomFormData>()
 
 	const name = watch("name")
 	const avatarPreview = watch("avatarPreview")
+	const minAge = watch("minAge")
+	const maxAge = watch("maxAge")
 
 	const handleAvatarClick = () => {
 		setIsImagePickerOpen(true)
@@ -156,6 +159,10 @@ const RoomDetailsStep = () => {
 									const selected = Array.from(keys)[0]
 									if (selected !== undefined) {
 										field.onChange(Number(selected))
+										// Only cross-validate when both ages are selected
+										if (maxAge !== undefined) {
+											void trigger(["minAge", "maxAge"])
+										}
 									}
 								}}
 								radius="md"
@@ -182,6 +189,10 @@ const RoomDetailsStep = () => {
 									const selected = Array.from(keys)[0]
 									if (selected !== undefined) {
 										field.onChange(Number(selected))
+										// Only cross-validate when both ages are selected
+										if (minAge !== undefined) {
+											void trigger(["minAge", "maxAge"])
+										}
 									}
 								}}
 								radius="md"

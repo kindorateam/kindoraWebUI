@@ -29,6 +29,18 @@ export const addRoomSchema = z
 				message: "Min age cannot be greater than max age",
 				path: ["minAge"],
 			})
+			context.addIssue({
+				code: z.ZodIssueCode.custom,
+				message: "Max age cannot be less than min age",
+				path: ["maxAge"],
+			})
+		}
+		if (data.studentIds.length > data.capacity) {
+			context.addIssue({
+				code: z.ZodIssueCode.custom,
+				message: `Cannot add more than ${data.capacity} students. Go back to change the room capacity.`,
+				path: ["studentIds"],
+			})
 		}
 	})
 

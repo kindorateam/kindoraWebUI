@@ -1,4 +1,4 @@
-import { useMutation, useQueries, useQuery, useQueryClient } from "@tanstack/react-query"
+import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
 import {
 	activateRoom,
@@ -6,10 +6,10 @@ import {
 	checkInStudent,
 	checkOutStudent,
 	createRoom,
-	getAllEmployees,
-	getAllStudents,
+	getEmployeesPaginated,
 	getRoomById,
 	getRooms,
+	getStudentsPaginated,
 	inactivateRoom,
 	markStudentAbsent,
 	moveStudentsToRoom,
@@ -17,7 +17,7 @@ import {
 	updateRoomLogo,
 } from "../services/room.service"
 
-import type { GetRoomsResult, RoomStatus } from "../services/room.service"
+import type { GetRoomsResult, PaginatedResult, RoomStatus } from "../services/room.service"
 import type { AddRoomFormData, Room, RoomUpdatePayload, StudentAbsenceRequest } from "../types"
 
 const DEFAULT_PAGE_SIZE = 10
@@ -128,65 +128,66 @@ export const useCreateRoom = () => {
 	})
 }
 
+const INFINITE_PAGE_SIZE = 10
+
 /**
- * Hook to fetch all employees for room staff assignment
+ * Helper to calculate next page param for offset-based pagination
  */
-export const useAllEmployees = () => {
-	return useQuery({
-		queryKey: ["rooms", "all-employees"],
-		queryFn: getAllEmployees,
-		staleTime: 5 * 60 * 1000,
-		gcTime: 10 * 60 * 1000,
-	})
+const getNextPageParam = <T>(lastPage: PaginatedResult<T>): number | undefined => {
+	const nextOffset = lastPage.offset + lastPage.items.length
+	// Return undefined when we've fetched all items (signals no more pages)
+	return nextOffset < lastPage.total ? nextOffset : undefined
 }
 
 /**
- * Hook to fetch all students for room assignment
- * @param enabled - Whether to fetch students (defaults to true)
+ * Hook to fetch students with infinite scroll pagination
+ * Uses TanStack Query's useInfiniteQuery for optimal performance
  */
-export const useAllStudents = (enabled = true) => {
-	return useQuery({
-		queryKey: ["rooms", "all-students"],
-		queryFn: getAllStudents,
+export const useInfiniteAllStudents = (enabled = true) => {
+	const query = useInfiniteQuery({
+		queryKey: ["rooms", "all-students", "infinite"],
+		queryFn: ({ pageParam = 0 }) => getStudentsPaginated({ limit: INFINITE_PAGE_SIZE, offset: pageParam }),
+		initialPageParam: 0,
+		getNextPageParam,
 		staleTime: 5 * 60 * 1000,
 		gcTime: 10 * 60 * 1000,
 		enabled,
 	})
+
+	// Flatten all pages into a single array for easy consumption
+	const students = query.data?.pages.flatMap((page) => page.items) ?? []
+	const total = query.data?.pages[0]?.total ?? 0
+
+	return {
+		...query,
+		students,
+		total,
+	}
 }
 
 /**
- * Hook to fetch all students and employees in parallel for room assignment
- * Uses useQueries for proper TanStack Query parallel fetching with separate caches
+ * Hook to fetch employees with infinite scroll pagination
+ * Uses TanStack Query's useInfiniteQuery for optimal performance
  */
-export const useAllStudentsAndEmployees = () => {
-	const results = useQueries({
-		queries: [
-			{
-				queryKey: ["rooms", "all-students"],
-				queryFn: getAllStudents,
-				staleTime: 5 * 60 * 1000,
-				gcTime: 10 * 60 * 1000,
-			},
-			{
-				queryKey: ["rooms", "all-employees"],
-				queryFn: getAllEmployees,
-				staleTime: 5 * 60 * 1000,
-				gcTime: 10 * 60 * 1000,
-			},
-		],
+export const useInfiniteAllEmployees = (enabled = true) => {
+	const query = useInfiniteQuery({
+		queryKey: ["rooms", "all-employees", "infinite"],
+		queryFn: ({ pageParam = 0 }) => getEmployeesPaginated({ limit: INFINITE_PAGE_SIZE, offset: pageParam }),
+		initialPageParam: 0,
+		getNextPageParam,
+		staleTime: 5 * 60 * 1000,
+		gcTime: 10 * 60 * 1000,
+		enabled,
 	})
 
-	const [studentsQuery, employeesQuery] = results
+	// Flatten all pages into a single array for easy consumption
+	const employees = query.data?.pages.flatMap((page) => page.items) ?? []
+	const total = query.data?.pages[0]?.total ?? 0
 
 	return {
-		students: studentsQuery.data ?? [],
-		employees: employeesQuery.data ?? [],
-		isLoading: studentsQuery.isLoading || employeesQuery.isLoading,
-		isError: studentsQuery.isError || employeesQuery.isError,
-		error: studentsQuery.error || employeesQuery.error,
-		refetchStudents: studentsQuery.refetch,
-		refetchEmployees: employeesQuery.refetch,
-		refetchAll: () => Promise.all([studentsQuery.refetch(), employeesQuery.refetch()]),
+		...query,
+		employees,
+		total,
 	}
 }
 

@@ -1,9 +1,11 @@
 import { Button, Select, SelectItem, Skeleton } from "@heroui/react"
+import { useInfiniteScroll } from "@heroui/use-infinite-scroll"
+import { useState } from "react"
 import { Controller, useFormContext } from "react-hook-form"
 
 import { getErrorMessage } from "@/utils/error"
 
-import { useAllStudentsAndEmployees } from "../../hooks/useRooms"
+import { useInfiniteAllEmployees, useInfiniteAllStudents } from "../../hooks/useRooms"
 
 import type { AddRoomFormData } from "../../types"
 
@@ -23,7 +25,53 @@ const AddStaffStudentsStep = () => {
 		formState: { errors },
 	} = useFormContext<AddRoomFormData>()
 
-	const { students, employees, error, isError, isLoading, refetchAll } = useAllStudentsAndEmployees()
+	const {
+		students,
+		isLoading: isLoadingStudents,
+		isError: isStudentsError,
+		error: studentsError,
+		refetch: refetchStudents,
+		fetchNextPage: fetchNextStudents,
+		hasNextPage: hasNextStudents,
+		isFetchingNextPage: isFetchingNextStudents,
+	} = useInfiniteAllStudents()
+
+	const {
+		employees,
+		isLoading: isLoadingEmployees,
+		isError: isEmployeesError,
+		error: employeesError,
+		refetch: refetchEmployees,
+		fetchNextPage: fetchNextEmployees,
+		hasNextPage: hasNextEmployees,
+		isFetchingNextPage: isFetchingNextEmployees,
+	} = useInfiniteAllEmployees()
+
+	const isLoading = isLoadingStudents || isLoadingEmployees
+	const isError = isStudentsError || isEmployeesError
+	const error = studentsError || employeesError
+
+	// Track when each Select dropdown is open for infinite scroll
+	const [isEmployeesSelectOpen, setIsEmployeesSelectOpen] = useState(false)
+	const [isStudentsSelectOpen, setIsStudentsSelectOpen] = useState(false)
+
+	// Infinite scroll for employees list - enabled when dropdown is open
+	const [, employeesScrollerRef] = useInfiniteScroll({
+		hasMore: hasNextEmployees ?? false,
+		isEnabled: isEmployeesSelectOpen,
+		shouldUseLoader: false,
+		onLoadMore: fetchNextEmployees,
+	})
+
+	// Infinite scroll for students list - enabled when dropdown is open
+	const [, studentsScrollerRef] = useInfiniteScroll({
+		hasMore: hasNextStudents ?? false,
+		isEnabled: isStudentsSelectOpen,
+		shouldUseLoader: false,
+		onLoadMore: fetchNextStudents,
+	})
+
+	const refetchAll = () => Promise.all([refetchStudents(), refetchEmployees()])
 
 	if (isLoading) {
 		return <AddStaffStudentsStepSkeleton />
@@ -63,21 +111,26 @@ const AddStaffStudentsStep = () => {
 						<Select
 							errorMessage={errors.staffIds?.message}
 							isInvalid={!!errors.staffIds}
+							isLoading={isFetchingNextEmployees}
+							items={employees}
 							label="Add staff"
 							labelPlacement="inside"
-							listboxProps={{ emptyContent: "No staff members available" }}
-							placeholder="Select staff members"
-							radius="md"
-							selectedKeys={new Set(field.value || [])}
-							selectionMode="multiple"
-							variant="flat"
+							listboxProps={{
+								emptyContent: "No staff members available",
+							}}
+							maxListboxHeight={256}
+							onOpenChange={setIsEmployeesSelectOpen}
 							onSelectionChange={(keys) => {
 								field.onChange(Array.from(keys) as string[])
 							}}
+							placeholder="Select staff members"
+							radius="md"
+							scrollRef={employeesScrollerRef}
+							selectedKeys={new Set(field.value || [])}
+							selectionMode="multiple"
+							variant="flat"
 						>
-							{employees.map((employee) => (
-								<SelectItem key={employee.id}>{employee.name}</SelectItem>
-							))}
+							{(employee) => <SelectItem key={employee.id}>{employee.name}</SelectItem>}
 						</Select>
 					)}
 				/>
@@ -89,21 +142,26 @@ const AddStaffStudentsStep = () => {
 						<Select
 							errorMessage={errors.studentIds?.message}
 							isInvalid={!!errors.studentIds}
+							isLoading={isFetchingNextStudents}
+							items={students}
 							label="Add students"
 							labelPlacement="inside"
-							listboxProps={{ emptyContent: "No students available" }}
-							placeholder="Select students"
-							radius="md"
-							selectedKeys={new Set(field.value || [])}
-							selectionMode="multiple"
-							variant="flat"
+							listboxProps={{
+								emptyContent: "No students available",
+							}}
+							maxListboxHeight={256}
+							onOpenChange={setIsStudentsSelectOpen}
 							onSelectionChange={(keys) => {
 								field.onChange(Array.from(keys) as string[])
 							}}
+							placeholder="Select students"
+							radius="md"
+							scrollRef={studentsScrollerRef}
+							selectedKeys={new Set(field.value || [])}
+							selectionMode="multiple"
+							variant="flat"
 						>
-							{students.map((student) => (
-								<SelectItem key={student.id}>{student.name}</SelectItem>
-							))}
+							{(student) => <SelectItem key={student.id}>{student.name}</SelectItem>}
 						</Select>
 					)}
 				/>

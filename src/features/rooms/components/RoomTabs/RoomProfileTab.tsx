@@ -11,6 +11,7 @@ import {
 	Spinner,
 	addToast,
 } from "@heroui/react"
+import { useInfiniteScroll } from "@heroui/use-infinite-scroll"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useEffect, useState } from "react"
 import { Controller, useForm } from "react-hook-form"
@@ -21,13 +22,16 @@ import TablerCloudUpload from "~icons/tabler/cloud-upload"
 import TablerTrash from "~icons/tabler/trash"
 
 import { ROOM_AGE_OPTIONS } from "../../constants"
-import { useAllEmployees, useRoom, useUpdateRoom, useUpdateRoomLogo } from "../../hooks/useRooms"
+import { useInfiniteAllEmployees, useRoom, useUpdateRoom, useUpdateRoomLogo } from "../../hooks/useRooms"
 import { roomProfileSchema } from "../../schemas/roomProfile.schema"
 import { openDeactivateRoomModal } from "../../stores/deactivateRoomModal.store"
 import ImagePickerModal from "../ImagePickerModal"
 
 import type { RoomProfileFormData } from "../../schemas/roomProfile.schema"
-import type { StaffMember } from "../../types"
+import type { EmployeeOption, StaffMember } from "../../types"
+
+// Union type for staff items - can be full StaffMember (from room) or minimal EmployeeOption (from all-employees list)
+type StaffItem = StaffMember | EmployeeOption
 
 interface RoomProfileTabProps {
 	roomId: string
@@ -35,12 +39,13 @@ interface RoomProfileTabProps {
 
 const RoomProfileTab = ({ roomId }: RoomProfileTabProps) => {
 	const { data: room, isLoading } = useRoom(roomId)
-	const { data: allEmployees = [] } = useAllEmployees()
+	const { employees: allEmployees, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteAllEmployees()
 	const updateRoomMutation = useUpdateRoom()
 	const updateLogoMutation = useUpdateRoomLogo()
 
 	const [isImagePickerOpen, setIsImagePickerOpen] = useState(false)
-	const [assignedStaff, setAssignedStaff] = useState<StaffMember[]>([])
+	const [assignedStaff, setAssignedStaff] = useState<StaffItem[]>([])
+	const [isStaffSelectOpen, setIsStaffSelectOpen] = useState(false)
 
 	const {
 		control,
@@ -97,6 +102,14 @@ const RoomProfileTab = ({ roomId }: RoomProfileTabProps) => {
 		if (aSelected && !bSelected) return -1
 		if (!aSelected && bSelected) return 1
 		return 0
+	})
+
+	// Infinite scroll for staff list - enabled when Select dropdown is open
+	const [, staffScrollerRef] = useInfiniteScroll({
+		hasMore: hasNextPage ?? false,
+		isEnabled: isStaffSelectOpen,
+		shouldUseLoader: false,
+		onLoadMore: fetchNextPage,
 	})
 
 	const handleStaffSelectionChange = (keys: "all" | Set<React.Key>) => {
@@ -405,18 +418,29 @@ const RoomProfileTab = ({ roomId }: RoomProfileTabProps) => {
 						<div className="flex flex-col gap-5">
 							<h3 className="font-medium text-xl">Staff</h3>
 							<Select
+								isLoading={isFetchingNextPage}
 								isMultiline
 								items={staffOptions}
 								label="Select Staff"
 								labelPlacement="inside"
+								maxListboxHeight={256}
+								onOpenChange={setIsStaffSelectOpen}
 								onSelectionChange={handleStaffSelectionChange}
 								placeholder="Select staff to add"
 								radius="md"
+								scrollRef={staffScrollerRef}
 								renderValue={(items) => (
 									<div className="flex flex-wrap gap-2">
 										{items.map((item) => (
 											<Chip
-												avatar={<Avatar name={item.data?.name} showFallback size="sm" src={item.data?.avatar} />}
+												avatar={
+													<Avatar
+														name={item.data?.name}
+														showFallback
+														size="sm"
+														src={"avatar" in (item.data ?? {}) ? (item.data as StaffMember).avatar : undefined}
+													/>
+												}
 												classNames={{
 													base: "bg-primary-50 h-7",
 													content: "text-sm",
@@ -445,7 +469,12 @@ const RoomProfileTab = ({ roomId }: RoomProfileTabProps) => {
 								{(staff) => (
 									<SelectItem key={staff.id} textValue={staff.name}>
 										<div className="flex items-center gap-2">
-											<Avatar name={staff.name} showFallback size="sm" src={staff.avatar} />
+											<Avatar
+												name={staff.name}
+												showFallback
+												size="sm"
+												src={"avatar" in staff ? staff.avatar : undefined}
+											/>
 											<span>{staff.name}</span>
 										</div>
 									</SelectItem>
