@@ -78,11 +78,18 @@ const RoomProfileTab = ({ roomId }: RoomProfileTabProps) => {
 		}
 	}, [room])
 
-	// Merge allEmployees with assignedStaff to include staff that might not be in allEmployees list
+	// Merge allEmployees with assignedStaff and sort selected staff to the top
+	const assignedIds = new Set(assignedStaff.map((s) => s.id))
 	const staffOptions = [
 		...allEmployees,
 		...assignedStaff.filter((staff) => !allEmployees.some((e) => e.id === staff.id)),
-	]
+	].sort((a, b) => {
+		const aSelected = assignedIds.has(a.id)
+		const bSelected = assignedIds.has(b.id)
+		if (aSelected && !bSelected) return -1
+		if (!aSelected && bSelected) return 1
+		return 0
+	})
 
 	const handleStaffSelectionChange = (keys: "all" | Set<React.Key>) => {
 		if (keys === "all") {
@@ -287,6 +294,7 @@ const RoomProfileTab = ({ roomId }: RoomProfileTabProps) => {
 							<Input
 								label="Max capacity"
 								labelPlacement="inside"
+								min={1}
 								onValueChange={setCapacity}
 								radius="md"
 								type="number"
@@ -296,6 +304,7 @@ const RoomProfileTab = ({ roomId }: RoomProfileTabProps) => {
 							<Input
 								label="Students per 1 staff"
 								labelPlacement="inside"
+								min={1}
 								onValueChange={setRatio}
 								radius="md"
 								type="number"
@@ -362,6 +371,7 @@ const RoomProfileTab = ({ roomId }: RoomProfileTabProps) => {
 												content: "text-sm",
 											}}
 											key={item.key}
+											onClose={() => setAssignedStaff((prev) => prev.filter((s) => s.id !== item.key))}
 											variant="flat"
 										>
 											{item.data?.name}

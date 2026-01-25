@@ -177,7 +177,7 @@ const ImagePickerModal = ({ isOpen, onClose, onSelect }: ImagePickerModalProps) 
 				</ModalBody>
 				<ModalFooter className="p-0">
 					<Button color="primary" fullWidth isDisabled={isUploadDisabled} onPress={handleUpload}>
-						Upload
+						Select
 					</Button>
 				</ModalFooter>
 			</ModalContent>

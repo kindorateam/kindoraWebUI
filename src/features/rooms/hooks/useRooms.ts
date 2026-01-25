@@ -85,11 +85,12 @@ export const useCreateRoom = () => {
 	const queryClient = useQueryClient()
 
 	return useMutation({
-		mutationFn: (formData: AddRoomFormData) => {
+		mutationFn: async (formData: AddRoomFormData) => {
 			// Check if avatarPreview is a gradient color (not a file preview URL)
 			const isGradient = formData.avatarPreview?.startsWith("linear-gradient")
 
-			return createRoom({
+			// Step 1: Create the room
+			const room = await createRoom({
 				title: formData.name,
 				capacity: formData.capacity,
 				ratio: formData.ratio,
@@ -99,6 +100,13 @@ export const useCreateRoom = () => {
 				employeeIds: formData.staffIds,
 				...(isGradient && { color: formData.avatarPreview }),
 			})
+
+			// Step 2: If there's a logo file, upload it after room creation
+			if (formData.avatarFile) {
+				return updateRoomLogo(room.id, formData.avatarFile)
+			}
+
+			return room
 		},
 		onSuccess: () => {
 			// Invalidate all active rooms pages (new rooms are always active)
