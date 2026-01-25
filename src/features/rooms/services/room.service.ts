@@ -202,3 +202,22 @@ export const updateRoomLogo = async (roomId: string, logoFile: File): Promise<Ro
 	})
 	return transformApiRoom(apiRoom)
 }
+
+/**
+ * Adds students to a room by updating the room's student list
+ */
+export const addStudentsToRoom = async (
+	roomId: string,
+	studentIds: string[],
+	currentStudentIds: string[],
+): Promise<Room> => {
+	const newStudentIds = [...currentStudentIds, ...studentIds]
+	return updateRoom(roomId, { studentIds: newStudentIds })
+}
+
+/**
+ * Moves students to a different room
+ */
+export const moveStudentsToRoom = async (targetRoomId: string, studentIds: string[]): Promise<void> => {
+	await apiClient.post(`/rooms/${targetRoomId}/students/move`, { ids: studentIds })
+}

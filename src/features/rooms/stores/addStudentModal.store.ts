@@ -2,12 +2,25 @@ import { atom } from "jotai"
 
 import { appStore } from "@/stores/jotaiStore"
 
-export const isAddStudentModalOpenAtom = atom(false)
+interface AddStudentModalState {
+	isOpen: boolean
+	roomId: string | null
+}
 
-export const openAddStudentModal = () => {
-	appStore.set(isAddStudentModalOpenAtom, true)
+const initialState: AddStudentModalState = {
+	isOpen: false,
+	roomId: null,
+}
+
+export const addStudentModalAtom = atom<AddStudentModalState>(initialState)
+
+export const openAddStudentModal = (roomId: string) => {
+	appStore.set(addStudentModalAtom, {
+		isOpen: true,
+		roomId,
+	})
 }
 
 export const closeAddStudentModal = () => {
-	appStore.set(isAddStudentModalOpenAtom, false)
+	appStore.set(addStudentModalAtom, initialState)
 }

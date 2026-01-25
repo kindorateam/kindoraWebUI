@@ -2,6 +2,7 @@ import { useMutation, useQueries, useQuery, useQueryClient } from "@tanstack/rea
 
 import {
 	activateRoom,
+	addStudentsToRoom,
 	checkInStudent,
 	checkOutStudent,
 	createRoom,
@@ -11,6 +12,7 @@ import {
 	getRooms,
 	inactivateRoom,
 	markStudentAbsent,
+	moveStudentsToRoom,
 	updateRoom,
 	updateRoomLogo,
 } from "../services/room.service"
@@ -135,6 +137,20 @@ export const useAllEmployees = () => {
 		queryFn: getAllEmployees,
 		staleTime: 5 * 60 * 1000,
 		gcTime: 10 * 60 * 1000,
+	})
+}
+
+/**
+ * Hook to fetch all students for room assignment
+ * @param enabled - Whether to fetch students (defaults to true)
+ */
+export const useAllStudents = (enabled = true) => {
+	return useQuery({
+		queryKey: ["rooms", "all-students"],
+		queryFn: getAllStudents,
+		staleTime: 5 * 60 * 1000,
+		gcTime: 10 * 60 * 1000,
+		enabled,
 	})
 }
 
@@ -320,6 +336,52 @@ export const useUpdateRoom = () => {
 		mutationFn: ({ roomId, payload }: UpdateRoomParams) => updateRoom(roomId, payload),
 		onSuccess: (_data, { roomId }) => {
 			invalidateRoomQueries(queryClient, roomId)
+		},
+	})
+}
+
+export interface AddStudentsToRoomParams {
+	roomId: string
+	studentIds: string[]
+	currentStudentIds: string[]
+}
+
+/**
+ * Hook to add students to a room
+ */
+export const useAddStudentsToRoom = () => {
+	const queryClient = useQueryClient()
+
+	return useMutation({
+		mutationFn: ({ roomId, studentIds, currentStudentIds }: AddStudentsToRoomParams) =>
+			addStudentsToRoom(roomId, studentIds, currentStudentIds),
+		onSuccess: (_data, { roomId }) => {
+			invalidateRoomQueries(queryClient, roomId)
+			// Invalidate all students list since students are now assigned to a room
+			queryClient.invalidateQueries({ queryKey: ["rooms", "all-students"] })
+		},
+	})
+}
+
+export interface MoveStudentsToRoomParams {
+	sourceRoomId: string
+	targetRoomId: string
+	studentIds: string[]
+}
+
+/**
+ * Hook to move students from one room to another
+ */
+export const useMoveStudentsToRoom = () => {
+	const queryClient = useQueryClient()
+
+	return useMutation({
+		mutationFn: ({ targetRoomId, studentIds }: MoveStudentsToRoomParams) =>
+			moveStudentsToRoom(targetRoomId, studentIds),
+		onSuccess: (_data, { sourceRoomId, targetRoomId }) => {
+			// Invalidate both source and target rooms
+			invalidateRoomQueries(queryClient, sourceRoomId)
+			invalidateRoomQueries(queryClient, targetRoomId)
 		},
 	})
 }

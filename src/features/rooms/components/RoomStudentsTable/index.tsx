@@ -18,7 +18,10 @@ import TablerCirclePlusFilled from "~icons/tabler/circle-plus-filled"
 
 import { useRoom } from "../../hooks/useRooms"
 import { openAddStudentModal } from "../../stores/addStudentModal.store"
+import { openTransferStudentModal } from "../../stores/transferStudentModal.store"
+import AddStudentModal from "../AddStudentModal"
 import MarkAbsentModal from "../MarkAbsentModal"
+import TransferStudentModal from "../TransferStudentModal"
 
 import columns from "./columns"
 import { renderCell } from "./renderCell"
@@ -36,6 +39,20 @@ const RoomStudentsTable = ({ roomId }: RoomStudentsTableProps) => {
 	const students = room?.signedInStudents ?? []
 	const hasSelection = selectedKeys === "all" || selectedKeys.size > 0
 
+	const getSelectedStudentIds = (): string[] => {
+		if (selectedKeys === "all") {
+			return students.map((s) => s.id)
+		}
+		return Array.from(selectedKeys) as string[]
+	}
+
+	const handleTransfer = () => {
+		const studentIds = getSelectedStudentIds()
+		if (studentIds.length > 0) {
+			openTransferStudentModal(roomId, studentIds)
+		}
+	}
+
 	const topContent = (
 		<div className="flex items-center justify-end gap-5">
 			<Button
@@ -45,14 +62,14 @@ const RoomStudentsTable = ({ roomId }: RoomStudentsTableProps) => {
 				size="md"
 				isDisabled={!hasSelection}
 				endContent={<MageExchangeA className="size-5" />}
-				onPress={() => {}}
+				onPress={handleTransfer}
 			>
 				Transfer to another Room
 			</Button>
 			<Button
 				color="primary"
 				endContent={<TablerCirclePlusFilled className="size-5 text-white" />}
-				onPress={openAddStudentModal}
+				onPress={() => openAddStudentModal(roomId)}
 			>
 				Add Student
 			</Button>
@@ -101,7 +118,9 @@ const RoomStudentsTable = ({ roomId }: RoomStudentsTableProps) => {
 					</Table>
 				</CardBody>
 			</Card>
+			<AddStudentModal />
 			<MarkAbsentModal />
+			<TransferStudentModal />
 		</>
 	)
 }
