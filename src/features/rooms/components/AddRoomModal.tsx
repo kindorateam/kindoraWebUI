@@ -1,6 +1,8 @@
 import { Modal, ModalBody, ModalContent, addToast } from "@heroui/react"
 import { useAtomValue } from "jotai"
 
+import { getErrorMessage } from "@/utils/error"
+
 import { useCreateRoom, useUpdateRoomLogo } from "../hooks/useRooms"
 import { closeAddRoomModal, isAddRoomModalOpenAtom } from "../stores/addRoomModal.store"
 
@@ -28,10 +30,9 @@ const AddRoomModal = () => {
 								// Room created but logo upload failed
 								addToast({
 									title: "Room created but logo upload failed",
-									description: "You can update the logo later in room settings.",
+									description: getErrorMessage(error),
 									color: "warning",
 								})
-								console.error("Failed to upload room logo:", error)
 								closeAddRoomModal()
 							},
 						},
@@ -43,10 +44,9 @@ const AddRoomModal = () => {
 			onError: (error) => {
 				addToast({
 					title: "Failed to create room",
-					description: "Please try again.",
+					description: getErrorMessage(error),
 					color: "danger",
 				})
-				console.error("Failed to create room:", error)
 			},
 		})
 	}

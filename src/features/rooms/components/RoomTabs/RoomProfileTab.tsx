@@ -16,6 +16,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useEffect, useState } from "react"
 import { Controller, useForm } from "react-hook-form"
 
+import { getErrorMessage } from "@/utils/error"
 import { getMediaUrl } from "@/utils/media"
 import TablerCheck from "~icons/tabler/check"
 import TablerCloudUpload from "~icons/tabler/cloud-upload"
@@ -198,10 +199,9 @@ const RoomProfileTab = ({ roomId }: RoomProfileTabProps) => {
 								onError: (error) => {
 									addToast({
 										title: "Room updated but logo upload failed",
-										description: "You can try uploading the logo again.",
+										description: getErrorMessage(error),
 										color: "warning",
 									})
-									console.error("Failed to upload logo:", error)
 								},
 							},
 						)
@@ -216,10 +216,9 @@ const RoomProfileTab = ({ roomId }: RoomProfileTabProps) => {
 				onError: (error) => {
 					addToast({
 						title: "Failed to update room",
-						description: "Please try again.",
+						description: getErrorMessage(error),
 						color: "danger",
 					})
-					console.error("Failed to update room:", error)
 				},
 			},
 		)

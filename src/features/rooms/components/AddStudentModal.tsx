@@ -14,6 +14,8 @@ import { useInfiniteScroll } from "@heroui/use-infinite-scroll"
 import { useAtomValue } from "jotai"
 import { useState } from "react"
 
+import { getErrorMessage } from "@/utils/error"
+
 import { useAddStudentsToRoom, useInfiniteAllStudents, useRoom } from "../hooks/useRooms"
 import { addStudentModalAtom, closeAddStudentModal } from "../stores/addStudentModal.store"
 
@@ -53,7 +55,6 @@ const AddStudentModal = () => {
 			{
 				roomId,
 				studentIds: Array.from(selectedStudentIds),
-				currentStudentIds,
 			},
 			{
 				onSuccess: () => {
@@ -66,10 +67,10 @@ const AddStudentModal = () => {
 					})
 					handleClose()
 				},
-				onError: () => {
+				onError: (error) => {
 					addToast({
 						title: "Failed to add students",
-						description: "Please try again.",
+						description: getErrorMessage(error),
 						color: "danger",
 					})
 				},

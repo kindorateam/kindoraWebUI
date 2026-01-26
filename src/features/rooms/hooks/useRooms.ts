@@ -192,6 +192,40 @@ export const useInfiniteAllEmployees = (enabled = true) => {
 }
 
 /**
+ * Helper to calculate next page param for rooms (uses 'rooms' array instead of 'items')
+ */
+const getRoomsNextPageParam = (lastPage: GetRoomsResult): number | undefined => {
+	const nextOffset = lastPage.offset + lastPage.rooms.length
+	return nextOffset < lastPage.total ? nextOffset : undefined
+}
+
+/**
+ * Hook to fetch rooms with infinite scroll pagination
+ * Uses TanStack Query's useInfiniteQuery for optimal performance
+ */
+export const useInfiniteRooms = (status: RoomStatus = "active", enabled = true) => {
+	const query = useInfiniteQuery({
+		queryKey: ["rooms", "infinite", { status }],
+		queryFn: ({ pageParam = 0 }) => getRooms({ status, limit: INFINITE_PAGE_SIZE, offset: pageParam }),
+		initialPageParam: 0,
+		getNextPageParam: getRoomsNextPageParam,
+		staleTime: 5 * 60 * 1000,
+		gcTime: 10 * 60 * 1000,
+		enabled,
+	})
+
+	// Flatten all pages into a single array for easy consumption
+	const rooms = query.data?.pages.flatMap((page) => page.rooms) ?? []
+	const total = query.data?.pages[0]?.total ?? 0
+
+	return {
+		...query,
+		rooms,
+		total,
+	}
+}
+
+/**
  * Hook to deactivate a room using TanStack Query mutation (soft delete)
  */
 export const useInactivateRoom = () => {
@@ -344,7 +378,6 @@ export const useUpdateRoom = () => {
 export interface AddStudentsToRoomParams {
 	roomId: string
 	studentIds: string[]
-	currentStudentIds: string[]
 }
 
 /**
@@ -354,8 +387,7 @@ export const useAddStudentsToRoom = () => {
 	const queryClient = useQueryClient()
 
 	return useMutation({
-		mutationFn: ({ roomId, studentIds, currentStudentIds }: AddStudentsToRoomParams) =>
-			addStudentsToRoom(roomId, studentIds, currentStudentIds),
+		mutationFn: ({ roomId, studentIds }: AddStudentsToRoomParams) => addStudentsToRoom(roomId, studentIds),
 		onSuccess: (_data, { roomId }) => {
 			invalidateRoomQueries(queryClient, roomId)
 			// Invalidate all students list since students are now assigned to a room

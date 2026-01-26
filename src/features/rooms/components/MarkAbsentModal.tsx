@@ -14,6 +14,7 @@ import { getLocalTimeZone, today } from "@internationalized/date"
 import { useAtomValue } from "jotai"
 import { useState } from "react"
 
+import { getErrorMessage } from "@/utils/error"
 import SolarCalendarBroken from "~icons/solar/calendar-broken"
 
 import { ABSENCE_REASONS } from "../constants"
@@ -61,10 +62,10 @@ const MarkAbsentModal = () => {
 					})
 					handleClose()
 				},
-				onError: () => {
+				onError: (error) => {
 					addToast({
 						title: "Failed to mark absent",
-						description: "Please try again.",
+						description: getErrorMessage(error),
 						color: "danger",
 					})
 				},

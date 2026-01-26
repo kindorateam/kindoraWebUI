@@ -120,7 +120,7 @@ const RoomStudentsTable = ({ roomId }: RoomStudentsTableProps) => {
 			</Card>
 			<AddStudentModal />
 			<MarkAbsentModal />
-			<TransferStudentModal />
+			<TransferStudentModal onSuccess={() => setSelectedKeys(new Set([]))} />
 		</>
 	)
 }

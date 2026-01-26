@@ -10,21 +10,43 @@ import {
 	Spinner,
 	addToast,
 } from "@heroui/react"
+import { useInfiniteScroll } from "@heroui/use-infinite-scroll"
 import { useAtomValue } from "jotai"
 import { useState } from "react"
 
-import { useMoveStudentsToRoom, useRooms } from "../hooks/useRooms"
+import { getErrorMessage } from "@/utils/error"
+
+import { useInfiniteRooms, useMoveStudentsToRoom } from "../hooks/useRooms"
 import { closeTransferStudentModal, transferStudentModalAtom } from "../stores/transferStudentModal.store"
 
-const TransferStudentModal = () => {
+interface TransferStudentModalProps {
+	onSuccess?: () => void
+}
+
+const TransferStudentModal = ({ onSuccess }: TransferStudentModalProps) => {
 	const { isOpen, sourceRoomId, studentIds } = useAtomValue(transferStudentModalAtom)
-	const { rooms, isLoading: isLoadingRooms } = useRooms({ status: "active", limit: 100 })
+	const {
+		rooms,
+		isLoading: isLoadingRooms,
+		fetchNextPage,
+		hasNextPage,
+		isFetchingNextPage,
+	} = useInfiniteRooms("active", isOpen)
 	const moveStudentsMutation = useMoveStudentsToRoom()
 
 	const [selectedRoomId, setSelectedRoomId] = useState<string>("")
+	const [isSelectOpen, setIsSelectOpen] = useState(false)
 
 	// Filter out the current room from the list
 	const availableRooms = rooms.filter((room) => room.id !== sourceRoomId)
+
+	// Infinite scroll for rooms list - enabled when Select dropdown is open
+	const [, scrollerRef] = useInfiniteScroll({
+		hasMore: hasNextPage ?? false,
+		isEnabled: isSelectOpen,
+		shouldUseLoader: false,
+		onLoadMore: fetchNextPage,
+	})
 
 	const handleSubmit = () => {
 		if (!sourceRoomId || !selectedRoomId || studentIds.length === 0) return
@@ -46,12 +68,13 @@ const TransferStudentModal = () => {
 								: `${count} students have been transferred to the new room.`,
 						color: "success",
 					})
+					onSuccess?.()
 					handleClose()
 				},
-				onError: () => {
+				onError: (error) => {
 					addToast({
 						title: "Failed to transfer students",
-						description: "Please try again.",
+						description: getErrorMessage(error),
 						color: "danger",
 					})
 				},
@@ -91,20 +114,23 @@ const TransferStudentModal = () => {
 						</div>
 					) : (
 						<Select
+							isLoading={isFetchingNextPage}
+							items={availableRooms}
 							label="Target Room"
-							placeholder="Select a room"
-							selectedKeys={selectedRoomId ? [selectedRoomId] : []}
+							listboxProps={{ emptyContent: "No rooms available" }}
+							maxListboxHeight={256}
+							onOpenChange={setIsSelectOpen}
 							onSelectionChange={(keys) => {
 								const selected = Array.from(keys)[0]
 								if (selected) setSelectedRoomId(String(selected))
 							}}
-							listboxProps={{ emptyContent: "No rooms available" }}
+							placeholder="Select a room"
 							radius="md"
+							scrollRef={scrollerRef}
+							selectedKeys={selectedRoomId ? [selectedRoomId] : []}
 							variant="flat"
 						>
-							{availableRooms.map((room) => (
-								<SelectItem key={room.id}>{room.name}</SelectItem>
-							))}
+							{(room) => <SelectItem key={room.id}>{room.name}</SelectItem>}
 						</Select>
 					)}
 				</ModalBody>
