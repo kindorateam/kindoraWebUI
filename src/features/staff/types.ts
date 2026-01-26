@@ -94,6 +94,9 @@ export interface EmployeeFull {
 // UI Helper Types
 export type PinVisibility = Record<string, boolean>
 
+// Form Data Types - exported from schemas/addStaff.schema.ts
+export type { AddStaffFormData } from "./schemas/addStaff.schema"
+
 // Helper function to get full name
 export function getEmployeeFullName(employee: EmployeeSummary | Employee): string {
 	return `${employee.firstname} ${employee.lastname}`
