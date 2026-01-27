@@ -12,9 +12,11 @@ export interface StepperProps {
 	onNext?: () => void
 	onBack?: () => void
 	onComplete?: () => void
+	onSkipOptional?: () => void
 	nextLabel?: string
 	backLabel?: string
 	completeLabel?: string
+	skipOptionalLabel?: string
 	isNextDisabled?: boolean
 	isNextLoading?: boolean
 	hideBackOnFirstStep?: boolean
@@ -28,9 +30,11 @@ const Stepper = ({
 	onNext,
 	onBack,
 	onComplete,
+	onSkipOptional,
 	nextLabel = "Next",
 	backLabel = "Back",
 	completeLabel = "Complete",
+	skipOptionalLabel = "Skip all optional steps",
 	isNextDisabled = false,
 	isNextLoading = false,
 	hideBackOnFirstStep = true,
@@ -86,8 +90,14 @@ const Stepper = ({
 					{isLastStep ? completeLabel : nextLabel}
 				</Button>
 
+				{onSkipOptional && (
+					<Button fullWidth onPress={onSkipOptional} size="lg" variant="bordered">
+						{skipOptionalLabel}
+					</Button>
+				)}
+
 				{!(hideBackOnFirstStep && isFirstStep) && (
-					<Button color="default" fullWidth onPress={onBack} size="lg">
+					<Button fullWidth onPress={onBack} size="lg" variant="bordered">
 						{backLabel}
 					</Button>
 				)}
