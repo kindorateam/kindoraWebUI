@@ -78,6 +78,25 @@ export const PERMISSION_OPTIONS = [
 	{ key: "admin_settings", label: "Admin settings" },
 ]
 
+export const RELATIONSHIP_OPTIONS = [
+	{ key: "dad", label: "Dad" },
+	{ key: "mom", label: "Mom" },
+	{ key: "spouse", label: "Spouse" },
+	{ key: "sibling", label: "Sibling" },
+	{ key: "friend", label: "Friend" },
+	{ key: "other", label: "Other" },
+]
+
+export const WORKING_DAYS = [
+	{ key: "mon", label: "Mon" },
+	{ key: "tue", label: "Tue" },
+	{ key: "wed", label: "Wed" },
+	{ key: "thu", label: "Thu" },
+	{ key: "fri", label: "Fri" },
+	{ key: "sat", label: "Sat" },
+	{ key: "sun", label: "Sun" },
+]
+
 // Mock rooms for development - will be replaced with API data
 export const MOCK_ROOMS = [
 	{ key: "room-1", label: "Baby turtles", avatar: "" },

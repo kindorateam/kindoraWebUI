@@ -7,8 +7,12 @@ import Stepper from "@/components/Stepper"
 import { addStaffSchema } from "../../schemas/addStaff.schema"
 
 import CertificationStep from "./CertificationStep"
+import ConfirmStep from "./ConfirmStep"
+import EmergencyContactStep from "./EmergencyContactStep"
 import KindoraRoleStep from "./KindoraRoleStep"
+import MedicalInfoStep from "./MedicalInfoStep"
 import PersonalInfoStep from "./PersonalInfoStep"
+import ScheduleStep from "./ScheduleStep"
 import StaffDetailsStep from "./StaffDetailsStep"
 
 import type { AddStaffFormData } from "../../schemas/addStaff.schema"
@@ -17,6 +21,9 @@ const STEP1_FIELDS = ["firstName", "lastName", "role", "email", "inviteToKindora
 const STEP2_FIELDS = ["phone", "birthday", "enrollDate", "state", "city", "streetAddress", "zipCode", "notes"] as const
 const STEP3_FIELDS = ["degree", "certification"] as const
 const STEP4_FIELDS = ["hireDate", "assignedRooms", "permissions"] as const
+const STEP5_FIELDS = ["workingDays"] as const
+const STEP6_FIELDS = ["allergies", "medications", "doctorName", "doctorPhone"] as const
+const STEP7_FIELDS = ["emergencyContactName", "emergencyContactPhone", "emergencyContactRelationship"] as const
 
 interface AddStaffStepperProps {
 	onComplete?: (data: AddStaffFormData) => void
@@ -45,7 +52,26 @@ const steps = [
 		label: "Step 4/8",
 		content: <KindoraRoleStep />,
 	},
-	// Future steps will be added here
+	{
+		key: "schedule",
+		label: "Step 5/8",
+		content: <ScheduleStep />,
+	},
+	{
+		key: "medical-info",
+		label: "Step 6/8",
+		content: <MedicalInfoStep />,
+	},
+	{
+		key: "emergency-contact",
+		label: "Step 7/8",
+		content: <EmergencyContactStep />,
+	},
+	{
+		key: "confirm",
+		label: "Step 8/8",
+		content: <ConfirmStep />,
+	},
 ]
 
 const AddStaffStepper = ({ onComplete, onCancel, isLoading = false }: AddStaffStepperProps) => {
@@ -76,6 +102,17 @@ const AddStaffStepper = ({ onComplete, onCancel, isLoading = false }: AddStaffSt
 			hireDate: "2025-10-16",
 			assignedRooms: ["room-1", "room-2"],
 			permissions: ["view_students", "edit_students", "view_reports"],
+			// Step 5: Schedule (mock data)
+			workingDays: ["mon", "tue", "wed", "thu", "fri"],
+			// Step 6: Medical info (mock data)
+			allergies: ["Peanuts", "Shellfish", "Pollen", "Dust"],
+			medications: "-",
+			doctorName: "Alexander Johns",
+			doctorPhone: "(415) 234-5678",
+			// Step 7: Emergency contact (mock data)
+			emergencyContactName: "Jason Statham",
+			emergencyContactPhone: "(415) 448-5678",
+			emergencyContactRelationship: "dad",
 		},
 		mode: "onChange",
 	})
@@ -106,6 +143,12 @@ const AddStaffStepper = ({ onComplete, onCancel, isLoading = false }: AddStaffSt
 				return STEP3_FIELDS
 			case 3:
 				return STEP4_FIELDS
+			case 4:
+				return STEP5_FIELDS
+			case 5:
+				return STEP6_FIELDS
+			case 6:
+				return STEP7_FIELDS
 			default:
 				return []
 		}
@@ -158,7 +201,7 @@ const AddStaffStepper = ({ onComplete, onCancel, isLoading = false }: AddStaffSt
 			<div className="w-full max-w-[496px] rounded-2xl bg-white p-7">
 				<Stepper
 					backLabel={currentStep === 0 ? "Close" : "Back"}
-					completeLabel="Next"
+					completeLabel="Confirm"
 					currentStep={currentStep}
 					hideBackOnFirstStep={false}
 					isNextDisabled={!isStepValid(currentStep)}

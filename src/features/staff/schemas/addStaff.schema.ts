@@ -28,6 +28,20 @@ export const addStaffSchema = z.object({
 	hireDate: z.string().optional(),
 	assignedRooms: z.array(z.string()).optional(),
 	permissions: z.array(z.string()).optional(),
+
+	// Step 5: Schedule (all optional)
+	workingDays: z.array(z.string()).optional(),
+
+	// Step 6: Medical info (all optional)
+	allergies: z.array(z.string()).optional(),
+	medications: z.string().optional(),
+	doctorName: z.string().optional(),
+	doctorPhone: z.string().optional(),
+
+	// Step 7: Emergency contact (all optional)
+	emergencyContactName: z.string().optional(),
+	emergencyContactPhone: z.string().optional(),
+	emergencyContactRelationship: z.string().optional(),
 })
 
 export type AddStaffFormData = z.infer<typeof addStaffSchema>
