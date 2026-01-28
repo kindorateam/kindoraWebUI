@@ -8,6 +8,7 @@ import { useEmployee } from "@/features/staff/hooks/useStaff"
 import { getEmployeeById } from "@/features/staff/services/staff.service"
 import { getEmployeeFullName } from "@/features/staff/types"
 import { useTabNavigation } from "@/hooks/useTabNavigation"
+import { queryClient } from "@/services/queryClient"
 
 type TabType = "profile" | "documents"
 
@@ -30,8 +31,12 @@ export const Route = createFileRoute("/_authenticated/staff/$staffId")({
 	},
 	beforeLoad: async ({ params }: { params: { staffId: string } }) => {
 		try {
-			const employeeData = await getEmployeeById(params.staffId)
-			const fullName = employeeData?.employee ? getEmployeeFullName(employeeData.employee) : null
+			const employeeData = await queryClient.fetchQuery({
+				queryKey: ["employees", params.staffId],
+				queryFn: () => getEmployeeById(params.staffId),
+				staleTime: 5 * 60 * 1000,
+			})
+			const fullName = employeeData ? getEmployeeFullName(employeeData) : null
 
 			return {
 				breadcrumb: fullName ?? `Employee ${params.staffId}`,

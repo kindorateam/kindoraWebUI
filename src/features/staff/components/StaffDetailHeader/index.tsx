@@ -13,9 +13,8 @@ interface StaffDetailHeaderProps {
 }
 
 const StaffDetailHeader = ({ employeeData, tabs, onSignOut }: StaffDetailHeaderProps) => {
-	const employee = employeeData?.employee
-	const fullName = employee ? getEmployeeFullName(employee) : "Employee"
-	const avatarUrl = employee ? getEmployeeAvatarUrl(employee) : undefined
+	const fullName = employeeData ? getEmployeeFullName(employeeData) : "Employee"
+	const avatarUrl = employeeData ? getEmployeeAvatarUrl(employeeData) : undefined
 
 	return (
 		<div>
@@ -30,7 +29,7 @@ const StaffDetailHeader = ({ employeeData, tabs, onSignOut }: StaffDetailHeaderP
 							</div>
 
 							<div className="flex items-center gap-2">
-								{employee?.role && (
+								{employeeData?.role && (
 									<div className="flex items-center gap-2">
 										<span className="text-neutral-600 text-sm">Role</span>
 										<Chip
@@ -38,15 +37,15 @@ const StaffDetailHeader = ({ employeeData, tabs, onSignOut }: StaffDetailHeaderP
 											size="sm"
 											variant="flat"
 										>
-											{employee.role}
+											{employeeData.role}
 										</Chip>
 									</div>
 								)}
-								{employee?.pinCode !== null && employee?.pinCode !== undefined && (
+								{employeeData?.pinCode !== null && employeeData?.pinCode !== undefined && (
 									<div className="flex items-center gap-2 pl-2">
 										<span className="text-neutral-600 text-sm">Pin</span>
 										<Chip className="bg-secondary-50 font-medium text-secondary text-sm" size="sm" variant="flat">
-											{employee.pinCode}
+											{employeeData.pinCode}
 										</Chip>
 									</div>
 								)}

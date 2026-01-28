@@ -3,7 +3,9 @@ import { Outlet, createFileRoute, useNavigate } from "@tanstack/react-router"
 import { RouteErrorBoundary } from "@/components/error"
 import DeactivateRoomModal from "@/features/rooms/components/DeactivateRoomModal"
 import RoomDetailHeader from "@/features/rooms/components/RoomDetailHeader"
+import { getRoomById } from "@/features/rooms/services/room.service"
 import { useTabNavigation } from "@/hooks/useTabNavigation"
+import { queryClient } from "@/services/queryClient"
 
 type TabType = "students" | "activity" | "profile"
 
@@ -22,6 +24,22 @@ export const Route = createFileRoute("/_authenticated/rooms/$roomId")({
 
 		return {
 			tab: validTabs.includes(tab as TabType) ? (tab as TabType) : "students",
+		}
+	},
+	beforeLoad: async ({ params }: { params: { roomId: string } }) => {
+		try {
+			const room = await queryClient.fetchQuery({
+				queryKey: ["rooms", params.roomId],
+				queryFn: () => getRoomById(params.roomId),
+				staleTime: 5 * 60 * 1000,
+			})
+			return {
+				breadcrumb: room?.name ?? `Room ${params.roomId}`,
+			}
+		} catch {
+			return {
+				breadcrumb: `Room ${params.roomId}`,
+			}
 		}
 	},
 })

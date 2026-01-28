@@ -108,7 +108,16 @@ const StaffTable = () => {
 							)}
 						</TableHeader>
 						<TableBody
-							emptyContent={error ? <TableError onRetry={refetch} /> : "No employees found"}
+							emptyContent={
+							error ? (
+								<TableError onRetry={refetch} />
+							) : (
+								<div className="flex flex-col items-center gap-3">
+									<p className="text-default-500 text-lg">No staff members yet</p>
+									<p className="text-default-400 text-sm">Add your first staff member to get started</p>
+								</div>
+							)
+						}
 							items={error || isLoading ? [] : items}
 							isLoading={isLoading}
 							loadingContent={<Spinner size="lg" />}

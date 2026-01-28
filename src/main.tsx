@@ -1,24 +1,16 @@
 import { HeroUIProvider, ToastProvider } from "@heroui/react"
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
+import { QueryClientProvider } from "@tanstack/react-query"
 import { Provider as JotaiProvider } from "jotai"
 import { createRoot } from "react-dom/client"
 import "jotai-devtools/styles.css"
 
 import "./index.css"
 
+import { queryClient } from "@/services/queryClient"
 import { appStore } from "@/stores/jotaiStore"
 
 import App from "./App"
 import { ErrorBoundary } from "./components/error"
-
-const queryClient = new QueryClient({
-	defaultOptions: {
-		queries: {
-			staleTime: 60 * 1000,
-			retry: 1,
-		},
-	},
-})
 
 const rootElement = document.getElementById("root")
 if (!rootElement) throw new Error("Root element not found")

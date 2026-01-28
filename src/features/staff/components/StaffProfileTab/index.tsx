@@ -48,7 +48,6 @@ const DAYS_OF_WEEK = [
 const StaffProfileTab = ({ employeeData }: StaffProfileTabProps) => {
 	const [isEditing, setIsEditing] = useState(false)
 
-	const employee = employeeData?.employee
 	const certification = employeeData?.certification
 	const medicalInfo = employeeData?.medicalInfo
 	const emergencyContacts = employeeData?.emergencyContacts ?? []
@@ -56,14 +55,14 @@ const StaffProfileTab = ({ employeeData }: StaffProfileTabProps) => {
 
 	const allergies = medicalInfo?.allergies ?? []
 	const allergySummary = allergies[0]
-	const assignedRooms = employee?.roomId ? [employee.roomId] : []
+	const assignedRooms = employeeData?.roomId ? [employeeData.roomId] : []
 	const permissions: string[] = []
 	const workingDays = schedule ? DAYS_OF_WEEK.filter(({ key }) => schedule.week[key as keyof typeof schedule.week]) : []
 
-	const fullName = employee ? getEmployeeFullName(employee) : "—"
-	const avatarUrl = employee ? getEmployeeAvatarUrl(employee) : undefined
+	const fullName = employeeData ? getEmployeeFullName(employeeData) : "—"
+	const avatarUrl = employeeData ? getEmployeeAvatarUrl(employeeData) : undefined
 	const workingDaysValue = workingDays[0]?.label
-	const signUpStatus = employee?.accountStatus ?? employee?.status
+	const signUpStatus = employeeData?.accountStatus ?? employeeData?.status
 	const roomsSummary =
 		assignedRooms.length > 0 ? `${assignedRooms.length} ${assignedRooms.length === 1 ? "room" : "rooms"}` : undefined
 	const permissionsSummary =
@@ -89,8 +88,8 @@ const StaffProfileTab = ({ employeeData }: StaffProfileTabProps) => {
 					<div className="flex flex-col gap-2">
 						<div className="flex gap-2">
 							<ProfileField label="Name" value={fullName} isEditing={isEditing} />
-							<ProfileField label="Email" value={employee?.email} isEditing={isEditing} />
-							<ProfileField label="Phone" value={employee?.phone} isEditing={isEditing} />
+							<ProfileField label="Email" value={employeeData?.email} isEditing={isEditing} />
+							<ProfileField label="Phone" value={employeeData?.phone} isEditing={isEditing} />
 						</div>
 						<div className="flex gap-2">
 							<ProfileField label="Birthday" value={undefined} isEditing={isEditing} />
@@ -99,12 +98,12 @@ const StaffProfileTab = ({ employeeData }: StaffProfileTabProps) => {
 						</div>
 						<div className="flex gap-2">
 							<ProfileField label="Inroll date" value={undefined} isEditing={isEditing} />
-							<ProfileField label="Street address" value={employee?.streetAddress} isEditing={isEditing} />
-							<ProfileField endContent={dropdownIcon} label="City" value={employee?.city} isEditing={isEditing} />
+							<ProfileField label="Street address" value={employeeData?.streetAddress} isEditing={isEditing} />
+							<ProfileField endContent={dropdownIcon} label="City" value={employeeData?.city} isEditing={isEditing} />
 						</div>
 						<div className="flex gap-2">
-							<ProfileField endContent={dropdownIcon} label="State" value={employee?.state} isEditing={isEditing} />
-							<ProfileField label="ZIP code" value={employee?.zipCode} isEditing={isEditing} />
+							<ProfileField endContent={dropdownIcon} label="State" value={employeeData?.state} isEditing={isEditing} />
+							<ProfileField label="ZIP code" value={employeeData?.zipCode} isEditing={isEditing} />
 						</div>
 					</div>
 				</section>
@@ -136,16 +135,16 @@ const StaffProfileTab = ({ employeeData }: StaffProfileTabProps) => {
 								value={signUpStatus}
 								isEditing={isEditing}
 							/>
-							<ProfileField endContent={dropdownIcon} label="Role" value={employee?.role} isEditing={isEditing} />
+							<ProfileField endContent={dropdownIcon} label="Role" value={employeeData?.role} isEditing={isEditing} />
 						</div>
 						<div className="flex gap-2">
 							<ProfileField
 								endContent={calendarIcon}
 								label="Hire date"
-								value={formatDate(employee?.hireDate)}
+								value={formatDate(employeeData?.hireDate)}
 								isEditing={isEditing}
 							/>
-							<ProfileField label="Pin" value={employee?.pinCode} isEditing={isEditing} />
+							<ProfileField label="Pin" value={employeeData?.pinCode} isEditing={isEditing} />
 						</div>
 						<div className="flex gap-2">
 							<div className="flex flex-1 flex-col gap-2">

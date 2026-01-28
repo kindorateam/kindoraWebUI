@@ -31,7 +31,7 @@ const AddStaffModal = () => {
 			isOpen={isOpen}
 			onOpenChange={(open) => !open && closeAddStaffModal()}
 			placement="center"
-			size="md"
+			size="xl"
 		>
 			<ModalContent>
 				<ModalBody className="p-0">

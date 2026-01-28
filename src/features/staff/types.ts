@@ -6,8 +6,8 @@ export interface EmployeeAvatar {
 
 export interface EmployeeSummary {
 	id: string
-	firstname: string
-	lastname: string
+	firstName: string
+	lastName: string
 	checkedIn: boolean
 	email: string | null
 	phone?: string | null
@@ -23,8 +23,8 @@ export interface EmployeeSummary {
 // API Response Types - Employee Full (detail endpoint)
 export interface Employee {
 	id: string
-	firstname: string
-	lastname: string
+	firstName: string
+	lastName: string
 	checkedIn: boolean
 	email: string | null
 	phone?: string | null
@@ -83,11 +83,10 @@ export interface EmployeeSchedule {
 	week: EmployeeScheduleWeek
 }
 
-export interface EmployeeFull {
-	employee: Employee
+export interface EmployeeFull extends Employee {
 	certification: EmployeeCertification | null
 	medicalInfo: EmployeeMedicalInfo | null
-	emergencyContacts: EmployeeEmergencyContact[]
+	emergencyContacts?: EmployeeEmergencyContact[]
 	schedule: EmployeeSchedule | null
 }
 
@@ -99,7 +98,7 @@ export type { AddStaffFormData } from "./schemas/addStaff.schema"
 
 // Helper function to get full name
 export function getEmployeeFullName(employee: EmployeeSummary | Employee): string {
-	return `${employee.firstname} ${employee.lastname}`
+	return `${employee.firstName} ${employee.lastName}`
 }
 
 // Helper function to get avatar URL

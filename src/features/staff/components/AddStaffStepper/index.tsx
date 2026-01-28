@@ -198,7 +198,7 @@ const AddStaffStepper = ({ onComplete, onCancel, isLoading = false }: AddStaffSt
 
 	return (
 		<FormProvider {...form}>
-			<div className="w-full max-w-[496px] rounded-2xl bg-white p-7">
+			<div className="w-full rounded-2xl bg-white p-7">
 				<Stepper
 					backLabel={currentStep === 0 ? "Close" : "Back"}
 					completeLabel="Confirm"
