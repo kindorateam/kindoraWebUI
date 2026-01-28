@@ -21,6 +21,7 @@ const navDrawerData: NavDrawerItem[] = [
 		icon: <SchoolIcon />,
 		children: [
 			{ label: "Insights", path: "/insights" },
+			{ label: "Students", path: "/students" },
 			{ label: "Rooms", path: "/rooms" },
 			{ label: "Staff", path: "/staff" },
 			{ label: "Calendar", path: "/calendar" },
