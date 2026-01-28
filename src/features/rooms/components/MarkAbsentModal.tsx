@@ -136,11 +136,11 @@ const MarkAbsentModal = () => {
 						isLoading={markAbsentMutation.isPending}
 						isDisabled={!isFormValid}
 						onPress={handleSubmit}
-						size="lg"
+						size="md"
 					>
 						Confirm
 					</Button>
-					<Button color="default" fullWidth isDisabled={markAbsentMutation.isPending} onPress={handleClose} size="lg">
+					<Button color="default" fullWidth isDisabled={markAbsentMutation.isPending} onPress={handleClose} size="md">
 						Cancel
 					</Button>
 				</ModalFooter>

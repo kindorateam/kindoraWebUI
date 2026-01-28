@@ -3,6 +3,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router"
 
 import { RouteErrorBoundary } from "@/components/error"
 import StaffDetailHeader from "@/features/staff/components/StaffDetailHeader"
+import StaffDocumentsTab from "@/features/staff/components/StaffDocumentsTab"
 import StaffProfileTab from "@/features/staff/components/StaffProfileTab"
 import { useEmployee } from "@/features/staff/hooks/useStaff"
 import { getEmployeeById } from "@/features/staff/services/staff.service"
@@ -93,7 +94,7 @@ function StaffDetailLayout() {
 					{tab === "profile" ? (
 						<StaffProfileTab employeeData={employeeData} />
 					) : (
-						<div className="text-center text-neutral-500">Documents tab coming soon</div>
+						<StaffDocumentsTab employeeId={employeeId} />
 					)}
 				</main>
 			</div>

@@ -66,11 +66,11 @@ const DeactivateRoomModal = ({ onSuccess }: DeactivateRoomModalProps) => {
 						fullWidth
 						isLoading={inactivateMutation.isPending}
 						onPress={handleDeactivate}
-						size="lg"
+						size="md"
 					>
 						Deactivate
 					</Button>
-					<Button color="default" fullWidth isDisabled={inactivateMutation.isPending} onPress={handleClose} size="lg">
+					<Button color="default" fullWidth isDisabled={inactivateMutation.isPending} onPress={handleClose} size="md">
 						Cancel
 					</Button>
 				</ModalFooter>

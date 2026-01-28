@@ -90,6 +90,21 @@ export interface EmployeeFull extends Employee {
 	schedule: EmployeeSchedule | null
 }
 
+// API Response Types - Employee Document
+export type DocumentStatus = "active" | "expiring_soon" | "expired" | "uploaded"
+
+export interface EmployeeDocument {
+	id: string
+	employeeId: string
+	name: string
+	status: DocumentStatus
+	expiryDate: string | null
+	type: string
+	note: string | null
+	uploadedAt: string
+	uploadedBy: string | null
+}
+
 // UI Helper Types
 export type PinVisibility = Record<string, boolean>
 
