@@ -17,6 +17,8 @@ import TableError from "@/components/TableError"
 import TablerCirclePlusFilled from "~icons/tabler/circle-plus-filled"
 
 import { useEmployeeDocuments } from "../../hooks/useStaff"
+import { openAddDocumentModal } from "../../stores/addDocumentModal.store"
+import AddDocumentModal from "../AddDocumentModal"
 import DeleteDocumentModal from "../DeleteDocumentModal"
 
 import columns from "./columns"
@@ -46,7 +48,7 @@ const StaffDocumentsTab = ({ employeeId }: StaffDocumentsTabProps) => {
 				<CardBody className="flex flex-col gap-4 p-4">
 					<div className="flex flex-col gap-4">
 						<div className="flex items-center justify-end">
-							<Button color="primary" endContent={<TablerCirclePlusFilled className="size-5 text-white" />}>
+							<Button color="primary" endContent={<TablerCirclePlusFilled className="size-5 text-white" />} onPress={openAddDocumentModal}>
 								Add Document
 							</Button>
 						</div>
@@ -107,6 +109,7 @@ const StaffDocumentsTab = ({ employeeId }: StaffDocumentsTabProps) => {
 					</div>
 				</CardBody>
 			</Card>
+			<AddDocumentModal />
 			<DeleteDocumentModal />
 		</>
 	)
