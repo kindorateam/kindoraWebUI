@@ -89,8 +89,10 @@ const RoomProfileTab = ({ roomId }: RoomProfileTabProps) => {
 				staffIds: room.signedInStaff.map((s) => s.id),
 			})
 			setAssignedStaff(room.signedInStaff)
+			// Trigger validation after reset to update isValid state
+			void trigger()
 		}
-	}, [room, reset])
+	}, [room, reset, trigger])
 
 	// Merge allEmployees with assignedStaff and sort selected staff to the top
 	const assignedIds = new Set(assignedStaff.map((s) => s.id))
@@ -288,8 +290,8 @@ const RoomProfileTab = ({ roomId }: RoomProfileTabProps) => {
 												const selected = Array.from(keys)[0]
 												if (selected !== undefined) {
 													field.onChange(Number(selected))
-													// Re-validate to clear error if fixed
-													trigger("minAge")
+													// Re-validate both age fields to check cross-field constraint
+													trigger(["minAge", "maxAge"])
 												}
 											}}
 											radius="md"
@@ -316,8 +318,8 @@ const RoomProfileTab = ({ roomId }: RoomProfileTabProps) => {
 												const selected = Array.from(keys)[0]
 												if (selected !== undefined) {
 													field.onChange(Number(selected))
-													// Re-validate to clear error if fixed
-													trigger("minAge")
+													// Re-validate both age fields to check cross-field constraint
+													trigger(["minAge", "maxAge"])
 												}
 											}}
 											radius="md"
