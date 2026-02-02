@@ -108,9 +108,7 @@ export default function AddDocumentModal() {
 										<span className="text-default-600 text-xs">
 											{uploadedFile ? uploadedFile.name : "Drag a document here or\u00A0"}
 										</span>
-										{!uploadedFile && (
-											<span className="font-semibold text-default-600 text-xs">browse to upload</span>
-										)}
+										{!uploadedFile && <span className="font-semibold text-default-600 text-xs">browse to upload</span>}
 									</div>
 								</button>
 							</div>
@@ -121,12 +119,16 @@ export default function AddDocumentModal() {
 					) : (
 						<div className="flex flex-col gap-6">
 							<div className="flex flex-col gap-3">
-								<Input label={undefined} value={uploadedFile?.name ?? ""} onValueChange={(val) => {
-									if (uploadedFile) {
-										const renamed = new File([uploadedFile], val, { type: uploadedFile.type })
-										setUploadedFile(renamed)
-									}
-								}} />
+								<Input
+									label={undefined}
+									value={uploadedFile?.name ?? ""}
+									onValueChange={(val) => {
+										if (uploadedFile) {
+											const renamed = new File([uploadedFile], val, { type: uploadedFile.type })
+											setUploadedFile(renamed)
+										}
+									}}
+								/>
 								<Select
 									label="Type"
 									size="sm"

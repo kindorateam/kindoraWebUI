@@ -48,7 +48,11 @@ const StaffDocumentsTab = ({ employeeId }: StaffDocumentsTabProps) => {
 				<CardBody className="flex flex-col gap-4 p-4">
 					<div className="flex flex-col gap-4">
 						<div className="flex items-center justify-end">
-							<Button color="primary" endContent={<TablerCirclePlusFilled className="size-5 text-white" />} onPress={openAddDocumentModal}>
+							<Button
+								color="primary"
+								endContent={<TablerCirclePlusFilled className="size-5 text-white" />}
+								onPress={openAddDocumentModal}
+							>
 								Add Document
 							</Button>
 						</div>
