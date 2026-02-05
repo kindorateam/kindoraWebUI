@@ -1,9 +1,9 @@
 import { apiClient } from "@/services/api.service"
 
-import type { EmployeeDocument, EmployeeFull, EmployeeSummary } from "../types"
+import type { EmployeeDocument, EmployeeFull, GetEmployeesResult } from "../types"
 
-export async function getEmployees(): Promise<EmployeeSummary[]> {
-	return apiClient.get<EmployeeSummary[]>("/employees")
+export async function getEmployees(): Promise<GetEmployeesResult> {
+	return apiClient.get<GetEmployeesResult>("/employees")
 }
 
 export async function getEmployeeById(employeeId: string): Promise<EmployeeFull> {

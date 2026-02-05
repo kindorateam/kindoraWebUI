@@ -21,16 +21,19 @@ const ParentsAvatarGroup = ({ parents }: ParentsAvatarGroupProps) => {
 	return (
 		<Tooltip closeDelay={0} content={<ParentTooltipContent parents={parents} />} delay={300}>
 			<AvatarGroup>
-				{parents.slice(0, 2).map((parent) => (
-					<Avatar
-						classNames={{ base: avatarGroupNoHoverTranslateClassName }}
-						key={parent.id}
-						name={parent.name}
-						showFallback
-						size="sm"
-						src={parent.avatar}
-					/>
-				))}
+				{parents.slice(0, 2).map((parent) => {
+					const fullName = `${parent.firstName} ${parent.lastName}`
+					return (
+						<Avatar
+							classNames={{ base: avatarGroupNoHoverTranslateClassName }}
+							key={parent.id}
+							name={fullName}
+							showFallback
+							size="sm"
+							src={parent.avatar?.path}
+						/>
+					)
+				})}
 				{extraCount > 0 && (
 					<Avatar
 						classNames={{

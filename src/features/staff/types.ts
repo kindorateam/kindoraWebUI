@@ -105,6 +105,14 @@ export interface EmployeeDocument {
 	uploadedBy: string | null
 }
 
+// API Response Types - Paginated List
+export interface GetEmployeesResult {
+	items: EmployeeSummary[]
+	total: number
+	limit: number
+	offset: number
+}
+
 // UI Helper Types
 export type PinVisibility = Record<string, boolean>
 

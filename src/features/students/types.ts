@@ -1,29 +1,42 @@
+export interface ShortMedia {
+	id: string
+	path: string
+}
+
 export interface StudentParent {
 	id: string
-	name: string
-	avatar?: string
-	email?: string
-	phone?: string
-	pin?: string
+	firstName: string
+	lastName: string
+	avatar?: ShortMedia
+}
+
+export interface StudentAbsence {
+	id: number
+	dateFrom: string
+	dateTo: string
+	reason: string
+}
+
+export interface StudentRoom {
+	id: string
+	title: string
 }
 
 export interface Student {
 	id: string
 	firstName: string
 	lastName: string
-	avatar?: string
-	roomId?: string
-	roomName?: string
-	roomIcon?: string
-	status: StudentStatus
-	parents: StudentParent[]
-	tags: string[]
+	avatar?: ShortMedia
+	roomId: string
+	room?: StudentRoom
+	checkedIn: boolean
+	parents?: StudentParent[]
+	tags?: string[]
+	absence?: StudentAbsence
 }
 
-export type StudentStatus = "active" | "inactive"
-
 export interface GetStudentsResult {
-	students: Student[]
+	items: Student[]
 	total: number
 	limit: number
 	offset: number

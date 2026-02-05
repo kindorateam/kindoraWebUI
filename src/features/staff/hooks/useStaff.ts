@@ -3,15 +3,21 @@ import { useCallback, useState } from "react"
 
 import { getEmployeeById, getEmployeeDocuments, getEmployees } from "../services/staff.service"
 
-import type { EmployeeDocument, EmployeeFull, EmployeeSummary, PinVisibility } from "../types"
+import type { EmployeeDocument, EmployeeFull, GetEmployeesResult, PinVisibility } from "../types"
 
 export function useEmployees() {
-	return useQuery<EmployeeSummary[], Error>({
+	const query = useQuery<GetEmployeesResult, Error>({
 		queryKey: ["employees"],
 		queryFn: getEmployees,
 		staleTime: 5 * 60 * 1000,
 		gcTime: 10 * 60 * 1000,
 	})
+
+	return {
+		...query,
+		data: query.data?.items ?? [],
+		total: query.data?.total ?? 0,
+	}
 }
 
 export function useEmployee(employeeId: string) {

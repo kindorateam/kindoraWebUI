@@ -25,7 +25,7 @@ export const useStudents = (options: UseStudentsOptions = {}) => {
 
 	return {
 		...query,
-		students: query.data?.students ?? [],
+		students: query.data?.items ?? [],
 		total: query.data?.total ?? 0,
 		totalPages: Math.ceil((query.data?.total ?? 0) / limit) || 1,
 	}

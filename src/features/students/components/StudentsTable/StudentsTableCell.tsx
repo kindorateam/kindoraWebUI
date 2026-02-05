@@ -28,7 +28,7 @@ const StudentsTableCell = ({ student, columnKey }: StudentsTableCellProps) => {
 						name={`${student.firstName[0]}${student.lastName[0]}`}
 						showFallback
 						size="sm"
-						src={student.avatar}
+						src={student.avatar?.path}
 					/>
 					<span className="text-sm">
 						{student.firstName} {student.lastName}
@@ -37,25 +37,21 @@ const StudentsTableCell = ({ student, columnKey }: StudentsTableCellProps) => {
 			)
 
 		case "parents":
-			return <ParentsAvatarGroup parents={student.parents} />
+			return <ParentsAvatarGroup parents={student.parents ?? []} />
 
 		case "room":
-			return student.roomName ? (
-				<Chip
-					avatar={<Avatar classNames={{ base: "bg-default-300" }} name={student.roomIcon} size="sm" />}
-					classNames={{ base: "bg-primary-50", content: "text-sm" }}
-					size="sm"
-					variant="flat"
-				>
-					{student.roomName}
+			return student.room ? (
+				<Chip classNames={{ base: "bg-primary-50", content: "text-sm" }} size="sm" variant="flat">
+					{student.room.title}
 				</Chip>
 			) : (
 				<span className="text-default-400 text-sm">—</span>
 			)
 
 		case "tags": {
-			const visibleTags = student.tags.slice(0, MAX_VISIBLE_TAGS)
-			const hiddenTags = student.tags.slice(MAX_VISIBLE_TAGS)
+			const tags = student.tags ?? []
+			const visibleTags = tags.slice(0, MAX_VISIBLE_TAGS)
+			const hiddenTags = tags.slice(MAX_VISIBLE_TAGS)
 
 			return (
 				<div className="flex items-center gap-1">
