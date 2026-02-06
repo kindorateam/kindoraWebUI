@@ -95,7 +95,19 @@ export const WORKING_DAYS = [
 	{ key: "fri", label: "Fri" },
 	{ key: "sat", label: "Sat" },
 	{ key: "sun", label: "Sun" },
-]
+] as const
+
+export type DayKey = (typeof WORKING_DAYS)[number]["key"]
+
+export const DEFAULT_SCHEDULE: Record<DayKey, boolean> = {
+	mon: false,
+	tue: false,
+	wed: false,
+	thu: false,
+	fri: false,
+	sat: false,
+	sun: false,
+}
 
 // Mock rooms for development - will be replaced with API data
 export const MOCK_ROOMS = [

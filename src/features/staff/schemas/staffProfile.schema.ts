@@ -1,0 +1,56 @@
+import { z } from "zod"
+
+export const staffProfileSchema = z.object({
+	// Personal Info
+	firstName: z.string({ message: "First name is required" }).trim().min(1, "First name is required"),
+	lastName: z.string({ message: "Last name is required" }).trim().min(1, "Last name is required"),
+	email: z.string({ message: "Email is required" }).email("Invalid email address"),
+	phone: z.string().optional(),
+	birthday: z.string().optional(),
+	notes: z.string().optional(),
+	streetAddress: z.string().optional(),
+	city: z.string().optional(),
+	state: z.string().optional(),
+	zipCode: z.string().optional(),
+
+	// Certification
+	degree: z.string().optional(),
+	certification: z.string().optional(),
+
+	// Role & Status
+	role: z.string({ message: "Role is required" }).min(1, "Role is required"),
+	hireDate: z.string().optional(),
+
+	// Schedule
+	schedule: z.object({
+		mon: z.boolean(),
+		tue: z.boolean(),
+		wed: z.boolean(),
+		thu: z.boolean(),
+		fri: z.boolean(),
+		sat: z.boolean(),
+		sun: z.boolean(),
+	}),
+
+	// Medical Info
+	allergies: z.array(z.string()).optional(),
+	medications: z.string().optional(),
+	doctorName: z.string().optional(),
+	doctorPhone: z.string().optional(),
+
+	// Emergency Contacts
+	emergencyContacts: z.array(
+		z.object({
+			id: z.number().optional(),
+			name: z.string().min(1, "Name is required"),
+			phone: z.string().min(1, "Phone is required"),
+			relationshipTo: z.string().optional(),
+		}),
+	),
+
+	// Avatar
+	avatarFile: z.instanceof(File).optional().nullable(),
+	avatarPreview: z.string().optional().nullable(),
+})
+
+export type StaffProfileFormData = z.infer<typeof staffProfileSchema>

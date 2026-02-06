@@ -89,10 +89,17 @@ function StaffDetailLayout() {
 	return (
 		<RouteErrorBoundary routeName="employee-detail">
 			<div className="flex min-h-screen flex-col">
-				<StaffDetailHeader employeeData={employeeData} tabs={tabsContent} />
+				<StaffDetailHeader
+					employeeData={employeeData}
+					// TODO: Wire to generate pin API when available
+					onGeneratePin={() => {}}
+					// TODO: Wire to send invite API when available
+					onSendInvite={() => {}}
+					tabs={tabsContent}
+				/>
 				<main className="container mx-auto max-w-4xl flex-1 py-10">
 					{tab === "profile" ? (
-						<StaffProfileTab employeeData={employeeData} />
+						<StaffProfileTab employeeId={employeeId} />
 					) : (
 						<StaffDocumentsTab employeeId={employeeId} />
 					)}

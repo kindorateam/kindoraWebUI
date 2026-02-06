@@ -113,6 +113,62 @@ export interface GetEmployeesResult {
 	offset: number
 }
 
+// API Request Types - Update Employee
+export interface UpdateEmployeeCertification {
+	degree: string
+	certification: string
+}
+
+export interface UpdateEmployeeMedicalInfo {
+	allergies?: string[]
+	medications?: string
+	doctorName?: string
+	doctorPhone?: string
+}
+
+export interface UpdateEmployeeEmergencyContact {
+	id?: number
+	name: string
+	phone: string
+	relationshipTo?: string
+}
+
+export interface UpdateEmployeeScheduleWeek {
+	mon: boolean
+	tue: boolean
+	wed: boolean
+	thu: boolean
+	fri: boolean
+	sat: boolean
+	sun: boolean
+}
+
+export interface UpdateEmployeeSchedule {
+	week: UpdateEmployeeScheduleWeek
+}
+
+export interface UpdateEmployeePayload {
+	firstName?: string
+	lastName?: string
+	email?: string
+	phone?: string
+	birthday?: string
+	notes?: string
+	role?: string
+	status?: string
+	hireDate?: string
+	streetAddress?: string
+	city?: string
+	state?: string
+	zipCode?: string
+	roomIds?: string[]
+	avatarId?: string
+	certification?: UpdateEmployeeCertification
+	medicalInfo?: UpdateEmployeeMedicalInfo
+	emergencyContacts?: UpdateEmployeeEmergencyContact[]
+	schedule?: UpdateEmployeeSchedule
+}
+
 // UI Helper Types
 export type PinVisibility = Record<string, boolean>
 

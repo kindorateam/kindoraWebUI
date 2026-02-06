@@ -30,7 +30,7 @@ function DetailRow({ label, value }: { label: string; value?: string }) {
 	)
 }
 
-function resolveLabel(key: string | undefined, options: { key: string; label: string }[]): string {
+function resolveLabel(key: string | undefined, options: readonly { key: string; label: string }[]): string {
 	if (!key) return "--"
 	return options.find((o) => o.key === key)?.label ?? key
 }

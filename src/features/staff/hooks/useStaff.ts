@@ -1,9 +1,15 @@
-import { useQuery } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useCallback, useState } from "react"
 
-import { getEmployeeById, getEmployeeDocuments, getEmployees } from "../services/staff.service"
+import {
+	getEmployeeById,
+	getEmployeeDocuments,
+	getEmployees,
+	updateEmployee,
+	updateEmployeeAvatar,
+} from "../services/staff.service"
 
-import type { EmployeeDocument, EmployeeFull, GetEmployeesResult, PinVisibility } from "../types"
+import type { EmployeeDocument, EmployeeFull, GetEmployeesResult, PinVisibility, UpdateEmployeePayload } from "../types"
 
 export function useEmployees() {
 	const query = useQuery<GetEmployeesResult, Error>({
@@ -37,6 +43,32 @@ export function useEmployeeDocuments(employeeId: string) {
 		staleTime: 5 * 60 * 1000,
 		gcTime: 10 * 60 * 1000,
 		enabled: !!employeeId,
+	})
+}
+
+export function useUpdateEmployee() {
+	const queryClient = useQueryClient()
+
+	return useMutation({
+		mutationFn: ({ employeeId, payload }: { employeeId: string; payload: UpdateEmployeePayload }) =>
+			updateEmployee(employeeId, payload),
+		onSuccess: (_data, { employeeId }) => {
+			void queryClient.invalidateQueries({ queryKey: ["employees", employeeId] })
+			void queryClient.invalidateQueries({ queryKey: ["employees"], exact: true })
+		},
+	})
+}
+
+export function useUpdateEmployeeAvatar() {
+	const queryClient = useQueryClient()
+
+	return useMutation({
+		mutationFn: ({ employeeId, avatarFile }: { employeeId: string; avatarFile: File }) =>
+			updateEmployeeAvatar(employeeId, avatarFile),
+		onSuccess: (_data, { employeeId }) => {
+			void queryClient.invalidateQueries({ queryKey: ["employees", employeeId] })
+			void queryClient.invalidateQueries({ queryKey: ["employees"], exact: true })
+		},
 	})
 }
 
