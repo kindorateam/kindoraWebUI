@@ -858,8 +858,10 @@ When working in this codebase, apply these principles:
 - Run `bun run fix` to auto-fix most issues
 - Check [biome.json](biome.json) for configuration
 
-## Commit rules:
-- Don't include internal comments like 🤖 Generated with [Claude Code](https://claude.com/claude-code) etc.
+## Commit & PR rules:
+- Don't include internal comments like "Generated with Claude Code" etc.
+- Never add Co-Authored-By lines to commits
+- Never add AI-generated attribution comments to PR descriptions (e.g., "Generated with Claude Code", robot emoji lines, etc.)
 
 ---
 
