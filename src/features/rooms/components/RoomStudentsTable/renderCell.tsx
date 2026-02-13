@@ -1,5 +1,6 @@
 import { Avatar, Badge, Chip } from "@heroui/react"
 
+import ParentsAvatarGroup from "./ParentsAvatarGroup"
 import StudentActionsDropdown from "./StudentActionsDropdown"
 
 import type { Student } from "../../types"
@@ -24,22 +25,14 @@ export function renderCell(student: Student, columnKey: React.Key, roomId: strin
 
 		case "parents":
 			return (
-				<div className="flex flex-wrap gap-1">
-					{student.parents.length > 0 ? (
-						student.parents.map((parent) => (
-							<span key={parent.id} className="text-gray-600 text-sm">
-								{parent.name}
-							</span>
-						))
-					) : (
-						<span className="text-gray-400 text-sm">No parents assigned</span>
-					)}
+				<div className="flex justify-center">
+					<ParentsAvatarGroup parents={student.parents} />
 				</div>
 			)
 
 		case "tags":
 			return (
-				<div className="flex flex-wrap gap-1">
+				<div className="flex flex-wrap justify-center gap-1">
 					{student.tags.length > 0 ? (
 						student.tags.map((tag) => (
 							<Chip key={tag} className="bg-gray-100 text-gray-600" size="sm">

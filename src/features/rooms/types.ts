@@ -62,6 +62,9 @@ export interface ApiParent {
 	firstName: string
 	lastName: string
 	avatar?: ApiAsset
+	email?: string
+	phone?: string
+	pin?: string
 }
 
 // dto.StudentDTO - used in RoomDTO.students
@@ -164,7 +167,12 @@ export interface Room {
 
 export interface Parent {
 	id: string
-	name: string
+	firstName: string
+	lastName: string
+	avatar?: string
+	email?: string
+	phone?: string
+	pin?: string
 }
 
 export interface Student {

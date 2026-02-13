@@ -59,12 +59,19 @@ export const US_STATES = [
 ]
 
 export const DEGREE_OPTIONS = [
-	{ key: "high_school", label: "High School Diploma" },
-	{ key: "associate", label: "Associate's Degree" },
-	{ key: "bachelor", label: "Bachelor's Degree" },
-	{ key: "master", label: "Master's Degree" },
-	{ key: "phd", label: "Ph.D. Degree" },
+	{ key: "high_school", label: "GED or high school diploma" },
+	{ key: "associate", label: "Associate degree" },
+	{ key: "bachelor", label: "Bachelor's degree" },
+	{ key: "master", label: "Master's degree" },
+	{ key: "phd", label: "PhD, EdD or other doctorate degree" },
 	{ key: "other", label: "Other" },
+]
+
+export const SIGNUP_STATUS_OPTIONS = [
+	{ key: "active", label: "Active" },
+	{ key: "pending", label: "Pending" },
+	{ key: "invited", label: "Invited" },
+	{ key: "inactive", label: "Inactive" },
 ]
 
 export const PERMISSION_OPTIONS = [

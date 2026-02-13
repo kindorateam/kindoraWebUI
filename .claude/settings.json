@@ -1,0 +1,39 @@
+{
+  "env": {
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
+  },
+  "permissions": {
+    "allow": [
+      "Bash(bun run check:*)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nfix: prevent auth flash on page reload using router context\n\n- Implement TanStack Router context pattern for auth state\n- Add RouterContext interface to __root.tsx with auth state\n- Pass auth state from App.tsx to RouterProvider via context\n- Update route guards to use context.auth instead of direct token checks\n- Remove setTimeout hacks from beforeLoad guards\n- Force sync localStorage with atoms in checkAuthAtom to ensure hydration\n- Add debug logging for localStorage and atom state during auth check\n\nThis eliminates race conditions between auth initialization and route\nevaluation, following TanStack Router''s recommended authentication pattern.\nEOF\n)\")",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "mcp__figma__get_design_context",
+      "mcp__figma__get_screenshot",
+      "Bash(bun run fix:*)",
+      "Bash(bun run biome:*)",
+      "Bash(bun run check:types:*)",
+      "Bash(bun run typecheck:*)",
+      "Bash(bun add:*)",
+      "Bash(open -a \"Google Chrome\" \"https://localhost:5173/rooms\")",
+      "Bash(cat:*)",
+      "Bash(curl:*)",
+      "WebFetch(domain:localhost)",
+      "Bash(lsof:*)",
+      "mcp__figma__get_metadata",
+      "Bash(git checkout:*)",
+      "Bash(git push:*)",
+      "WebFetch(domain:tanstack.com)",
+      "Bash(grep:*)",
+      "WebFetch(domain:www.heroui.com)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(python3:*)"
+    ],
+    "deny": [],
+    "ask": []
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "bun x ccusage statusline"
+  }
+}

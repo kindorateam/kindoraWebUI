@@ -1,6 +1,6 @@
 # AGENTS.md — AI Agent Guide for Kindora Web
 
-This document is for AI coding agents (particularly GPT) working in this codebase. It encodes the tech stack, conventions, and safe operating procedures so you can ship changes quickly and correctly.
+This document is for AI coding agents (particularly OpenAI/GPT) working in this codebase. It encodes the tech stack, conventions, and safe operating procedures so you can ship changes quickly and correctly.
 
 ---
 
@@ -860,6 +860,9 @@ When working in this codebase, apply these principles:
 - Run `bun run fix` to auto-fix most issues
 - Check [biome.json](biome.json) for configuration
 
+## Commit & PR rules:
+- Never add Co-Authored-By lines to commits
+
 ---
 
 ## Resources
@@ -874,4 +877,4 @@ When working in this codebase, apply these principles:
 ---
 
 **Last Updated**: 2025-12-01
-**For**: GPT & AI Agents
+**For**: OpenAI/GPT Code & AI Agents

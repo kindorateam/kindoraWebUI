@@ -1,11 +1,22 @@
-import { Avatar, Button, Chip, Divider, Select, SelectItem } from "@heroui/react"
+import {
+	Avatar,
+	Button,
+	Calendar,
+	Chip,
+	Divider,
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
+	Select,
+	SelectItem,
+} from "@heroui/react"
 
 import IdentityChip from "@/components/IdentityChip"
 import SignOutIcon from "@/components/icons/SignOutIcon"
 import { ABSENCE_REASONS } from "@/features/rooms/constants"
+import RiSendPlaneFill from "~icons/ri/send-plane-fill"
 import SolarCalendarBroken from "~icons/solar/calendar-broken"
 import TablerRefresh from "~icons/tabler/refresh"
-import TablerSend2 from "~icons/tabler/send-2"
 
 import { MOCK_ROOMS } from "../../constants"
 import { getEmployeeAvatarUrl, getEmployeeFullName } from "../../types"
@@ -45,8 +56,8 @@ const StaffDetailHeader = ({ employeeData, tabs, onSignOut, onGeneratePin, onSen
 								<Divider />
 							</div>
 
-							{/* Row 1: Role, Pin, Rooms + Send Invite */}
-							<div className="flex items-center justify-between">
+							{/* Row 1: Role, Pin, Rooms */}
+							<div className="flex items-center">
 								<div className="flex items-center gap-7">
 									{/* Role */}
 									{employeeData?.role && (
@@ -87,53 +98,61 @@ const StaffDetailHeader = ({ employeeData, tabs, onSignOut, onGeneratePin, onSen
 									{/* TODO: Replace MOCK_ROOMS with actual room data from API */}
 									<div className="flex items-center gap-2">
 										<span className="text-neutral-600 text-sm">Rooms</span>
-										<div className="flex gap-1">
+										<div className="grid grid-cols-2 gap-x-4 gap-y-2">
 											{MOCK_ROOMS.map((room) => (
 												<IdentityChip fullName={room.label} key={room.key} src={room.avatar || undefined} />
 											))}
 										</div>
 									</div>
 								</div>
-
-								{/* Send Invite */}
-								{/* TODO: Wire to send invite API when available */}
-								<Button
-									color="success"
-									endContent={<TablerSend2 className="size-4" />}
-									onPress={onSendInvite}
-									radius="md"
-									size="sm"
-								>
-									Send Invite
-								</Button>
 							</div>
 
 							{/* Row 2: Absence */}
 							{/* TODO: Replace mock absence data with API data when available */}
-							<div className="flex items-center gap-4">
-								<div className="flex flex-1 items-center gap-3">
-									<span className="shrink-0 text-neutral-600 text-sm">Absence date</span>
-									<Chip className="flex-1 bg-secondary-50 font-medium text-secondary text-sm" size="sm" variant="flat">
-										Nov 20 - Nov 26
-									</Chip>
-									<Button aria-label="Set absence dates" color="primary" isIconOnly radius="full" size="sm">
-										<SolarCalendarBroken className="size-4" />
-									</Button>
-								</div>
-
-								<Select className="flex-1" defaultSelectedKeys={["vacation"]} label="Reason" radius="md" size="sm">
-									{ABSENCE_REASONS.map((item) => (
-										<SelectItem key={item.key}>{item.label}</SelectItem>
-									))}
-								</Select>
+							<div className="flex items-center gap-3">
+								<span className="shrink-0 text-neutral-600 text-sm">Absence date</span>
+								<Chip className="bg-secondary-50 font-medium text-secondary text-sm" size="sm" variant="flat">
+									Nov 20 - Nov 26
+								</Chip>
+								<Popover placement="bottom">
+									<PopoverTrigger>
+										<Button aria-label="Set absence dates" color="primary" isIconOnly radius="full" size="sm">
+											<SolarCalendarBroken className="size-4" />
+										</Button>
+									</PopoverTrigger>
+									<PopoverContent className="p-4">
+										<div className="flex flex-col gap-4">
+											<Select defaultSelectedKeys={["vacation"]} label="Reason" radius="md" size="sm">
+												{ABSENCE_REASONS.map((item) => (
+													<SelectItem key={item.key}>{item.label}</SelectItem>
+												))}
+											</Select>
+											<Calendar aria-label="Absence date" />
+										</div>
+									</PopoverContent>
+								</Popover>
 							</div>
 						</div>
 					</div>
 
-					{/* Sign Out button */}
-					<Button color="primary" endContent={<SignOutIcon fill="#fff" />} onPress={onSignOut} radius="md">
-						Sign Out
-					</Button>
+					<div className="flex flex-col gap-3">
+						{/* Sign Out button */}
+						<Button color="primary" endContent={<SignOutIcon fill="#fff" />} onPress={onSignOut} radius="md">
+							Sign Out
+						</Button>
+						{/* Send Invite */}
+						{/* TODO: Wire to send invite API when available */}
+						<Button
+							className="text-white"
+							color="success"
+							endContent={<RiSendPlaneFill className="size-4" />}
+							onPress={onSendInvite}
+							radius="md"
+							size="sm"
+						>
+							Send Invite
+						</Button>
+					</div>
 				</div>
 
 				{tabs}

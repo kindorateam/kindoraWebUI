@@ -1,7 +1,9 @@
-import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@heroui/react"
+import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Tooltip } from "@heroui/react"
 import { Link, useRouter } from "@tanstack/react-router"
 
 import { getMediaUrl } from "@/utils/media"
+import PhSmileyDuotone from "~icons/ph/smiley-duotone"
+import PhSmileySadDuotone from "~icons/ph/smiley-sad-duotone"
 import TablerEdit from "~icons/tabler/edit"
 import TablerEye from "~icons/tabler/eye"
 import TablerPlayerPlay from "~icons/tabler/player-play"
@@ -69,8 +71,27 @@ const RoomsTableCell = ({ room, columnKey }: RoomsTableCellProps) => {
 			return <SignedInAvatarGroup items={checkedInStaff} tooltipLabel="Signed-in staff" />
 		}
 
-		case "ratio":
-			return <span className="text-gray-600 text-sm">1:{room.ratio}</span>
+		case "ratio": {
+			const actualRatio = room.staffCount > 0 ? room.studentsCount / room.staffCount : room.studentsCount
+			const isGoodRatio = actualRatio <= room.ratio
+
+			return (
+				<Tooltip
+					closeDelay={0}
+					color="primary"
+					content={isGoodRatio ? `Ratio is met (1:${room.ratio})` : `Ratio is not met (1:${room.ratio})`}
+					delay={300}
+				>
+					<span className="inline-flex cursor-default items-center justify-center">
+						{isGoodRatio ? (
+							<PhSmileyDuotone className="size-5 text-success" />
+						) : (
+							<PhSmileySadDuotone className="size-5 text-danger" />
+						)}
+					</span>
+				</Tooltip>
+			)
+		}
 
 		case "actions":
 			return (

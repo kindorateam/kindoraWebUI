@@ -25,7 +25,12 @@ const SignedInAvatarGroup = ({ items, tooltipLabel }: SignedInAvatarGroupProps) 
 
 	return (
 		<div className="flex justify-center">
-			<Tooltip closeDelay={0} content={<SignedInTooltipContent items={items} label={tooltipLabel} />} delay={300}>
+			<Tooltip
+				closeDelay={0}
+				color="primary"
+				content={<SignedInTooltipContent items={items} label={tooltipLabel} />}
+				delay={300}
+			>
 				<AvatarGroup>
 					{items.slice(0, 2).map((item) => (
 						<Avatar

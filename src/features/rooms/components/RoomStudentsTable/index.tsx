@@ -90,8 +90,8 @@ const RoomStudentsTable = ({ roomId }: RoomStudentsTableProps) => {
 						classNames={{
 							base: "min-h-[595.5px]",
 							tr: "border-b border-default-200 last:border-b-0",
-							th: "py-0",
-							td: "py-0",
+							th: "py-0 first:w-8 first:text-center first:pe-0",
+							td: "py-0 first:w-8 first:text-center first:pe-0",
 							tbody: "[&>tr]:h-[55px]",
 							emptyWrapper: "h-[550px]",
 						}}

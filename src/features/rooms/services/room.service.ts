@@ -29,7 +29,12 @@ const transformStudent = (apiStudent: ApiStudent): Student => ({
 	checkedIn: apiStudent.checkedIn,
 	parents: (apiStudent.parents ?? []).map((p) => ({
 		id: p.id,
-		name: `${p.firstName} ${p.lastName}`,
+		firstName: p.firstName,
+		lastName: p.lastName,
+		avatar: p.avatar?.path,
+		email: p.email,
+		phone: p.phone,
+		pin: p.pin,
 	})),
 	tags: apiStudent.tags ?? [],
 })

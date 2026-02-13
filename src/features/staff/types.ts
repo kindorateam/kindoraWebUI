@@ -36,6 +36,7 @@ export interface Employee {
 	avatarId?: string | null
 	avatar?: EmployeeAvatar | null
 	hireDate?: string | null
+	enrollDate?: string | null
 	streetAddress?: string | null
 	city?: string | null
 	state?: string | null
@@ -157,6 +158,7 @@ export interface UpdateEmployeePayload {
 	role?: string
 	status?: string
 	hireDate?: string
+	enrollDate?: string
 	streetAddress?: string
 	city?: string
 	state?: string

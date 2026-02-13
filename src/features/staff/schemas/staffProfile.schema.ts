@@ -12,6 +12,7 @@ export const staffProfileSchema = z.object({
 	city: z.string().optional(),
 	state: z.string().optional(),
 	zipCode: z.string().optional(),
+	enrollDate: z.string().optional(),
 
 	// Certification
 	degree: z.string().optional(),
@@ -19,6 +20,8 @@ export const staffProfileSchema = z.object({
 
 	// Role & Status
 	role: z.string({ message: "Role is required" }).min(1, "Role is required"),
+	signUpStatus: z.string().optional(),
+	assignedRooms: z.array(z.string()).optional(),
 	hireDate: z.string().optional(),
 
 	// Schedule
