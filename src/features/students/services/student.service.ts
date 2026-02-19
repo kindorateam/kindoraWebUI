@@ -62,3 +62,17 @@ export async function getStudents(params: GetStudentsParams = {}): Promise<GetSt
 		offset,
 	}
 }
+
+export async function getStudentById(studentId: string): Promise<Student> {
+	// TODO: Replace with real API call
+	// return apiClient.get<Student>(`/students/${studentId}`)
+
+	await new Promise((resolve) => setTimeout(resolve, 300))
+
+	const student = MOCK_STUDENTS.find((item) => item.id === studentId)
+	if (!student) {
+		throw new Error(`Student with id ${studentId} not found`)
+	}
+
+	return student
+}

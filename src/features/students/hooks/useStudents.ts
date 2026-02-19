@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query"
 
-import { getStudents } from "../services/student.service"
+import { getStudentById, getStudents } from "../services/student.service"
 
 import type { GetStudentsResult } from "../types"
 
@@ -29,4 +29,13 @@ export const useStudents = (options: UseStudentsOptions = {}) => {
 		total: query.data?.total ?? 0,
 		totalPages: Math.ceil((query.data?.total ?? 0) / limit) || 1,
 	}
+}
+
+export function useStudent(studentId: string) {
+	return useQuery({
+		queryKey: ["students", studentId],
+		queryFn: () => getStudentById(studentId),
+		enabled: !!studentId,
+		staleTime: 5 * 60 * 1000,
+	})
 }

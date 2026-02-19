@@ -11,7 +11,8 @@ import {
 	TableHeader,
 	TableRow,
 } from "@heroui/react"
-import { useMemo, useState } from "react"
+import { useCallback, useMemo, useState } from "react"
+import { useNavigate } from "@tanstack/react-router"
 
 import TableError from "@/components/TableError"
 import TablerCirclePlusFilled from "~icons/tabler/circle-plus-filled"
@@ -23,8 +24,20 @@ import columns from "./columns"
 import StudentsTableCell from "./StudentsTableCell"
 
 const StudentsTable = () => {
+	const navigate = useNavigate()
 	const [page, setPage] = useState(1)
 	const { students, total, totalPages, isLoading, error, refetch } = useStudents({ page })
+
+	const handleStudentClick = useCallback(
+		(studentId: string) => {
+			void navigate({
+				to: "/students/$studentId",
+				params: { studentId },
+				search: { tab: "activity" },
+			})
+		},
+		[navigate],
+	)
 
 	const topContent = useMemo(
 		() => (
@@ -73,7 +86,7 @@ const StudentsTable = () => {
 								<TableRow key={student.id}>
 									{(columnKey) => (
 										<TableCell>
-											<StudentsTableCell columnKey={columnKey} student={student} />
+											<StudentsTableCell columnKey={columnKey} onStudentClick={handleStudentClick} student={student} />
 										</TableCell>
 									)}
 								</TableRow>

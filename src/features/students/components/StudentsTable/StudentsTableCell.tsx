@@ -15,12 +15,27 @@ const MAX_VISIBLE_TAGS = 3
 interface StudentsTableCellProps {
 	student: Student
 	columnKey: React.Key
+	onStudentClick?: (studentId: string) => void
 }
 
-const StudentsTableCell = ({ student, columnKey }: StudentsTableCellProps) => {
+const StudentsTableCell = ({ student, columnKey, onStudentClick }: StudentsTableCellProps) => {
+	const fullName = `${student.firstName} ${student.lastName}`
+
 	switch (columnKey) {
 		case "name":
-			return (
+			return onStudentClick ? (
+				<button className="flex cursor-pointer items-center gap-3 text-left" onClick={() => onStudentClick(student.id)} type="button">
+					<Avatar
+						className="shrink-0"
+						classNames={{ base: "bg-primary" }}
+						name={`${student.firstName[0]}${student.lastName[0]}`}
+						showFallback
+						size="sm"
+						src={student.avatar?.path}
+					/>
+					<span className="font-medium text-primary text-sm hover:underline">{fullName}</span>
+				</button>
+			) : (
 				<div className="flex items-center gap-2">
 					<Avatar
 						className="shrink-0"
@@ -30,9 +45,7 @@ const StudentsTableCell = ({ student, columnKey }: StudentsTableCellProps) => {
 						size="sm"
 						src={student.avatar?.path}
 					/>
-					<span className="text-sm">
-						{student.firstName} {student.lastName}
-					</span>
+					<span className="text-sm">{fullName}</span>
 				</div>
 			)
 
