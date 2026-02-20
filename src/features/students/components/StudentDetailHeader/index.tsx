@@ -1,4 +1,4 @@
-import { Avatar, Button, Chip, Divider } from "@heroui/react"
+import { Avatar, Badge, Button, Chip, Divider } from "@heroui/react"
 
 import IdentityChip from "@/components/IdentityChip"
 import MageExchangeA from "~icons/mage/exchange-a"
@@ -24,17 +24,20 @@ const StudentDetailHeader = ({ student, onMoveToRoom, onScheduleAbsence }: Stude
 		<div className="container mx-auto max-w-4xl">
 			<div className="mb-7 flex items-start justify-between gap-10">
 				<div className="flex items-start gap-10">
-					<div className="relative shrink-0">
+					<Badge
+						color="success"
+						shape="circle"
+						placement="bottom-right"
+						isInvisible={!student.checkedIn}
+						classNames={{ badge: "size-6 border-2 border-white" }}
+					>
 						<Avatar
-							className="size-25 border-4 border-white shadow-md"
+							className="size-25 border-4 border-white shadow-md shrink-0"
 							name={`${student.firstName[0]}${student.lastName[0]}`}
 							showFallback
 							src={student.avatar?.path}
 						/>
-						{student.checkedIn && (
-							<span className="absolute bottom-0 right-0 size-6 rounded-full border-2 border-white bg-success" />
-						)}
-					</div>
+					</Badge>
 
 					<div className="flex flex-col gap-5">
 						<div className="flex flex-col gap-1">
@@ -70,9 +73,7 @@ const StudentDetailHeader = ({ student, onMoveToRoom, onScheduleAbsence }: Stude
 							</Chip>
 						</div>
 
-						{student.absence && (
-							<div className="text-default-500 text-sm">Reason: {student.absence.reason}</div>
-						)}
+						{student.absence && <div className="text-default-500 text-sm">Reason: {student.absence.reason}</div>}
 					</div>
 				</div>
 			</div>

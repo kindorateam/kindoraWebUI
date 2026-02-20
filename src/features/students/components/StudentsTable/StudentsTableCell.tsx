@@ -1,9 +1,20 @@
-import { Avatar, Button, Chip, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Tooltip } from "@heroui/react"
+import {
+	Avatar,
+	Badge,
+	Button,
+	Chip,
+	Dropdown,
+	DropdownItem,
+	DropdownMenu,
+	DropdownTrigger,
+	Tooltip,
+} from "@heroui/react"
 
 import TablerCalendarX from "~icons/tabler/calendar-x"
 import TablerEdit from "~icons/tabler/edit"
 import TablerEye from "~icons/tabler/eye"
 import TablerLogin from "~icons/tabler/login"
+import TablerMedicalCrossFilled from "~icons/tabler/medical-cross-filled"
 import TablerTrash from "~icons/tabler/trash"
 
 import ParentsAvatarGroup from "./ParentsAvatarGroup"
@@ -22,39 +33,99 @@ const StudentsTableCell = ({ student, columnKey, onStudentClick }: StudentsTable
 	const fullName = `${student.firstName} ${student.lastName}`
 
 	switch (columnKey) {
-		case "name":
+		case "name": {
+			const hasMedicalIssue =
+				student.tags?.some((tag) => tag.toLowerCase().includes("allergy") || tag.toLowerCase().includes("medical")) ??
+				false
+
 			return onStudentClick ? (
-				<button className="flex cursor-pointer items-center gap-3 text-left" onClick={() => onStudentClick(student.id)} type="button">
-					<Avatar
-						className="shrink-0"
-						classNames={{ base: "bg-primary" }}
-						name={`${student.firstName[0]}${student.lastName[0]}`}
-						showFallback
-						size="sm"
-						src={student.avatar?.path}
-					/>
-					<span className="font-medium text-primary text-sm hover:underline">{fullName}</span>
+				<button
+					className="flex cursor-pointer items-center gap-3 text-left"
+					onClick={() => onStudentClick(student.id)}
+					type="button"
+				>
+					<div className="relative">
+						<Badge
+							isDot
+							color="success"
+							shape="circle"
+							placement="bottom-right"
+							isInvisible={!student.checkedIn}
+							classNames={{ badge: "size-2" }}
+						>
+							<Badge
+								isOneChar
+								content={<TablerMedicalCrossFilled className="size-[14px] text-danger fill-danger" />}
+								isInvisible={!hasMedicalIssue}
+								placement="top-left"
+								shape="circle"
+								classNames={{ badge: "bg-white border-white p-0 border" }}
+							>
+								<Avatar
+									className="shrink-0"
+									classNames={{ base: "bg-primary text-white" }}
+									name={`${student.firstName[0]}${student.lastName[0]}`}
+									showFallback
+									size="sm"
+									src={student.avatar?.path}
+								/>
+							</Badge>
+						</Badge>
+					</div>
+					<span className="text-default-foreground text-sm">{fullName}</span>
 				</button>
 			) : (
-				<div className="flex items-center gap-2">
-					<Avatar
-						className="shrink-0"
-						classNames={{ base: "bg-primary" }}
-						name={`${student.firstName[0]}${student.lastName[0]}`}
-						showFallback
-						size="sm"
-						src={student.avatar?.path}
-					/>
-					<span className="text-sm">{fullName}</span>
+				<div className="flex items-center gap-3">
+					<div className="relative">
+						<Badge
+							isDot
+							color="success"
+							shape="circle"
+							placement="bottom-right"
+							isInvisible={!student.checkedIn}
+							classNames={{ badge: "size-2" }}
+						>
+							<Badge
+								isOneChar
+								content={<TablerMedicalCrossFilled className="size-[14px] text-danger fill-danger" />}
+								isInvisible={!hasMedicalIssue}
+								placement="top-left"
+								shape="circle"
+								classNames={{ badge: "bg-white border-white p-0 border" }}
+							>
+								<Avatar
+									className="shrink-0"
+									classNames={{ base: "bg-primary text-white" }}
+									name={`${student.firstName[0]}${student.lastName[0]}`}
+									showFallback
+									size="sm"
+									src={student.avatar?.path}
+								/>
+							</Badge>
+						</Badge>
+					</div>
+					<span className="text-default-foreground text-sm">{fullName}</span>
 				</div>
 			)
+		}
 
 		case "parents":
 			return <ParentsAvatarGroup parents={student.parents ?? []} />
 
 		case "room":
 			return student.room ? (
-				<Chip classNames={{ base: "bg-primary-50", content: "text-sm" }} size="sm" variant="flat">
+				<Chip
+					classNames={{ base: "bg-primary-50 py-1 pl-1", content: "text-sm text-default-foreground pr-2 font-regular" }}
+					size="sm"
+					variant="flat"
+					startContent={
+						<Avatar
+							className="mr-1 shadow-sm"
+							classNames={{ base: "size-5 bg-default-300 text-[10px] text-default-700" }}
+							name={student.room.title[0]}
+						/>
+					}
+				>
 					{student.room.title}
 				</Chip>
 			) : (

@@ -11,13 +11,13 @@ export function renderCell(student: Student, columnKey: React.Key, roomId: strin
 			return (
 				<div className="flex items-center gap-3">
 					<Badge
+						isDot
 						color={student.checkedIn ? "success" : "danger"}
-						content=""
 						placement="bottom-right"
 						shape="circle"
-						size="sm"
+						classNames={{ badge: "size-2" }}
 					>
-						<Avatar alt={student.name} showFallback size="sm" src={student.avatar} />
+						<Avatar alt={student.name} classNames={{ base: "size-9 text-small" }} showFallback src={student.avatar} />
 					</Badge>
 					<span className="font-medium text-sm">{student.name}</span>
 				</div>

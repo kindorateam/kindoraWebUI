@@ -8,7 +8,9 @@ const ParentTooltipContent = ({ parents }: ParentTooltipContentProps) => {
 	return (
 		<div className="flex flex-col gap-1">
 			{parents.map((parent) => (
-				<p key={parent.id}>{parent.firstName} {parent.lastName}</p>
+				<p key={parent.id}>
+					{parent.firstName} {parent.lastName}
+				</p>
 			))}
 		</div>
 	)
