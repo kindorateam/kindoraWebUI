@@ -15,7 +15,7 @@ export function renderCell(student: Student, columnKey: React.Key, roomId: strin
 						color={student.checkedIn ? "success" : "danger"}
 						placement="bottom-right"
 						shape="circle"
-						classNames={{ badge: "size-2" }}
+						classNames={{ badge: "size-3 border-2 border-white" }}
 					>
 						<Avatar alt={student.name} classNames={{ base: "size-9 text-small" }} showFallback src={student.avatar} />
 					</Badge>

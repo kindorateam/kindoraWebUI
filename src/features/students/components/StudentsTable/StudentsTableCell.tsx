@@ -10,11 +10,11 @@ import {
 	Tooltip,
 } from "@heroui/react"
 
+import TablerAsterisk from "~icons/tabler/asterisk"
 import TablerCalendarX from "~icons/tabler/calendar-x"
 import TablerEdit from "~icons/tabler/edit"
 import TablerEye from "~icons/tabler/eye"
 import TablerLogin from "~icons/tabler/login"
-import TablerMedicalCrossFilled from "~icons/tabler/medical-cross-filled"
 import TablerTrash from "~icons/tabler/trash"
 
 import ParentsAvatarGroup from "./ParentsAvatarGroup"
@@ -51,15 +51,15 @@ const StudentsTableCell = ({ student, columnKey, onStudentClick }: StudentsTable
 							shape="circle"
 							placement="bottom-right"
 							isInvisible={!student.checkedIn}
-							classNames={{ badge: "size-2" }}
+							classNames={{ badge: "size-3 border-2 border-white" }}
 						>
 							<Badge
 								isOneChar
-								content={<TablerMedicalCrossFilled className="size-[14px] text-danger fill-danger" />}
+								content={<TablerAsterisk className="size-3.5 text-danger [&_path]:stroke-3" />}
 								isInvisible={!hasMedicalIssue}
 								placement="top-left"
 								shape="circle"
-								classNames={{ badge: "bg-white border-white p-0 border" }}
+								classNames={{ badge: "bg-transparent border-0 p-0" }}
 							>
 								<Avatar
 									className="shrink-0"
@@ -83,15 +83,15 @@ const StudentsTableCell = ({ student, columnKey, onStudentClick }: StudentsTable
 							shape="circle"
 							placement="bottom-right"
 							isInvisible={!student.checkedIn}
-							classNames={{ badge: "size-2" }}
+							classNames={{ badge: "size-3 border-2 border-white" }}
 						>
 							<Badge
 								isOneChar
-								content={<TablerMedicalCrossFilled className="size-[14px] text-danger fill-danger" />}
+								content={<TablerAsterisk className="size-3.5 text-danger [&_path]:stroke-3" />}
 								isInvisible={!hasMedicalIssue}
 								placement="top-left"
 								shape="circle"
-								classNames={{ badge: "bg-white border-white p-0 border" }}
+								classNames={{ badge: "bg-transparent border-0 p-0" }}
 							>
 								<Avatar
 									className="shrink-0"
@@ -115,12 +115,11 @@ const StudentsTableCell = ({ student, columnKey, onStudentClick }: StudentsTable
 		case "room":
 			return student.room ? (
 				<Chip
-					classNames={{ base: "bg-primary-50 py-1 pl-1", content: "text-sm text-default-foreground pr-2 font-regular" }}
+					classNames={{ base: "bg-primary-50 px-3", content: "text-sm text-default-foreground px-1 font-regular" }}
 					size="sm"
 					variant="flat"
 					startContent={
 						<Avatar
-							className="mr-1 shadow-sm"
 							classNames={{ base: "size-5 bg-default-300 text-[10px] text-default-700" }}
 							name={student.room.title[0]}
 						/>
