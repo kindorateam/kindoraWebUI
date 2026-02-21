@@ -32,7 +32,7 @@ const StudentDetailHeader = ({ student, onMoveToRoom, onScheduleAbsence }: Stude
 						classNames={{ badge: "size-6 border-2 border-white" }}
 					>
 						<Avatar
-							className="size-25 border-4 border-white shadow-md shrink-0"
+							className="size-25 shrink-0 border-4 border-white shadow-md"
 							name={`${student.firstName[0]}${student.lastName[0]}`}
 							showFallback
 							src={student.avatar?.path}
@@ -47,7 +47,7 @@ const StudentDetailHeader = ({ student, onMoveToRoom, onScheduleAbsence }: Stude
 
 						<div className="flex items-center justify-between gap-8">
 							<div className="flex items-center gap-7">
-								<span className="text-sm text-neutral-600">Rooms</span>
+								<span className="text-neutral-600 text-sm">Rooms</span>
 								<IdentityChip fullName={student.room?.title ?? "Unassigned"} />
 							</div>
 
@@ -57,14 +57,14 @@ const StudentDetailHeader = ({ student, onMoveToRoom, onScheduleAbsence }: Stude
 								onPress={onMoveToRoom}
 								radius="lg"
 								variant="flat"
-								className="bg-white shadow-md text-sm"
+								className="bg-white text-sm shadow-md"
 							>
 								Move to another room
 							</Button>
 						</div>
 
 						<div className="flex items-center gap-3">
-							<span className="text-sm text-neutral-600">Schedule absence</span>
+							<span className="text-neutral-600 text-sm">Schedule absence</span>
 							<Button isDisabled={!onScheduleAbsence} isIconOnly radius="full" onPress={onScheduleAbsence}>
 								<SolarCalendarBroken className="size-5" />
 							</Button>
