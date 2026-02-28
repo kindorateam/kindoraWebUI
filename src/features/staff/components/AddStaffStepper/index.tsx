@@ -28,6 +28,7 @@ const STEP7_FIELDS = ["emergencyContactName", "emergencyContactPhone", "emergenc
 interface AddStaffStepperProps {
 	onComplete?: (data: AddStaffFormData) => void
 	onCancel?: () => void
+	onStepChange?: (step: number, totalSteps: number) => void
 	isLoading?: boolean
 }
 
@@ -74,7 +75,7 @@ const steps = [
 	},
 ]
 
-const AddStaffStepper = ({ onComplete, onCancel, isLoading = false }: AddStaffStepperProps) => {
+const AddStaffStepper = ({ onComplete, onCancel, onStepChange, isLoading = false }: AddStaffStepperProps) => {
 	const [currentStep, setCurrentStep] = useState(0)
 
 	const form = useForm<AddStaffFormData>({
@@ -174,7 +175,9 @@ const AddStaffStepper = ({ onComplete, onCancel, isLoading = false }: AddStaffSt
 				// Last step - complete
 				handleSubmit((data) => onComplete?.(data))()
 			} else {
-				setCurrentStep((prev) => prev + 1)
+				const nextStep = currentStep + 1
+				setCurrentStep(nextStep)
+				onStepChange?.(nextStep, steps.length)
 			}
 		}
 	}
@@ -183,7 +186,9 @@ const AddStaffStepper = ({ onComplete, onCancel, isLoading = false }: AddStaffSt
 		if (currentStep === 0) {
 			onCancel?.()
 		} else {
-			setCurrentStep((prev) => prev - 1)
+			const prevStep = currentStep - 1
+			setCurrentStep(prevStep)
+			onStepChange?.(prevStep, steps.length)
 		}
 	}
 

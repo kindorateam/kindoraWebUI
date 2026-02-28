@@ -94,16 +94,21 @@ export interface EmployeeFull extends Employee {
 // API Response Types - Employee Document
 export type DocumentStatus = "active" | "expiring_soon" | "expired" | "uploaded"
 
-export interface EmployeeDocument {
+export interface DocumentMedia {
 	id: string
+	path: string
+}
+
+export interface EmployeeDocument {
+	id: number
 	employeeId: string
-	name: string
+	media: DocumentMedia
 	status: DocumentStatus
 	expiryDate: string | null
 	type: string
-	note: string | null
+	notes: string | null
 	uploadedAt: string
-	uploadedBy: string | null
+	uploadedBy: { id: string } | null
 }
 
 // API Response Types - Paginated List

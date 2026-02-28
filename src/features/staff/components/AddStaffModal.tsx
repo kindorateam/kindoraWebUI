@@ -1,5 +1,6 @@
 import { Modal, ModalBody, ModalContent, addToast } from "@heroui/react"
 import { useAtomValue } from "jotai"
+import { useState } from "react"
 
 import { closeAddStaffModal, isAddStaffModalOpenAtom } from "../stores/addStaffModal.store"
 
@@ -9,6 +10,7 @@ import type { AddStaffFormData } from "../schemas/addStaff.schema"
 
 const AddStaffModal = () => {
 	const isOpen = useAtomValue(isAddStaffModalOpenAtom)
+	const [isLastStep, setIsLastStep] = useState(false)
 
 	const handleComplete = (data: AddStaffFormData) => {
 		// TODO: Implement API call to create staff
@@ -25,17 +27,27 @@ const AddStaffModal = () => {
 		closeAddStaffModal()
 	}
 
+	const handleStepChange = (step: number, totalSteps: number) => {
+		setIsLastStep(step === totalSteps - 1)
+	}
+
 	return (
 		<Modal
 			classNames={{ closeButton: "cursor-pointer" }}
 			isOpen={isOpen}
 			onOpenChange={(open) => !open && closeAddStaffModal()}
 			placement="center"
-			size="xl"
+			scrollBehavior="outside"
+			size={isLastStep ? "4xl" : "xl"}
 		>
 			<ModalContent>
 				<ModalBody className="p-0">
-					<AddStaffStepper isLoading={false} onCancel={handleCancel} onComplete={handleComplete} />
+					<AddStaffStepper
+						isLoading={false}
+						onCancel={handleCancel}
+						onComplete={handleComplete}
+						onStepChange={handleStepChange}
+					/>
 				</ModalBody>
 			</ModalContent>
 		</Modal>

@@ -1,4 +1,4 @@
-import { Chip, Select, SelectItem } from "@heroui/react"
+import { Select, SelectItem } from "@heroui/react"
 import { Controller, useFormContext } from "react-hook-form"
 
 import SolarCalendarBroken from "~icons/solar/calendar-broken"
@@ -11,22 +11,7 @@ const ScheduleStep = () => {
 	const {
 		control,
 		formState: { errors },
-		watch,
-		setValue,
 	} = useFormContext<AddStaffFormData>()
-
-	const workingDays = watch("workingDays") || []
-
-	const handleToggleDay = (dayKey: string) => {
-		if (workingDays.includes(dayKey)) {
-			setValue(
-				"workingDays",
-				workingDays.filter((d) => d !== dayKey),
-			)
-		} else {
-			setValue("workingDays", [...workingDays, dayKey])
-		}
-	}
 
 	return (
 		<div className="flex flex-col gap-6">
@@ -38,49 +23,34 @@ const ScheduleStep = () => {
 				</div>
 			</div>
 
-			<div className="flex flex-col gap-2">
-				<Controller
-					control={control}
-					name="workingDays"
-					render={({ field }) => (
-						<Select
-							errorMessage={errors.workingDays?.message}
-							isInvalid={!!errors.workingDays}
-							label="Schedule working days"
-							labelPlacement="inside"
-							onSelectionChange={(keys) => {
-								field.onChange(Array.from(keys) as string[])
-							}}
-							radius="md"
-							selectedKeys={new Set(field.value || [])}
-							selectionMode="multiple"
-							size="sm"
-							variant="flat"
-						>
-							{WORKING_DAYS.map((day) => (
-								<SelectItem key={day.key}>{day.label}</SelectItem>
-							))}
-						</Select>
-					)}
-				/>
-				<div className="flex flex-wrap gap-1.5">
-					{WORKING_DAYS.map((day) => {
-						const isActive = workingDays.includes(day.key)
-						return (
-							<Chip
-								key={day.key}
-								as="button"
-								className={isActive ? "cursor-pointer" : "cursor-pointer opacity-30"}
-								color="primary"
-								onClick={() => handleToggleDay(day.key)}
-								variant="flat"
-							>
-								{day.label}
-							</Chip>
-						)
-					})}
-				</div>
-			</div>
+			<Controller
+				control={control}
+				name="workingDays"
+				render={({ field }) => (
+					<Select
+						errorMessage={errors.workingDays?.message}
+						isInvalid={!!errors.workingDays}
+						label="Schedule working days"
+						labelPlacement="inside"
+						onSelectionChange={(keys) => {
+							const selected = Array.from(keys) as string[]
+							selected.sort(
+								(a, b) => WORKING_DAYS.findIndex((d) => d.key === a) - WORKING_DAYS.findIndex((d) => d.key === b),
+							)
+							field.onChange(selected)
+						}}
+						radius="md"
+						selectedKeys={new Set(field.value || [])}
+						selectionMode="multiple"
+						size="sm"
+						variant="flat"
+					>
+						{WORKING_DAYS.map((day) => (
+							<SelectItem key={day.key}>{day.label}</SelectItem>
+						))}
+					</Select>
+				)}
+			/>
 		</div>
 	)
 }

@@ -1,4 +1,4 @@
-import { Chip, DateInput, Select, SelectItem } from "@heroui/react"
+import { DateInput, Select, SelectItem } from "@heroui/react"
 import { parseDate } from "@internationalized/date"
 import { Controller, useFormContext } from "react-hook-form"
 
@@ -13,12 +13,7 @@ const KindoraRoleStep = () => {
 	const {
 		control,
 		formState: { errors },
-		watch,
-		setValue,
 	} = useFormContext<AddStaffFormData>()
-
-	const assignedRooms = watch("assignedRooms") || []
-	const permissions = watch("permissions") || []
 
 	const handleDateChange = (value: DateValue | null, onChange: (value: string | undefined) => void) => {
 		if (value) {
@@ -35,28 +30,6 @@ const KindoraRoleStep = () => {
 		} catch {
 			return null
 		}
-	}
-
-	const handleRemoveRoom = (roomKey: string) => {
-		setValue(
-			"assignedRooms",
-			assignedRooms.filter((r) => r !== roomKey),
-		)
-	}
-
-	const handleRemovePermission = (permissionKey: string) => {
-		setValue(
-			"permissions",
-			permissions.filter((p) => p !== permissionKey),
-		)
-	}
-
-	const getRoomLabel = (key: string) => {
-		return MOCK_ROOMS.find((r) => r.key === key)?.label || key
-	}
-
-	const getPermissionLabel = (key: string) => {
-		return PERMISSION_OPTIONS.find((p) => p.key === key)?.label || key
 	}
 
 	return (
@@ -116,82 +89,55 @@ const KindoraRoleStep = () => {
 					)}
 				/>
 
-				<div className="flex flex-col gap-2">
-					<Controller
-						control={control}
-						name="assignedRooms"
-						render={({ field }) => (
-							<Select
-								errorMessage={errors.assignedRooms?.message}
-								isInvalid={!!errors.assignedRooms}
-								label="Assigned rooms"
-								labelPlacement="inside"
-								onSelectionChange={(keys) => {
-									field.onChange(Array.from(keys) as string[])
-								}}
-								radius="md"
-								selectedKeys={new Set(field.value || [])}
-								selectionMode="multiple"
-								size="sm"
-								variant="flat"
-							>
-								{MOCK_ROOMS.map((room) => (
-									<SelectItem key={room.key}>{room.label}</SelectItem>
-								))}
-							</Select>
-						)}
-					/>
-					{assignedRooms.length > 0 && (
-						<div className="flex flex-wrap gap-2">
-							{assignedRooms.map((roomKey) => (
-								<Chip key={roomKey} color="primary" onClose={() => handleRemoveRoom(roomKey)} variant="flat">
-									{getRoomLabel(roomKey)}
-								</Chip>
+				<Controller
+					control={control}
+					name="assignedRooms"
+					render={({ field }) => (
+						<Select
+							errorMessage={errors.assignedRooms?.message}
+							isInvalid={!!errors.assignedRooms}
+							label="Assigned rooms"
+							labelPlacement="inside"
+							onSelectionChange={(keys) => {
+								field.onChange(Array.from(keys) as string[])
+							}}
+							radius="md"
+							selectedKeys={new Set(field.value || [])}
+							selectionMode="multiple"
+							size="sm"
+							variant="flat"
+						>
+							{MOCK_ROOMS.map((room) => (
+								<SelectItem key={room.key}>{room.label}</SelectItem>
 							))}
-						</div>
+						</Select>
 					)}
-				</div>
+				/>
 
-				<div className="flex flex-col gap-2">
-					<Controller
-						control={control}
-						name="permissions"
-						render={({ field }) => (
-							<Select
-								errorMessage={errors.permissions?.message}
-								isInvalid={!!errors.permissions}
-								label="Permissions"
-								labelPlacement="inside"
-								onSelectionChange={(keys) => {
-									field.onChange(Array.from(keys) as string[])
-								}}
-								radius="md"
-								selectedKeys={new Set(field.value || [])}
-								selectionMode="multiple"
-								size="sm"
-								variant="flat"
-							>
-								{PERMISSION_OPTIONS.map((permission) => (
-									<SelectItem key={permission.key}>{permission.label}</SelectItem>
-								))}
-							</Select>
-						)}
-					/>
-					{permissions.length > 0 && (
-						<div className="flex flex-wrap gap-2">
-							{permissions.map((permissionKey) => (
-								<Chip
-									key={permissionKey}
-									color="primary"
-									onClose={() => handleRemovePermission(permissionKey)}
-									variant="flat"
-								>
-									{getPermissionLabel(permissionKey)}
-								</Chip>
+				<Controller
+					control={control}
+					name="permissions"
+					render={({ field }) => (
+						<Select
+							errorMessage={errors.permissions?.message}
+							isInvalid={!!errors.permissions}
+							label="Permissions"
+							labelPlacement="inside"
+							onSelectionChange={(keys) => {
+								field.onChange(Array.from(keys) as string[])
+							}}
+							radius="md"
+							selectedKeys={new Set(field.value || [])}
+							selectionMode="multiple"
+							size="sm"
+							variant="flat"
+						>
+							{PERMISSION_OPTIONS.map((permission) => (
+								<SelectItem key={permission.key}>{permission.label}</SelectItem>
 							))}
-						</div>
+						</Select>
 					)}
-				</div>
+				/>
 			</div>
 		</div>
 	)

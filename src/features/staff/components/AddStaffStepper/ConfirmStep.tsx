@@ -46,7 +46,12 @@ const ConfirmStep = () => {
 
 	const roomNames = data.assignedRooms?.map((r) => resolveLabel(r, MOCK_ROOMS)).join(", ") || "--"
 
-	const workingDayNames = data.workingDays?.map((d) => resolveLabel(d, WORKING_DAYS)).join(", ") || "--"
+	const workingDayNames =
+		data.workingDays
+			?.slice()
+			.sort((a, b) => WORKING_DAYS.findIndex((d) => d.key === a) - WORKING_DAYS.findIndex((d) => d.key === b))
+			.map((d) => resolveLabel(d, WORKING_DAYS))
+			.join(", ") || "--"
 
 	return (
 		<div className="flex flex-col gap-6">
@@ -55,18 +60,18 @@ const ConfirmStep = () => {
 			{/* Personal Info */}
 			<div className="flex flex-col gap-3">
 				<SectionHeader icon={<TablerUserCircle className="size-4 text-foreground" />} label="Personal info" />
-				<div className="grid grid-cols-2 gap-3">
+				<div className="grid grid-cols-3 gap-x-8 gap-y-3">
 					<DetailRow label="First Name" value={data.firstName} />
 					<DetailRow label="Last Name" value={data.lastName} />
+					<DetailRow label="Phone" value={data.phone} />
 					<DetailRow label="Email" value={data.email} />
 					<DetailRow label="Role" value={roleName} />
-					<DetailRow label="Phone" value={data.phone} />
 					<DetailRow label="Birthday" value={data.birthday} />
 					<DetailRow label="Inroll date" value={data.enrollDate} />
 					<DetailRow label="State" value={stateName} />
+					<DetailRow label="Zip code" value={data.zipCode} />
 					<DetailRow label="City" value={data.city} />
 					<DetailRow label="Street" value={data.streetAddress} />
-					<DetailRow label="Zip code" value={data.zipCode} />
 					<DetailRow label="Notes" value={data.notes} />
 				</div>
 			</div>
@@ -86,7 +91,7 @@ const ConfirmStep = () => {
 					icon={<EosIconsRoleBindingOutlined className="size-4 text-foreground" />}
 					label="Kindora role & status"
 				/>
-				<div className="grid grid-cols-2 gap-3">
+				<div className="grid grid-cols-3 gap-x-8 gap-y-3">
 					<DetailRow label="Role" value={roleName} />
 					<DetailRow label="Hire date" value={data.hireDate} />
 					<DetailRow label="Assigned rooms" value={roomNames} />
@@ -102,18 +107,20 @@ const ConfirmStep = () => {
 			{/* Medical info */}
 			<div className="flex flex-col gap-3">
 				<SectionHeader icon={<TablerStethoscope className="size-4 text-foreground" />} label="Medical info" />
-				<div className="grid grid-cols-2 gap-3">
+				<div className="grid grid-cols-3 gap-x-8 gap-y-3">
 					<DetailRow label="Allergies" value={data.allergies?.join(", ")} />
-					<DetailRow label="Doctor" value={data.doctorName} />
+					<div className="flex flex-col gap-3">
+						<DetailRow label="Doctor" value={data.doctorName} />
+						<DetailRow label="Doctor phone" value={data.doctorPhone} />
+					</div>
 					<DetailRow label="Medications" value={data.medications} />
-					<DetailRow label="Doctor phone" value={data.doctorPhone} />
 				</div>
 			</div>
 
 			{/* Emergency contact */}
 			<div className="flex flex-col gap-3">
 				<SectionHeader icon={<TablerEmergencyBed className="size-4 text-foreground" />} label="Emergency contact" />
-				<div className="grid grid-cols-2 gap-3">
+				<div className="grid grid-cols-3 gap-x-8 gap-y-3">
 					<DetailRow label="Name" value={data.emergencyContactName} />
 					<DetailRow label="Phone" value={data.emergencyContactPhone} />
 					<DetailRow label="Relationship to staff" value={relationshipName} />

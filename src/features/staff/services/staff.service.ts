@@ -23,64 +23,35 @@ export async function updateEmployeeAvatar(employeeId: string, avatarFile: File)
 	})
 }
 
-// TODO: Remove mock data and restore API call
-// return apiClient.get<EmployeeDocument[]>(`/employees/${employeeId}/documents`)
-export async function getEmployeeDocuments(_employeeId: string): Promise<EmployeeDocument[]> {
-	return [
-		{
-			id: "1",
-			employeeId: _employeeId,
-			name: "Teaching Certificate",
-			status: "active",
-			expiryDate: "2026-09-15",
-			type: "Certificate",
-			note: null,
-			uploadedAt: "2025-01-10",
-			uploadedBy: "Admin User",
-		},
-		{
-			id: "2",
-			employeeId: _employeeId,
-			name: "First Aid Training",
-			status: "expiring_soon",
-			expiryDate: "2026-03-01",
-			type: "Training",
-			note: "Renewal recommended",
-			uploadedAt: "2024-03-01",
-			uploadedBy: "HR Manager",
-		},
-		{
-			id: "3",
-			employeeId: _employeeId,
-			name: "Background Check",
-			status: "expired",
-			expiryDate: "2025-12-01",
-			type: "Compliance",
-			note: "Needs renewal",
-			uploadedAt: "2023-12-01",
-			uploadedBy: null,
-		},
-		{
-			id: "4",
-			employeeId: _employeeId,
-			name: "CPR Certification",
-			status: "active",
-			expiryDate: "2027-06-30",
-			type: "Certificate",
-			note: null,
-			uploadedAt: "2025-06-30",
-			uploadedBy: "Admin User",
-		},
-		{
-			id: "5",
-			employeeId: _employeeId,
-			name: "Resume",
-			status: "uploaded",
-			expiryDate: null,
-			type: "Personal",
-			note: "Latest version",
-			uploadedAt: "2025-01-05",
-			uploadedBy: "Jane Doe",
-		},
-	]
+export async function getEmployeeDocuments(employeeId: string): Promise<EmployeeDocument[]> {
+	return apiClient.get<EmployeeDocument[]>(`/employees/${employeeId}/documents`)
+}
+
+export async function getEmployeeDocument(employeeId: string, documentId: number): Promise<EmployeeDocument> {
+	return apiClient.get<EmployeeDocument>(`/employees/${employeeId}/documents/${documentId}`)
+}
+
+export async function uploadEmployeeDocument(
+	employeeId: string,
+	file: File,
+	data: { type: string; expiryDate?: string; notes?: string },
+): Promise<EmployeeDocument> {
+	const formData = new FormData()
+	formData.append("file", file)
+	formData.append("type", data.type)
+	if (data.expiryDate) formData.append("expiryDate", data.expiryDate)
+	if (data.notes) formData.append("notes", data.notes)
+
+	return apiClient.post<EmployeeDocument>(`/employees/${employeeId}/documents`, formData, {
+		headers: { "Content-Type": "multipart/form-data" },
+	})
+}
+
+export async function deleteEmployeeDocument(employeeId: string, documentId: number): Promise<void> {
+	await apiClient.delete(`/employees/${employeeId}/documents/${documentId}`)
+}
+
+export function getEmployeeDocumentDownloadUrl(employeeId: string, documentId: number): string {
+	const baseUrl = import.meta.env.VITE_API_BASE_URL ?? "/api/v1"
+	return `${baseUrl}/employees/${employeeId}/documents/${documentId}`
 }

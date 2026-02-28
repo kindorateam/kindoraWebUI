@@ -1,9 +1,21 @@
-import { Button, DatePicker, Input, Modal, ModalContent, Select, SelectItem } from "@heroui/react"
+import {
+	Button,
+	DatePicker,
+	type DateValue,
+	Input,
+	Modal,
+	ModalContent,
+	Select,
+	SelectItem,
+	addToast,
+} from "@heroui/react"
 import { useAtomValue } from "jotai"
 import { useCallback, useRef, useState } from "react"
 
+import { getErrorMessage } from "@/utils/error"
 import TablerFileText from "~icons/tabler/file-text"
 
+import { useUploadEmployeeDocument } from "../hooks/useStaff"
 import { closeAddDocumentModal, isAddDocumentModalOpenAtom } from "../stores/addDocumentModal.store"
 
 const documentTypes = [
@@ -14,12 +26,18 @@ const documentTypes = [
 	{ key: "tuberculosis_test", label: "Tuberculosis Test" },
 ]
 
-export default function AddDocumentModal() {
+interface Props {
+	employeeId: string
+}
+
+export default function AddDocumentModal({ employeeId }: Props) {
 	const isOpen = useAtomValue(isAddDocumentModalOpenAtom)
+	const uploadMutation = useUploadEmployeeDocument()
 	const [step, setStep] = useState<1 | 2>(1)
 	const [uploadedFile, setUploadedFile] = useState<File | null>(null)
 	const [isDragging, setIsDragging] = useState(false)
 	const [type, setType] = useState("")
+	const [expiryDate, setExpiryDate] = useState<DateValue | null>(null)
 	const [notes, setNotes] = useState("")
 	const fileInputRef = useRef<HTMLInputElement>(null)
 
@@ -62,8 +80,30 @@ export default function AddDocumentModal() {
 	}
 
 	const handleSave = () => {
-		// TODO: call upload mutation
-		handleClose()
+		if (!uploadedFile || !type) return
+
+		const data: { type: string; expiryDate?: string; notes?: string } = { type }
+		if (expiryDate) {
+			data.expiryDate = `${expiryDate.year}-${String(expiryDate.month).padStart(2, "0")}-${String(expiryDate.day).padStart(2, "0")}`
+		}
+		if (notes) data.notes = notes
+
+		uploadMutation.mutate(
+			{ employeeId, file: uploadedFile, data },
+			{
+				onSuccess: () => {
+					addToast({
+						title: "Document uploaded",
+						description: "Document has been uploaded successfully.",
+						color: "success",
+					})
+					handleClose()
+				},
+				onError: (error) => {
+					addToast({ title: "Failed to upload document", description: getErrorMessage(error), color: "danger" })
+				},
+			},
+		)
 	}
 
 	const handleClose = () => {
@@ -76,6 +116,7 @@ export default function AddDocumentModal() {
 		setUploadedFile(null)
 		setIsDragging(false)
 		setType("")
+		setExpiryDate(null)
 		setNotes("")
 		if (fileInputRef.current) {
 			fileInputRef.current.value = ""
@@ -92,7 +133,7 @@ export default function AddDocumentModal() {
 							<input className="hidden" onChange={handleFileInputChange} ref={fileInputRef} type="file" />
 							<div className="rounded-xl bg-default-100 p-2 shadow-sm">
 								<button
-									className={`flex w-full flex-col items-center gap-4 rounded-lg border border-dashed p-4 transition-colors ${
+									className={`flex w-full cursor-pointer flex-col items-center gap-4 rounded-lg border border-dashed p-4 transition-colors ${
 										isDragging ? "border-primary bg-primary/10" : "border-default-400"
 									}`}
 									onClick={() => fileInputRef.current?.click()}
@@ -142,11 +183,17 @@ export default function AddDocumentModal() {
 										<SelectItem key={dt.key}>{dt.label}</SelectItem>
 									))}
 								</Select>
-								<DatePicker label="Expiration date" />
+								<DatePicker label="Expiration date" value={expiryDate} onChange={setExpiryDate} />
 								<Input label="Notes" value={notes} onValueChange={setNotes} />
 							</div>
 							<div className="flex flex-col gap-3">
-								<Button color="primary" fullWidth onPress={handleSave}>
+								<Button
+									color="primary"
+									fullWidth
+									isDisabled={!type}
+									isLoading={uploadMutation.isPending}
+									onPress={handleSave}
+								>
 									Save
 								</Button>
 								<Button color="default" fullWidth variant="bordered" onPress={handleBack}>

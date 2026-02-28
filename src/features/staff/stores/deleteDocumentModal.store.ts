@@ -2,9 +2,9 @@ import { atom } from "jotai"
 
 import { appStore } from "@/stores/jotaiStore"
 
-export const deleteDocumentIdAtom = atom<string | null>(null)
+export const deleteDocumentIdAtom = atom<number | null>(null)
 
-export const openDeleteDocumentModal = (documentId: string) => {
+export const openDeleteDocumentModal = (documentId: number) => {
 	appStore.set(deleteDocumentIdAtom, documentId)
 }
 

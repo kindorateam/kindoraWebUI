@@ -113,8 +113,8 @@ const StaffDocumentsTab = ({ employeeId }: StaffDocumentsTabProps) => {
 					</div>
 				</CardBody>
 			</Card>
-			<AddDocumentModal />
-			<DeleteDocumentModal />
+			<AddDocumentModal employeeId={employeeId} />
+			<DeleteDocumentModal employeeId={employeeId} />
 		</>
 	)
 }

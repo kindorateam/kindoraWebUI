@@ -4,6 +4,7 @@ import TablerDownload from "~icons/tabler/download"
 import TablerEye from "~icons/tabler/eye"
 import TablerTrash from "~icons/tabler/trash"
 
+import { getEmployeeDocumentDownloadUrl } from "../../services/staff.service"
 import { openDeleteDocumentModal } from "../../stores/deleteDocumentModal.store"
 
 import type { DocumentStatus, EmployeeDocument } from "../../types"
@@ -38,10 +39,26 @@ function formatDate(date: string | null): string {
 	})
 }
 
+function getDocumentFileName(doc: EmployeeDocument): string {
+	if (!doc.media?.path) return "Document"
+	return doc.media.path.split("/").pop() ?? "Document"
+}
+
+function handleDownload(doc: EmployeeDocument) {
+	const url = getEmployeeDocumentDownloadUrl(doc.employeeId, doc.id)
+	window.open(url, "_blank")
+}
+
+function handleView(doc: EmployeeDocument) {
+	if (doc.media?.path) {
+		window.open(doc.media.path, "_blank")
+	}
+}
+
 export function renderCell(document: EmployeeDocument, columnKey: React.Key) {
 	switch (columnKey) {
 		case "name":
-			return <span className="text-sm">{document.name}</span>
+			return <span className="text-sm">{getDocumentFileName(document)}</span>
 
 		case "status":
 			return (
@@ -64,7 +81,7 @@ export function renderCell(document: EmployeeDocument, columnKey: React.Key) {
 			return (
 				<div className="flex flex-col">
 					<span className="text-sm">{document.type}</span>
-					{document.note && <span className="text-default-400 text-xs">{document.note}</span>}
+					{document.notes && <span className="text-default-400 text-xs">{document.notes}</span>}
 				</div>
 			)
 
@@ -72,7 +89,6 @@ export function renderCell(document: EmployeeDocument, columnKey: React.Key) {
 			return (
 				<div className="flex flex-col">
 					<span className="text-sm">{formatDate(document.uploadedAt)}</span>
-					{document.uploadedBy && <span className="text-default-400 text-xs">by {document.uploadedBy}</span>}
 				</div>
 			)
 
@@ -103,6 +119,7 @@ export function renderCell(document: EmployeeDocument, columnKey: React.Key) {
 								key="view"
 								className="text-success"
 								startContent={<TablerEye aria-hidden className="size-5" />}
+								onPress={() => handleView(document)}
 							>
 								View
 							</DropdownItem>
@@ -110,6 +127,7 @@ export function renderCell(document: EmployeeDocument, columnKey: React.Key) {
 								key="download"
 								className="text-warning"
 								startContent={<TablerDownload aria-hidden className="size-5" />}
+								onPress={() => handleDownload(document)}
 							>
 								Download
 							</DropdownItem>

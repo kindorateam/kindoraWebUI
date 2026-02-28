@@ -2,11 +2,14 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useCallback, useState } from "react"
 
 import {
+	deleteEmployeeDocument,
 	getEmployeeById,
+	getEmployeeDocument,
 	getEmployeeDocuments,
 	getEmployees,
 	updateEmployee,
 	updateEmployeeAvatar,
+	uploadEmployeeDocument,
 } from "../services/staff.service"
 
 import type { EmployeeDocument, EmployeeFull, GetEmployeesResult, PinVisibility, UpdateEmployeePayload } from "../types"
@@ -46,6 +49,16 @@ export function useEmployeeDocuments(employeeId: string) {
 	})
 }
 
+export function useEmployeeDocument(employeeId: string, documentId: number) {
+	return useQuery<EmployeeDocument, Error>({
+		queryKey: ["employees", employeeId, "documents", documentId],
+		queryFn: () => getEmployeeDocument(employeeId, documentId),
+		staleTime: 5 * 60 * 1000,
+		gcTime: 10 * 60 * 1000,
+		enabled: !!employeeId && !!documentId,
+	})
+}
+
 export function useUpdateEmployee() {
 	const queryClient = useQueryClient()
 
@@ -68,6 +81,37 @@ export function useUpdateEmployeeAvatar() {
 		onSuccess: (_data, { employeeId }) => {
 			void queryClient.invalidateQueries({ queryKey: ["employees", employeeId] })
 			void queryClient.invalidateQueries({ queryKey: ["employees"], exact: true })
+		},
+	})
+}
+
+export function useUploadEmployeeDocument() {
+	const queryClient = useQueryClient()
+
+	return useMutation({
+		mutationFn: ({
+			employeeId,
+			file,
+			data,
+		}: {
+			employeeId: string
+			file: File
+			data: { type: string; expiryDate?: string; notes?: string }
+		}) => uploadEmployeeDocument(employeeId, file, data),
+		onSuccess: (_data, { employeeId }) => {
+			void queryClient.invalidateQueries({ queryKey: ["employees", employeeId, "documents"] })
+		},
+	})
+}
+
+export function useDeleteEmployeeDocument() {
+	const queryClient = useQueryClient()
+
+	return useMutation({
+		mutationFn: ({ employeeId, documentId }: { employeeId: string; documentId: number }) =>
+			deleteEmployeeDocument(employeeId, documentId),
+		onSuccess: (_data, { employeeId }) => {
+			void queryClient.invalidateQueries({ queryKey: ["employees", employeeId, "documents"] })
 		},
 	})
 }

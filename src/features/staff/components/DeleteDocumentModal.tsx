@@ -1,15 +1,38 @@
-import { Button, Modal, ModalContent } from "@heroui/react"
+import { Button, Modal, ModalContent, addToast } from "@heroui/react"
 import { useAtomValue } from "jotai"
 
+import { getErrorMessage } from "@/utils/error"
+
+import { useDeleteEmployeeDocument } from "../hooks/useStaff"
 import { closeDeleteDocumentModal, deleteDocumentIdAtom } from "../stores/deleteDocumentModal.store"
 
-export default function DeleteDocumentModal() {
+interface Props {
+	employeeId: string
+}
+
+export default function DeleteDocumentModal({ employeeId }: Props) {
 	const documentId = useAtomValue(deleteDocumentIdAtom)
 	const isOpen = documentId !== null
+	const deleteMutation = useDeleteEmployeeDocument()
 
 	const handleDelete = () => {
-		// TODO: call delete mutation
-		closeDeleteDocumentModal()
+		if (documentId === null) return
+		deleteMutation.mutate(
+			{ employeeId, documentId },
+			{
+				onSuccess: () => {
+					addToast({
+						title: "Document deleted",
+						description: "Document has been deleted successfully.",
+						color: "success",
+					})
+					closeDeleteDocumentModal()
+				},
+				onError: (error) => {
+					addToast({ title: "Failed to delete document", description: getErrorMessage(error), color: "danger" })
+				},
+			},
+		)
 	}
 
 	return (
@@ -23,10 +46,16 @@ export default function DeleteDocumentModal() {
 						</p>
 					</div>
 					<div className="flex w-full flex-col gap-3">
-						<Button className="w-full" color="danger" onPress={handleDelete}>
+						<Button className="w-full" color="danger" isLoading={deleteMutation.isPending} onPress={handleDelete}>
 							Yes, delete
 						</Button>
-						<Button color="default" fullWidth onPress={closeDeleteDocumentModal} size="md">
+						<Button
+							color="default"
+							fullWidth
+							isDisabled={deleteMutation.isPending}
+							onPress={closeDeleteDocumentModal}
+							size="md"
+						>
 							Cancel
 						</Button>
 					</div>
