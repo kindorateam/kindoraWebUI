@@ -7,6 +7,7 @@ import {
 	getEmployeeDocument,
 	getEmployeeDocuments,
 	getEmployees,
+	regenerateEmployeePin,
 	updateEmployee,
 	updateEmployeeAvatar,
 	uploadEmployeeDocument,
@@ -100,6 +101,18 @@ export function useUploadEmployeeDocument() {
 		}) => uploadEmployeeDocument(employeeId, file, data),
 		onSuccess: (_data, { employeeId }) => {
 			void queryClient.invalidateQueries({ queryKey: ["employees", employeeId, "documents"] })
+		},
+	})
+}
+
+export function useRegenerateEmployeePin() {
+	const queryClient = useQueryClient()
+
+	return useMutation({
+		mutationFn: ({ employeeId }: { employeeId: string }) => regenerateEmployeePin(employeeId),
+		onSuccess: (_data, { employeeId }) => {
+			void queryClient.invalidateQueries({ queryKey: ["employees", employeeId] })
+			void queryClient.invalidateQueries({ queryKey: ["employees"], exact: true })
 		},
 	})
 }

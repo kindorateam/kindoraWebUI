@@ -9,6 +9,7 @@ import {
 	PopoverTrigger,
 	Select,
 	SelectItem,
+	Tooltip,
 } from "@heroui/react"
 
 import IdentityChip from "@/components/IdentityChip"
@@ -81,16 +82,18 @@ const StaffDetailHeader = ({ employeeData, tabs, onSignOut, onGeneratePin, onSen
 												{employeeData.pinCode}
 											</Chip>
 											{/* TODO: Wire to generate pin API when available */}
-											<Button
-												aria-label="Generate new pin"
-												color="primary"
-												isIconOnly
-												onPress={onGeneratePin}
-												radius="full"
-												size="sm"
-											>
-												<TablerRefresh className="size-4" />
-											</Button>
+											<Tooltip content="Generate new pin" delay={500}>
+												<Button
+													aria-label="Generate new pin"
+													color="primary"
+													isIconOnly
+													onPress={onGeneratePin}
+													radius="full"
+													size="sm"
+												>
+													<TablerRefresh className="size-4" />
+												</Button>
+											</Tooltip>
 										</div>
 									)}
 

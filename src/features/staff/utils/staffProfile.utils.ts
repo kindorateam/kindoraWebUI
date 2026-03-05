@@ -28,7 +28,7 @@ export function buildDefaultValues(): StaffProfileFormData {
 		medications: "",
 		doctorName: "",
 		doctorPhone: "",
-		emergencyContacts: [],
+		emergencyContacts: [{ name: "", phone: "", relationshipTo: "" }],
 		avatarFile: null,
 		avatarPreview: null,
 	}
@@ -60,13 +60,14 @@ export function buildFormValuesFromEmployee(employee: EmployeeFull): StaffProfil
 		medications: employee.medicalInfo?.medications ?? "",
 		doctorName: employee.medicalInfo?.doctorName ?? "",
 		doctorPhone: employee.medicalInfo?.doctorPhone ?? "",
-		emergencyContacts:
-			employee.emergencyContacts?.map((c) => ({
-				id: c.id,
-				name: c.name,
-				phone: c.phone,
-				relationshipTo: c.relationshipTo ?? "",
-			})) ?? [],
+		emergencyContacts: employee.emergencyContacts?.length
+			? employee.emergencyContacts.map((c) => ({
+					id: c.id,
+					name: c.name,
+					phone: c.phone,
+					relationshipTo: c.relationshipTo ?? "",
+				}))
+			: [{ name: "", phone: "", relationshipTo: "" }],
 		avatarFile: null,
 		avatarPreview: preview,
 	}

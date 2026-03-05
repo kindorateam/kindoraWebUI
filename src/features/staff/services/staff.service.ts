@@ -47,6 +47,10 @@ export async function uploadEmployeeDocument(
 	})
 }
 
+export async function regenerateEmployeePin(employeeId: string): Promise<EmployeeFull> {
+	return apiClient.post<EmployeeFull>(`/employees/${employeeId}/pin`)
+}
+
 export async function deleteEmployeeDocument(employeeId: string, documentId: number): Promise<void> {
 	await apiClient.delete(`/employees/${employeeId}/documents/${documentId}`)
 }

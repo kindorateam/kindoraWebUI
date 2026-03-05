@@ -2,11 +2,13 @@ import { Spinner, Tab, Tabs } from "@heroui/react"
 import { createFileRoute, useNavigate } from "@tanstack/react-router"
 
 import { RouteErrorBoundary } from "@/components/error"
+import RegeneratePinModal from "@/features/staff/components/RegeneratePinModal"
 import StaffDetailHeader from "@/features/staff/components/StaffDetailHeader"
 import StaffDocumentsTab from "@/features/staff/components/StaffDocumentsTab"
 import StaffProfileTab from "@/features/staff/components/StaffProfileTab"
 import { useEmployee } from "@/features/staff/hooks/useStaff"
 import { getEmployeeById } from "@/features/staff/services/staff.service"
+import { openRegeneratePinModal } from "@/features/staff/stores/regeneratePinModal.store"
 import { getEmployeeFullName } from "@/features/staff/types"
 import { useTabNavigation } from "@/hooks/useTabNavigation"
 import { queryClient } from "@/services/queryClient"
@@ -91,12 +93,12 @@ function StaffDetailLayout() {
 			<div className="flex min-h-screen flex-col">
 				<StaffDetailHeader
 					employeeData={employeeData}
-					// TODO: Wire to generate pin API when available
-					onGeneratePin={() => {}}
+					onGeneratePin={openRegeneratePinModal}
 					// TODO: Wire to send invite API when available
 					onSendInvite={() => {}}
 					tabs={tabsContent}
 				/>
+				<RegeneratePinModal employeeId={employeeId} />
 				<main className="container mx-auto max-w-4xl flex-1 py-10">
 					{tab === "profile" ? (
 						<StaffProfileTab employeeId={employeeId} />

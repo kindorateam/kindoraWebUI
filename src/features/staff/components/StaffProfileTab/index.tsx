@@ -17,10 +17,10 @@ import { useEffect, useState } from "react"
 import { Controller, useForm } from "react-hook-form"
 
 import { getErrorMessage } from "@/utils/error"
+import { formatUSPhone } from "@/utils/format"
 import TablerCertificate from "~icons/tabler/certificate"
 import TablerCheck from "~icons/tabler/check"
 import TablerCloudUpload from "~icons/tabler/cloud-upload"
-import TablerEdit from "~icons/tabler/edit"
 import TablerPhone from "~icons/tabler/phone"
 import TablerStethoscope from "~icons/tabler/stethoscope"
 import TablerTrash from "~icons/tabler/trash"
@@ -155,20 +155,6 @@ const StaffProfileTab = ({ employeeId }: StaffProfileTabProps) => {
 		}
 	}
 
-	const addEmergencyContact = () => {
-		setValue("emergencyContacts", [...emergencyContacts, { name: "", phone: "", relationshipTo: "" }], {
-			shouldDirty: true,
-		})
-	}
-
-	const removeEmergencyContact = (index: number) => {
-		setValue(
-			"emergencyContacts",
-			emergencyContacts.filter((_, i) => i !== index),
-			{ shouldDirty: true },
-		)
-	}
-
 	const onSubmit = (data: StaffProfileFormData) => {
 		const payload = buildPayloadFromFormData(data)
 
@@ -247,15 +233,7 @@ const StaffProfileTab = ({ employeeId }: StaffProfileTabProps) => {
 				<form className="flex flex-col gap-6" onSubmit={handleSubmit(onSubmit)}>
 					{/* Personal Info */}
 					<section className="flex flex-col gap-6">
-						<SectionHeader
-							action={
-								<Button color="primary" size="sm" variant="flat">
-									<TablerEdit className="size-4" /> Edit
-								</Button>
-							}
-							icon={<TablerUser className="size-4" />}
-							title="Personal info"
-						/>
+						<SectionHeader icon={<TablerUser className="size-4" />} title="Personal info" />
 						<div className="flex flex-col gap-2">
 							<div className="flex gap-2">
 								<Controller
@@ -318,9 +296,14 @@ const StaffProfileTab = ({ employeeId }: StaffProfileTabProps) => {
 										<Input
 											{...field}
 											className="flex-1"
+											errorMessage={errors.phone?.message}
+											isInvalid={!!errors.phone}
 											label="Phone"
 											labelPlacement="inside"
+											onChange={(e) => field.onChange(formatUSPhone(e.target.value))}
+											placeholder="(555) 123-4567"
 											radius="md"
+											type="tel"
 											variant="flat"
 										/>
 									)}
@@ -680,9 +663,14 @@ const StaffProfileTab = ({ employeeId }: StaffProfileTabProps) => {
 										<Input
 											{...field}
 											className="flex-1"
+											errorMessage={errors.doctorPhone?.message}
+											isInvalid={!!errors.doctorPhone}
 											label="Doctor phone"
 											labelPlacement="inside"
+											onChange={(e) => field.onChange(formatUSPhone(e.target.value))}
+											placeholder="(555) 123-4567"
 											radius="md"
+											type="tel"
 											variant="flat"
 										/>
 									)}
@@ -695,74 +683,60 @@ const StaffProfileTab = ({ employeeId }: StaffProfileTabProps) => {
 					<section className="flex flex-col gap-6">
 						<SectionHeader icon={<TablerPhone className="size-4" />} title="Emergency contact" />
 						<div className="flex flex-col gap-2">
-							{emergencyContacts.length > 0 ? (
-								emergencyContacts.map((_, index) => (
-									// biome-ignore lint/suspicious/noArrayIndexKey: emergency contacts may not have stable ids
-									<div key={index} className="flex items-start gap-2">
-										<Controller
-											control={control}
-											name={`emergencyContacts.${index}.name`}
-											render={({ field }) => (
-												<Input
-													{...field}
-													className="flex-1"
-													errorMessage={errors.emergencyContacts?.[index]?.name?.message}
-													isInvalid={!!errors.emergencyContacts?.[index]?.name}
-													label="Name"
-													labelPlacement="inside"
-													radius="md"
-													variant="flat"
-												/>
-											)}
-										/>
-										<Controller
-											control={control}
-											name={`emergencyContacts.${index}.phone`}
-											render={({ field }) => (
-												<Input
-													{...field}
-													className="flex-1"
-													errorMessage={errors.emergencyContacts?.[index]?.phone?.message}
-													isInvalid={!!errors.emergencyContacts?.[index]?.phone}
-													label="Phone"
-													labelPlacement="inside"
-													radius="md"
-													variant="flat"
-												/>
-											)}
-										/>
-										<Controller
-											control={control}
-											name={`emergencyContacts.${index}.relationshipTo`}
-											render={({ field }) => (
-												<Input
-													{...field}
-													className="flex-1"
-													label="Relationship to staff"
-													labelPlacement="inside"
-													radius="md"
-													variant="flat"
-												/>
-											)}
-										/>
-										<Button
-											color="danger"
-											isIconOnly
-											onPress={() => removeEmergencyContact(index)}
-											radius="md"
-											size="sm"
-											variant="light"
-										>
-											<TablerTrash className="size-4" />
-										</Button>
-									</div>
-								))
-							) : (
-								<span className="text-default-500 text-sm">No emergency contacts</span>
-							)}
-							<Button className="w-fit" onPress={addEmergencyContact} radius="md" size="sm" variant="flat">
-								Add contact
-							</Button>
+							{emergencyContacts.map((_, index) => (
+								// biome-ignore lint/suspicious/noArrayIndexKey: emergency contacts may not have stable ids
+								<div key={index} className="flex items-start gap-2">
+									<Controller
+										control={control}
+										name={`emergencyContacts.${index}.name`}
+										render={({ field }) => (
+											<Input
+												{...field}
+												className="flex-1"
+												errorMessage={errors.emergencyContacts?.[index]?.name?.message}
+												isInvalid={!!errors.emergencyContacts?.[index]?.name}
+												label="Name"
+												labelPlacement="inside"
+												radius="md"
+												variant="flat"
+											/>
+										)}
+									/>
+									<Controller
+										control={control}
+										name={`emergencyContacts.${index}.phone`}
+										render={({ field }) => (
+											<Input
+												{...field}
+												className="flex-1"
+												errorMessage={errors.emergencyContacts?.[index]?.phone?.message}
+												isInvalid={!!errors.emergencyContacts?.[index]?.phone}
+												label="Phone"
+												labelPlacement="inside"
+												onChange={(e) => field.onChange(formatUSPhone(e.target.value))}
+												placeholder="(555) 123-4567"
+												radius="md"
+												type="tel"
+												variant="flat"
+											/>
+										)}
+									/>
+									<Controller
+										control={control}
+										name={`emergencyContacts.${index}.relationshipTo`}
+										render={({ field }) => (
+											<Input
+												{...field}
+												className="flex-1"
+												label="Relationship to staff"
+												labelPlacement="inside"
+												radius="md"
+												variant="flat"
+											/>
+										)}
+									/>
+								</div>
+							))}
 						</div>
 					</section>
 
