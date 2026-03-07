@@ -1,7 +1,8 @@
-import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Tooltip } from "@heroui/react"
+import { Avatar, Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Tooltip } from "@heroui/react"
 import { Link, useRouter } from "@tanstack/react-router"
 
 import { getMediaUrl } from "@/utils/media"
+import ClarityAvatarSolid from "~icons/clarity/avatar-solid"
 import PhSmileyDuotone from "~icons/ph/smiley-duotone"
 import PhSmileySadDuotone from "~icons/ph/smiley-sad-duotone"
 import TablerEdit from "~icons/tabler/edit"
@@ -11,7 +12,6 @@ import TablerTrash from "~icons/tabler/trash"
 
 import { useActivateRoom } from "../../hooks/useRooms"
 import { openDeactivateRoomModal } from "../../stores/deactivateRoomModal.store"
-import RoomIcon from "../RoomIcon"
 
 import SignedInAvatarGroup from "./SignedInAvatarGroup"
 
@@ -29,16 +29,6 @@ const RoomsTableCell = ({ room, columnKey }: RoomsTableCellProps) => {
 
 	switch (columnKey) {
 		case "room": {
-			const renderRoomAvatar = () => {
-				if (room.logo) {
-					return <img alt={room.name} className="size-8 rounded-full object-cover" src={getMediaUrl(room.logo)} />
-				}
-				if (room.color) {
-					return <div className="size-8 rounded-full" style={{ background: room.color }} />
-				}
-				return <RoomIcon roomType={room.icon} />
-			}
-
 			return (
 				<Link
 					className="flex items-center gap-2 hover:text-primary"
@@ -46,7 +36,19 @@ const RoomsTableCell = ({ room, columnKey }: RoomsTableCellProps) => {
 					search={{ tab: "students" }}
 					to="/rooms/$roomId"
 				>
-					{renderRoomAvatar()}
+					<Avatar
+						classNames={{
+							base: "h-8 w-8 bg-[#1D6FE8] text-white",
+							fallback: "text-white",
+							icon: "h-full w-full",
+							img: "object-cover",
+						}}
+						fallback={<ClarityAvatarSolid className="size-[18px]" />}
+						name={room.name}
+						showFallback
+						size="sm"
+						src={room.logo ? getMediaUrl(room.logo) : undefined}
+					/>
 					<span className="font-medium text-sm">{room.name}</span>
 				</Link>
 			)
