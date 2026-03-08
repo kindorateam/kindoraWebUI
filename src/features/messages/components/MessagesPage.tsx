@@ -1,11 +1,8 @@
 import {
 	Avatar,
-	AvatarGroup,
 	Card,
 	CardBody,
 	Pagination,
-	Select,
-	SelectItem,
 	Table,
 	TableBody,
 	TableCell,
@@ -20,65 +17,8 @@ import TablerChevronDown from "~icons/tabler/chevron-down"
 
 import { MESSAGES, MESSAGE_PAGE_SIZE, ROOM_OPTIONS, STUDENT_OPTIONS } from "../constants"
 
-import type { MessageParticipant, MessagesSelectOption } from "../types"
-
-interface FilterSelectProps {
-	label: string
-	options: MessagesSelectOption[]
-	selectedKey: string
-	onChange: (value: string) => void
-}
-
-const avatarGroupClassName =
-	"data-[hover=true]:!translate-x-0 data-[focus-visible=true]:!translate-x-0 rtl:data-[hover=true]:!translate-x-0 rtl:data-[focus-visible=true]:!translate-x-0"
-
-function FilterSelect({ label, onChange, options, selectedKey }: FilterSelectProps) {
-	return (
-		<Select
-			aria-label={label}
-			className="w-full"
-			classNames={{
-				base: "w-full",
-				label: "pb-1 text-xs font-medium text-default-500",
-				trigger: "h-11 rounded-xl bg-default-100 px-3 shadow-none",
-				value: "text-sm font-medium text-foreground",
-			}}
-			disallowEmptySelection
-			label={label}
-			labelPlacement="outside"
-			onSelectionChange={(keys) => {
-				const selected = Array.from(keys)[0]
-				if (selected !== undefined) {
-					onChange(String(selected))
-				}
-			}}
-			radius="lg"
-			selectedKeys={[selectedKey]}
-			variant="flat"
-		>
-			{options.map((option) => (
-				<SelectItem key={option.key}>{option.label}</SelectItem>
-			))}
-		</Select>
-	)
-}
-
-function ParentsAvatarGroup({ parents }: { parents: MessageParticipant[] }) {
-	return (
-		<AvatarGroup className="justify-start" max={2} size="sm">
-			{parents.map((parent) => (
-				<Avatar
-					classNames={{ base: avatarGroupClassName }}
-					key={parent.id}
-					name={parent.name}
-					showFallback
-					size="sm"
-					src={parent.avatar}
-				/>
-			))}
-		</AvatarGroup>
-	)
-}
+import FilterSelect from "./FilterSelect"
+import ParentsAvatarGroup from "./ParentsAvatarGroup"
 
 export default function MessagesPage() {
 	const [selectedRoomId, setSelectedRoomId] = useState("all")

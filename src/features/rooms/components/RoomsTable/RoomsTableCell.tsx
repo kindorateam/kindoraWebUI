@@ -2,7 +2,7 @@ import { Avatar, Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, 
 import { Link, useRouter } from "@tanstack/react-router"
 
 import { getMediaUrl } from "@/utils/media"
-import ClarityAvatarSolid from "~icons/clarity/avatar-solid"
+import MaterialSymbolsAddAPhotoRounded from "~icons/material-symbols/add-a-photo-rounded"
 import PhSmileyDuotone from "~icons/ph/smiley-duotone"
 import PhSmileySadDuotone from "~icons/ph/smiley-sad-duotone"
 import TablerEdit from "~icons/tabler/edit"
@@ -43,7 +43,7 @@ const RoomsTableCell = ({ room, columnKey }: RoomsTableCellProps) => {
 							icon: "h-full w-full",
 							img: "object-cover",
 						}}
-						fallback={<ClarityAvatarSolid className="size-[18px]" />}
+						fallback={<MaterialSymbolsAddAPhotoRounded className="size-4.5" />}
 						name={room.name}
 						showFallback
 						size="sm"

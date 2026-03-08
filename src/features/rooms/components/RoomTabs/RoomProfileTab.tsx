@@ -18,6 +18,8 @@ import { Controller, useForm } from "react-hook-form"
 
 import { getErrorMessage } from "@/utils/error"
 import { getMediaUrl } from "@/utils/media"
+import MaterialSymbolsAddAPhotoRounded from "~icons/material-symbols/add-a-photo-rounded"
+import OouiUserAvatar from "~icons/ooui/user-avatar"
 import TablerCheck from "~icons/tabler/check"
 import TablerCloudUpload from "~icons/tabler/cloud-upload"
 import TablerTrash from "~icons/tabler/trash"
@@ -272,6 +274,7 @@ const RoomProfileTab = ({ roomId }: RoomProfileTabProps) => {
 											label="Room Name"
 											labelPlacement="inside"
 											radius="md"
+											size="sm"
 											variant="flat"
 										/>
 									)}
@@ -295,6 +298,7 @@ const RoomProfileTab = ({ roomId }: RoomProfileTabProps) => {
 												}
 											}}
 											radius="md"
+											size="sm"
 											selectedKeys={field.value !== undefined ? [String(field.value)] : []}
 											variant="flat"
 										>
@@ -323,6 +327,7 @@ const RoomProfileTab = ({ roomId }: RoomProfileTabProps) => {
 												}
 											}}
 											radius="md"
+											size="sm"
 											selectedKeys={field.value !== undefined ? [String(field.value)] : []}
 											variant="flat"
 										>
@@ -346,6 +351,7 @@ const RoomProfileTab = ({ roomId }: RoomProfileTabProps) => {
 											minValue={1}
 											onValueChange={(value) => field.onChange(value ?? 1)}
 											radius="md"
+											size="sm"
 											value={field.value}
 											variant="flat"
 										/>
@@ -365,6 +371,7 @@ const RoomProfileTab = ({ roomId }: RoomProfileTabProps) => {
 											minValue={1}
 											onValueChange={(value) => field.onChange(value ?? 1)}
 											radius="md"
+											size="sm"
 											value={field.value}
 											variant="flat"
 										/>
@@ -377,16 +384,18 @@ const RoomProfileTab = ({ roomId }: RoomProfileTabProps) => {
 							<h3 className="font-medium text-xl">Profile Picture</h3>
 							<div className="flex items-center gap-5">
 								<div>
-									{avatarPreview?.startsWith("linear-gradient") ? (
-										<div className="size-25 rounded-full shadow-md" style={{ background: avatarPreview }} />
-									) : (
-										<Avatar
-											className="size-25 shadow-md"
-											name={room.name}
-											showFallback
-											src={avatarPreview ?? undefined}
-										/>
-									)}
+									<Avatar
+										classNames={{
+											base: "size-25 bg-[#1D6FE8] text-white shadow-md",
+											fallback: "text-white",
+											img: "object-cover",
+										}}
+										fallback={<MaterialSymbolsAddAPhotoRounded className="size-12.5" />}
+										name={room.name}
+										showFallback
+										src={avatarPreview?.startsWith("linear-gradient") ? undefined : (avatarPreview ?? undefined)}
+										style={avatarPreview?.startsWith("linear-gradient") ? { background: avatarPreview } : undefined}
+									/>
 								</div>
 								<div className="flex gap-5">
 									<Button
@@ -430,16 +439,30 @@ const RoomProfileTab = ({ roomId }: RoomProfileTabProps) => {
 								placeholder="Select staff to add"
 								radius="md"
 								scrollRef={staffScrollerRef}
+								size="sm"
 								renderValue={(items) => (
 									<div className="flex flex-wrap gap-2">
 										{items.map((item) => (
 											<Chip
 												avatar={
 													<Avatar
+														classNames={{
+															base: "h-8 w-8 bg-[#1D6FE8] text-white",
+															fallback: "text-white",
+															icon: "h-full w-full",
+															img: "object-cover",
+														}}
+														fallback={<OouiUserAvatar className="size-4" />}
 														name={item.data?.name}
 														showFallback
 														size="sm"
-														src={"avatar" in (item.data ?? {}) ? (item.data as StaffMember).avatar : undefined}
+														src={
+															"avatar" in (item.data ?? {}) &&
+															(item.data as StaffMember).avatar &&
+															(item.data as StaffMember).avatar !== "/assets/avatars/default.jpg"
+																? getMediaUrl((item.data as StaffMember).avatar)
+																: undefined
+														}
 													/>
 												}
 												classNames={{
@@ -471,10 +494,21 @@ const RoomProfileTab = ({ roomId }: RoomProfileTabProps) => {
 									<SelectItem key={staff.id} textValue={staff.name}>
 										<div className="flex items-center gap-2">
 											<Avatar
+												classNames={{
+													base: "h-8 w-8 bg-[#1D6FE8] text-white",
+													fallback: "text-white",
+													icon: "h-full w-full",
+													img: "object-cover",
+												}}
+												fallback={<OouiUserAvatar className="size-4" />}
 												name={staff.name}
 												showFallback
 												size="sm"
-												src={"avatar" in staff ? staff.avatar : undefined}
+												src={
+													"avatar" in staff && staff.avatar && staff.avatar !== "/assets/avatars/default.jpg"
+														? getMediaUrl(staff.avatar)
+														: undefined
+												}
 											/>
 											<span>{staff.name}</span>
 										</div>

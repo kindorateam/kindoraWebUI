@@ -1,5 +1,8 @@
 import { Avatar, Badge, Chip } from "@heroui/react"
 
+import { getMediaUrl } from "@/utils/media"
+import OouiUserAvatar from "~icons/ooui/user-avatar"
+
 import ParentsAvatarGroup from "./ParentsAvatarGroup"
 import StudentActionsDropdown from "./StudentActionsDropdown"
 
@@ -17,7 +20,23 @@ export function renderCell(student: Student, columnKey: React.Key, roomId: strin
 						shape="circle"
 						classNames={{ badge: "size-3 border-2 border-white" }}
 					>
-						<Avatar alt={student.name} classNames={{ base: "size-9 text-small" }} showFallback src={student.avatar} />
+						<Avatar
+							classNames={{
+								base: "h-8 w-8 bg-[#1D6FE8] text-white",
+								fallback: "text-white",
+								icon: "h-full w-full",
+								img: "object-cover",
+							}}
+							fallback={<OouiUserAvatar className="size-5" />}
+							name={student.name}
+							showFallback
+							size="sm"
+							src={
+								student.avatar && student.avatar !== "/assets/avatars/default.jpg"
+									? getMediaUrl(student.avatar)
+									: undefined
+							}
+						/>
 					</Badge>
 					<span className="font-medium text-sm">{student.name}</span>
 				</div>

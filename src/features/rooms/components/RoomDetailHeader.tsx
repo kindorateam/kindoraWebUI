@@ -1,8 +1,11 @@
-import { Avatar, Tab, Tabs } from "@heroui/react"
+import { Avatar, Tab, Tabs, Tooltip } from "@heroui/react"
 
 import IdentityChip from "@/components/IdentityChip"
 import LabeledNumberBadge from "@/components/LabeledNumberBadge"
 import { getMediaUrl } from "@/utils/media"
+import MaterialSymbolsAddAPhotoRounded from "~icons/material-symbols/add-a-photo-rounded"
+import PhSmileyDuotone from "~icons/ph/smiley-duotone"
+import PhSmileySadDuotone from "~icons/ph/smiley-sad-duotone"
 
 import { useRoom } from "../hooks/useRooms"
 import { formatAgeRange } from "../utils/ageFormat"
@@ -19,12 +22,35 @@ const RoomDetailHeader = ({ activeTab, roomId, onTabChange }: RoomDetailHeaderPr
 	const { data: room } = useRoom(roomId)
 
 	const signedInCount = room?.signedInStudents.filter((s) => s.checkedIn).length ?? 0
+	const studentsCount = room?.studentsCount ?? 0
+	const staffCount = room?.staffCount ?? 0
+	const ratioValue = room?.ratio ?? 0
+	const actualRatio = staffCount > 0 ? studentsCount / staffCount : studentsCount
+	const isGoodRatio = actualRatio <= ratioValue
 
 	const stats = [
-		{ label: "Capacity", value: room?.capacity ?? 0 },
-		{ label: "Students", value: room?.studentsCount ?? 0 },
-		{ label: "Sign In", value: signedInCount },
-		{ label: "Ratio", value: room?.ratio ?? 0 },
+		{ label: "Capacity", value: room?.capacity ?? 0, badgeVariant: "circle" as const },
+		{ label: "Students", value: studentsCount, badgeVariant: "circle" as const },
+		{ label: "Sign In", value: signedInCount, badgeVariant: "circle" as const },
+		{
+			label: "Ratio",
+			icon: (
+				<Tooltip
+					closeDelay={0}
+					color="primary"
+					content={isGoodRatio ? `Ratio is met (1:${ratioValue})` : `Ratio is not met (1:${ratioValue})`}
+					delay={300}
+				>
+					<span className="inline-flex cursor-default items-center justify-center">
+						{isGoodRatio ? (
+							<PhSmileyDuotone className="size-5 text-success" />
+						) : (
+							<PhSmileySadDuotone className="size-5 text-danger" />
+						)}
+					</span>
+				</Tooltip>
+			),
+		},
 	]
 
 	const staffMembers = room?.signedInStaff ?? []
@@ -34,16 +60,17 @@ const RoomDetailHeader = ({ activeTab, roomId, onTabChange }: RoomDetailHeaderPr
 			<div className="container mx-auto max-w-4xl">
 				<div className="mb-13 flex">
 					<div className="me-7">
-						{room?.color ? (
-							<div className="size-37.5 rounded-full" style={{ background: room.color }} />
-						) : (
-							<Avatar
-								className="size-37.5"
-								name={room?.name ?? "Room"}
-								showFallback
-								src={room?.logo ? getMediaUrl(room.logo) : undefined}
-							/>
-						)}
+						<Avatar
+							classNames={{
+								base: "size-37.5 bg-[#1D6FE8] text-white",
+								fallback: "text-white",
+								img: "object-cover",
+							}}
+							fallback={<MaterialSymbolsAddAPhotoRounded className="size-25" />}
+							name={room?.name ?? "Room"}
+							showFallback
+							src={room?.logo ? getMediaUrl(room.logo) : undefined}
+						/>
 					</div>
 					<div className="w-full">
 						<h1 className="mb-2 font-semibold leading-none lg:text-[36px]">{room?.name ?? "Room"}</h1>
@@ -56,7 +83,13 @@ const RoomDetailHeader = ({ activeTab, roomId, onTabChange }: RoomDetailHeaderPr
 						<div className="mt-3.5 mb-4 flex items-center">
 							<div className="flex flex-wrap gap-4">
 								{stats.map((stat) => (
-									<LabeledNumberBadge key={stat.label} label={stat.label} value={stat.value} />
+									<LabeledNumberBadge
+										badgeVariant={stat.badgeVariant}
+										icon={stat.icon}
+										key={stat.label}
+										label={stat.label}
+										value={stat.value}
+									/>
 								))}
 							</div>
 						</div>
