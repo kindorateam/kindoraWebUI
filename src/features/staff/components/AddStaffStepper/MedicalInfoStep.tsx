@@ -2,7 +2,7 @@ import { Chip, Input } from "@heroui/react"
 import { useState } from "react"
 import { Controller, useFormContext } from "react-hook-form"
 
-import TablerStethoscope from "~icons/tabler/stethoscope"
+import JamMedical from "~icons/jam/medical"
 
 import type { AddStaffFormData } from "../../schemas/addStaff.schema"
 
@@ -44,7 +44,7 @@ const MedicalInfoStep = () => {
 			<div className="flex items-center justify-between">
 				<h2 className="font-medium text-xl">Add staff</h2>
 				<div className="flex items-center gap-2.5 py-1.5">
-					<TablerStethoscope className="size-4 text-foreground" />
+					<JamMedical className="size-5 text-foreground" />
 					<span className="font-semibold text-foreground text-sm">Medical info</span>
 				</div>
 			</div>

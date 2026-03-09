@@ -1,7 +1,7 @@
 import { Input, Select, SelectItem } from "@heroui/react"
 import { Controller, useFormContext } from "react-hook-form"
 
-import TablerEmergencyBed from "~icons/tabler/emergency-bed"
+import StreamlineUltimateEmergencyCall from "~icons/streamline-ultimate/emergency-call"
 
 import { RELATIONSHIP_OPTIONS } from "../../constants"
 
@@ -18,7 +18,7 @@ const EmergencyContactStep = () => {
 			<div className="flex items-center justify-between">
 				<h2 className="font-medium text-xl">Add staff</h2>
 				<div className="flex items-center gap-2.5 py-1.5">
-					<TablerEmergencyBed className="size-4 text-foreground" />
+					<StreamlineUltimateEmergencyCall className="size-5 text-foreground" />
 					<span className="font-semibold text-foreground text-sm">Emergency contact</span>
 				</div>
 			</div>

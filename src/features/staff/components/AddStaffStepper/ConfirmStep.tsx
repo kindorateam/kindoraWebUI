@@ -2,11 +2,11 @@ import { Switch } from "@heroui/react"
 import { Controller, useFormContext } from "react-hook-form"
 
 import EosIconsRoleBindingOutlined from "~icons/eos-icons/role-binding-outlined"
+import JamMedical from "~icons/jam/medical"
+import LucideUserRound from "~icons/lucide/user-round"
 import SolarCalendarBroken from "~icons/solar/calendar-broken"
+import StreamlineUltimateEmergencyCall from "~icons/streamline-ultimate/emergency-call"
 import TablerCertificate from "~icons/tabler/certificate"
-import TablerEmergencyBed from "~icons/tabler/emergency-bed"
-import TablerStethoscope from "~icons/tabler/stethoscope"
-import TablerUserCircle from "~icons/tabler/user-circle"
 
 import { DEGREE_OPTIONS, MOCK_ROOMS, RELATIONSHIP_OPTIONS, STAFF_ROLES, US_STATES, WORKING_DAYS } from "../../constants"
 
@@ -59,7 +59,7 @@ const ConfirmStep = () => {
 
 			{/* Personal Info */}
 			<div className="flex flex-col gap-3">
-				<SectionHeader icon={<TablerUserCircle className="size-4 text-foreground" />} label="Personal info" />
+				<SectionHeader icon={<LucideUserRound className="size-5 text-foreground" />} label="Personal info" />
 				<div className="grid grid-cols-3 gap-x-8 gap-y-3">
 					<DetailRow label="First Name" value={data.firstName} />
 					<DetailRow label="Last Name" value={data.lastName} />
@@ -78,7 +78,7 @@ const ConfirmStep = () => {
 
 			{/* Certification */}
 			<div className="flex flex-col gap-3">
-				<SectionHeader icon={<TablerCertificate className="size-4 text-foreground" />} label="Certification" />
+				<SectionHeader icon={<TablerCertificate className="size-5 text-foreground" />} label="Certification" />
 				<div className="grid grid-cols-2 gap-3">
 					<DetailRow label="Degree" value={degreeName} />
 					<DetailRow label="Certification" value={data.certification} />
@@ -88,7 +88,7 @@ const ConfirmStep = () => {
 			{/* Kindora role & status */}
 			<div className="flex flex-col gap-3">
 				<SectionHeader
-					icon={<EosIconsRoleBindingOutlined className="size-4 text-foreground" />}
+					icon={<EosIconsRoleBindingOutlined className="size-5 text-foreground" />}
 					label="Kindora role & status"
 				/>
 				<div className="grid grid-cols-3 gap-x-8 gap-y-3">
@@ -100,13 +100,13 @@ const ConfirmStep = () => {
 
 			{/* Schedule */}
 			<div className="flex flex-col gap-3">
-				<SectionHeader icon={<SolarCalendarBroken className="size-4 text-foreground" />} label="Schedule" />
+				<SectionHeader icon={<SolarCalendarBroken className="size-5 text-foreground" />} label="Schedule" />
 				<DetailRow label="Working days" value={workingDayNames} />
 			</div>
 
 			{/* Medical info */}
 			<div className="flex flex-col gap-3">
-				<SectionHeader icon={<TablerStethoscope className="size-4 text-foreground" />} label="Medical info" />
+				<SectionHeader icon={<JamMedical className="size-5 text-foreground" />} label="Medical info" />
 				<div className="grid grid-cols-3 gap-x-8 gap-y-3">
 					<DetailRow label="Allergies" value={data.allergies?.join(", ")} />
 					<div className="flex flex-col gap-3">
@@ -119,7 +119,10 @@ const ConfirmStep = () => {
 
 			{/* Emergency contact */}
 			<div className="flex flex-col gap-3">
-				<SectionHeader icon={<TablerEmergencyBed className="size-4 text-foreground" />} label="Emergency contact" />
+				<SectionHeader
+					icon={<StreamlineUltimateEmergencyCall className="size-5 text-foreground" />}
+					label="Emergency contact"
+				/>
 				<div className="grid grid-cols-3 gap-x-8 gap-y-3">
 					<DetailRow label="Name" value={data.emergencyContactName} />
 					<DetailRow label="Phone" value={data.emergencyContactPhone} />

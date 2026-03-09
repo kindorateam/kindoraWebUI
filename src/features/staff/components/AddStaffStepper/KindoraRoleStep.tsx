@@ -37,7 +37,7 @@ const KindoraRoleStep = () => {
 			<div className="flex items-center justify-between">
 				<h2 className="font-medium text-xl">Add staff</h2>
 				<div className="flex items-center gap-2.5 py-1.5">
-					<EosIconsRoleBindingOutlined className="size-4 text-foreground" />
+					<EosIconsRoleBindingOutlined className="size-5 text-foreground" />
 					<span className="font-semibold text-foreground text-sm">Kindora role & status</span>
 				</div>
 			</div>

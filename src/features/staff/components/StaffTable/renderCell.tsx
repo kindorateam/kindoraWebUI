@@ -1,4 +1,4 @@
-import { Avatar, Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@heroui/react"
+import { Avatar, Badge, Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@heroui/react"
 
 import TablerEdit from "~icons/tabler/edit"
 import TablerEye from "~icons/tabler/eye"
@@ -18,6 +18,12 @@ export function renderCell(employee: EmployeeSummary, columnKey: React.Key, opti
 	const { onEmployeeClick } = options
 	const fullName = getEmployeeFullName(employee)
 	const avatarUrl = getEmployeeAvatarUrl(employee)
+	const roomLabel = Array.isArray(employee.rooms)
+		? employee.rooms
+				.map((room) => room.title)
+				.filter(Boolean)
+				.join(", ")
+		: "No rooms"
 
 	switch (columnKey) {
 		case "employee":
@@ -27,10 +33,18 @@ export function renderCell(employee: EmployeeSummary, columnKey: React.Key, opti
 					onClick={() => onEmployeeClick(employee.id)}
 					type="button"
 				>
-					<Avatar alt={fullName} showFallback size="sm" src={avatarUrl} />
+					<Badge
+						color={employee.checkedIn ? "success" : "danger"}
+						content=""
+						isInvisible={false}
+						isOneChar
+						placement="bottom-right"
+						shape="circle"
+					>
+						<Avatar color="primary" showFallback size="sm" src={avatarUrl} />
+					</Badge>
 					<div className="flex flex-col">
 						<span className="font-medium text-sm hover:text-brand hover:underline">{fullName}</span>
-						{employee.checkedIn && <span className="text-green-500 text-xs">Checked in</span>}
 					</div>
 				</button>
 			)
@@ -41,8 +55,8 @@ export function renderCell(employee: EmployeeSummary, columnKey: React.Key, opti
 		case "pin":
 			return <PinCell pinCode={employee.pinCode} />
 
-		case "email":
-			return <span className="text-gray-500 text-sm">{employee.email ?? "—"}</span>
+		case "room":
+			return <span className="text-gray-500 text-sm">{roomLabel}</span>
 
 		case "actions":
 			return (

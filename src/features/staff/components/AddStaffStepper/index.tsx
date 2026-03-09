@@ -214,7 +214,7 @@ const AddStaffStepper = ({ onComplete, onCancel, onStepChange, isLoading = false
 					onBack={handleBack}
 					onComplete={handleComplete}
 					onNext={handleNext}
-					onSkipOptional={currentStep > 0 ? handleSkipOptionalSteps : undefined}
+					onSkipOptional={currentStep > 0 && currentStep < steps.length - 1 ? handleSkipOptionalSteps : undefined}
 					showValueLabel={false}
 					steps={steps}
 				/>

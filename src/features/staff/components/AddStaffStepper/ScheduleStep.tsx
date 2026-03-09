@@ -18,7 +18,7 @@ const ScheduleStep = () => {
 			<div className="flex items-center justify-between">
 				<h2 className="font-medium text-xl">Add staff</h2>
 				<div className="flex items-center gap-2.5 py-1.5">
-					<SolarCalendarBroken className="size-4 text-foreground" />
+					<SolarCalendarBroken className="size-5 text-foreground" />
 					<span className="font-semibold text-foreground text-sm">Schedule</span>
 				</div>
 			</div>

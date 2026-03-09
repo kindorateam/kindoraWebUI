@@ -2,7 +2,7 @@ import { DateInput, Input, Select, SelectItem, Textarea } from "@heroui/react"
 import { parseDate } from "@internationalized/date"
 import { Controller, useFormContext } from "react-hook-form"
 
-import TablerUserCircle from "~icons/tabler/user-circle"
+import LucideUserRound from "~icons/lucide/user-round"
 
 import { US_STATES } from "../../constants"
 
@@ -37,7 +37,7 @@ const PersonalInfoStep = () => {
 			<div className="flex items-center justify-between">
 				<h2 className="font-medium text-xl">Add staff</h2>
 				<div className="flex items-center gap-2.5 py-1.5">
-					<TablerUserCircle className="size-4 text-foreground" />
+					<LucideUserRound className="size-5 text-foreground" />
 					<span className="font-semibold text-foreground text-sm">Personal info</span>
 				</div>
 			</div>

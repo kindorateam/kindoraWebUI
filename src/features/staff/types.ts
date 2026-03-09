@@ -4,6 +4,11 @@ export interface EmployeeAvatar {
 	path: string
 }
 
+export interface EmployeeRoom {
+	id: string
+	title: string
+}
+
 export interface EmployeeSummary {
 	id: string
 	firstName: string
@@ -15,6 +20,8 @@ export interface EmployeeSummary {
 	status: string
 	accountStatus: string
 	roomId?: string | null
+	room?: EmployeeRoom | null
+	rooms?: EmployeeRoom[] | EmployeeRoom | null
 	pinCode?: number | null
 	avatarId?: string | null
 	avatar?: EmployeeAvatar | null
@@ -32,6 +39,8 @@ export interface Employee {
 	status: string
 	accountStatus: string
 	roomId?: string | null
+	room?: EmployeeRoom | null
+	rooms?: EmployeeRoom[] | EmployeeRoom | null
 	pinCode?: number | null
 	avatarId?: string | null
 	avatar?: EmployeeAvatar | null

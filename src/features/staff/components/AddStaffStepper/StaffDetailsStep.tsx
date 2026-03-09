@@ -93,6 +93,7 @@ const StaffDetailsStep = () => {
 							labelPlacement="inside"
 							placeholder="Enter first name"
 							radius="md"
+							size="sm"
 							variant="flat"
 						/>
 					)}
@@ -110,6 +111,7 @@ const StaffDetailsStep = () => {
 							labelPlacement="inside"
 							placeholder="Enter last name"
 							radius="md"
+							size="sm"
 							variant="flat"
 						/>
 					)}
@@ -132,6 +134,7 @@ const StaffDetailsStep = () => {
 							}}
 							radius="md"
 							selectedKeys={field.value ? [field.value] : []}
+							size="sm"
 							variant="flat"
 						>
 							{STAFF_ROLES.map((role) => (
@@ -158,6 +161,7 @@ const StaffDetailsStep = () => {
 							labelPlacement="inside"
 							placeholder="Enter email address"
 							radius="md"
+							size="sm"
 							type="email"
 							variant="flat"
 						/>

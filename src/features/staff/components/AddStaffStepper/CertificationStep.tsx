@@ -18,7 +18,7 @@ const CertificationStep = () => {
 			<div className="flex items-center justify-between">
 				<h2 className="font-medium text-xl">Add staff</h2>
 				<div className="flex items-center gap-2.5 py-1.5">
-					<TablerCertificate className="size-4 text-foreground" />
+					<TablerCertificate className="size-5 text-foreground" />
 					<span className="font-semibold text-foreground text-sm">Certification</span>
 				</div>
 			</div>

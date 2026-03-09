@@ -85,19 +85,19 @@ const Stepper = ({
 					isDisabled={isNextDisabled}
 					isLoading={isNextLoading}
 					onPress={handleNextClick}
-					size="lg"
+					size="md"
 				>
 					{isLastStep ? completeLabel : nextLabel}
 				</Button>
 
 				{onSkipOptional && (
-					<Button fullWidth onPress={onSkipOptional} size="lg" variant="bordered">
+					<Button fullWidth onPress={onSkipOptional} size="md">
 						{skipOptionalLabel}
 					</Button>
 				)}
 
 				{!(hideBackOnFirstStep && isFirstStep) && (
-					<Button fullWidth onPress={onBack} size="lg" variant="bordered">
+					<Button fullWidth onPress={onBack} size="md">
 						{backLabel}
 					</Button>
 				)}
