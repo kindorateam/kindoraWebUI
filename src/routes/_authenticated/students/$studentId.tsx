@@ -6,6 +6,7 @@ import MarkAbsentModal from "@/features/rooms/components/MarkAbsentModal"
 import { openMarkAbsentModal } from "@/features/rooms/stores/markAbsentModal.store"
 import { openTransferStudentModal } from "@/features/rooms/stores/transferStudentModal.store"
 import StudentDetailHeader from "@/features/students/components/StudentDetailHeader"
+import StudentDocumentsTab from "@/features/students/components/StudentDocumentsTab"
 import { useStudent } from "@/features/students/hooks/useStudents"
 import { getStudentById } from "@/features/students/services/student.service"
 import { useTabNavigation } from "@/hooks/useTabNavigation"
@@ -116,7 +117,7 @@ function StudentDetailPage() {
 					<div className="mt-6">
 						{tab === "activity" && <p className="text-default-500">Activity content coming soon.</p>}
 						{tab === "profile" && <p className="text-default-500">Profile content coming soon.</p>}
-						{tab === "documents" && <p className="text-default-500">Documents content coming soon.</p>}
+						{tab === "documents" && <StudentDocumentsTab studentId={student.id} />}
 						{tab === "imunization" && <p className="text-default-500">Imunization content coming soon.</p>}
 						{tab === "billing" && <p className="text-default-500">Billing content coming soon.</p>}
 					</div>

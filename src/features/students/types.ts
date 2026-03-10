@@ -22,6 +22,8 @@ export interface StudentRoom {
 	title: string
 }
 
+export type StudentDocumentStatus = "active" | "expiring_soon" | "expired" | "uploaded"
+
 export interface Student {
 	id: string
 	firstName: string
@@ -33,6 +35,23 @@ export interface Student {
 	parents?: StudentParent[]
 	tags?: string[]
 	absence?: StudentAbsence
+}
+
+export interface StudentDocumentMedia {
+	id: string
+	path: string
+}
+
+export interface StudentDocument {
+	id: number
+	studentId: string
+	media: StudentDocumentMedia
+	status: StudentDocumentStatus
+	expiryDate: string | null
+	type: string
+	notes: string | null
+	uploadedAt: string
+	uploadedBy: { id: string } | null
 }
 
 export interface GetStudentsResult {

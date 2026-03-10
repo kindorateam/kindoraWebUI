@@ -1,8 +1,14 @@
-import { useQuery } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
-import { getStudentById, getStudents } from "../services/student.service"
+import {
+	deleteStudentDocument,
+	getStudentById,
+	getStudentDocuments,
+	getStudents,
+	uploadStudentDocument,
+} from "../services/student.service"
 
-import type { GetStudentsResult } from "../types"
+import type { GetStudentsResult, StudentDocument } from "../types"
 
 const DEFAULT_PAGE_SIZE = 10
 
@@ -37,5 +43,46 @@ export function useStudent(studentId: string) {
 		queryFn: () => getStudentById(studentId),
 		enabled: !!studentId,
 		staleTime: 5 * 60 * 1000,
+	})
+}
+
+export function useStudentDocuments(studentId: string) {
+	return useQuery<StudentDocument[], Error>({
+		queryKey: ["students", studentId, "documents"],
+		queryFn: () => getStudentDocuments(studentId),
+		enabled: !!studentId,
+		staleTime: 5 * 60 * 1000,
+		gcTime: 10 * 60 * 1000,
+	})
+}
+
+export function useUploadStudentDocument() {
+	const queryClient = useQueryClient()
+
+	return useMutation({
+		mutationFn: ({
+			studentId,
+			file,
+			data,
+		}: {
+			studentId: string
+			file: File
+			data: { type: string; expiryDate?: string; notes?: string }
+		}) => uploadStudentDocument(studentId, file, data),
+		onSuccess: (_data, { studentId }) => {
+			void queryClient.invalidateQueries({ queryKey: ["students", studentId, "documents"] })
+		},
+	})
+}
+
+export function useDeleteStudentDocument() {
+	const queryClient = useQueryClient()
+
+	return useMutation({
+		mutationFn: ({ studentId, documentId }: { studentId: string; documentId: number }) =>
+			deleteStudentDocument(studentId, documentId),
+		onSuccess: (_data, { studentId }) => {
+			void queryClient.invalidateQueries({ queryKey: ["students", studentId, "documents"] })
+		},
 	})
 }

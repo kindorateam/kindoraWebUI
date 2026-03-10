@@ -4,26 +4,26 @@ import TablerDownload from "~icons/tabler/download"
 import TablerEye from "~icons/tabler/eye"
 import TablerTrash from "~icons/tabler/trash"
 
-import { getEmployeeDocumentDownloadUrl } from "../../services/staff.service"
+import { getStudentDocumentDownloadUrl } from "../../services/student.service"
 import { openDeleteDocumentModal } from "../../stores/deleteDocumentModal.store"
 
-import type { DocumentStatus, EmployeeDocument } from "../../types"
+import type { StudentDocument, StudentDocumentStatus } from "../../types"
 
-const statusColorMap: Record<DocumentStatus, "success" | "warning" | "danger" | "default"> = {
+const statusColorMap: Record<StudentDocumentStatus, "success" | "warning" | "danger" | "default"> = {
 	active: "success",
 	expiring_soon: "warning",
 	expired: "danger",
 	uploaded: "default",
 }
 
-const statusTextClass: Record<DocumentStatus, string> = {
+const statusTextClass: Record<StudentDocumentStatus, string> = {
 	active: "min-w-28 justify-center text-white text-xs",
 	expiring_soon: "min-w-28 justify-center text-white text-xs",
 	expired: "min-w-28 justify-center text-white text-xs",
 	uploaded: "min-w-28 justify-center text-black text-xs",
 }
 
-const statusLabelMap: Record<DocumentStatus, string> = {
+const statusLabelMap: Record<StudentDocumentStatus, string> = {
 	active: "Active",
 	expiring_soon: "Expiring Soon",
 	expired: "Expired",
@@ -39,23 +39,23 @@ function formatDate(date: string | null): string {
 	})
 }
 
-function getDocumentFileName(doc: EmployeeDocument): string {
-	if (!doc.media?.path) return "Document"
-	return doc.media.path.split("/").pop() ?? "Document"
+function getDocumentFileName(document: StudentDocument): string {
+	if (!document.media?.path) return "Document"
+	return document.media.path.split("/").pop() ?? "Document"
 }
 
-function handleDownload(doc: EmployeeDocument) {
-	const url = getEmployeeDocumentDownloadUrl(doc.employeeId, doc.id)
+function handleDownload(document: StudentDocument) {
+	const url = getStudentDocumentDownloadUrl(document.studentId, document.id)
 	window.open(url, "_blank")
 }
 
-function handleView(doc: EmployeeDocument) {
-	if (doc.media?.path) {
-		window.open(doc.media.path, "_blank")
+function handleView(document: StudentDocument) {
+	if (document.media?.path) {
+		window.open(document.media.path, "_blank")
 	}
 }
 
-export function renderCell(document: EmployeeDocument, columnKey: React.Key) {
+export function renderCell(document: StudentDocument, columnKey: React.Key) {
 	switch (columnKey) {
 		case "name":
 			return <span className="text-sm">{getDocumentFileName(document)}</span>
