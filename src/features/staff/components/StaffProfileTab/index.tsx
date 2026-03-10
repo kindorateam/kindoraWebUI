@@ -6,6 +6,8 @@ import {
 	Chip,
 	DateInput,
 	Input,
+	Modal,
+	ModalContent,
 	Select,
 	SelectItem,
 	Spinner,
@@ -18,14 +20,16 @@ import { Controller, useForm } from "react-hook-form"
 
 import { getErrorMessage } from "@/utils/error"
 import { formatUSPhone } from "@/utils/format"
+import CiSave from "~icons/ci/save"
+import EosIconsRoleBindingOutlined from "~icons/eos-icons/role-binding-outlined"
+import JamMedical from "~icons/jam/medical"
+import LucideUserRound from "~icons/lucide/user-round"
+import MaterialSymbolsDeleteOutline from "~icons/material-symbols/delete-outline"
+import StreamlineUltimateEmergencyCall from "~icons/streamline-ultimate/emergency-call"
+import TablerAlertTriangle from "~icons/tabler/alert-triangle"
 import TablerCertificate from "~icons/tabler/certificate"
-import TablerCheck from "~icons/tabler/check"
 import TablerCloudUpload from "~icons/tabler/cloud-upload"
-import TablerPhone from "~icons/tabler/phone"
-import TablerStethoscope from "~icons/tabler/stethoscope"
 import TablerTrash from "~icons/tabler/trash"
-import TablerUser from "~icons/tabler/user"
-import TablerUserCog from "~icons/tabler/user-cog"
 
 import { DEGREE_OPTIONS, MOCK_ROOMS, SIGNUP_STATUS_OPTIONS, STAFF_ROLES, US_STATES } from "../../constants"
 import { useEmployee, useUpdateEmployee, useUpdateEmployeeAvatar } from "../../hooks/useStaff"
@@ -52,6 +56,7 @@ const StaffProfileTab = ({ employeeId }: StaffProfileTabProps) => {
 
 	const [avatarFileUrl, setAvatarFileUrl] = useState<string | null>(null)
 	const [allergyInput, setAllergyInput] = useState("")
+	const [isDeactivateModalOpen, setIsDeactivateModalOpen] = useState(false)
 
 	const {
 		control,
@@ -111,6 +116,10 @@ const StaffProfileTab = ({ employeeId }: StaffProfileTabProps) => {
 			setAvatarFileUrl(null)
 			reset(buildFormValuesFromEmployee(employee))
 		}
+	}
+
+	const handleCloseDeactivateModal = () => {
+		setIsDeactivateModalOpen(false)
 	}
 
 	const handleDateChange = (value: DateValue | null, onChange: (value: string | undefined) => void) => {
@@ -233,204 +242,248 @@ const StaffProfileTab = ({ employeeId }: StaffProfileTabProps) => {
 				<form className="flex flex-col gap-6" onSubmit={handleSubmit(onSubmit)}>
 					{/* Personal Info */}
 					<section className="flex flex-col gap-6">
-						<SectionHeader icon={<TablerUser className="size-4" />} title="Personal info" />
-						<div className="flex flex-col gap-2">
-							<div className="flex gap-2">
-								<Controller
-									control={control}
-									name="firstName"
-									render={({ field }) => (
-										<Input
-											{...field}
-											className="flex-1"
-											errorMessage={errors.firstName?.message}
-											isInvalid={!!errors.firstName}
-											isRequired
-											label="First name"
-											labelPlacement="inside"
-											radius="md"
-											variant="flat"
-										/>
-									)}
+						<SectionHeader icon={<LucideUserRound className="size-5" />} title="Personal info" />
+						<div className="flex flex-col gap-6">
+							<div className="flex items-center gap-3">
+								<Avatar
+									className="size-20 border-4 border-white shadow-md"
+									showFallback
+									src={avatarPreview ?? undefined}
 								/>
-								<Controller
-									control={control}
-									name="lastName"
-									render={({ field }) => (
-										<Input
-											{...field}
-											className="flex-1"
-											errorMessage={errors.lastName?.message}
-											isInvalid={!!errors.lastName}
-											isRequired
-											label="Last name"
-											labelPlacement="inside"
-											radius="md"
-											variant="flat"
-										/>
-									)}
-								/>
-								<Controller
-									control={control}
-									name="email"
-									render={({ field }) => (
-										<Input
-											{...field}
-											className="flex-1"
-											errorMessage={errors.email?.message}
-											isInvalid={!!errors.email}
-											isRequired
-											label="Email"
-											labelPlacement="inside"
-											radius="md"
-											variant="flat"
-										/>
-									)}
-								/>
+								<div className="flex flex-col gap-3">
+									<Button
+										as="label"
+										className="cursor-pointer"
+										color="primary"
+										endContent={<TablerCloudUpload className="size-5" />}
+										radius="md"
+										size="sm"
+									>
+										Upload Picture
+										<input accept="image/*" className="hidden" onChange={handleAvatarUpload} type="file" />
+									</Button>
+									<Button
+										className="shadow-sm"
+										color="danger"
+										endContent={<TablerTrash className="size-5" />}
+										onPress={handleDeletePicture}
+										radius="md"
+										size="sm"
+										variant="bordered"
+									>
+										Delete Picture
+									</Button>
+								</div>
 							</div>
-							<div className="flex gap-2">
-								<Controller
-									control={control}
-									name="phone"
-									render={({ field }) => (
-										<Input
-											{...field}
-											className="flex-1"
-											errorMessage={errors.phone?.message}
-											isInvalid={!!errors.phone}
-											label="Phone"
-											labelPlacement="inside"
-											onChange={(e) => field.onChange(formatUSPhone(e.target.value))}
-											placeholder="(555) 123-4567"
-											radius="md"
-											type="tel"
-											variant="flat"
-										/>
-									)}
-								/>
-								<Controller
-									control={control}
-									name="birthday"
-									render={({ field }) => (
-										<DateInput
-											className="flex-1"
-											granularity="day"
-											label="Birthday"
-											labelPlacement="inside"
-											onChange={(value) => handleDateChange(value, field.onChange)}
-											radius="md"
-											value={parseDateValue(field.value)}
-											variant="flat"
-										/>
-									)}
-								/>
-								<Controller
-									control={control}
-									name="enrollDate"
-									render={({ field }) => (
-										<DateInput
-											className="flex-1"
-											granularity="day"
-											label="Enroll date"
-											labelPlacement="inside"
-											onChange={(value) => handleDateChange(value, field.onChange)}
-											radius="md"
-											value={parseDateValue(field.value)}
-											variant="flat"
-										/>
-									)}
-								/>
-							</div>
-							<div className="flex gap-2">
-								<Controller
-									control={control}
-									name="state"
-									render={({ field }) => (
-										<Select
-											className="flex-1"
-											label="State"
-											labelPlacement="inside"
-											onSelectionChange={(keys) => {
-												const selected = Array.from(keys)[0]
-												if (selected !== undefined) {
-													field.onChange(String(selected))
-												}
-											}}
-											radius="md"
-											selectedKeys={field.value ? [field.value] : []}
-											variant="flat"
-										>
-											{US_STATES.map((s) => (
-												<SelectItem key={s.key}>{s.label}</SelectItem>
-											))}
-										</Select>
-									)}
-								/>
-								<Controller
-									control={control}
-									name="city"
-									render={({ field }) => (
-										<Input
-											{...field}
-											className="flex-1"
-											label="City"
-											labelPlacement="inside"
-											radius="md"
-											variant="flat"
-										/>
-									)}
-								/>
-								<Controller
-									control={control}
-									name="streetAddress"
-									render={({ field }) => (
-										<Input
-											{...field}
-											className="flex-1"
-											label="Street address"
-											labelPlacement="inside"
-											radius="md"
-											variant="flat"
-										/>
-									)}
-								/>
-							</div>
-							<div className="flex gap-2">
-								<Controller
-									control={control}
-									name="zipCode"
-									render={({ field }) => (
-										<Input
-											{...field}
-											className="flex-1"
-											label="ZIP code"
-											labelPlacement="inside"
-											radius="md"
-											variant="flat"
-										/>
-									)}
-								/>
-								<Controller
-									control={control}
-									name="notes"
-									render={({ field }) => (
-										<Input
-											{...field}
-											className="flex-1"
-											label="Notes"
-											labelPlacement="inside"
-											radius="md"
-											variant="flat"
-										/>
-									)}
-								/>
+							<div className="flex flex-col gap-2">
+								<div className="flex gap-2">
+									<Controller
+										control={control}
+										name="firstName"
+										render={({ field }) => (
+											<Input
+												{...field}
+												className="flex-1"
+												errorMessage={errors.firstName?.message}
+												isInvalid={!!errors.firstName}
+												isRequired
+												label="First name"
+												labelPlacement="inside"
+												radius="md"
+												size="sm"
+												variant="flat"
+											/>
+										)}
+									/>
+									<Controller
+										control={control}
+										name="lastName"
+										render={({ field }) => (
+											<Input
+												{...field}
+												className="flex-1"
+												errorMessage={errors.lastName?.message}
+												isInvalid={!!errors.lastName}
+												isRequired
+												label="Last name"
+												labelPlacement="inside"
+												radius="md"
+												size="sm"
+												variant="flat"
+											/>
+										)}
+									/>
+									<Controller
+										control={control}
+										name="email"
+										render={({ field }) => (
+											<Input
+												{...field}
+												className="flex-1"
+												errorMessage={errors.email?.message}
+												isInvalid={!!errors.email}
+												isRequired
+												label="Email"
+												labelPlacement="inside"
+												radius="md"
+												size="sm"
+												variant="flat"
+											/>
+										)}
+									/>
+								</div>
+								<div className="flex gap-2">
+									<Controller
+										control={control}
+										name="phone"
+										render={({ field }) => (
+											<Input
+												{...field}
+												className="flex-1"
+												errorMessage={errors.phone?.message}
+												isInvalid={!!errors.phone}
+												label="Phone"
+												labelPlacement="inside"
+												onChange={(e) => field.onChange(formatUSPhone(e.target.value))}
+												placeholder="(555) 123-4567"
+												radius="md"
+												size="sm"
+												type="tel"
+												variant="flat"
+											/>
+										)}
+									/>
+									<Controller
+										control={control}
+										name="birthday"
+										render={({ field }) => (
+											<DateInput
+												className="flex-1"
+												granularity="day"
+												label="Birthday"
+												labelPlacement="inside"
+												onChange={(value) => handleDateChange(value, field.onChange)}
+												radius="md"
+												size="sm"
+												value={parseDateValue(field.value)}
+												variant="flat"
+											/>
+										)}
+									/>
+									<Controller
+										control={control}
+										name="enrollDate"
+										render={({ field }) => (
+											<DateInput
+												className="flex-1"
+												granularity="day"
+												label="Enroll date"
+												labelPlacement="inside"
+												onChange={(value) => handleDateChange(value, field.onChange)}
+												radius="md"
+												size="sm"
+												value={parseDateValue(field.value)}
+												variant="flat"
+											/>
+										)}
+									/>
+								</div>
+								<div className="flex gap-2">
+									<Controller
+										control={control}
+										name="state"
+										render={({ field }) => (
+											<Select
+												className="flex-1"
+												label="State"
+												labelPlacement="inside"
+												onSelectionChange={(keys) => {
+													const selected = Array.from(keys)[0]
+													if (selected !== undefined) {
+														field.onChange(String(selected))
+													}
+												}}
+												radius="md"
+												selectedKeys={field.value ? [field.value] : []}
+												size="sm"
+												variant="flat"
+											>
+												{US_STATES.map((s) => (
+													<SelectItem key={s.key}>{s.label}</SelectItem>
+												))}
+											</Select>
+										)}
+									/>
+									<Controller
+										control={control}
+										name="city"
+										render={({ field }) => (
+											<Input
+												{...field}
+												className="flex-1"
+												label="City"
+												labelPlacement="inside"
+												radius="md"
+												size="sm"
+												variant="flat"
+											/>
+										)}
+									/>
+									<Controller
+										control={control}
+										name="streetAddress"
+										render={({ field }) => (
+											<Input
+												{...field}
+												className="flex-1"
+												label="Street address"
+												labelPlacement="inside"
+												radius="md"
+												size="sm"
+												variant="flat"
+											/>
+										)}
+									/>
+								</div>
+								<div className="flex gap-2">
+									<Controller
+										control={control}
+										name="zipCode"
+										render={({ field }) => (
+											<Input
+												{...field}
+												className="flex-1"
+												label="ZIP code"
+												labelPlacement="inside"
+												radius="md"
+												size="sm"
+												variant="flat"
+											/>
+										)}
+									/>
+									<Controller
+										control={control}
+										name="notes"
+										render={({ field }) => (
+											<Input
+												{...field}
+												className="flex-1"
+												label="Notes"
+												labelPlacement="inside"
+												radius="md"
+												size="sm"
+												variant="flat"
+											/>
+										)}
+									/>
+								</div>
 							</div>
 						</div>
 					</section>
 
 					{/* Certification */}
 					<section className="flex flex-col gap-6">
-						<SectionHeader icon={<TablerCertificate className="size-4" />} title="Certification" />
+						<SectionHeader icon={<TablerCertificate className="size-5" />} title="Certification" />
 						<div className="flex gap-2">
 							<Controller
 								control={control}
@@ -448,6 +501,7 @@ const StaffProfileTab = ({ employeeId }: StaffProfileTabProps) => {
 										}}
 										radius="md"
 										selectedKeys={field.value ? [field.value] : []}
+										size="sm"
 										variant="flat"
 									>
 										{DEGREE_OPTIONS.map((d) => (
@@ -466,6 +520,7 @@ const StaffProfileTab = ({ employeeId }: StaffProfileTabProps) => {
 										label="Certification"
 										labelPlacement="inside"
 										radius="md"
+										size="sm"
 										variant="flat"
 									/>
 								)}
@@ -475,7 +530,7 @@ const StaffProfileTab = ({ employeeId }: StaffProfileTabProps) => {
 
 					{/* Kindora Role & Status */}
 					<section className="flex flex-col gap-6">
-						<SectionHeader icon={<TablerUserCog className="size-4" />} title="Kindora role & status" />
+						<SectionHeader icon={<EosIconsRoleBindingOutlined className="size-5" />} title="Kindora role & status" />
 						<div className="flex flex-col gap-2">
 							<div className="flex gap-2">
 								<Controller
@@ -495,6 +550,7 @@ const StaffProfileTab = ({ employeeId }: StaffProfileTabProps) => {
 											}}
 											radius="md"
 											selectedKeys={field.value ? [field.value] : []}
+											size="sm"
 											variant="flat"
 										>
 											{SIGNUP_STATUS_OPTIONS.map((s) => (
@@ -522,6 +578,7 @@ const StaffProfileTab = ({ employeeId }: StaffProfileTabProps) => {
 											}}
 											radius="md"
 											selectedKeys={field.value ? [field.value] : []}
+											size="sm"
 											variant="flat"
 										>
 											{STAFF_ROLES.map((r) => (
@@ -546,6 +603,7 @@ const StaffProfileTab = ({ employeeId }: StaffProfileTabProps) => {
 												radius="md"
 												selectedKeys={new Set(field.value || [])}
 												selectionMode="multiple"
+												size="sm"
 												variant="flat"
 											>
 												{MOCK_ROOMS.map((room) => (
@@ -581,6 +639,7 @@ const StaffProfileTab = ({ employeeId }: StaffProfileTabProps) => {
 											labelPlacement="inside"
 											onChange={(value) => handleDateChange(value, field.onChange)}
 											radius="md"
+											size="sm"
 											value={parseDateValue(field.value)}
 											variant="flat"
 										/>
@@ -592,7 +651,7 @@ const StaffProfileTab = ({ employeeId }: StaffProfileTabProps) => {
 
 					{/* Medical Info */}
 					<section className="flex flex-col gap-6">
-						<SectionHeader icon={<TablerStethoscope className="size-4" />} title="Medical info" />
+						<SectionHeader icon={<JamMedical className="size-5" />} title="Medical info" />
 						<div className="flex flex-col gap-2">
 							<div className="flex gap-2">
 								<div className="flex flex-1 flex-col gap-2">
@@ -603,6 +662,7 @@ const StaffProfileTab = ({ employeeId }: StaffProfileTabProps) => {
 										onKeyDown={handleAllergyKeyDown}
 										placeholder="Type and press Enter"
 										radius="md"
+										size="sm"
 										value={allergyInput}
 										variant="flat"
 									/>
@@ -636,6 +696,7 @@ const StaffProfileTab = ({ employeeId }: StaffProfileTabProps) => {
 											label="Medications"
 											labelPlacement="inside"
 											radius="md"
+											size="sm"
 											variant="flat"
 										/>
 									)}
@@ -652,6 +713,7 @@ const StaffProfileTab = ({ employeeId }: StaffProfileTabProps) => {
 											label="Doctor"
 											labelPlacement="inside"
 											radius="md"
+											size="sm"
 											variant="flat"
 										/>
 									)}
@@ -670,6 +732,7 @@ const StaffProfileTab = ({ employeeId }: StaffProfileTabProps) => {
 											onChange={(e) => field.onChange(formatUSPhone(e.target.value))}
 											placeholder="(555) 123-4567"
 											radius="md"
+											size="sm"
 											type="tel"
 											variant="flat"
 										/>
@@ -681,7 +744,7 @@ const StaffProfileTab = ({ employeeId }: StaffProfileTabProps) => {
 
 					{/* Emergency Contacts */}
 					<section className="flex flex-col gap-6">
-						<SectionHeader icon={<TablerPhone className="size-4" />} title="Emergency contact" />
+						<SectionHeader icon={<StreamlineUltimateEmergencyCall className="size-5" />} title="Emergency contact" />
 						<div className="flex flex-col gap-2">
 							{emergencyContacts.map((_, index) => (
 								// biome-ignore lint/suspicious/noArrayIndexKey: emergency contacts may not have stable ids
@@ -698,6 +761,7 @@ const StaffProfileTab = ({ employeeId }: StaffProfileTabProps) => {
 												label="Name"
 												labelPlacement="inside"
 												radius="md"
+												size="sm"
 												variant="flat"
 											/>
 										)}
@@ -716,6 +780,7 @@ const StaffProfileTab = ({ employeeId }: StaffProfileTabProps) => {
 												onChange={(e) => field.onChange(formatUSPhone(e.target.value))}
 												placeholder="(555) 123-4567"
 												radius="md"
+												size="sm"
 												type="tel"
 												variant="flat"
 											/>
@@ -731,6 +796,7 @@ const StaffProfileTab = ({ employeeId }: StaffProfileTabProps) => {
 												label="Relationship to staff"
 												labelPlacement="inside"
 												radius="md"
+												size="sm"
 												variant="flat"
 											/>
 										)}
@@ -740,50 +806,25 @@ const StaffProfileTab = ({ employeeId }: StaffProfileTabProps) => {
 						</div>
 					</section>
 
-					{/* Profile Picture */}
-					<section className="flex flex-col gap-6">
-						<SectionHeader icon={<TablerUser className="size-4" />} title="Profile picture" />
-						<div className="flex items-center gap-3">
-							<Avatar
-								className="size-20 border-4 border-white shadow-md"
-								showFallback
-								src={avatarPreview ?? undefined}
-							/>
-							<div className="flex gap-5">
-								<Button
-									as="label"
-									className="cursor-pointer"
-									color="primary"
-									endContent={<TablerCloudUpload className="size-5" />}
-									radius="md"
-									size="sm"
-								>
-									Upload Picture
-									<input accept="image/*" className="hidden" onChange={handleAvatarUpload} type="file" />
-								</Button>
-								<Button
-									className="shadow-sm"
-									color="danger"
-									endContent={<TablerTrash className="size-5" />}
-									onPress={handleDeletePicture}
-									radius="md"
-									size="sm"
-									variant="bordered"
-								>
-									Delete Picture
-								</Button>
-							</div>
-						</div>
-					</section>
-
 					{/* Action Buttons */}
-					<div className="flex items-center justify-end gap-5">
+					<div className="flex items-center gap-5">
+						<Button
+							className="mr-auto text-tiny shadow-small"
+							color="danger"
+							endContent={<MaterialSymbolsDeleteOutline className="size-5" />}
+							onPress={() => setIsDeactivateModalOpen(true)}
+							radius="md"
+							size="md"
+							type="button"
+						>
+							Deactivate Account
+						</Button>
 						<Button isDisabled={isSaving} onPress={handleCancel} radius="md" size="md" type="button" variant="bordered">
 							Cancel
 						</Button>
 						<Button
 							color="primary"
-							endContent={!isSaving && <TablerCheck className="size-5" />}
+							endContent={!isSaving && <CiSave className="size-5" />}
 							isDisabled={!hasChanges || !isValid}
 							isLoading={isSaving}
 							radius="md"
@@ -794,6 +835,34 @@ const StaffProfileTab = ({ employeeId }: StaffProfileTabProps) => {
 						</Button>
 					</div>
 				</form>
+				<Modal
+					isOpen={isDeactivateModalOpen}
+					onOpenChange={(open) => !open && handleCloseDeactivateModal()}
+					placement="center"
+					size="sm"
+				>
+					<ModalContent>
+						<div className="flex flex-col items-center gap-5 px-7 py-8">
+							<div className="flex flex-col items-center gap-3 text-center">
+								<div className="flex size-12 items-center justify-center rounded-full bg-danger-100">
+									<TablerAlertTriangle className="size-6 text-danger" />
+								</div>
+								<h3 className="font-medium text-xl leading-7">Deactivate Account</h3>
+								<p className="text-foreground text-sm leading-5">
+									Are you sure you want to deactivate this staff account?
+								</p>
+							</div>
+							<div className="flex w-full flex-col gap-3">
+								<Button className="w-full" color="danger" onPress={handleCloseDeactivateModal}>
+									Deactivate
+								</Button>
+								<Button fullWidth onPress={handleCloseDeactivateModal} size="md">
+									Cancel
+								</Button>
+							</div>
+						</div>
+					</ModalContent>
+				</Modal>
 			</CardBody>
 		</Card>
 	)

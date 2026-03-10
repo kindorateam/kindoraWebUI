@@ -1,5 +1,6 @@
 import {
 	Avatar,
+	Badge,
 	Button,
 	Calendar,
 	Chip,
@@ -13,11 +14,11 @@ import {
 } from "@heroui/react"
 
 import IdentityChip from "@/components/IdentityChip"
-import SignOutIcon from "@/components/icons/SignOutIcon"
 import { ABSENCE_REASONS } from "@/features/rooms/constants"
-import RiSendPlaneFill from "~icons/ri/send-plane-fill"
+import GrommetIconsUpdate from "~icons/grommet-icons/update"
+import MingcuteSendFill from "~icons/mingcute/send-fill"
+import PhSignInBold from "~icons/ph/sign-in-bold"
 import SolarCalendarBroken from "~icons/solar/calendar-broken"
-import TablerRefresh from "~icons/tabler/refresh"
 
 import { MOCK_ROOMS } from "../../constants"
 import { getEmployeeAvatarUrl, getEmployeeFullName } from "../../types"
@@ -41,12 +42,18 @@ const StaffDetailHeader = ({ employeeData, tabs, onSignOut, onGeneratePin, onSen
 			<div className="container mx-auto max-w-4xl">
 				<div className="mb-7 flex items-start justify-between gap-10">
 					<div className="flex items-start gap-10">
-						{/* Avatar with checked-in status dot */}
+						{/* Avatar with online/offline status badge */}
 						<div className="relative shrink-0">
-							<Avatar className="size-25 border-4 border-white shadow-md" showFallback src={avatarUrl} />
-							{employeeData?.checkedIn && (
-								<span className="absolute right-0 bottom-0 size-6 rounded-full border-2 border-white bg-success" />
-							)}
+							<Badge
+								color={employeeData?.checkedIn ? "success" : "danger"}
+								content=""
+								isInvisible={false}
+								isOneChar
+								placement="bottom-right"
+								shape="circle"
+							>
+								<Avatar className="size-25 border-4 border-white shadow-md" showFallback src={avatarUrl} />
+							</Badge>
 						</div>
 
 						{/* Info column */}
@@ -91,7 +98,7 @@ const StaffDetailHeader = ({ employeeData, tabs, onSignOut, onGeneratePin, onSen
 													radius="full"
 													size="sm"
 												>
-													<TablerRefresh className="size-4" />
+													<GrommetIconsUpdate className="size-4" />
 												</Button>
 											</Tooltip>
 										</div>
@@ -140,7 +147,12 @@ const StaffDetailHeader = ({ employeeData, tabs, onSignOut, onGeneratePin, onSen
 
 					<div className="flex flex-col gap-3">
 						{/* Sign Out button */}
-						<Button color="primary" endContent={<SignOutIcon fill="#fff" />} onPress={onSignOut} radius="md">
+						<Button
+							color="primary"
+							endContent={<PhSignInBold className="size-5 text-white" />}
+							onPress={onSignOut}
+							radius="md"
+						>
 							Sign Out
 						</Button>
 						{/* Send Invite */}
@@ -148,7 +160,7 @@ const StaffDetailHeader = ({ employeeData, tabs, onSignOut, onGeneratePin, onSen
 						<Button
 							className="text-white"
 							color="success"
-							endContent={<RiSendPlaneFill className="size-4" />}
+							endContent={<MingcuteSendFill className="size-4" />}
 							onPress={onSendInvite}
 							radius="md"
 							size="sm"
