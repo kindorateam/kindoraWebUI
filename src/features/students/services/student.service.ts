@@ -13,11 +13,37 @@ const ROOMS = [
 	{ id: "room-2", title: "Little stars" },
 	{ id: "room-3", title: "Sunshine" },
 ] as const
+const STATES = ["Florida", "Georgia", "Texas", "California", "Arizona"] as const
+const CITIES = ["Miami", "Atlanta", "Austin", "San Diego", "Phoenix"] as const
+const STREETS = [
+	"123 Peachtree Street NE",
+	"456 Ocean Drive",
+	"789 Sunset Avenue",
+	"321 Palm Street",
+	"654 Cedar Lane",
+] as const
+const DIET_RESTRICTIONS = ["Vegan", "Gluten free", "Nut free", "Dairy free", "No restrictions"] as const
+const DOCTORS = ["Alexander Johns", "Emily Carter", "Michael Reed", "Sophia Lopez", "Daniel Brooks"] as const
 const ALL_TAGS = ["Allergy", "Special needs", "Bus rider", "After care", "Lunch", "Nap", "Early pickup", "Medication"]
 
 const MOCK_STUDENTS: Student[] = Array.from({ length: 25 }, (_, i) => {
 	// biome-ignore lint/style/noNonNullAssertion: modulo index is always in bounds
 	const room = ROOMS[i % ROOMS.length]!
+	// biome-ignore lint/style/noNonNullAssertion: modulo index is always in bounds
+	const state = STATES[i % STATES.length]!
+	// biome-ignore lint/style/noNonNullAssertion: modulo index is always in bounds
+	const city = CITIES[i % CITIES.length]!
+	// biome-ignore lint/style/noNonNullAssertion: modulo index is always in bounds
+	const streetAddress = STREETS[i % STREETS.length]!
+	// biome-ignore lint/style/noNonNullAssertion: modulo index is always in bounds
+	const dietRestriction = DIET_RESTRICTIONS[i % DIET_RESTRICTIONS.length]!
+	// biome-ignore lint/style/noNonNullAssertion: modulo index is always in bounds
+	const doctor = DOCTORS[i % DOCTORS.length]!
+	// biome-ignore lint/style/noNonNullAssertion: modulo index is always in bounds
+	const lastName = LAST_NAMES[i % LAST_NAMES.length]!
+	const tagCount = (i % 4) + 1
+	const tags = ALL_TAGS.slice(0, tagCount)
+
 	return {
 		id: `student-${i + 1}`,
 		// biome-ignore lint/style/noNonNullAssertion: modulo index is always in bounds
@@ -32,17 +58,62 @@ const MOCK_STUDENTS: Student[] = Array.from({ length: 25 }, (_, i) => {
 			{
 				id: `parent-${i}-1`,
 				firstName: "Sarah",
-				lastName: "Whitaker",
+				lastName,
 				avatar: undefined,
+				email: `sarah${i + 1}@gmail.com`,
+				phone: "(415) 448-5678",
+				pin: "4153",
+				relationshipToStudent: "Mom",
 			},
 			{
 				id: `parent-${i}-2`,
 				firstName: "John",
-				lastName: "Whitaker",
+				lastName,
 				avatar: undefined,
+				email: `john${i + 1}@gmail.com`,
+				phone: "(415) 448-5678",
+				pin: "4153",
+				relationshipToStudent: "Dad",
 			},
 		],
-		tags: ALL_TAGS.slice(0, (i % 5) + 2),
+		tags,
+		birthday: `202${i % 4}-0${(i % 9) + 1}-16`,
+		dietRestriction,
+		state,
+		city,
+		streetAddress,
+		zipCode: `${33000 + i}`,
+		enrollDate: `202${i % 5}-0${((i + 3) % 9) + 1}-12`,
+		siblings: [
+			{
+				id: `sibling-${i}-1`,
+				firstName: "Luca",
+				lastName,
+				avatar: undefined,
+				relationshipToStudent: "Brother",
+				dateOfBirth: `201${i % 7}-0${((i + 5) % 9) + 1}-10`,
+				assignedRoomTitle: room.title,
+			},
+		],
+		guardians: [
+			{
+				id: `guardian-${i}-1`,
+				firstName: "Olivia",
+				lastName,
+				avatar: undefined,
+				phone: "(415) 448-5678",
+				pin: "Reveal",
+				relationshipToStudent: "Aunt",
+			},
+		],
+		medicalInfo: {
+			allergies: tags.filter(
+				(tag) => tag.toLowerCase().includes("allergy") || tag.toLowerCase().includes("medication"),
+			),
+			medications: i % 2 === 0 ? "Children's multivitamin" : "-",
+			doctor,
+			doctorPhone: "(415) 234-5678",
+		},
 	}
 })
 

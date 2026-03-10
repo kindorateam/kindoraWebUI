@@ -8,6 +8,37 @@ export interface StudentParent {
 	firstName: string
 	lastName: string
 	avatar?: ShortMedia
+	email?: string | null
+	phone?: string | null
+	pin?: string | null
+	relationshipToStudent?: string | null
+}
+
+export interface StudentSibling {
+	id: string
+	firstName: string
+	lastName: string
+	avatar?: ShortMedia
+	relationshipToStudent?: string | null
+	dateOfBirth?: string | null
+	assignedRoomTitle?: string | null
+}
+
+export interface StudentGuardian {
+	id: string
+	firstName: string
+	lastName: string
+	avatar?: ShortMedia
+	phone?: string | null
+	pin?: string | null
+	relationshipToStudent?: string | null
+}
+
+export interface StudentMedicalInfo {
+	allergies?: string[]
+	medications?: string | null
+	doctor?: string | null
+	doctorPhone?: string | null
 }
 
 export interface StudentAbsence {
@@ -35,6 +66,16 @@ export interface Student {
 	parents?: StudentParent[]
 	tags?: string[]
 	absence?: StudentAbsence
+	birthday?: string | null
+	dietRestriction?: string | null
+	state?: string | null
+	city?: string | null
+	streetAddress?: string | null
+	zipCode?: string | null
+	enrollDate?: string | null
+	siblings?: StudentSibling[]
+	guardians?: StudentGuardian[]
+	medicalInfo?: StudentMedicalInfo
 }
 
 export interface StudentDocumentMedia {
