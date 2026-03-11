@@ -1,0 +1,66 @@
+.fc {
+	--fc-small-font-size: 0.875rem;
+	--fc-page-bg-color: transparent;
+	--fc-neutral-bg-color: #f4f4f5;
+	--fc-border-color: #e4e4e7;
+	--fc-today-bg-color: #eff6ff;
+	--fc-event-bg-color: #006fee;
+	--fc-event-border-color: #006fee;
+	--fc-event-text-color: #fff;
+	font-family: inherit;
+}
+
+/* Hide FullCalendar's built-in toolbar — we use a custom one */
+.fc .fc-header-toolbar {
+	display: none;
+}
+
+/* Event styling */
+.fc .fc-event {
+	border-radius: 0.375rem;
+	border: none;
+	cursor: pointer;
+	font-size: 0.8125rem;
+	padding: 2px 4px;
+}
+
+.fc .fc-daygrid-event-dot {
+	display: none;
+}
+
+/* Drag interaction feedback */
+.fc .fc-event-dragging {
+	opacity: 0.7;
+	box-shadow: 0 4px 14px 0 rgba(0, 0, 0, 0.1);
+}
+
+/* Time grid slots */
+.fc .fc-timegrid-slot {
+	height: 3rem;
+}
+
+/* Multi-month year view */
+.fc .fc-multimonth {
+	border: none;
+}
+
+/* Now indicator line */
+.fc .fc-timegrid-now-indicator-line {
+	border-color: #f31260;
+}
+
+.fc .fc-timegrid-now-indicator-arrow {
+	border-top-color: #f31260;
+}
+
+/* Day header links — remove underline */
+.fc .fc-col-header-cell-cushion,
+.fc .fc-daygrid-day-number {
+	text-decoration: none;
+	color: inherit;
+}
+
+/* Selected time range highlight */
+.fc .fc-highlight {
+	background: rgba(0, 111, 238, 0.08);
+}

@@ -1,9 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router"
 
-import PlaceholderPage from "@/components/PlaceholderPage"
+import CalendarPage from "@/pages/CalendarPage"
 
 export const Route = createFileRoute("/_authenticated/calendar")({
-	component: () => <PlaceholderPage name="Calendar" />,
+	component: CalendarPage,
 	beforeLoad: () => {
 		return {
 			breadcrumb: "Calendar",
