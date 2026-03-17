@@ -39,6 +39,21 @@
 	height: 3rem;
 }
 
+.fc .fc-timegrid-col-bg .fc-non-business {
+	background: transparent;
+}
+
+.fc .fc-timegrid-col.fc-day-sat,
+.fc .fc-timegrid-col.fc-day-sun,
+.fc .fc-timegrid-axis-col.fc-day-sat,
+.fc .fc-timegrid-axis-col.fc-day-sun,
+.fc .fc-daygrid-day.fc-day-sat,
+.fc .fc-daygrid-day.fc-day-sun,
+.fc .fc-col-header-cell.fc-day-sat,
+.fc .fc-col-header-cell.fc-day-sun {
+	background-color: #f4f4f5;
+}
+
 /* Multi-month year view */
 .fc .fc-multimonth {
 	border: none;
