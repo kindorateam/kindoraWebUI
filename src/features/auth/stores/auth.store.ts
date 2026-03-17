@@ -15,8 +15,12 @@ const mapUserResponse = (data: UserProfileResponse): User => {
 }
 
 // Atoms for state - using atomWithStorage handles localStorage automatically
-const userAtom = atomWithStorage<User | null>("auth-user", null)
-export const tokenAtom = atomWithStorage<string | null>("auth-token", null)
+const userAtom = atomWithStorage<User | null>("auth-user", null, undefined, {
+	getOnInit: true,
+})
+export const tokenAtom = atomWithStorage<string | null>("auth-token", null, undefined, {
+	getOnInit: true,
+})
 // Note: Refresh token is stored as HttpOnly cookie by backend, not in localStorage
 
 const isLoadingAtom = atom(true)
@@ -173,47 +177,16 @@ export const handleVerifyFirstLoginAtom = atom(null, async (_get, set, payload: 
 })
 
 export const checkAuthAtom = atom(null, (get, set) => {
-	// Ensure localStorage is synced with atoms before checking
-	// atomWithStorage should hydrate synchronously, but double-check
-	const storedToken = localStorage.getItem("auth-token")
-	const storedUser = localStorage.getItem("auth-user")
+	const token = get(tokenAtom)
+	const user = get(userAtom)
 
-	// Get current atom values (should be hydrated from localStorage)
-	let token = get(tokenAtom)
-	let user = get(userAtom)
-
-	// If atoms are null but localStorage has values, force sync
-	if (!token && storedToken && storedToken !== "null") {
-		try {
-			token = JSON.parse(storedToken)
-			set(tokenAtom, token)
-		} catch {
-			// Invalid token in localStorage, clear it
-			localStorage.removeItem("auth-token")
-		}
-	}
-
-	if (!user && storedUser && storedUser !== "null") {
-		try {
-			user = JSON.parse(storedUser)
-			set(userAtom, user)
-		} catch {
-			// Invalid user in localStorage, clear it
-			localStorage.removeItem("auth-user")
-		}
-	}
-
-	// Clear orphaned data if inconsistent
 	if (token && !user) {
-		// Token exists but no user - clear token
 		set(tokenAtom, null)
 		set(errorAtom, "User data not found")
 	} else if (!token && user) {
-		// User exists but no token - clear user
 		set(userAtom, null)
 		set(errorAtom, null)
 	} else {
-		// Either both exist (logged in) or both null (logged out)
 		set(errorAtom, null)
 	}
 

@@ -1,8 +1,9 @@
 import { Tab, Tabs, useDisclosure } from "@heroui/react"
 
 import SubHeader from "@/components/SubHeader"
-import CreateNewsletterModal from "@/features/newsletters/components/CreateNewsletterModal"
-import NewslettersTable from "@/features/newsletters/components/NewslettersTable"
+
+import CreateNewsletterModal from "./CreateNewsletterModal"
+import NewslettersTable from "./NewslettersTable"
 
 type TabKey = "drafts" | "scheduled" | "sent"
 
@@ -11,7 +12,7 @@ interface NewslettersPageProps {
 	onTabChange: (tab: TabKey) => void
 }
 
-const NewslettersPage = ({ activeTab, onTabChange }: NewslettersPageProps) => {
+export default function NewslettersPage({ activeTab, onTabChange }: NewslettersPageProps) {
 	const { isOpen, onOpen, onOpenChange } = useDisclosure()
 
 	return (
@@ -45,5 +46,3 @@ const NewslettersPage = ({ activeTab, onTabChange }: NewslettersPageProps) => {
 		</div>
 	)
 }
-
-export default NewslettersPage

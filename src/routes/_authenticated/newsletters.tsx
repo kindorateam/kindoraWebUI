@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router"
 
+import NewslettersPage from "@/features/newsletters/components/NewslettersPage"
 import { useTabNavigation } from "@/hooks/useTabNavigation"
-import NewslettersPage from "@/pages/NewslettersPage"
 
 type TabType = "sent" | "scheduled" | "drafts"
 

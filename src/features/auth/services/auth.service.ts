@@ -1,6 +1,5 @@
 import { apiClient } from "@/services/api.service"
-
-import { clearToken, setTokens } from "./token.service"
+import { clearToken, setTokens } from "@/services/token.service"
 
 import type { AuthTokenResponse, EmailLoginCredentials, LoginResponse, UserProfileResponse } from "../types"
 

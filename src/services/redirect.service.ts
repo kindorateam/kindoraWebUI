@@ -6,7 +6,6 @@ export const redirectToLogin = (): void => {
 
 	try {
 		// Navigate via router if available; otherwise fallback to full reload
-
 		import("@/router")
 			.then((m) => {
 				void m.router.navigate({ href: url, replace: true })

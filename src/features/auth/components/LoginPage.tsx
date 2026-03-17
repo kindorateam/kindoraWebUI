@@ -1,22 +1,22 @@
 import { useNavigate } from "@tanstack/react-router"
 import { useEffect, useState } from "react"
 
-import SignInCard from "@/features/auth/components/SignInCard"
-import useAuth from "@/features/auth/hooks/useAuth"
-import { getReturnUrlFromLocation } from "@/features/auth/services/redirect.service"
+import { getReturnUrlFromLocation } from "@/services/redirect.service"
+
+import useAuth from "../hooks/useAuth"
+
+import SignInCard from "./SignInCard"
 
 type AuthView = "signin" | "forgot-password" | "otp-verification" | "otp-password-reset" | "reset-password"
 
-const LoginPage = () => {
+export default function LoginPage() {
 	const { isAuthenticated } = useAuth()
 	const navigate = useNavigate()
-	// Lift state up to prevent loss on SignInCard remount
 	const [view, setView] = useState<AuthView>("signin")
 	const [userEmail, setUserEmail] = useState("")
 	const [resetToken, setResetToken] = useState("")
 	const [codeSentAt, setCodeSentAt] = useState<number | null>(null)
 
-	// Store redirect URL in sessionStorage on component mount
 	useEffect(() => {
 		const returnUrl = getReturnUrlFromLocation()
 		if (returnUrl && returnUrl !== "/login") {
@@ -24,15 +24,12 @@ const LoginPage = () => {
 		}
 	}, [])
 
-	// Navigate after successful authentication
 	useEffect(() => {
 		if (isAuthenticated) {
-			// First try to get from sessionStorage, then from URL
 			const storedUrl = sessionStorage.getItem("authRedirectUrl")
 			const urlParam = getReturnUrlFromLocation()
 			const returnUrl = storedUrl ?? urlParam
 
-			// Clear the stored URL after using it
 			if (storedUrl) {
 				sessionStorage.removeItem("authRedirectUrl")
 			}
@@ -58,5 +55,3 @@ const LoginPage = () => {
 		</div>
 	)
 }
-
-export default LoginPage
