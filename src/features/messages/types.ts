@@ -1,22 +1,22 @@
-export interface MessageParticipant {
-	id: string
-	name: string
-	avatar?: string
-}
+export type MessageTab = "all" | "favorites"
 
-export interface MessageRecord {
+export type FavoriteState = "pinned" | "highlighted" | "idle"
+
+export interface BubbleItem {
 	id: string
-	roomId: string
-	roomLabel: string
-	studentId: string
-	studentName: string
-	studentAvatar?: string
-	parents: MessageParticipant[]
-	preview: string
+	align: "left" | "right"
+	text: string
 	time: string
 }
 
-export interface MessagesSelectOption {
-	key: string
-	label: string
+export interface ThreadItem {
+	id: string
+	name: string
+	preview: string
+	time: string
+	dateLabel: string
+	favorite: FavoriteState
+	unreadCount?: number
+	parents: string[]
+	messages: BubbleItem[]
 }
