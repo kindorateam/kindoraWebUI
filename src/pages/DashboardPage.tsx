@@ -7,12 +7,6 @@
 //   PaymentsCard,
 //   LoggedActivities,
 // } from '@/components/features/dashboard'
-// import SettingsIcon from '@/components/icons/SettingsIcon'
-// import StatsCard from '@/components/StatsCard/StatsCard'
-// import {
-//   absentCardData,
-//   signInCardData,
-// } from '@/components/StatsCard/StatsCard.data'
 // import useAuth from '@/hooks/useAuth'
 
 const DashboardPage = () => {

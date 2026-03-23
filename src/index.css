@@ -12,3 +12,13 @@
 body {
 	font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
 }
+
+.messages-thread-scroll {
+	scrollbar-width: thin;
+	-webkit-overflow-scrolling: touch;
+}
+
+.messages-chat-scroll {
+	scrollbar-width: thin;
+	-webkit-overflow-scrolling: touch;
+}

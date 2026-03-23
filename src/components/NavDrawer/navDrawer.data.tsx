@@ -1,11 +1,10 @@
-import AdmissionsIcon from "@/components/icons/AdmissionsIcon"
-import AnalyticsIcon from "@/components/icons/AnalyticsIcon"
-import BillingIcon from "@/components/icons/BillingIcon"
-import DashboardIcon from "@/components/icons/DashboardIcon"
-import ReportsIcon from "@/components/icons/ReportsIcon"
-import SchoolIcon from "@/components/icons/SchoolIcon"
-
-import MessageIcon from "../icons/MessageIcon"
+import MaterialSymbolsDashboardOutlineRounded from "~icons/material-symbols/dashboard-outline-rounded"
+import MaterialSymbolsFactCheckOutlineRounded from "~icons/material-symbols/fact-check-outline-rounded"
+import MaterialSymbolsReceiptLongOutlineRounded from "~icons/material-symbols/receipt-long-outline-rounded"
+import MaterialSymbolsSchoolOutlineRounded from "~icons/material-symbols/school-outline-rounded"
+import MdiChartLine from "~icons/mdi/chart-line"
+import MdiDomain from "~icons/mdi/domain"
+import MdiMessageOutline from "~icons/mdi/message-outline"
 
 import type { NavDrawerItem } from "./navDrawer.types"
 
@@ -13,12 +12,12 @@ const navDrawerData: NavDrawerItem[] = [
 	{
 		label: "Dashboard",
 		path: "/dashboard",
-		icon: <DashboardIcon />,
+		icon: <MaterialSymbolsDashboardOutlineRounded />,
 	},
 	{
 		label: "My school",
 		path: "#",
-		icon: <SchoolIcon />,
+		icon: <MdiDomain />,
 		children: [
 			{ label: "Insights", path: "/insights" },
 			{ label: "Students", path: "/students" },
@@ -31,7 +30,7 @@ const navDrawerData: NavDrawerItem[] = [
 	{
 		label: "Connections",
 		path: "#",
-		icon: <MessageIcon />,
+		icon: <MdiMessageOutline />,
 		children: [
 			{ label: "Messages", path: "/messages" },
 			{ label: "Newsletters", path: "/newsletters" },
@@ -40,22 +39,22 @@ const navDrawerData: NavDrawerItem[] = [
 	{
 		label: "Billing",
 		path: "/billing",
-		icon: <BillingIcon />,
+		icon: <MaterialSymbolsReceiptLongOutlineRounded />,
 	},
 	{
 		label: "Analytics",
 		path: "/analytics",
-		icon: <AnalyticsIcon />,
+		icon: <MdiChartLine />,
 	},
 	{
 		label: "Reports",
 		path: "/reports",
-		icon: <ReportsIcon />,
+		icon: <MaterialSymbolsFactCheckOutlineRounded />,
 	},
 	{
 		label: "Admissions",
 		path: "/admissions",
-		icon: <AdmissionsIcon />,
+		icon: <MaterialSymbolsSchoolOutlineRounded />,
 	},
 ]
 

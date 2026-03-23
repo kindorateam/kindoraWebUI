@@ -14,12 +14,12 @@ import {
 import { memo, useCallback } from "react"
 
 import Breadcrumbs from "@/components/Breadcrumbs"
-import NotificationIcon from "@/components/icons/NotificationIcon"
-import ProfileIcon from "@/components/icons/ProfileIcon"
-import SchoolIcon from "@/components/icons/SchoolIcon"
-import SignOutIcon from "@/components/icons/SignOutIcon"
-import SubscriptionIcon from "@/components/icons/SubscriptionIcon"
 import useAuth from "@/features/auth/hooks/useAuth"
+import MaterialSymbolsLogoutRounded from "~icons/material-symbols/logout-rounded"
+import MdiBellOutline from "~icons/mdi/bell-outline"
+import MdiCardAccountDetailsOutline from "~icons/mdi/card-account-details-outline"
+import MdiCreditCardOutline from "~icons/mdi/credit-card-outline"
+import MdiDomain from "~icons/mdi/domain"
 
 const navbarClassNames = {
 	base: "h-20 w-full mb-7 px-7 bg-transparent",
@@ -50,7 +50,7 @@ const Header = memo(() => {
 						radius="full"
 						variant="light"
 					>
-						<NotificationIcon />
+						<MdiBellOutline />
 					</Button>
 				</Badge>
 				<Dropdown className="p-0" placement="bottom-end">
@@ -73,16 +73,20 @@ const Header = memo(() => {
 						</DropdownSection>
 
 						<DropdownSection className="m-0" dividerProps={{ className: "my-1.5" }} showDivider>
-							<DropdownItem className="px-0 py-2" key="settings" startContent={<ProfileIcon className="h-4 w-4" />}>
+							<DropdownItem
+								className="px-0 py-2"
+								key="settings"
+								startContent={<MdiCardAccountDetailsOutline className="h-4 w-4" />}
+							>
 								My profile
 							</DropdownItem>
-							<DropdownItem className="px-0 py-2" key="team_settings" startContent={<SchoolIcon className="h-4 w-4" />}>
+							<DropdownItem className="px-0 py-2" key="team_settings" startContent={<MdiDomain className="h-4 w-4" />}>
 								School settings
 							</DropdownItem>
 							<DropdownItem
 								className="px-0 py-2"
 								key="analytics"
-								startContent={<SubscriptionIcon className="h-4 w-4" />}
+								startContent={<MdiCreditCardOutline className="h-4 w-4" />}
 							>
 								Subscription
 							</DropdownItem>
@@ -94,7 +98,7 @@ const Header = memo(() => {
 								color="danger"
 								key="logout"
 								onClick={handleLogout}
-								startContent={<SignOutIcon className="h-4 w-4" />}
+								startContent={<MaterialSymbolsLogoutRounded className="h-4 w-4" />}
 							>
 								Log Out
 							</DropdownItem>

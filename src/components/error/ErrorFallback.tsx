@@ -1,9 +1,9 @@
 import { Button } from "@heroui/react"
 
-import AlertCircleIcon from "@/components/icons/AlertCircleIcon"
-import HomeIcon from "@/components/icons/HomeIcon"
-import RefreshIcon from "@/components/icons/RefreshIcon"
 import { getErrorMessage, getUserMessage } from "@/utils/error"
+import MdiAlertCircleOutline from "~icons/mdi/alert-circle-outline"
+import MdiHomeOutline from "~icons/mdi/home-outline"
+import MdiRefresh from "~icons/mdi/refresh"
 
 import type { ErrorFallbackProps } from "@/types/error"
 
@@ -19,7 +19,7 @@ const ErrorFallback = ({ error, resetError, errorInfo }: ErrorFallbackProps) => 
 			<div className="w-full max-w-md rounded-2xl bg-white p-8 shadow-xl dark:bg-gray-800">
 				<div className="flex flex-col items-center text-center">
 					<div className="mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/20">
-						<AlertCircleIcon className="h-10 w-10 text-red-600 dark:text-red-400" />
+						<MdiAlertCircleOutline className="h-10 w-10 text-red-600 dark:text-red-400" />
 					</div>
 
 					<h1 className="mb-2 font-bold text-2xl text-gray-900 dark:text-white">Oops! Something went wrong</h1>
@@ -59,7 +59,7 @@ const ErrorFallback = ({ error, resetError, errorInfo }: ErrorFallbackProps) => 
 							className="flex-1"
 							color="primary"
 							onPress={resetError}
-							startContent={<RefreshIcon className="h-4 w-4" />}
+							startContent={<MdiRefresh className="h-4 w-4" />}
 							variant="flat"
 						>
 							Try Again
@@ -68,7 +68,7 @@ const ErrorFallback = ({ error, resetError, errorInfo }: ErrorFallbackProps) => 
 							className="flex-1"
 							color="primary"
 							onPress={handleGoHome}
-							startContent={<HomeIcon className="h-4 w-4" />}
+							startContent={<MdiHomeOutline className="h-4 w-4" />}
 						>
 							Go Home
 						</Button>

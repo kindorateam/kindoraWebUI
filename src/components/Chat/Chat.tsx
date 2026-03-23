@@ -2,9 +2,9 @@ import { Avatar, Image, Input } from "@heroui/react"
 import { useCallback } from "react"
 
 import Button from "@/components/Button"
-import FilterIcon from "@/components/icons/FilterIcon"
 import Text from "@/components/Text"
 import useAppDrawer from "@/hooks/useAppDrawer"
+import MdiFilterVariant from "~icons/mdi/filter-variant"
 
 import ChatMessage from "./ChatMessage"
 import EmojiGroup from "./EmojiGroup"
@@ -28,7 +28,7 @@ const Chat = () => {
 					Today
 				</Text>
 				<div className="flex items-center gap-3.5">
-					<Button className="min-w-auto!" color="secondary" startContent={<FilterIcon />} />
+					<Button className="min-w-auto!" color="secondary" startContent={<MdiFilterVariant />} />
 					<Button color="secondary" onPress={handleAddActivity}>
 						Add activity
 					</Button>

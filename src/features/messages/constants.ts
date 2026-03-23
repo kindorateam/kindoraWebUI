@@ -1,115 +1,191 @@
-import type { MessageParticipant, MessageRecord, MessagesSelectOption } from "./types"
+import type { ThreadItem } from "./types"
 
-interface StudentSeed {
-	studentId: string
-	studentName: string
-	roomId: string
-	roomLabel: string
-	parents: string[]
-}
-
-const studentSeeds = [
+export const messageThreadItems: ThreadItem[] = [
 	{
-		studentId: "student-1",
-		studentName: "James Whitaker",
-		roomId: "room-baby-turtle",
-		roomLabel: "Baby Turtle",
+		id: "thread-1",
+		name: "James Whitaker",
+		preview: "Oh, hello! All perfectly. I will check it and get back to you soon",
+		time: "05:30 PM",
+		dateLabel: "Today",
+		favorite: "pinned",
 		parents: ["Monica Whitaker", "Aaron Whitaker"],
+		messages: [
+			{
+				id: "thread-1-bubble-1",
+				align: "left",
+				text: "Could you please check whether James still has his blue sweater in class?",
+				time: "04:12 PM",
+			},
+			{
+				id: "thread-1-bubble-2",
+				align: "right",
+				text: "Yes, I saw it near his cubby after lunch.",
+				time: "04:19 PM",
+			},
+			{
+				id: "thread-1-bubble-3",
+				align: "left",
+				text: "Oh, hello! All perfectly.\nI will check it and get back to you soon",
+				time: "04:45 PM",
+			},
+			{
+				id: "thread-1-bubble-4",
+				align: "right",
+				text: "Thank you so much. Please let me know when you find it.",
+				time: "04:45 PM",
+			},
+		],
 	},
 	{
-		studentId: "student-2",
-		studentName: "Kate Robinson",
-		roomId: "room-baby-turtle",
-		roomLabel: "Baby Turtle",
-		parents: ["Noah Robinson", "Ava Robinson"],
+		id: "thread-2",
+		name: "James Whitaker",
+		preview: "Oh, hello! All perfectly. I will check it and get back to you soon",
+		time: "05:30 PM",
+		dateLabel: "Today",
+		favorite: "highlighted",
+		parents: ["Monica Whitaker", "Aaron Whitaker"],
+		messages: [
+			{
+				id: "thread-2-bubble-1",
+				align: "left",
+				text: "Could you share the snack schedule for next week?",
+				time: "02:05 PM",
+			},
+			{
+				id: "thread-2-bubble-2",
+				align: "right",
+				text: "Absolutely. I will send the full schedule before pick-up today.",
+				time: "02:14 PM",
+			},
+			{
+				id: "thread-2-bubble-3",
+				align: "left",
+				text: "Perfect, thank you!",
+				time: "02:18 PM",
+			},
+		],
 	},
 	{
-		studentId: "student-3",
-		studentName: "Emily Carter",
-		roomId: "room-rainbow-fish",
-		roomLabel: "Rainbow Fish",
-		parents: ["Daniel Carter", "Olivia Carter"],
+		id: "thread-3",
+		name: "James Whitaker",
+		preview: "Oh, hello! All perfectly. I will check it and get back to you soon",
+		time: "05:30 PM",
+		dateLabel: "Today",
+		favorite: "idle",
+		unreadCount: 2,
+		parents: ["Monica Whitaker", "Aaron Whitaker"],
+		messages: [
+			{
+				id: "thread-3-bubble-1",
+				align: "left",
+				text: "Will James need indoor shoes tomorrow?",
+				time: "11:02 AM",
+			},
+			{
+				id: "thread-3-bubble-2",
+				align: "right",
+				text: "Yes, please pack them if you can.",
+				time: "11:08 AM",
+			},
+			{
+				id: "thread-3-bubble-3",
+				align: "left",
+				text: "Great, I’ll send them with him.",
+				time: "11:10 AM",
+			},
+		],
 	},
 	{
-		studentId: "student-4",
-		studentName: "Mia Caldwell",
-		roomId: "room-rainbow-fish",
-		roomLabel: "Rainbow Fish",
-		parents: ["Isla Caldwell", "Henry Caldwell"],
+		id: "thread-4",
+		name: "James Whitaker",
+		preview: "Oh, hello! All perfectly. I will check it and get back to you soon",
+		time: "05:30 PM",
+		dateLabel: "Today",
+		favorite: "idle",
+		parents: ["Parent Name", "Parent Name"],
+		messages: [
+			{
+				id: "bubble-1",
+				align: "left",
+				text: "Oh, hello! All perfectly.\nI will check it and get back to you soon",
+				time: "04:45 PM",
+			},
+			{
+				id: "bubble-2",
+				align: "right",
+				text: "Oh, hello! All perfectly.\nI will check it and get back to you soon",
+				time: "04:45 PM",
+			},
+			{
+				id: "bubble-3",
+				align: "left",
+				text: "Oh, hello! All perfectly.\nI will check it and get back to you soon",
+				time: "04:45 PM",
+			},
+			{
+				id: "bubble-4",
+				align: "right",
+				text: "Oh, hello! All perfectly.\nI will check it and get back to you soon",
+				time: "04:45 PM",
+			},
+			{
+				id: "bubble-5",
+				align: "left",
+				text: "Oh, hello! All perfectly.\nI will check it and get back to you soon",
+				time: "04:45 PM",
+			},
+			{
+				id: "bubble-6",
+				align: "right",
+				text: "Oh, hello! All perfectly.\nI will check it and get back to you soon",
+				time: "04:45 PM",
+			},
+		],
 	},
 	{
-		studentId: "student-5",
-		studentName: "Olivia Hayes",
-		roomId: "room-sunshine",
-		roomLabel: "Sunshine",
-		parents: ["Grace Hayes", "Lucas Hayes"],
+		id: "thread-5",
+		name: "James Whitaker",
+		preview: "Oh, hello! All perfectly. I will check it and get back to you soon",
+		time: "05:30 PM",
+		dateLabel: "Today",
+		favorite: "idle",
+		parents: ["Monica Whitaker", "Aaron Whitaker"],
+		messages: [
+			{
+				id: "thread-5-bubble-1",
+				align: "left",
+				text: "James seemed excited about music class today.",
+				time: "01:32 PM",
+			},
+			{
+				id: "thread-5-bubble-2",
+				align: "right",
+				text: "He really was. He knew all the motions for the songs.",
+				time: "01:46 PM",
+			},
+		],
 	},
 	{
-		studentId: "student-6",
-		studentName: "Sophie Bennett",
-		roomId: "room-sunshine",
-		roomLabel: "Sunshine",
-		parents: ["Chloe Bennett", "Jack Bennett"],
+		id: "thread-6",
+		name: "James Whitaker",
+		preview: "Oh, hello! All perfectly. I will check it and get back to you soon",
+		time: "05:30 PM",
+		dateLabel: "Today",
+		favorite: "idle",
+		parents: ["Monica Whitaker", "Aaron Whitaker"],
+		messages: [
+			{
+				id: "thread-6-bubble-1",
+				align: "left",
+				text: "Can we schedule a quick call tomorrow morning?",
+				time: "09:05 AM",
+			},
+			{
+				id: "thread-6-bubble-2",
+				align: "right",
+				text: "Yes, 9:30 works well for me.",
+				time: "09:11 AM",
+			},
+		],
 	},
-] satisfies [StudentSeed, ...StudentSeed[]]
-
-const messagePreviews = [
-	"Dear Jin, Just a quick reminder to please pack a hat and sunscreen for your child today, we're planning to spend some time outside.",
-	"Kate had a great morning circle today and joined every song. She was especially excited about our story time.",
-	"We noticed an extra sweater would be helpful this week because the classroom runs cool in the afternoon.",
-	"Friendly reminder that tomorrow is picture day, so feel free to send your child in their favorite outfit.",
-] as const satisfies readonly [string, ...string[]]
-
-const messageTimes = ["10:36 AM", "10:12 AM", "9:48 AM", "9:05 AM", "8:42 AM"] as const satisfies readonly [
-	string,
-	...string[],
 ]
-
-function getCyclicItem<T>(items: readonly [T, ...T[]], index: number): T {
-	const item = items[index % items.length]
-
-	if (item === undefined) {
-		throw new Error("Expected non-empty collection")
-	}
-
-	return item
-}
-
-const createParents = (studentId: string, parentNames: string[]): MessageParticipant[] => {
-	return parentNames.map((name, index) => ({
-		id: `${studentId}-parent-${index + 1}`,
-		name,
-	}))
-}
-
-export const MESSAGE_PAGE_SIZE = 10
-
-export const ROOM_OPTIONS: MessagesSelectOption[] = [
-	{ key: "all", label: "All Rooms" },
-	...studentSeeds
-		.map((student) => ({ key: student.roomId, label: student.roomLabel }))
-		.filter((option, index, options) => options.findIndex((item) => item.key === option.key) === index),
-]
-
-export const STUDENT_OPTIONS: MessagesSelectOption[] = [
-	{ key: "all", label: "All Students" },
-	...studentSeeds.map((student) => ({
-		key: student.studentId,
-		label: student.studentName,
-	})),
-]
-
-export const MESSAGES: MessageRecord[] = Array.from({ length: 42 }, (_, index) => {
-	const student = getCyclicItem(studentSeeds, index)
-
-	return {
-		id: `message-${index + 1}`,
-		roomId: student.roomId,
-		roomLabel: student.roomLabel,
-		studentId: student.studentId,
-		studentName: student.studentName,
-		parents: createParents(student.studentId, student.parents),
-		preview: getCyclicItem(messagePreviews, index),
-		time: getCyclicItem(messageTimes, index),
-	}
-})
