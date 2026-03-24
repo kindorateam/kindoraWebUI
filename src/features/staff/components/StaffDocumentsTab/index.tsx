@@ -44,7 +44,7 @@ const StaffDocumentsTab = ({ employeeId }: StaffDocumentsTabProps) => {
 								Add Document
 							</Button>
 						</div>
-						<span className="text-default-400 text-small">Total {documents.length} documents</span>
+						<span className="text-default-400 text-sm">Total {documents.length} documents</span>
 					</div>
 					<div className="flex min-h-[647.5px] flex-col justify-between">
 						<Table.ScrollContainer>

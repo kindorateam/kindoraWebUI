@@ -826,7 +826,7 @@ const StaffProfileTab = ({ employeeId }: StaffProfileTabProps) => {
 					{/* Action Buttons */}
 					<div className="flex items-center gap-5">
 						<Button
-							className="mr-auto text-xs shadow-small"
+							className="mr-auto text-xs shadow-sm"
 							color="danger"
 							endContent={<MaterialSymbolsDeleteOutline className="size-5" />}
 							onPress={() => setIsDeactivateModalOpen(true)}

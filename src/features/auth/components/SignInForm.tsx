@@ -162,7 +162,7 @@ const SignInForm = ({ onForgotPassword, onVerificationRequired, defaultEmail }: 
 			<Card.Footer className="flex-col px-7 pt-4 pb-8">
 				<div className="flex items-center gap-4 pb-4">
 					<Separator className="flex-1" />
-					<span className="text-default-400 text-small">OR</span>
+					<span className="text-default-400 text-sm">OR</span>
 					<Separator className="flex-1" />
 				</div>
 

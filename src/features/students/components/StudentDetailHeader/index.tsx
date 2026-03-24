@@ -49,7 +49,7 @@ const StudentDetailHeader = ({ student, onMoveToRoom, onScheduleAbsence }: Stude
 						</div>
 
 						<Button
-							className="ml-auto shadow-small"
+							className="ml-auto shadow-sm"
 							endContent={<MageExchangeA className="size-4" />}
 							isDisabled={!onMoveToRoom}
 							onPress={onMoveToRoom}

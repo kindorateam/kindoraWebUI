@@ -62,7 +62,7 @@ const StaffTable = () => {
 						Add Staff
 					</Button>
 				</div>
-				<span className="text-default-400 text-small">Total {filteredItems.length} employees</span>
+				<span className="text-default-400 text-sm">Total {filteredItems.length} employees</span>
 			</div>
 		)
 	}, [showDeactivated, filteredItems.length])

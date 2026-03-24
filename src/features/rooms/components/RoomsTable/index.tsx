@@ -42,7 +42,7 @@ const RoomsTable = () => {
 						Add Room
 					</Button>
 				</div>
-				<span className="text-default-400 text-small">Total {total} rooms</span>
+				<span className="text-default-400 text-sm">Total {total} rooms</span>
 			</div>
 		)
 	}, [viewDeactivated, setViewDeactivated, total])
