@@ -93,7 +93,7 @@ const AddStaffStudentsStep = () => {
 					<p className="mt-1 text-danger-600">{getErrorMessage(error) ?? "Please try again."}</p>
 				</div>
 				<Button
-					color="primary"
+					variant="primary"
 					onPress={() => {
 						void refetchAll()
 					}}
@@ -125,7 +125,7 @@ const AddStaffStudentsStep = () => {
 						>
 							<Label>Add staff</Label>
 							<Select.Trigger>
-								<Select.Value placeholder="Select staff members" />
+								<Select.Value />
 								<Select.Indicator />
 							</Select.Trigger>
 							<Select.Popover>
@@ -163,7 +163,7 @@ const AddStaffStudentsStep = () => {
 						>
 							<Label>Add students</Label>
 							<Select.Trigger>
-								<Select.Value placeholder="Select students" />
+								<Select.Value />
 								<Select.Indicator />
 							</Select.Trigger>
 							<Select.Popover>

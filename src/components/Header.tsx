@@ -1,18 +1,9 @@
-import { Avatar, Badge, Button, Dropdown, Label, Navbar, NavbarContent, NavbarItem, Separator } from "@heroui/react"
+import { Avatar, Badge, Button, Dropdown, Label, Separator } from "@heroui/react"
 import { memo, useCallback } from "react"
 
 import Breadcrumbs from "@/components/Breadcrumbs"
 import useAuth from "@/features/auth/hooks/useAuth"
-import MaterialSymbolsLogoutRounded from "~icons/material-symbols/logout-rounded"
 import MdiBellOutline from "~icons/mdi/bell-outline"
-import MdiCardAccountDetailsOutline from "~icons/mdi/card-account-details-outline"
-import MdiCreditCardOutline from "~icons/mdi/credit-card-outline"
-import MdiDomain from "~icons/mdi/domain"
-
-const navbarClassNames = {
-	base: "h-20 w-full mb-7 px-7 bg-transparent",
-	wrapper: "w-full max-w-none p-0",
-}
 
 const Header = memo(() => {
 	const { user, logoutAndRedirect } = useAuth()
@@ -22,34 +13,21 @@ const Header = memo(() => {
 	}, [logoutAndRedirect])
 
 	return (
-		<Navbar classNames={navbarClassNames}>
-			<NavbarContent>
-				<NavbarItem className="flex-1">
-					<Breadcrumbs />
-				</NavbarItem>
-			</NavbarContent>
+		<nav className="mb-7 flex h-20 w-full items-center bg-transparent px-7">
+			<div className="flex-1">
+				<Breadcrumbs />
+			</div>
 
-			<NavbarContent className="items-center gap-5" justify="end">
+			<div className="flex items-center gap-5">
 				<Badge.Anchor>
-					<Button
-						aria-label="more than 99 notifications"
-						className="bg-white shadow-md"
-						isIconOnly
-						radius="full"
-						variant="light"
-					>
+					<Button aria-label="more than 99 notifications" className="bg-white shadow-md" isIconOnly variant="ghost">
 						<MdiBellOutline />
 					</Button>
 					<Badge color="danger">3</Badge>
 				</Badge.Anchor>
-				<Dropdown className="p-0" placement="bottom-end">
+				<Dropdown>
 					<Dropdown.Trigger>
-						<Avatar
-							as="button"
-							className="cursor-pointer transition-transform lg:h-10 lg:w-10"
-							color="secondary"
-							size="sm"
-						>
+						<Avatar className="cursor-pointer transition-transform lg:h-10 lg:w-10" size="sm">
 							<Avatar.Image alt="Jason Hughes" src="https://i.pravatar.cc/150?u=a042581f4e29026704d" />
 							<Avatar.Fallback>JH</Avatar.Fallback>
 						</Avatar>
@@ -68,28 +46,13 @@ const Header = memo(() => {
 							<Separator className="my-1.5" />
 
 							<Dropdown.Section className="m-0">
-								<Dropdown.Item
-									className="px-0 py-2"
-									id="settings"
-									textValue="My profile"
-									startContent={<MdiCardAccountDetailsOutline className="h-4 w-4" />}
-								>
+								<Dropdown.Item className="px-0 py-2" id="settings" textValue="My profile">
 									<Label>My profile</Label>
 								</Dropdown.Item>
-								<Dropdown.Item
-									className="px-0 py-2"
-									id="team_settings"
-									textValue="School settings"
-									startContent={<MdiDomain className="h-4 w-4" />}
-								>
+								<Dropdown.Item className="px-0 py-2" id="team_settings" textValue="School settings">
 									<Label>School settings</Label>
 								</Dropdown.Item>
-								<Dropdown.Item
-									className="px-0 py-2"
-									id="analytics"
-									textValue="Subscription"
-									startContent={<MdiCreditCardOutline className="h-4 w-4" />}
-								>
+								<Dropdown.Item className="px-0 py-2" id="analytics" textValue="Subscription">
 									<Label>Subscription</Label>
 								</Dropdown.Item>
 							</Dropdown.Section>
@@ -97,22 +60,15 @@ const Header = memo(() => {
 							<Separator className="my-1.5" />
 
 							<Dropdown.Section>
-								<Dropdown.Item
-									className="px-0 py-2"
-									color="danger"
-									id="logout"
-									onPress={handleLogout}
-									textValue="Log Out"
-									startContent={<MaterialSymbolsLogoutRounded className="h-4 w-4" />}
-								>
+								<Dropdown.Item className="px-0 py-2" id="logout" onPress={handleLogout} textValue="Log Out">
 									<Label>Log Out</Label>
 								</Dropdown.Item>
 							</Dropdown.Section>
 						</Dropdown.Menu>
 					</Dropdown.Popover>
 				</Dropdown>
-			</NavbarContent>
-		</Navbar>
+			</div>
+		</nav>
 	)
 })
 

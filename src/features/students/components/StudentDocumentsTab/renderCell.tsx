@@ -67,7 +67,7 @@ export function renderCell(document: StudentDocument, columnKey: React.Key) {
 						className={statusTextClass[document.status]}
 						color={statusColorMap[document.status]}
 						size="md"
-						variant="solid"
+						variant="primary"
 					>
 						{statusLabelMap[document.status]}
 					</Chip>
@@ -97,7 +97,7 @@ export function renderCell(document: StudentDocument, columnKey: React.Key) {
 				<div className="flex justify-center">
 					<Dropdown>
 						<Dropdown.Trigger>
-							<Button isIconOnly radius="md" variant="light">
+							<Button isIconOnly variant="ghost">
 								<svg
 									aria-hidden="true"
 									className="size-5 text-gray-600"

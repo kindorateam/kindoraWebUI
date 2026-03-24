@@ -12,13 +12,7 @@ const CompactErrorFallback = ({ error, resetError }: ErrorFallbackProps) => {
 			<MdiAlertOutline className="mb-4 h-12 w-12 text-warning" />
 			<h3 className="mb-2 font-semibold text-lg">Something went wrong</h3>
 			<p className="mb-4 text-gray-600 text-sm dark:text-gray-400">{getUserMessage(error)}</p>
-			<Button
-				color="primary"
-				onPress={resetError}
-				size="sm"
-				startContent={<MdiRefresh className="h-4 w-4" />}
-				variant="flat"
-			>
+			<Button variant="secondary" onPress={resetError} size="sm">
 				Try Again
 			</Button>
 		</div>

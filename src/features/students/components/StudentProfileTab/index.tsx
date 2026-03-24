@@ -1,4 +1,6 @@
-import { Avatar, Card, Chip, Input } from "@heroui/react"
+import { Avatar, Card, Chip, FieldError,
+	Input, Label, TextField,
+	} from "@heroui/react"
 
 import JamMedical from "~icons/jam/medical"
 import LucideUserRound from "~icons/lucide/user-round"
@@ -52,7 +54,7 @@ const StudentProfileTab = ({ student }: StudentProfileTabProps) => {
 	]
 
 	return (
-		<Card className="p-5" radius="md" shadow="sm">
+		<Card className="p-5">
 			<Card.Content className="gap-10 p-0">
 				<section className="flex flex-col gap-6">
 					<div className="flex items-center gap-2 px-4 py-1.5">
@@ -69,22 +71,17 @@ const StudentProfileTab = ({ student }: StudentProfileTabProps) => {
 						<div className="grid gap-2 lg:grid-cols-3">
 							{personalInfoFields.map((field) => (
 								<Input
-									className={field.className}
-									classNames={readOnlyFieldClassNames}
-									isReadOnly
+									className={field.className} readOnly
 									key={field.key}
 									label={field.label}
-									radius="md"
-									size="sm"
 									value={field.value}
-									variant="flat"
-								/>
+									variant="secondary"/>
 							))}
 						</div>
 
 						<div className="flex flex-wrap gap-2">
 							{(student.tags?.length ? student.tags : ["No tags"]).map((tag) => (
-								<Chip className="bg-primary-50" key={tag} size="sm" variant="flat">
+								<Chip className="bg-primary-50" key={tag} size="sm" variant="soft">
 									{tag}
 								</Chip>
 							))}
@@ -107,60 +104,54 @@ const StudentProfileTab = ({ student }: StudentProfileTabProps) => {
 								</Avatar>
 
 								<div className="grid gap-2 lg:grid-cols-3">
-									<Input
-										classNames={readOnlyFieldClassNames}
-										isReadOnly
-										label="First Name"
-										radius="md"
-										size="sm"
-										value={parent.firstName}
-										variant="flat"
-									/>
-									<Input
-										classNames={readOnlyFieldClassNames}
-										isReadOnly
-										label="Last Name"
-										radius="md"
-										size="sm"
-										value={parent.lastName}
-										variant="flat"
-									/>
-									<Input
-										classNames={readOnlyFieldClassNames}
-										isReadOnly
-										label="Relationship to student"
-										radius="md"
-										size="sm"
-										value={parent.relationshipToStudent ?? "N/A"}
-										variant="flat"
-									/>
-									<Input
-										classNames={readOnlyFieldClassNames}
-										isReadOnly
-										label="Email"
-										radius="md"
-										size="sm"
-										value={parent.email ?? "N/A"}
-										variant="flat"
-									/>
-									<Input
-										classNames={readOnlyFieldClassNames}
-										isReadOnly
-										label="Phone"
-										radius="md"
-										size="sm"
-										value={parent.phone ?? "N/A"}
-										variant="flat"
-									/>
-									<Input
-										classNames={readOnlyFieldClassNames}
-										isReadOnly
-										label="Pin"
-										radius="md"
-										size="sm"
-										value={parent.pin ?? "N/A"}
-										variant="flat"
-									/>
+									<TextField variant="secondary" isReadOnly>
+
+										<Label>First Name</Label>
+
+										<Input
+										value={parent.firstName}/>
+
+									</TextField>
+									<TextField variant="secondary" isReadOnly>
+
+										<Label>Last Name</Label>
+
+										<Input
+										value={parent.lastName}/>
+
+									</TextField>
+									<TextField variant="secondary" isReadOnly>
+
+										<Label>Relationship to student</Label>
+
+										<Input
+										value={parent.relationshipToStudent ?? "N/A"}/>
+
+									</TextField>
+									<TextField variant="secondary" isReadOnly>
+
+										<Label>Email</Label>
+
+										<Input
+										value={parent.email ?? "N/A"}/>
+
+									</TextField>
+									<TextField variant="secondary" isReadOnly>
+
+										<Label>Phone</Label>
+
+										<Input
+										value={parent.phone ?? "N/A"}/>
+
+									</TextField>
+									<TextField variant="secondary" isReadOnly>
+
+										<Label>Pin</Label>
+
+										<Input
+										value={parent.pin ?? "N/A"}/>
+
+									</TextField>
 								</div>
 							</div>
 						))}
@@ -182,40 +173,35 @@ const StudentProfileTab = ({ student }: StudentProfileTabProps) => {
 								</Avatar>
 
 								<div className="grid gap-2 lg:grid-cols-3">
-									<Input
-										classNames={readOnlyFieldClassNames}
-										isReadOnly
-										label="First Name"
-										radius="md"
-										size="sm"
-										value={sibling.firstName}
-										variant="flat"
-									/>
-									<Input
-										classNames={readOnlyFieldClassNames}
-										isReadOnly
-										label="Last Name"
-										radius="md"
-										size="sm"
-										value={sibling.lastName}
-										variant="flat"
-									/>
-									<Input
-										classNames={readOnlyFieldClassNames}
-										isReadOnly
-										label="Relationship to student"
-										radius="md"
-										size="sm"
-										value={sibling.relationshipToStudent ?? "N/A"}
-										variant="flat"
-									/>
-									<Input
-										className="lg:col-span-2"
-										classNames={readOnlyFieldClassNames}
-										isReadOnly
-										label="Date of Birth"
-										radius="md"
-										size="sm"
+									<TextField variant="secondary" isReadOnly>
+
+										<Label>First Name</Label>
+
+										<Input
+										value={sibling.firstName}/>
+
+									</TextField>
+									<TextField variant="secondary" isReadOnly>
+
+										<Label>Last Name</Label>
+
+										<Input
+										value={sibling.lastName}/>
+
+									</TextField>
+									<TextField variant="secondary" isReadOnly>
+
+										<Label>Relationship to student</Label>
+
+										<Input
+										value={sibling.relationshipToStudent ?? "N/A"}/>
+
+									</TextField>
+									<TextField className="lg:col-span-2" variant="secondary" isReadOnly>
+
+										<Label>Date of Birth</Label>
+
+										<Input
 										value={
 											sibling.dateOfBirth
 												? new Date(sibling.dateOfBirth).toLocaleDateString("en-US", {
@@ -224,18 +210,17 @@ const StudentProfileTab = ({ student }: StudentProfileTabProps) => {
 														year: "numeric",
 													})
 												: "N/A"
-										}
-										variant="flat"
-									/>
-									<Input
-										classNames={readOnlyFieldClassNames}
-										isReadOnly
-										label="Assigned rooms"
-										radius="md"
-										size="sm"
-										value={sibling.assignedRoomTitle ?? student.room?.title ?? "No room assigned"}
-										variant="flat"
-									/>
+										}/>
+
+									</TextField>
+									<TextField variant="secondary" isReadOnly>
+
+										<Label>Assigned rooms</Label>
+
+										<Input
+										value={sibling.assignedRoomTitle ?? student.room?.title ?? "No room assigned"}/>
+
+									</TextField>
 								</div>
 							</div>
 						))}
@@ -257,52 +242,46 @@ const StudentProfileTab = ({ student }: StudentProfileTabProps) => {
 								</Avatar>
 
 								<div className="grid gap-2 lg:grid-cols-3">
-									<Input
-										classNames={readOnlyFieldClassNames}
-										isReadOnly
-										label="First Name"
-										radius="md"
-										size="sm"
-										value={guardian.firstName}
-										variant="flat"
-									/>
-									<Input
-										classNames={readOnlyFieldClassNames}
-										isReadOnly
-										label="Last Name"
-										radius="md"
-										size="sm"
-										value={guardian.lastName}
-										variant="flat"
-									/>
-									<Input
-										classNames={readOnlyFieldClassNames}
-										isReadOnly
-										label="Relationship to student"
-										radius="md"
-										size="sm"
-										value={guardian.relationshipToStudent ?? "N/A"}
-										variant="flat"
-									/>
-									<Input
-										className="lg:col-span-2"
-										classNames={readOnlyFieldClassNames}
-										isReadOnly
-										label="Phone"
-										radius="md"
-										size="sm"
-										value={guardian.phone ?? "N/A"}
-										variant="flat"
-									/>
-									<Input
-										classNames={readOnlyFieldClassNames}
-										isReadOnly
-										label="Pin"
-										radius="md"
-										size="sm"
-										value={guardian.pin ?? "N/A"}
-										variant="flat"
-									/>
+									<TextField variant="secondary" isReadOnly>
+
+										<Label>First Name</Label>
+
+										<Input
+										value={guardian.firstName}/>
+
+									</TextField>
+									<TextField variant="secondary" isReadOnly>
+
+										<Label>Last Name</Label>
+
+										<Input
+										value={guardian.lastName}/>
+
+									</TextField>
+									<TextField variant="secondary" isReadOnly>
+
+										<Label>Relationship to student</Label>
+
+										<Input
+										value={guardian.relationshipToStudent ?? "N/A"}/>
+
+									</TextField>
+									<TextField className="lg:col-span-2" variant="secondary" isReadOnly>
+
+										<Label>Phone</Label>
+
+										<Input
+										value={guardian.phone ?? "N/A"}/>
+
+									</TextField>
+									<TextField variant="secondary" isReadOnly>
+
+										<Label>Pin</Label>
+
+										<Input
+										value={guardian.pin ?? "N/A"}/>
+
+									</TextField>
 								</div>
 							</div>
 						))}
@@ -316,51 +295,47 @@ const StudentProfileTab = ({ student }: StudentProfileTabProps) => {
 					</div>
 
 					<div className="grid gap-2 lg:grid-cols-2">
-						<Input
-							classNames={readOnlyFieldClassNames}
-							isReadOnly
-							label="Allergies"
-							radius="md"
-							size="sm"
-							value={student.medicalInfo?.allergies?.[0] ?? "No allergies"}
-							variant="flat"
-						/>
-						<Input
-							classNames={readOnlyFieldClassNames}
-							isReadOnly
-							label="Medications"
-							radius="md"
-							size="sm"
-							value={student.medicalInfo?.medications ?? "-"}
-							variant="flat"
-						/>
+						<TextField variant="secondary" isReadOnly>
+
+							<Label>Allergies</Label>
+
+							<Input
+							value={student.medicalInfo?.allergies?.[0] ?? "No allergies"}/>
+
+						</TextField>
+						<TextField variant="secondary" isReadOnly>
+
+							<Label>Medications</Label>
+
+							<Input
+							value={student.medicalInfo?.medications ?? "-"}/>
+
+						</TextField>
 						<div className="flex flex-wrap gap-2 lg:col-span-2">
 							{(student.medicalInfo?.allergies?.length ? student.medicalInfo.allergies : ["No allergies"]).map(
 								(allergy) => (
-									<Chip className="bg-primary-50" key={allergy} size="sm" variant="flat">
+									<Chip className="bg-primary-50" key={allergy} size="sm" variant="soft">
 										{allergy}
 									</Chip>
 								),
 							)}
 						</div>
-						<Input
-							classNames={readOnlyFieldClassNames}
-							isReadOnly
-							label="Doctor"
-							radius="md"
-							size="sm"
-							value={student.medicalInfo?.doctor ?? "N/A"}
-							variant="flat"
-						/>
-						<Input
-							classNames={readOnlyFieldClassNames}
-							isReadOnly
-							label="Doctor Phone"
-							radius="md"
-							size="sm"
-							value={student.medicalInfo?.doctorPhone ?? "N/A"}
-							variant="flat"
-						/>
+						<TextField variant="secondary" isReadOnly>
+
+							<Label>Doctor</Label>
+
+							<Input
+							value={student.medicalInfo?.doctor ?? "N/A"}/>
+
+						</TextField>
+						<TextField variant="secondary" isReadOnly>
+
+							<Label>Doctor Phone</Label>
+
+							<Input
+							value={student.medicalInfo?.doctorPhone ?? "N/A"}/>
+
+						</TextField>
 					</div>
 				</section>
 			</Card.Content>

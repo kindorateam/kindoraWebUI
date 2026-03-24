@@ -21,7 +21,7 @@ const Step2Preview = ({ content }: Step2PreviewProps) => {
 		<div className="mx-auto max-w-2xl p-6">
 			<p className="mb-4 text-center text-default-500 text-sm">Preview how your newsletter will appear to recipients</p>
 
-			<Card className="border border-default-200" shadow="sm">
+			<Card className="border border-default-200">
 				<Card.Content className="p-8">
 					{/* biome-ignore lint/security/noDangerouslySetInnerHtml: Content comes from local editor state. */}
 					<div className="newsletter-editor newsletter-preview" dangerouslySetInnerHTML={{ __html: content }} />

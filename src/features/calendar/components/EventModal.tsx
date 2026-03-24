@@ -1,4 +1,6 @@
-import { Button, Input, Label, ListBox, Modal, Select, Switch, Textarea, toast } from "@heroui/react"
+import { Button, FieldError,
+	Input, Label, ListBox, Modal, Select, Switch, TextArea, toast, TextField,
+	} from "@heroui/react"
 import { useAtomValue } from "jotai"
 import { useEffect, useState } from "react"
 
@@ -126,22 +128,27 @@ const EventModal = () => {
 						<Modal.Heading>{isEditMode ? "Edit Event" : "New Event"}</Modal.Heading>
 					</Modal.Header>
 					<Modal.Body className="gap-4">
-						<Input
-							label="Title"
+						<TextField isRequired>
+
+							<Label>Title</Label>
+
+							<Input
 							placeholder="Event title"
 							value={formData.title}
-							onValueChange={(v) => updateField("title", v)}
-							isRequired
-							autoFocus
-						/>
+							onChange={(e: React.ChangeEvent<HTMLInputElement>) => ((v) => updateField("title", v))(e.target.value)}
+							autoFocus/>
 
-						<Textarea
+						</TextField>
+
+						<TextArea
 							label="Description"
 							placeholder="Optional description"
 							value={formData.description}
-							onValueChange={(v) => updateField("description", v)}
+							onChange={(e: React.ChangeEvent<HTMLInputElement>) => ((v) => updateField("description", v))(e.target.value)}
 							minRows={2}
 						/>
+
+
 
 						<Switch size="sm" isSelected={formData.allDay} onChange={(e) => updateField("allDay", e.target.checked)}>
 							<Switch.Control><Switch.Thumb /></Switch.Control>
@@ -149,38 +156,52 @@ const EventModal = () => {
 						</Switch>
 
 						<div className="grid grid-cols-2 gap-3">
-							<Input
-								type="date"
-								label="Start date"
-								value={formData.startDate}
-								onValueChange={(v) => updateField("startDate", v)}
-								isRequired
-							/>
-							{!formData.allDay && (
+							<TextField isRequired>
+
+								<Label>Start date</Label>
+
 								<Input
+								type="date"
+								value={formData.startDate}
+								onChange={(e: React.ChangeEvent<HTMLInputElement>) => ((v) => updateField("startDate", v))(e.target.value)}/>
+
+							</TextField>
+							{!formData.allDay && (
+								<TextField>
+
+									<Label>Start time</Label>
+
+									<Input
 									type="time"
-									label="Start time"
 									value={formData.startTime}
-									onValueChange={(v) => updateField("startTime", v)}
-								/>
+									onChange={(e: React.ChangeEvent<HTMLInputElement>) => ((v) => updateField("startTime", v))(e.target.value)}/>
+
+								</TextField>
 							)}
 						</div>
 
 						<div className="grid grid-cols-2 gap-3">
-							<Input
-								type="date"
-								label="End date"
-								value={formData.endDate}
-								onValueChange={(v) => updateField("endDate", v)}
-								isRequired
-							/>
-							{!formData.allDay && (
+							<TextField isRequired>
+
+								<Label>End date</Label>
+
 								<Input
+								type="date"
+								value={formData.endDate}
+								onChange={(e: React.ChangeEvent<HTMLInputElement>) => ((v) => updateField("endDate", v))(e.target.value)}/>
+
+							</TextField>
+							{!formData.allDay && (
+								<TextField>
+
+									<Label>End time</Label>
+
+									<Input
 									type="time"
-									label="End time"
 									value={formData.endTime}
-									onValueChange={(v) => updateField("endTime", v)}
-								/>
+									onChange={(e: React.ChangeEvent<HTMLInputElement>) => ((v) => updateField("endTime", v))(e.target.value)}/>
+
+								</TextField>
 							)}
 						</div>
 
@@ -210,15 +231,15 @@ const EventModal = () => {
 					</Modal.Body>
 					<Modal.Footer>
 						{isEditMode && (
-							<Button color="danger" variant="light" onPress={handleDelete} isDisabled={isLoading}>
+							<Button variant="ghost" onPress={handleDelete} isDisabled={isLoading}>
 								Delete
 							</Button>
 						)}
 						<div className="flex-1" />
-						<Button color="default" variant="flat" onPress={handleClose} isDisabled={isLoading}>
+						<Button variant="ghost" onPress={handleClose} isDisabled={isLoading}>
 							Cancel
 						</Button>
-						<Button color="primary" onPress={handleSubmit} isLoading={isLoading} isDisabled={!formData.title.trim()}>
+						<Button variant="primary" onPress={handleSubmit} isPending={isLoading} isDisabled={!formData.title.trim()}>
 							{isEditMode ? "Save" : "Create"}
 						</Button>
 					</Modal.Footer>

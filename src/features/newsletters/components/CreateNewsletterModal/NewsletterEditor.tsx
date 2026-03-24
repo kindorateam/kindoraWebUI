@@ -541,12 +541,11 @@ const NewsletterEditor = ({ content, onChange }: NewsletterEditorProps) => {
 							<div className="flex gap-2">
 								<Input
 									placeholder="https://example.com"
-									size="sm"
 									value={linkUrl}
 									onKeyDown={(e) => e.key === "Enter" && setLink()}
-									onValueChange={setLinkUrl}
+									onChange={(e: React.ChangeEvent<HTMLInputElement>) => (setLinkUrl)(e.target.value)}
 								/>
-								<Button color="primary" onPress={setLink} size="sm">
+								<Button variant="primary" onPress={setLink} size="sm">
 									{linkUrl ? "Set" : "Remove"}
 								</Button>
 							</div>
@@ -558,7 +557,7 @@ const NewsletterEditor = ({ content, onChange }: NewsletterEditorProps) => {
 				<Popover isOpen={isImageOpen} onOpenChange={setIsImageOpen} placement="bottom">
 					<Tooltip delay={500}>
 						<Popover.Trigger>
-							<Button isIconOnly size="sm" tabIndex={-1} variant="light">
+							<Button isIconOnly size="sm" tabIndex={-1} variant="ghost">
 								<TablerPhoto className="size-4" />
 							</Button>
 						</Popover.Trigger>
@@ -569,12 +568,11 @@ const NewsletterEditor = ({ content, onChange }: NewsletterEditorProps) => {
 							<div className="flex gap-2">
 								<Input
 									placeholder="Image URL"
-									size="sm"
 									value={imageUrl}
 									onKeyDown={(e) => e.key === "Enter" && addImage()}
-									onValueChange={setImageUrl}
+									onChange={(e: React.ChangeEvent<HTMLInputElement>) => (setImageUrl)(e.target.value)}
 								/>
-								<Button color="primary" isDisabled={!imageUrl} onPress={addImage} size="sm">
+								<Button variant="primary" isDisabled={!imageUrl} onPress={addImage} size="sm">
 									Add
 								</Button>
 							</div>

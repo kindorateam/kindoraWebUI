@@ -1,4 +1,6 @@
-import { DateField, Input, Label, ListBox, Select, TextArea } from "@heroui/react"
+import { DateField, FieldError,
+	Input, Label, ListBox, Select, TextArea, TextField,
+	} from "@heroui/react"
 import { parseDate } from "@internationalized/date"
 import { Controller, useFormContext } from "react-hook-form"
 
@@ -47,18 +49,18 @@ const PersonalInfoStep = () => {
 					control={control}
 					name="phone"
 					render={({ field }) => (
-						<Input
+						<TextField isInvalid={!!errors.phone} variant="secondary">
+
+							<Label>Phone</Label>
+
+							<Input
 							{...field}
-							errorMessage={errors.phone?.message}
-							isInvalid={!!errors.phone}
-							label="Phone"
-							labelPlacement="inside"
 							placeholder="Enter phone number"
-							radius="md"
-							size="sm"
-							type="tel"
-							variant="flat"
-						/>
+							type="tel"/>
+
+							<FieldError>{errors.phone?.message}</FieldError>
+
+						</TextField>
 					)}
 				/>
 				<Controller
@@ -133,51 +135,51 @@ const PersonalInfoStep = () => {
 					control={control}
 					name="city"
 					render={({ field }) => (
-						<Input
+						<TextField isInvalid={!!errors.city} variant="secondary">
+
+							<Label>City</Label>
+
+							<Input
 							{...field}
-							errorMessage={errors.city?.message}
-							isInvalid={!!errors.city}
-							label="City"
-							labelPlacement="inside"
-							placeholder="Enter city"
-							radius="md"
-							size="sm"
-							variant="flat"
-						/>
+							placeholder="Enter city"/>
+
+							<FieldError>{errors.city?.message}</FieldError>
+
+						</TextField>
 					)}
 				/>
 				<Controller
 					control={control}
 					name="streetAddress"
 					render={({ field }) => (
-						<Input
+						<TextField isInvalid={!!errors.streetAddress} variant="secondary">
+
+							<Label>Street address</Label>
+
+							<Input
 							{...field}
-							errorMessage={errors.streetAddress?.message}
-							isInvalid={!!errors.streetAddress}
-							label="Street address"
-							labelPlacement="inside"
-							placeholder="Enter street address"
-							radius="md"
-							size="sm"
-							variant="flat"
-						/>
+							placeholder="Enter street address"/>
+
+							<FieldError>{errors.streetAddress?.message}</FieldError>
+
+						</TextField>
 					)}
 				/>
 				<Controller
 					control={control}
 					name="zipCode"
 					render={({ field }) => (
-						<Input
+						<TextField isInvalid={!!errors.zipCode} variant="secondary">
+
+							<Label>ZIP code</Label>
+
+							<Input
 							{...field}
-							errorMessage={errors.zipCode?.message}
-							isInvalid={!!errors.zipCode}
-							label="ZIP code"
-							labelPlacement="inside"
-							placeholder="Enter ZIP code"
-							radius="md"
-							size="sm"
-							variant="flat"
-						/>
+							placeholder="Enter ZIP code"/>
+
+							<FieldError>{errors.zipCode?.message}</FieldError>
+
+						</TextField>
 					)}
 				/>
 				<Controller
@@ -191,9 +193,8 @@ const PersonalInfoStep = () => {
 							label="Notes"
 							labelPlacement="inside"
 							placeholder="Enter notes"
-							radius="md"
 							size="sm"
-							variant="flat"
+							variant="secondary"
 						/>
 					)}
 				/>

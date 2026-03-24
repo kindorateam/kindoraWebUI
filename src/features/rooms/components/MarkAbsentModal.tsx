@@ -93,7 +93,7 @@ const MarkAbsentModal = () => {
 						>
 							<Label>Reason</Label>
 							<Select.Trigger>
-								<Select.Value placeholder="Select absence reason" />
+								<Select.Value />
 								<Select.Indicator />
 							</Select.Trigger>
 							<Select.Popover>
@@ -120,16 +120,16 @@ const MarkAbsentModal = () => {
 					</Modal.Body>
 					<Modal.Footer className="flex-col gap-2">
 						<Button
-							color="primary"
+							variant="primary"
 							fullWidth
 							isDisabled={!isFormValid}
-							isLoading={markAbsentMutation.isPending}
+							isPending={markAbsentMutation.isPending}
 							onPress={handleSubmit}
 							size="md"
 						>
 							Confirm
 						</Button>
-						<Button color="default" fullWidth isDisabled={markAbsentMutation.isPending} onPress={handleClose} size="md">
+						<Button fullWidth isDisabled={markAbsentMutation.isPending} onPress={handleClose} size="md">
 							Cancel
 						</Button>
 					</Modal.Footer>

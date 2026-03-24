@@ -18,7 +18,7 @@ const ConfirmRoomStep = () => {
 				{isGradient ? (
 					<div className="size-14 rounded-full" style={{ background: formData.avatarPreview }} />
 				) : (
-					<Avatar className="size-14 text-lg" color="primary" showFallback src={formData.avatarPreview}>
+					<Avatar className="size-14 text-lg" src={formData.avatarPreview}>
 						<Avatar.Image src={formData.avatarPreview ?? undefined} alt={formData.name} />
 						<Avatar.Fallback>{formData.name?.charAt(0) ?? "R"}</Avatar.Fallback>
 					</Avatar>

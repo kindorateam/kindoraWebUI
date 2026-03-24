@@ -73,16 +73,10 @@ const StudentsTableCell = ({ student, columnKey, onStudentClick }: StudentsTable
 
 		case "room":
 			return student.room ? (
-				<Chip
-					className="bg-primary-50 px-3"
-					size="sm"
-					variant="flat"
-					startContent={
-						<Avatar className="size-5 bg-default-300 text-[10px] text-default-700">
-							<Avatar.Fallback>{student.room.title[0]}</Avatar.Fallback>
-						</Avatar>
-					}
-				>
+				<Chip className="bg-primary-50 px-3" size="sm" variant="soft">
+					<Avatar className="size-5 bg-default-300 text-[10px] text-default-700">
+						<Avatar.Fallback>{student.room.title[0]}</Avatar.Fallback>
+					</Avatar>
 					<span className="px-1 font-regular text-default-foreground text-sm">{student.room.title}</span>
 				</Chip>
 			) : (
@@ -97,13 +91,13 @@ const StudentsTableCell = ({ student, columnKey, onStudentClick }: StudentsTable
 			return (
 				<div className="flex items-center gap-1">
 					{visibleTags.map((tag) => (
-						<Chip className="bg-default-100" key={tag} size="sm" variant="flat">
+						<Chip className="bg-default-100" key={tag} size="sm" variant="soft">
 							<span className="text-sm">{tag}</span>
 						</Chip>
 					))}
 					{hiddenTags.length > 0 && (
 						<Tooltip>
-							<Chip className="cursor-pointer bg-default-100" size="sm" variant="flat">
+							<Chip className="cursor-pointer bg-default-100" size="sm" variant="soft">
 								<span className="text-sm">+{hiddenTags.length}</span>
 							</Chip>
 							<Tooltip.Content>{hiddenTags.join(", ")}</Tooltip.Content>
@@ -118,7 +112,7 @@ const StudentsTableCell = ({ student, columnKey, onStudentClick }: StudentsTable
 				<div className="flex justify-center">
 					<Dropdown>
 						<Dropdown.Trigger>
-							<Button isIconOnly radius="md" size="sm" variant="light">
+							<Button isIconOnly size="sm" variant="ghost">
 								<svg
 									aria-hidden="true"
 									className="size-5 text-default-400"

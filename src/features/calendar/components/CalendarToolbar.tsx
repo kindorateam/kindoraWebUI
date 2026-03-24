@@ -25,7 +25,7 @@ const CalendarToolbar = ({ title, onNavigatePrev, onNavigateNext, onNavigateToda
 	return (
 		<div className="mb-4 flex flex-wrap items-center justify-between gap-4">
 			<div className="flex items-center gap-2">
-				<ButtonGroup size="sm" variant="flat">
+				<ButtonGroup size="sm" variant="ghost">
 					<Button isIconOnly onPress={onNavigatePrev}>
 						<TablerChevronLeft className="size-[18px]" />
 					</Button>
@@ -33,7 +33,7 @@ const CalendarToolbar = ({ title, onNavigatePrev, onNavigateNext, onNavigateToda
 						<TablerChevronRight className="size-[18px]" />
 					</Button>
 				</ButtonGroup>
-				<Button size="sm" variant="flat" onPress={onNavigateToday}>
+				<Button size="sm" variant="ghost" onPress={onNavigateToday}>
 					Today
 				</Button>
 				<h2 className="ml-2 font-semibold text-xl">{title}</h2>
@@ -49,6 +49,8 @@ const CalendarToolbar = ({ title, onNavigatePrev, onNavigateNext, onNavigateToda
 					</Switch.Content>
 				</Switch>
 
+
+
 				<Tabs size="sm" selectedKey={currentView} onSelectionChange={(key) => setCurrentView(key as CalendarViewType)}>
 					<Tabs.ListContainer>
 						<Tabs.List aria-label="Calendar view">
@@ -61,14 +63,14 @@ const CalendarToolbar = ({ title, onNavigatePrev, onNavigateNext, onNavigateToda
 						</Tabs.List>
 					</Tabs.ListContainer>
 					{CALENDAR_VIEW_OPTIONS.map((opt) => (
-						<Tabs.Panel key={opt.key} id={opt.key} />
+						<Tabs.Panel key={opt.key} id={opt.key} >{null}</Tabs.Panel>
 					))}
 				</Tabs>
 
 				<Button
-					color="primary"
+					variant="primary"
 					size="sm"
-					startContent={<TablerPlus className="size-4" />}
+
 					onPress={() => openCreateEventModal()}
 				>
 					Add Event

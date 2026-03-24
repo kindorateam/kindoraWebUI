@@ -18,7 +18,7 @@ const Breadcrumbs = memo(() => {
 	}
 
 	return (
-		<HeroUIBreadcrumbs separator="/" variant="light">
+		<HeroUIBreadcrumbs separator="/" variant="ghost">
 			{filteredBreadcrumbs.map((crumb, index) => (
 				<HeroUIBreadcrumbs.Item className="text-base text-neutral-500" key={crumb.path}>
 					{index === filteredBreadcrumbs.length - 1 ? (

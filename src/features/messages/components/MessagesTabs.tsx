@@ -35,8 +35,8 @@ const MessagesTabs = ({ activeTab, onSelectionChange }: MessagesTabsProps) => {
 					</Tabs.Tab>
 				</Tabs.List>
 			</Tabs.ListContainer>
-			<Tabs.Panel id="all" />
-			<Tabs.Panel id="favorites" />
+			<Tabs.Panel id="all" >{null}</Tabs.Panel>
+			<Tabs.Panel id="favorites" >{null}</Tabs.Panel>
 		</Tabs>
 	)
 }

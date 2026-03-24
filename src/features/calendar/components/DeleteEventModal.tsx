@@ -54,10 +54,10 @@ const DeleteEventModal = () => {
 						<p className="text-default-400 text-sm">This action cannot be undone.</p>
 					</Modal.Body>
 					<Modal.Footer className="flex-col gap-2">
-						<Button color="danger" fullWidth isLoading={deleteMutation.isPending} onPress={handleDelete} size="md">
+						<Button variant="danger" fullWidth isPending={deleteMutation.isPending} onPress={handleDelete} size="md">
 							Delete
 						</Button>
-						<Button color="default" fullWidth isDisabled={deleteMutation.isPending} onPress={handleClose} size="md">
+						<Button fullWidth isDisabled={deleteMutation.isPending} onPress={handleClose} size="md">
 							Cancel
 						</Button>
 					</Modal.Footer>

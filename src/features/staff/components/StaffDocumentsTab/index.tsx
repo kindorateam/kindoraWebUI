@@ -1,4 +1,4 @@
-import { Button, Card, CardBody, Pagination, Spinner, Table } from "@heroui/react"
+import { Button, Card,  Pagination, Spinner, Table } from "@heroui/react"
 import { useMemo, useState } from "react"
 
 import TableError from "@/components/TableError"
@@ -33,12 +33,12 @@ const StaffDocumentsTab = ({ employeeId }: StaffDocumentsTabProps) => {
 	return (
 		<>
 			<Card>
-				<CardBody className="flex flex-col gap-4 p-4">
+				<Card.Content className="flex flex-col gap-4 p-4">
 					<div className="flex flex-col gap-4">
 						<div className="flex items-center justify-end">
 							<Button
-								color="primary"
-								endContent={<TablerCirclePlusFilled className="size-5 text-white" />}
+								variant="primary"
+
 								onPress={openAddDocumentModal}
 							>
 								Add Document
@@ -68,7 +68,7 @@ const StaffDocumentsTab = ({ employeeId }: StaffDocumentsTabProps) => {
 										)
 									}
 									items={error || isLoading ? [] : items}
-									isLoading={isLoading}
+									isPending={isLoading}
 									loadingContent={<Spinner size="lg" />}
 								>
 									{(doc) => (
@@ -93,7 +93,7 @@ const StaffDocumentsTab = ({ employeeId }: StaffDocumentsTabProps) => {
 							</div>
 						)}
 					</div>
-				</CardBody>
+				</Card.Content>
 			</Card>
 			<AddDocumentModal employeeId={employeeId} />
 			<DeleteDocumentModal employeeId={employeeId} />

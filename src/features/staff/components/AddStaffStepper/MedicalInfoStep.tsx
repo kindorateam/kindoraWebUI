@@ -1,4 +1,4 @@
-import { Chip, Input } from "@heroui/react"
+import { Chip, FieldError, Input, Label, TextField } from "@heroui/react"
 import { useState } from "react"
 import { Controller, useFormContext } from "react-hook-form"
 
@@ -51,22 +51,21 @@ const MedicalInfoStep = () => {
 
 			<div className="flex flex-col gap-3">
 				<div className="flex flex-col gap-2">
-					<Input
-						label="Allergies"
-						labelPlacement="inside"
-						onBlur={handleAddAllergy}
-						onChange={(e) => setAllergyInput(e.target.value)}
-						onKeyDown={handleAllergyKeyDown}
-						placeholder="Type and press Enter to add"
-						radius="md"
-						size="sm"
-						value={allergyInput}
-						variant="flat"
-					/>
+					<TextField variant="secondary">
+						<Label>Allergies</Label>
+
+						<Input
+							onBlur={handleAddAllergy}
+							onChange={(e) => setAllergyInput(e.target.value)}
+							onKeyDown={handleAllergyKeyDown}
+							placeholder="Type and press Enter to add"
+							value={allergyInput}
+						/>
+					</TextField>
 					{allergies.length > 0 && (
 						<div className="flex flex-wrap gap-1.5">
 							{allergies.map((allergy) => (
-								<Chip key={allergy} color="default" onClose={() => handleRemoveAllergy(allergy)} variant="flat">
+								<Chip key={allergy} color="default" variant="soft">
 									{allergy}
 								</Chip>
 							))}
@@ -78,17 +77,13 @@ const MedicalInfoStep = () => {
 					control={control}
 					name="medications"
 					render={({ field }) => (
-						<Input
-							{...field}
-							errorMessage={errors.medications?.message}
-							isInvalid={!!errors.medications}
-							label="Medications"
-							labelPlacement="inside"
-							radius="md"
-							size="sm"
-							value={field.value || ""}
-							variant="flat"
-						/>
+						<TextField isInvalid={!!errors.medications} variant="secondary">
+							<Label>Medications</Label>
+
+							<Input {...field} value={field.value || ""} />
+
+							<FieldError>{errors.medications?.message}</FieldError>
+						</TextField>
 					)}
 				/>
 
@@ -96,17 +91,13 @@ const MedicalInfoStep = () => {
 					control={control}
 					name="doctorName"
 					render={({ field }) => (
-						<Input
-							{...field}
-							errorMessage={errors.doctorName?.message}
-							isInvalid={!!errors.doctorName}
-							label="Doctor"
-							labelPlacement="inside"
-							radius="md"
-							size="sm"
-							value={field.value || ""}
-							variant="flat"
-						/>
+						<TextField isInvalid={!!errors.doctorName} variant="secondary">
+							<Label>Doctor</Label>
+
+							<Input {...field} value={field.value || ""} />
+
+							<FieldError>{errors.doctorName?.message}</FieldError>
+						</TextField>
 					)}
 				/>
 
@@ -114,17 +105,13 @@ const MedicalInfoStep = () => {
 					control={control}
 					name="doctorPhone"
 					render={({ field }) => (
-						<Input
-							{...field}
-							errorMessage={errors.doctorPhone?.message}
-							isInvalid={!!errors.doctorPhone}
-							label="Doctor Phone"
-							labelPlacement="inside"
-							radius="md"
-							size="sm"
-							value={field.value || ""}
-							variant="flat"
-						/>
+						<TextField isInvalid={!!errors.doctorPhone} variant="secondary">
+							<Label>Doctor Phone</Label>
+
+							<Input {...field} value={field.value || ""} />
+
+							<FieldError>{errors.doctorPhone?.message}</FieldError>
+						</TextField>
 					)}
 				/>
 			</div>

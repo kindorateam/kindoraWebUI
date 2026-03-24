@@ -33,7 +33,7 @@ const StudentDetailHeader = ({ student, onMoveToRoom, onScheduleAbsence }: Stude
 						<Avatar.Image src={student.avatar?.path} alt={studentName} />
 						<Avatar.Fallback>{`${student.firstName[0]}${student.lastName[0]}`}</Avatar.Fallback>
 					</Avatar>
-					<Badge color={student.checkedIn ? "success" : "danger"} placement="bottom-right" shape="circle" />
+					<Badge color={student.checkedIn ? "success" : "danger"} placement="bottom-right" />
 				</Badge.Anchor>
 
 				<div className="flex min-w-0 flex-1 flex-col gap-6 pt-1">
@@ -50,12 +50,11 @@ const StudentDetailHeader = ({ student, onMoveToRoom, onScheduleAbsence }: Stude
 
 						<Button
 							className="ml-auto shadow-sm"
-							endContent={<MageExchangeA className="size-4" />}
+
 							isDisabled={!onMoveToRoom}
 							onPress={onMoveToRoom}
-							radius="md"
 							size="md"
-							variant="bordered"
+							variant="outline"
 						>
 							Move to another room
 						</Button>
@@ -64,11 +63,10 @@ const StudentDetailHeader = ({ student, onMoveToRoom, onScheduleAbsence }: Stude
 					<div className="flex items-center gap-4">
 						<span className="text-neutral-600 text-sm">Schedule absence</span>
 						<Button
-							color="primary"
+							variant="primary"
 							isDisabled={!onScheduleAbsence}
 							isIconOnly
 							onPress={onScheduleAbsence}
-							radius="md"
 							size="sm"
 						>
 							<SolarCalendarBroken className="size-4 text-white" />

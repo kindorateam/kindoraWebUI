@@ -25,7 +25,7 @@ const DeleteDocumentModal = ({ studentId }: Props) => {
 					closeDeleteDocumentModal()
 				},
 				onError: (error) => {
-					toast.error("Failed to delete document", { description: getErrorMessage(error) })
+					toast.danger("Failed to delete document", { description: getErrorMessage(error) })
 				},
 			},
 		)
@@ -44,11 +44,10 @@ const DeleteDocumentModal = ({ studentId }: Props) => {
 								This action will permanently delete the attachment and cannot be reversed.
 							</p>
 							<div className="flex w-full flex-col gap-3">
-								<Button className="w-full" color="danger" isLoading={deleteMutation.isPending} onPress={handleDelete}>
+								<Button className="w-full" variant="danger" isPending={deleteMutation.isPending} onPress={handleDelete}>
 									Yes, delete
 								</Button>
 								<Button
-									color="default"
 									fullWidth
 									isDisabled={deleteMutation.isPending}
 									onPress={closeDeleteDocumentModal}

@@ -20,7 +20,7 @@ const ForgotPasswordConfirmation = ({ email: _email, onNext }: ForgotPasswordCon
 				</p>
 			</div>
 
-			<Button className="w-full" color="primary" onPress={onNext} size="md">
+			<Button className="w-full" variant="primary" onPress={onNext} size="md">
 				Next
 			</Button>
 		</Card.Content>

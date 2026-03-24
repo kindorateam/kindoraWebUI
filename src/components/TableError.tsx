@@ -23,14 +23,7 @@ const TableError = ({ onRetry }: TableErrorProps) => {
 				</div>
 
 				{onRetry && (
-					<Button
-						className="w-full"
-						color="primary"
-						endContent={<TablerRefresh aria-hidden className="size-5" />}
-						onPress={onRetry}
-						size="lg"
-						variant="solid"
-					>
+					<Button className="w-full" variant="primary" onPress={onRetry} size="lg">
 						Try Again
 					</Button>
 				)}

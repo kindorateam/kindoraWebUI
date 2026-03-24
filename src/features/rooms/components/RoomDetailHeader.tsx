@@ -35,7 +35,7 @@ const RoomDetailHeader = ({ activeTab, roomId, onTabChange }: RoomDetailHeaderPr
 		{
 			label: "Ratio",
 			icon: (
-				<Tooltip closeDelay={0} color="primary" delay={300}>
+				<Tooltip delay={300}>
 					<span className="inline-flex cursor-default items-center justify-center">
 						{isGoodRatio ? (
 							<PhSmileyDuotone className="size-5 text-success" />
@@ -106,7 +106,7 @@ const RoomDetailHeader = ({ activeTab, roomId, onTabChange }: RoomDetailHeaderPr
 					selectedKey={activeTab}
 					radius="sm"
 					size="sm"
-					variant="solid"
+					variant="primary"
 				>
 					<Tabs.ListContainer>
 						<Tabs.List aria-label="Room details tabs" className="shadow-md">
@@ -124,9 +124,9 @@ const RoomDetailHeader = ({ activeTab, roomId, onTabChange }: RoomDetailHeaderPr
 							</Tabs.Tab>
 						</Tabs.List>
 					</Tabs.ListContainer>
-					<Tabs.Panel id="students" />
-					<Tabs.Panel id="activity" />
-					<Tabs.Panel id="profile" />
+					<Tabs.Panel id="students" >{null}</Tabs.Panel>
+					<Tabs.Panel id="activity" >{null}</Tabs.Panel>
+					<Tabs.Panel id="profile" >{null}</Tabs.Panel>
 				</Tabs>
 			</div>
 		</div>

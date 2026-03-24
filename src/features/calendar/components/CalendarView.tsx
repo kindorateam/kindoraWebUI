@@ -186,7 +186,7 @@ const CalendarView = () => {
 				/>
 				{showInitialLoading && (
 					<div className="absolute inset-0 z-10 flex items-center justify-center bg-white/80 backdrop-blur-sm">
-						<Spinner label="Loading events..." />
+						<Spinner />
 					</div>
 				)}
 				{showInitialError && (

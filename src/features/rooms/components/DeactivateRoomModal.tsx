@@ -59,15 +59,15 @@ const DeactivateRoomModal = ({ onSuccess }: DeactivateRoomModalProps) => {
 					</Modal.Body>
 					<Modal.Footer className="flex-col gap-2">
 						<Button
-							color="danger"
+							variant="danger"
 							fullWidth
-							isLoading={inactivateMutation.isPending}
+							isPending={inactivateMutation.isPending}
 							onPress={handleDeactivate}
 							size="md"
 						>
 							Deactivate
 						</Button>
-						<Button color="default" fullWidth isDisabled={inactivateMutation.isPending} onPress={handleClose} size="md">
+						<Button fullWidth isDisabled={inactivateMutation.isPending} onPress={handleClose} size="md">
 							Cancel
 						</Button>
 					</Modal.Footer>

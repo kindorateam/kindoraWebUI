@@ -141,7 +141,7 @@ const ImagePickerModal = ({ isOpen, onClose, onSelect }: ImagePickerModalProps) 
 												style={{ backgroundImage: `url(${uploadPreview})` }}
 											/>
 											<Button
-												color="danger"
+												variant="danger"
 												onPress={() => {
 													setUploadedFile(null)
 													setUploadPreview(null)
@@ -150,7 +150,6 @@ const ImagePickerModal = ({ isOpen, onClose, onSelect }: ImagePickerModalProps) 
 													}
 												}}
 												size="sm"
-												variant="flat"
 											>
 												Remove
 											</Button>
@@ -178,7 +177,7 @@ const ImagePickerModal = ({ isOpen, onClose, onSelect }: ImagePickerModalProps) 
 						</Tabs>
 					</Modal.Body>
 					<Modal.Footer>
-						<Button color="primary" fullWidth isDisabled={isUploadDisabled} onPress={handleUpload}>
+						<Button variant="primary" fullWidth isDisabled={isUploadDisabled} onPress={handleUpload}>
 							Select
 						</Button>
 					</Modal.Footer>

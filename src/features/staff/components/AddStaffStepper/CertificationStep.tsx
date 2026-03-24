@@ -1,4 +1,6 @@
-import { Input, Label, ListBox, Select } from "@heroui/react"
+import { FieldError,
+	Input, Label, ListBox, Select, TextField,
+	} from "@heroui/react"
 import { Controller, useFormContext } from "react-hook-form"
 
 import TablerCertificate from "~icons/tabler/certificate"
@@ -62,17 +64,17 @@ const CertificationStep = () => {
 					control={control}
 					name="certification"
 					render={({ field }) => (
-						<Input
+						<TextField isInvalid={!!errors.certification} variant="secondary">
+
+							<Label>Certification</Label>
+
+							<Input
 							{...field}
-							errorMessage={errors.certification?.message}
-							isInvalid={!!errors.certification}
-							label="Certification"
-							labelPlacement="inside"
-							placeholder="Enter certification number"
-							radius="md"
-							size="sm"
-							variant="flat"
-						/>
+							placeholder="Enter certification number"/>
+
+							<FieldError>{errors.certification?.message}</FieldError>
+
+						</TextField>
 					)}
 				/>
 			</div>

@@ -34,7 +34,7 @@ export function renderCell(employee: EmployeeSummary, columnKey: React.Key, opti
 					type="button"
 				>
 					<Badge.Anchor>
-						<Avatar color="primary" size="sm">
+						<Avatar size="sm">
 							<Avatar.Image alt={fullName} src={avatarUrl} />
 							<Avatar.Fallback>{fullName.charAt(0)}</Avatar.Fallback>
 						</Avatar>
@@ -60,7 +60,7 @@ export function renderCell(employee: EmployeeSummary, columnKey: React.Key, opti
 				<div className="flex justify-center">
 					<Dropdown className="min-w-0">
 						<Dropdown.Trigger>
-							<Button isIconOnly radius="md" variant="light">
+							<Button isIconOnly variant="ghost">
 								<svg
 									aria-hidden="true"
 									className="size-5 text-gray-600"
@@ -83,7 +83,7 @@ export function renderCell(employee: EmployeeSummary, columnKey: React.Key, opti
 									id="view"
 									textValue="View"
 									className="text-success"
-									startContent={<TablerEye aria-hidden className="size-5" />}
+
 								>
 									<Label>View</Label>
 								</Dropdown.Item>
@@ -91,7 +91,7 @@ export function renderCell(employee: EmployeeSummary, columnKey: React.Key, opti
 									id="edit"
 									textValue="Edit"
 									className="text-warning"
-									startContent={<TablerEdit aria-hidden className="size-5" />}
+
 								>
 									<Label>Edit</Label>
 								</Dropdown.Item>
@@ -99,7 +99,7 @@ export function renderCell(employee: EmployeeSummary, columnKey: React.Key, opti
 									id="deactivate"
 									textValue="Deactivate"
 									className="text-danger"
-									startContent={<TablerTrash aria-hidden className="size-5" />}
+
 								>
 									<Label>Deactivate</Label>
 								</Dropdown.Item>

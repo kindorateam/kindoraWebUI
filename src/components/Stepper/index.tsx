@@ -78,10 +78,10 @@ const Stepper = ({
 
 			<div className="flex flex-col gap-3">
 				<Button
-					color="primary"
+					variant="primary"
 					fullWidth
 					isDisabled={isNextDisabled}
-					isLoading={isNextLoading}
+					isPending={isNextLoading}
 					onPress={handleNextClick}
 					size="md"
 				>

@@ -48,10 +48,10 @@ export default function DeleteDocumentModal({ employeeId }: Props) {
 								</p>
 							</div>
 							<div className="flex w-full flex-col gap-3">
-								<Button className="w-full" color="danger" isLoading={deleteMutation.isPending} onPress={handleDelete}>
+								<Button className="w-full" variant="danger" isPending={deleteMutation.isPending} onPress={handleDelete}>
 									Yes, delete
 								</Button>
-								<Button color="default" fullWidth isDisabled={deleteMutation.isPending} slot="close" size="md">
+								<Button fullWidth isDisabled={deleteMutation.isPending} slot="close" size="md">
 									Cancel
 								</Button>
 							</div>

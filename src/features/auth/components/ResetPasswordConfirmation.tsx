@@ -27,7 +27,7 @@ export default function ResetPasswordConfirmation({ onBackToSignIn }: ResetPassw
 				<p className="text-center text-foreground text-sm leading-5">You will be directed to the homepage</p>
 			</div>
 
-			<Button className="w-full" color="primary" onPress={onBackToSignIn} size="md">
+			<Button className="w-full" variant="primary" onPress={onBackToSignIn} size="md">
 				Back to Sign In
 			</Button>
 		</Card.Content>

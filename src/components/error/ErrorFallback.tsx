@@ -55,21 +55,10 @@ const ErrorFallback = ({ error, resetError, errorInfo }: ErrorFallbackProps) => 
 					)}
 
 					<div className="flex w-full gap-3">
-						<Button
-							className="flex-1"
-							color="primary"
-							onPress={resetError}
-							startContent={<MdiRefresh className="h-4 w-4" />}
-							variant="flat"
-						>
+						<Button className="flex-1" variant="secondary" onPress={resetError}>
 							Try Again
 						</Button>
-						<Button
-							className="flex-1"
-							color="primary"
-							onPress={handleGoHome}
-							startContent={<MdiHomeOutline className="h-4 w-4" />}
-						>
+						<Button className="flex-1" variant="primary" onPress={handleGoHome}>
 							Go Home
 						</Button>
 					</div>

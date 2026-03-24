@@ -67,7 +67,7 @@ export function renderCell(document: EmployeeDocument, columnKey: React.Key) {
 						className={statusTextClass[document.status]}
 						color={statusColorMap[document.status]}
 						size="md"
-						variant="solid"
+						variant="primary"
 					>
 						{statusLabelMap[document.status]}
 					</Chip>
@@ -97,7 +97,7 @@ export function renderCell(document: EmployeeDocument, columnKey: React.Key) {
 				<div className="flex justify-center">
 					<Dropdown>
 						<Dropdown.Trigger>
-							<Button isIconOnly radius="md" variant="light">
+							<Button isIconOnly variant="ghost">
 								<svg
 									aria-hidden="true"
 									className="size-5 text-gray-600"
@@ -120,7 +120,7 @@ export function renderCell(document: EmployeeDocument, columnKey: React.Key) {
 									id="view"
 									textValue="View"
 									className="text-success"
-									startContent={<TablerEye aria-hidden className="size-5" />}
+
 									onPress={() => handleView(document)}
 								>
 									<Label>View</Label>
@@ -129,7 +129,7 @@ export function renderCell(document: EmployeeDocument, columnKey: React.Key) {
 									id="download"
 									textValue="Download"
 									className="text-warning"
-									startContent={<TablerDownload aria-hidden className="size-5" />}
+
 									onPress={() => handleDownload(document)}
 								>
 									<Label>Download</Label>
@@ -138,7 +138,7 @@ export function renderCell(document: EmployeeDocument, columnKey: React.Key) {
 									id="delete"
 									textValue="Delete"
 									className="text-danger"
-									startContent={<TablerTrash aria-hidden className="size-5" />}
+
 									onPress={() => openDeleteDocumentModal(document.id)}
 								>
 									<Label>Delete</Label>

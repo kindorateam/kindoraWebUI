@@ -66,14 +66,14 @@ const CreateNewsletterModal = ({ isOpen, onOpenChange }: CreateNewsletterModalPr
 						<div className="flex w-full justify-between">
 							{currentStep === 1 ? (
 								<>
-									<Button color="default" onPress={handleAddToTemplates} variant="light">
+									<Button onPress={handleAddToTemplates} variant="ghost">
 										Add to templates
 									</Button>
 									<div className="flex gap-3">
-										<Button color="default" onPress={handleSaveDraft} variant="flat">
+										<Button onPress={handleSaveDraft} variant="ghost">
 											Save draft
 										</Button>
-										<Button color="primary" isDisabled={!hasContent} onPress={nextStep}>
+										<Button variant="primary" isDisabled={!hasContent} onPress={nextStep}>
 											Preview →
 										</Button>
 									</div>
@@ -82,10 +82,10 @@ const CreateNewsletterModal = ({ isOpen, onOpenChange }: CreateNewsletterModalPr
 								<>
 									<div />
 									<div className="flex gap-3">
-										<Button color="default" onPress={prevStep} variant="flat">
+										<Button onPress={prevStep} variant="ghost">
 											← Back
 										</Button>
-										<Button color="primary" isDisabled={!hasContent} onPress={handleSend}>
+										<Button variant="primary" isDisabled={!hasContent} onPress={handleSend}>
 											Send
 										</Button>
 									</div>

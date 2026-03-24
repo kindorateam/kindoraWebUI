@@ -2,15 +2,16 @@ import {
 	Avatar,
 	Button,
 	Card,
-	CardBody,
 	Chip,
-	DateInput,
+	DateField,
+	FieldError,
 	Input,
 	Label,
 	ListBox,
 	Modal,
 	Select,
 	Spinner,
+	TextField,
 	toast,
 } from "@heroui/react"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -215,9 +216,9 @@ const StaffProfileTab = ({ employeeId }: StaffProfileTabProps) => {
 	if (isLoading) {
 		return (
 			<Card>
-				<CardBody className="flex h-96 items-center justify-center">
+				<Card.Content className="flex h-96 items-center justify-center">
 					<Spinner size="lg" />
-				</CardBody>
+				</Card.Content>
 			</Card>
 		)
 	}
@@ -225,16 +226,16 @@ const StaffProfileTab = ({ employeeId }: StaffProfileTabProps) => {
 	if (!employee) {
 		return (
 			<Card>
-				<CardBody className="flex h-96 items-center justify-center">
+				<Card.Content className="flex h-96 items-center justify-center">
 					<p className="text-default-500">Employee not found</p>
-				</CardBody>
+				</Card.Content>
 			</Card>
 		)
 	}
 
 	return (
-		<Card className="p-5" radius="md">
-			<CardBody className="p-0">
+		<Card className="p-5">
+			<Card.Content className="p-0">
 				<form className="flex flex-col gap-6" onSubmit={handleSubmit(onSubmit)}>
 					{/* Personal Info */}
 					<section className="flex flex-col gap-6">
@@ -247,26 +248,11 @@ const StaffProfileTab = ({ employeeId }: StaffProfileTabProps) => {
 									src={avatarPreview ?? undefined}
 								/>
 								<div className="flex flex-col gap-3">
-									<Button
-										as="label"
-										className="cursor-pointer"
-										color="primary"
-										endContent={<TablerCloudUpload className="size-5" />}
-										radius="md"
-										size="sm"
-									>
+									<Button className="cursor-pointer" variant="primary" size="sm">
 										Upload Picture
 										<input accept="image/*" className="hidden" onChange={handleAvatarUpload} type="file" />
 									</Button>
-									<Button
-										className="shadow-sm"
-										color="danger"
-										endContent={<TablerTrash className="size-5" />}
-										onPress={handleDeletePicture}
-										radius="md"
-										size="sm"
-										variant="bordered"
-									>
+									<Button className="shadow-sm" variant="danger" onPress={handleDeletePicture} size="sm">
 										Delete Picture
 									</Button>
 								</div>
@@ -277,54 +263,39 @@ const StaffProfileTab = ({ employeeId }: StaffProfileTabProps) => {
 										control={control}
 										name="firstName"
 										render={({ field }) => (
-											<Input
-												{...field}
-												className="flex-1"
-												errorMessage={errors.firstName?.message}
-												isInvalid={!!errors.firstName}
-												isRequired
-												label="First name"
-												labelPlacement="inside"
-												radius="md"
-												size="sm"
-												variant="flat"
-											/>
+											<TextField className="flex-1" isRequired isInvalid={!!errors.firstName} variant="secondary">
+												<Label>First name</Label>
+
+												<Input {...field} />
+
+												<FieldError>{errors.firstName?.message}</FieldError>
+											</TextField>
 										)}
 									/>
 									<Controller
 										control={control}
 										name="lastName"
 										render={({ field }) => (
-											<Input
-												{...field}
-												className="flex-1"
-												errorMessage={errors.lastName?.message}
-												isInvalid={!!errors.lastName}
-												isRequired
-												label="Last name"
-												labelPlacement="inside"
-												radius="md"
-												size="sm"
-												variant="flat"
-											/>
+											<TextField className="flex-1" isRequired isInvalid={!!errors.lastName} variant="secondary">
+												<Label>Last name</Label>
+
+												<Input {...field} />
+
+												<FieldError>{errors.lastName?.message}</FieldError>
+											</TextField>
 										)}
 									/>
 									<Controller
 										control={control}
 										name="email"
 										render={({ field }) => (
-											<Input
-												{...field}
-												className="flex-1"
-												errorMessage={errors.email?.message}
-												isInvalid={!!errors.email}
-												isRequired
-												label="Email"
-												labelPlacement="inside"
-												radius="md"
-												size="sm"
-												variant="flat"
-											/>
+											<TextField className="flex-1" isRequired isInvalid={!!errors.email} variant="secondary">
+												<Label>Email</Label>
+
+												<Input {...field} />
+
+												<FieldError>{errors.email?.message}</FieldError>
+											</TextField>
 										)}
 									/>
 								</div>
@@ -333,36 +304,32 @@ const StaffProfileTab = ({ employeeId }: StaffProfileTabProps) => {
 										control={control}
 										name="phone"
 										render={({ field }) => (
-											<Input
-												{...field}
-												className="flex-1"
-												errorMessage={errors.phone?.message}
-												isInvalid={!!errors.phone}
-												label="Phone"
-												labelPlacement="inside"
-												onChange={(e) => field.onChange(formatUSPhone(e.target.value))}
-												placeholder="(555) 123-4567"
-												radius="md"
-												size="sm"
-												type="tel"
-												variant="flat"
-											/>
+											<TextField className="flex-1" isInvalid={!!errors.phone} variant="secondary">
+												<Label>Phone</Label>
+
+												<Input
+													{...field}
+													onChange={(e) => field.onChange(formatUSPhone(e.target.value))}
+													placeholder="(555) 123-4567"
+													type="tel"
+												/>
+
+												<FieldError>{errors.phone?.message}</FieldError>
+											</TextField>
 										)}
 									/>
 									<Controller
 										control={control}
 										name="birthday"
 										render={({ field }) => (
-											<DateInput
+											<DateField
 												className="flex-1"
 												granularity="day"
 												label="Birthday"
 												labelPlacement="inside"
 												onChange={(value) => handleDateChange(value, field.onChange)}
-												radius="md"
-												size="sm"
 												value={parseDateValue(field.value)}
-												variant="flat"
+												variant="secondary"
 											/>
 										)}
 									/>
@@ -370,16 +337,14 @@ const StaffProfileTab = ({ employeeId }: StaffProfileTabProps) => {
 										control={control}
 										name="enrollDate"
 										render={({ field }) => (
-											<DateInput
+											<DateField
 												className="flex-1"
 												granularity="day"
 												label="Enroll date"
 												labelPlacement="inside"
 												onChange={(value) => handleDateChange(value, field.onChange)}
-												radius="md"
-												size="sm"
 												value={parseDateValue(field.value)}
-												variant="flat"
+												variant="secondary"
 											/>
 										)}
 									/>
@@ -418,30 +383,22 @@ const StaffProfileTab = ({ employeeId }: StaffProfileTabProps) => {
 										control={control}
 										name="city"
 										render={({ field }) => (
-											<Input
-												{...field}
-												className="flex-1"
-												label="City"
-												labelPlacement="inside"
-												radius="md"
-												size="sm"
-												variant="flat"
-											/>
+											<TextField className="flex-1" variant="secondary">
+												<Label>City</Label>
+
+												<Input {...field} />
+											</TextField>
 										)}
 									/>
 									<Controller
 										control={control}
 										name="streetAddress"
 										render={({ field }) => (
-											<Input
-												{...field}
-												className="flex-1"
-												label="Street address"
-												labelPlacement="inside"
-												radius="md"
-												size="sm"
-												variant="flat"
-											/>
+											<TextField className="flex-1" variant="secondary">
+												<Label>Street address</Label>
+
+												<Input {...field} />
+											</TextField>
 										)}
 									/>
 								</div>
@@ -450,30 +407,22 @@ const StaffProfileTab = ({ employeeId }: StaffProfileTabProps) => {
 										control={control}
 										name="zipCode"
 										render={({ field }) => (
-											<Input
-												{...field}
-												className="flex-1"
-												label="ZIP code"
-												labelPlacement="inside"
-												radius="md"
-												size="sm"
-												variant="flat"
-											/>
+											<TextField className="flex-1" variant="secondary">
+												<Label>ZIP code</Label>
+
+												<Input {...field} />
+											</TextField>
 										)}
 									/>
 									<Controller
 										control={control}
 										name="notes"
 										render={({ field }) => (
-											<Input
-												{...field}
-												className="flex-1"
-												label="Notes"
-												labelPlacement="inside"
-												radius="md"
-												size="sm"
-												variant="flat"
-											/>
+											<TextField className="flex-1" variant="secondary">
+												<Label>Notes</Label>
+
+												<Input {...field} />
+											</TextField>
 										)}
 									/>
 								</div>
@@ -518,15 +467,11 @@ const StaffProfileTab = ({ employeeId }: StaffProfileTabProps) => {
 								control={control}
 								name="certification"
 								render={({ field }) => (
-									<Input
-										{...field}
-										className="flex-1"
-										label="Certification"
-										labelPlacement="inside"
-										radius="md"
-										size="sm"
-										variant="flat"
-									/>
+									<TextField className="flex-1" variant="secondary">
+										<Label>Certification</Label>
+
+										<Input {...field} />
+									</TextField>
 								)}
 							/>
 						</div>
@@ -630,13 +575,7 @@ const StaffProfileTab = ({ employeeId }: StaffProfileTabProps) => {
 											{assignedRooms.length > 0 && (
 												<div className="flex flex-wrap gap-2">
 													{assignedRooms.map((roomKey) => (
-														<Chip
-															classNames={{ base: "h-8 bg-primary-50 px-3", content: "text-sm" }}
-															key={roomKey}
-															onClose={() => handleRemoveRoom(roomKey)}
-															size="sm"
-															variant="flat"
-														>
+														<Chip key={roomKey} size="sm" variant="soft">
 															{getRoomLabel(roomKey)}
 														</Chip>
 													))}
@@ -649,16 +588,14 @@ const StaffProfileTab = ({ employeeId }: StaffProfileTabProps) => {
 									control={control}
 									name="hireDate"
 									render={({ field }) => (
-										<DateInput
+										<DateField
 											className="flex-1"
 											granularity="day"
 											label="Hire date"
 											labelPlacement="inside"
 											onChange={(value) => handleDateChange(value, field.onChange)}
-											radius="md"
-											size="sm"
 											value={parseDateValue(field.value)}
-											variant="flat"
+											variant="secondary"
 										/>
 									)}
 								/>
@@ -672,30 +609,24 @@ const StaffProfileTab = ({ employeeId }: StaffProfileTabProps) => {
 						<div className="flex flex-col gap-2">
 							<div className="flex gap-2">
 								<div className="flex flex-1 flex-col gap-2">
-									<Input
-										label="Allergies"
-										labelPlacement="inside"
-										onChange={(e) => setAllergyInput(e.target.value)}
-										onKeyDown={handleAllergyKeyDown}
-										placeholder="Type and press Enter"
-										radius="md"
-										size="sm"
-										value={allergyInput}
-										variant="flat"
-									/>
+									<TextField variant="secondary">
+										<Label>Allergies</Label>
+
+										<Input
+											onChange={(e) => setAllergyInput(e.target.value)}
+											onKeyDown={handleAllergyKeyDown}
+											placeholder="Type and press Enter"
+											value={allergyInput}
+										/>
+									</TextField>
 									{allergies.length > 0 && (
 										<div className="flex flex-wrap gap-2">
 											{allergies.map((allergy, i) => (
 												<Chip
-													classNames={{ base: "h-8 bg-primary-50 px-3", content: "text-sm" }}
 													// biome-ignore lint/suspicious/noArrayIndexKey: allergy strings may repeat
 													key={i}
-													onClose={() => {
-														const updated = allergies.filter((_, idx) => idx !== i)
-														setValue("allergies", updated, { shouldDirty: true })
-													}}
 													size="sm"
-													variant="flat"
+													variant="soft"
 												>
 													{allergy}
 												</Chip>
@@ -707,15 +638,11 @@ const StaffProfileTab = ({ employeeId }: StaffProfileTabProps) => {
 									control={control}
 									name="medications"
 									render={({ field }) => (
-										<Input
-											{...field}
-											className="flex-1"
-											label="Medications"
-											labelPlacement="inside"
-											radius="md"
-											size="sm"
-											variant="flat"
-										/>
+										<TextField className="flex-1" variant="secondary">
+											<Label>Medications</Label>
+
+											<Input {...field} />
+										</TextField>
 									)}
 								/>
 							</div>
@@ -724,35 +651,29 @@ const StaffProfileTab = ({ employeeId }: StaffProfileTabProps) => {
 									control={control}
 									name="doctorName"
 									render={({ field }) => (
-										<Input
-											{...field}
-											className="flex-1"
-											label="Doctor"
-											labelPlacement="inside"
-											radius="md"
-											size="sm"
-											variant="flat"
-										/>
+										<TextField className="flex-1" variant="secondary">
+											<Label>Doctor</Label>
+
+											<Input {...field} />
+										</TextField>
 									)}
 								/>
 								<Controller
 									control={control}
 									name="doctorPhone"
 									render={({ field }) => (
-										<Input
-											{...field}
-											className="flex-1"
-											errorMessage={errors.doctorPhone?.message}
-											isInvalid={!!errors.doctorPhone}
-											label="Doctor phone"
-											labelPlacement="inside"
-											onChange={(e) => field.onChange(formatUSPhone(e.target.value))}
-											placeholder="(555) 123-4567"
-											radius="md"
-											size="sm"
-											type="tel"
-											variant="flat"
-										/>
+										<TextField className="flex-1" isInvalid={!!errors.doctorPhone} variant="secondary">
+											<Label>Doctor phone</Label>
+
+											<Input
+												{...field}
+												onChange={(e) => field.onChange(formatUSPhone(e.target.value))}
+												placeholder="(555) 123-4567"
+												type="tel"
+											/>
+
+											<FieldError>{errors.doctorPhone?.message}</FieldError>
+										</TextField>
 									)}
 								/>
 							</div>
@@ -770,52 +691,50 @@ const StaffProfileTab = ({ employeeId }: StaffProfileTabProps) => {
 										control={control}
 										name={`emergencyContacts.${index}.name`}
 										render={({ field }) => (
-											<Input
-												{...field}
+											<TextField
 												className="flex-1"
-												errorMessage={errors.emergencyContacts?.[index]?.name?.message}
 												isInvalid={!!errors.emergencyContacts?.[index]?.name}
-												label="Name"
-												labelPlacement="inside"
-												radius="md"
-												size="sm"
-												variant="flat"
-											/>
+												variant="secondary"
+											>
+												<Label>Name</Label>
+
+												<Input {...field} />
+
+												<FieldError>{errors.emergencyContacts?.[index]?.name?.message}</FieldError>
+											</TextField>
 										)}
 									/>
 									<Controller
 										control={control}
 										name={`emergencyContacts.${index}.phone`}
 										render={({ field }) => (
-											<Input
-												{...field}
+											<TextField
 												className="flex-1"
-												errorMessage={errors.emergencyContacts?.[index]?.phone?.message}
 												isInvalid={!!errors.emergencyContacts?.[index]?.phone}
-												label="Phone"
-												labelPlacement="inside"
-												onChange={(e) => field.onChange(formatUSPhone(e.target.value))}
-												placeholder="(555) 123-4567"
-												radius="md"
-												size="sm"
-												type="tel"
-												variant="flat"
-											/>
+												variant="secondary"
+											>
+												<Label>Phone</Label>
+
+												<Input
+													{...field}
+													onChange={(e) => field.onChange(formatUSPhone(e.target.value))}
+													placeholder="(555) 123-4567"
+													type="tel"
+												/>
+
+												<FieldError>{errors.emergencyContacts?.[index]?.phone?.message}</FieldError>
+											</TextField>
 										)}
 									/>
 									<Controller
 										control={control}
 										name={`emergencyContacts.${index}.relationshipTo`}
 										render={({ field }) => (
-											<Input
-												{...field}
-												className="flex-1"
-												label="Relationship to staff"
-												labelPlacement="inside"
-												radius="md"
-												size="sm"
-												variant="flat"
-											/>
+											<TextField className="flex-1" variant="secondary">
+												<Label>Relationship to staff</Label>
+
+												<Input {...field} />
+											</TextField>
 										)}
 									/>
 								</div>
@@ -827,27 +746,17 @@ const StaffProfileTab = ({ employeeId }: StaffProfileTabProps) => {
 					<div className="flex items-center gap-5">
 						<Button
 							className="mr-auto text-xs shadow-sm"
-							color="danger"
-							endContent={<MaterialSymbolsDeleteOutline className="size-5" />}
+							variant="danger"
 							onPress={() => setIsDeactivateModalOpen(true)}
-							radius="md"
 							size="md"
 							type="button"
 						>
 							Deactivate Account
 						</Button>
-						<Button isDisabled={isSaving} onPress={handleCancel} radius="md" size="md" type="button" variant="bordered">
+						<Button isDisabled={isSaving} onPress={handleCancel} size="md" type="button" variant="outline">
 							Cancel
 						</Button>
-						<Button
-							color="primary"
-							endContent={!isSaving && <CiSave className="size-5" />}
-							isDisabled={!hasChanges || !isValid}
-							isLoading={isSaving}
-							radius="md"
-							size="md"
-							type="submit"
-						>
+						<Button variant="primary" isDisabled={!hasChanges || !isValid} isPending={isSaving} size="md" type="submit">
 							Save Changes
 						</Button>
 					</div>
@@ -868,7 +777,7 @@ const StaffProfileTab = ({ employeeId }: StaffProfileTabProps) => {
 										</p>
 									</div>
 									<div className="flex w-full flex-col gap-3">
-										<Button className="w-full" color="danger" onPress={handleCloseDeactivateModal}>
+										<Button className="w-full" variant="danger" onPress={handleCloseDeactivateModal}>
 											Deactivate
 										</Button>
 										<Button fullWidth slot="close" size="md">
@@ -880,7 +789,7 @@ const StaffProfileTab = ({ employeeId }: StaffProfileTabProps) => {
 						</Modal.Dialog>
 					</Modal.Container>
 				</Modal.Backdrop>
-			</CardBody>
+			</Card.Content>
 		</Card>
 	)
 }

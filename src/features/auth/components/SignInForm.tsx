@@ -1,4 +1,4 @@
-import { Button, Card, Checkbox, Input, Label, Link, Separator } from "@heroui/react"
+import { Button, Card, Checkbox, FieldError, Input, Label, Link, Separator, TextField } from "@heroui/react"
 import { useCallback, useState } from "react"
 import { Controller, useForm } from "react-hook-form"
 
@@ -72,19 +72,13 @@ const SignInForm = ({ onForgotPassword, onVerificationRequired, defaultEmail }: 
 							control={control}
 							name="email"
 							render={({ field }) => (
-								<Input
-									{...field}
-									errorMessage={errors.email?.message}
-									isInvalid={!!errors.email}
-									isRequired
-									label="Email"
-									labelPlacement="inside"
-									placeholder="Enter your email"
-									radius="md"
-									size="sm"
-									type="email"
-									variant="flat"
-								/>
+								<TextField isRequired isInvalid={!!errors.email} variant="secondary">
+									<Label>Email</Label>
+
+									<Input {...field} placeholder="Enter your email" type="email" />
+
+									<FieldError>{errors.email?.message}</FieldError>
+								</TextField>
 							)}
 							rules={{
 								required: "Email is required",
@@ -112,10 +106,9 @@ const SignInForm = ({ onForgotPassword, onVerificationRequired, defaultEmail }: 
 									label="Password"
 									labelPlacement="inside"
 									placeholder="Enter your password"
-									radius="md"
 									size="sm"
 									type={isPasswordVisible ? "text" : "password"}
-									variant="flat"
+									variant="secondary"
 								/>
 							)}
 							rules={{
@@ -128,7 +121,7 @@ const SignInForm = ({ onForgotPassword, onVerificationRequired, defaultEmail }: 
 							control={control}
 							name="rememberMe"
 							render={({ field: { value, onChange, ...field } }) => (
-								<Checkbox {...field} isSelected={value} onValueChange={onChange}>
+								<Checkbox {...field} isSelected={value} onChange={onChange}>
 									<Checkbox.Control>
 										<Checkbox.Indicator />
 									</Checkbox.Control>
@@ -149,9 +142,9 @@ const SignInForm = ({ onForgotPassword, onVerificationRequired, defaultEmail }: 
 
 					<Button
 						className="mt-5 w-full"
-						color="primary"
+						variant="primary"
 						isDisabled={!isValid}
-						isLoading={isSubmitting}
+						isPending={isSubmitting}
 						size="md"
 						type="submit"
 					>
@@ -169,12 +162,11 @@ const SignInForm = ({ onForgotPassword, onVerificationRequired, defaultEmail }: 
 				<Button
 					className="h-12 w-full"
 					isDisabled={isLoading}
-					isLoading={isLoading}
+					isPending={isLoading}
 					onPress={() => {
 						void handleGoogleLogin()
 					}}
-					startContent={<MaterialIconThemeGoogle className="size-5" />}
-					variant="bordered"
+					variant="outline"
 				>
 					Sign in with Google
 				</Button>

@@ -1,4 +1,6 @@
-import { Button, Card, Input } from "@heroui/react"
+import { Button, Card, FieldError,
+	Input, Label, TextField,
+	} from "@heroui/react"
 import { useCallback, useEffect, useState } from "react"
 import { Controller, useForm } from "react-hook-form"
 
@@ -77,19 +79,18 @@ const ForgotPasswordForm = ({ onBack, onNext, defaultEmail }: ForgotPasswordForm
 					control={control}
 					name="email"
 					render={({ field }) => (
-						<Input
+						<TextField isRequired isInvalid={!!errors.email} variant="secondary">
+
+							<Label>Email</Label>
+
+							<Input
 							{...field}
-							errorMessage={errors.email?.message}
-							isInvalid={!!errors.email}
-							isRequired
-							label="Email"
-							labelPlacement="inside"
 							placeholder="Enter your email"
-							radius="md"
-							size="sm"
-							type="email"
-							variant="flat"
-						/>
+							type="email"/>
+
+							<FieldError>{errors.email?.message}</FieldError>
+
+						</TextField>
 					)}
 					rules={{
 						required: "Email is required",
@@ -105,16 +106,16 @@ const ForgotPasswordForm = ({ onBack, onNext, defaultEmail }: ForgotPasswordForm
 				<form className="w-full" onSubmit={handleSubmit(onSubmit)}>
 					<Button
 						className="w-full"
-						color="primary"
+						variant="primary"
 						isDisabled={!isValid}
-						isLoading={isSubmitting}
+						isPending={isSubmitting}
 						size="md"
 						type="submit"
 					>
 						Next
 					</Button>
 				</form>
-				<Button className="w-full" onPress={onBack} size="md" variant="bordered">
+				<Button className="w-full" onPress={onBack} size="md" variant="outline">
 					Back
 				</Button>
 			</Card.Footer>

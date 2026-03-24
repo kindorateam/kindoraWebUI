@@ -28,8 +28,8 @@ const Chat = () => {
 					Today
 				</Text>
 				<div className="flex items-center gap-3.5">
-					<Button className="min-w-auto!" color="secondary" startContent={<MdiFilterVariant />} />
-					<Button color="secondary" onPress={handleAddActivity}>
+					<Button className="min-w-auto!" variant="secondary" />
+					<Button variant="secondary" onPress={handleAddActivity}>
 						Add activity
 					</Button>
 				</div>

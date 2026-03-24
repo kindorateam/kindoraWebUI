@@ -1,4 +1,6 @@
-import { Avatar, Input, Label, ListBox, NumberField, Select } from "@heroui/react"
+import { Avatar, FieldError,
+	Input, Label, ListBox, NumberField, Select, TextField,
+	} from "@heroui/react"
 import { useState } from "react"
 import { Controller, useFormContext } from "react-hook-form"
 
@@ -60,7 +62,7 @@ const RoomDetailsStep = () => {
 							type="button"
 						/>
 					) : (
-						<Avatar className="size-14 cursor-pointer text-lg" color="primary" onClick={handleAvatarClick} showFallback>
+						<Avatar className="size-14 cursor-pointer text-lg" onClick={handleAvatarClick}>
 							<Avatar.Image src={avatarPreview ?? undefined} alt={name || "R"} />
 							<Avatar.Fallback>{name?.charAt(0) || "R"}</Avatar.Fallback>
 						</Avatar>
@@ -87,17 +89,17 @@ const RoomDetailsStep = () => {
 					control={control}
 					name="name"
 					render={({ field }) => (
-						<Input
+						<TextField isRequired isInvalid={!!errors.name} variant="secondary">
+
+							<Label>Room Name</Label>
+
+							<Input
 							{...field}
-							errorMessage={errors.name?.message}
-							isInvalid={!!errors.name}
-							isRequired
-							label="Room Name"
-							labelPlacement="inside"
-							placeholder="Enter room name"
-							radius="md"
-							variant="flat"
-						/>
+							placeholder="Enter room name"/>
+
+							<FieldError>{errors.name?.message}</FieldError>
+
+						</TextField>
 					)}
 				/>
 				<Controller

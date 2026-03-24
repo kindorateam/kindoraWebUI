@@ -75,7 +75,7 @@ const RoomsTableCell = ({ room, columnKey }: RoomsTableCellProps) => {
 			const isGoodRatio = actualRatio <= room.ratio
 
 			return (
-				<Tooltip closeDelay={0} color="primary" delay={300}>
+				<Tooltip delay={300}>
 					<span className="inline-flex cursor-default items-center justify-center">
 						{isGoodRatio ? (
 							<PhSmileyDuotone className="size-5 text-success" />
@@ -95,7 +95,7 @@ const RoomsTableCell = ({ room, columnKey }: RoomsTableCellProps) => {
 				<div className="flex justify-center">
 					<Dropdown>
 						<Dropdown.Trigger>
-							<Button isIconOnly radius="md" variant="light">
+							<Button isIconOnly variant="ghost">
 								<svg
 									aria-hidden="true"
 									className="size-5 text-gray-600"

@@ -40,30 +40,17 @@ const ChatMessage = ({ messageId, author, timestamp, text, onReply, replies = []
 			</div>
 
 			<div>
-				<Button color="text" onPress={() => onReply?.(messageId)}>
+				<Button variant="ghost" onPress={() => onReply?.(messageId)}>
 					Reply
 				</Button>
 			</div>
 
 			<div className="mb-10">
-				<Button
-					color="text"
-					disableRipple
-					endContent={
-						<svg
-							aria-hidden="true"
-							fill="none"
-							height="6"
-							viewBox="0 0 8 6"
-							width="8"
-							xmlns="http://www.w3.org/2000/svg"
-						>
-							<path d="M1 1L4 4L7 1" stroke="#792C41" strokeLinecap="round" strokeWidth="1.5" />
-						</svg>
-					}
-					onPress={() => onReply?.(messageId)}
-				>
+				<Button variant="ghost" onPress={() => onReply?.(messageId)}>
 					See 5 more comments
+					<svg aria-hidden="true" fill="none" height="6" viewBox="0 0 8 6" width="8" xmlns="http://www.w3.org/2000/svg">
+						<path d="M1 1L4 4L7 1" stroke="#792C41" strokeLinecap="round" strokeWidth="1.5" />
+					</svg>
 				</Button>
 			</div>
 

@@ -1,4 +1,4 @@
-import { Button, Card, CardBody, Pagination, Spinner, Switch, Table } from "@heroui/react"
+import { Button, Card, Pagination, Spinner, Switch, Table } from "@heroui/react"
 import { useNavigate } from "@tanstack/react-router"
 import { useCallback, useMemo, useState } from "react"
 
@@ -47,18 +47,14 @@ const StaffTable = () => {
 			<div className="flex flex-col gap-4">
 				<div className="flex items-center justify-end gap-5">
 					<Switch
-						classNames={{ label: "text-neutral-600 text-sm" }}
+						className="text-sm"
 						isSelected={showDeactivated}
-						onValueChange={setShowDeactivated}
+						onChange={(e: React.ChangeEvent<HTMLInputElement>) => setShowDeactivated(e.target.checked)}
 						size="sm"
 					>
 						View deactivated
 					</Switch>
-					<Button
-						color="primary"
-						endContent={<TablerCirclePlusFilled className="size-5 text-white" />}
-						onPress={openAddStaffModal}
-					>
+					<Button variant="primary" onPress={openAddStaffModal}>
 						Add Staff
 					</Button>
 				</div>
@@ -73,7 +69,7 @@ const StaffTable = () => {
 		<>
 			<AddStaffModal />
 			<Card>
-				<CardBody className="flex flex-col gap-4 p-4">
+				<Card.Content className="flex flex-col gap-4 p-4">
 					{topContent}
 					<Table className="min-h-[595.5px]">
 						<Table.ScrollContainer>
@@ -98,7 +94,7 @@ const StaffTable = () => {
 										)
 									}
 									items={error || isLoading ? [] : items}
-									isLoading={isLoading}
+									isPending={isLoading}
 									loadingContent={<Spinner size="lg" />}
 								>
 									{(employee) => (
@@ -125,7 +121,7 @@ const StaffTable = () => {
 							/>
 						</div>
 					)}
-				</CardBody>
+				</Card.Content>
 			</Card>
 		</>
 	)

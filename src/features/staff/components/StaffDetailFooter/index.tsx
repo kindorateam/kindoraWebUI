@@ -18,14 +18,14 @@ const StaffDetailFooter = ({
 	return (
 		<div className="sticky bottom-0 border-default-200 border-t bg-white py-4">
 			<div className="container flex max-w-4xl items-center justify-between">
-				<Button color="danger" onPress={onDeactivate} variant="light">
+				<Button onPress={onDeactivate} variant="ghost">
 					Deactivate Account
 				</Button>
 				<div className="flex gap-3">
-					<Button color="default" onPress={onCancel} variant="bordered">
+					<Button onPress={onCancel} variant="outline">
 						Cancel
 					</Button>
-					<Button color="primary" isDisabled={!isDirty} isLoading={isLoading} onPress={onSave} type="submit">
+					<Button variant="primary" isDisabled={!isDirty} isPending={isLoading} onPress={onSave} type="submit">
 						Save Changes
 					</Button>
 				</div>

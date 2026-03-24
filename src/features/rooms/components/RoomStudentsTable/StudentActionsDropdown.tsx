@@ -35,7 +35,7 @@ const StudentActionsDropdown = ({ student, roomId }: Props) => {
 					toast.success(`${student.name} ${action}`)
 				},
 				onError: () => {
-					toast.error(`Failed to ${isCheckingOut ? "check out" : "check in"} ${student.name}. Please try again.`)
+					toast.danger(`Failed to ${isCheckingOut ? "check out" : "check in"} ${student.name}. Please try again.`)
 				},
 			},
 		)
@@ -45,7 +45,7 @@ const StudentActionsDropdown = ({ student, roomId }: Props) => {
 		<div className="flex justify-center">
 			<Dropdown>
 				<Dropdown.Trigger>
-					<Button isIconOnly isLoading={isLoading} radius="md" variant="light">
+					<Button isIconOnly isPending={isLoading} variant="ghost">
 						<svg
 							aria-hidden="true"
 							className="size-5 text-gray-600"

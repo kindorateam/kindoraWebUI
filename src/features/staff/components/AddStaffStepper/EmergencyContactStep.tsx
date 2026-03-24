@@ -1,4 +1,6 @@
-import { Input, Label, ListBox, Select } from "@heroui/react"
+import { FieldError,
+	Input, Label, ListBox, Select, TextField,
+	} from "@heroui/react"
 import { Controller, useFormContext } from "react-hook-form"
 
 import StreamlineUltimateEmergencyCall from "~icons/streamline-ultimate/emergency-call"
@@ -28,17 +30,17 @@ const EmergencyContactStep = () => {
 					control={control}
 					name="emergencyContactName"
 					render={({ field }) => (
-						<Input
+						<TextField isInvalid={!!errors.emergencyContactName} variant="secondary">
+
+							<Label>Name</Label>
+
+							<Input
 							{...field}
-							errorMessage={errors.emergencyContactName?.message}
-							isInvalid={!!errors.emergencyContactName}
-							label="Name"
-							labelPlacement="inside"
-							radius="md"
-							size="sm"
-							value={field.value || ""}
-							variant="flat"
-						/>
+							value={field.value || ""}/>
+
+							<FieldError>{errors.emergencyContactName?.message}</FieldError>
+
+						</TextField>
 					)}
 				/>
 
@@ -46,17 +48,17 @@ const EmergencyContactStep = () => {
 					control={control}
 					name="emergencyContactPhone"
 					render={({ field }) => (
-						<Input
+						<TextField isInvalid={!!errors.emergencyContactPhone} variant="secondary">
+
+							<Label>Phone</Label>
+
+							<Input
 							{...field}
-							errorMessage={errors.emergencyContactPhone?.message}
-							isInvalid={!!errors.emergencyContactPhone}
-							label="Phone"
-							labelPlacement="inside"
-							radius="md"
-							size="sm"
-							value={field.value || ""}
-							variant="flat"
-						/>
+							value={field.value || ""}/>
+
+							<FieldError>{errors.emergencyContactPhone?.message}</FieldError>
+
+						</TextField>
 					)}
 				/>
 

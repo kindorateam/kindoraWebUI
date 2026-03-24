@@ -1,4 +1,4 @@
-import { Button, Card, Input } from "@heroui/react"
+import { Button, Card, FieldError, Input, Label, TextField } from "@heroui/react"
 import { useCallback, useMemo, useState } from "react"
 import { Controller, useForm } from "react-hook-form"
 
@@ -88,25 +88,15 @@ const ResetPasswordForm = ({ email, token, onBack, onResetSuccess }: ResetPasswo
 							control={control}
 							name="password"
 							render={({ field }) => (
-								<Input
-									{...field}
-									endContent={
-										<PasswordVisibilityToggle
-											isVisible={isPasswordVisible}
-											onToggle={() => setIsPasswordVisible((prev) => !prev)}
-										/>
-									}
-									errorMessage={errors.password?.message}
-									isInvalid={!!errors.password}
-									isRequired
-									label="Create a password"
-									labelPlacement="inside"
-									placeholder="Enter your password"
-									radius="lg"
-									size="md"
-									type={isPasswordVisible ? "text" : "password"}
-									variant="flat"
-								/>
+								<TextField isRequired isInvalid={!!errors.password} variant="secondary">
+									<Label>Create a password</Label>
+									<Input {...field} placeholder="Enter your password" type={isPasswordVisible ? "text" : "password"} />
+									<PasswordVisibilityToggle
+										isVisible={isPasswordVisible}
+										onToggle={() => setIsPasswordVisible((prev) => !prev)}
+									/>
+									<FieldError>{errors.password?.message}</FieldError>
+								</TextField>
 							)}
 							rules={{
 								required: "Password is required",
@@ -117,26 +107,19 @@ const ResetPasswordForm = ({ email, token, onBack, onResetSuccess }: ResetPasswo
 							control={control}
 							name="confirmPassword"
 							render={({ field }) => (
-								<Input
-									{...field}
-									endContent={
-										<PasswordVisibilityToggle
-											isVisible={isConfirmPasswordVisible}
-											label="confirmation password"
-											onToggle={() => setIsConfirmPasswordVisible((prev) => !prev)}
-										/>
-									}
-									errorMessage={errors.confirmPassword?.message}
-									isInvalid={!!errors.confirmPassword}
-									isRequired
-									label="Confirm your password"
-									labelPlacement="inside"
-									placeholder="Re-enter your password"
-									radius="lg"
-									size="md"
-									type={isConfirmPasswordVisible ? "text" : "password"}
-									variant="flat"
-								/>
+								<TextField isRequired isInvalid={!!errors.confirmPassword} variant="secondary">
+									<Label>Confirm your password</Label>
+									<Input
+										{...field}
+										placeholder="Re-enter your password"
+										type={isConfirmPasswordVisible ? "text" : "password"}
+									/>
+									<PasswordVisibilityToggle
+										isVisible={isConfirmPasswordVisible}
+										onToggle={() => setIsConfirmPasswordVisible((prev) => !prev)}
+									/>
+									<FieldError>{errors.confirmPassword?.message}</FieldError>
+								</TextField>
 							)}
 							rules={{
 								required: "Please confirm your password",
@@ -185,16 +168,16 @@ const ResetPasswordForm = ({ email, token, onBack, onResetSuccess }: ResetPasswo
 			<Card.Footer className="flex-col gap-3 px-7 pt-5 pb-8">
 				<Button
 					className="h-10 w-full"
-					color="primary"
+					variant="primary"
 					form={formId}
 					isDisabled={!canSubmit}
-					isLoading={isSubmitting}
+					isPending={isSubmitting}
 					radius="lg"
 					type="submit"
 				>
 					Reset password
 				</Button>
-				<Button className="h-10 w-full" onPress={onBack} radius="lg" variant="bordered">
+				<Button className="h-10 w-full" onPress={onBack} variant="outline">
 					Back
 				</Button>
 			</Card.Footer>

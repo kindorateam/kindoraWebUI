@@ -82,8 +82,8 @@ const StaffProfileTab = () => {
 					}}
 					footer={
 						<div className="flex gap-2.5">
-							<Button color="secondary">Deactivate account</Button>
-							<Button color="secondary">Edit</Button>
+							<Button variant="secondary">Deactivate account</Button>
+							<Button variant="secondary">Edit</Button>
 						</div>
 					}
 					footerProps={{
@@ -184,7 +184,7 @@ const StaffProfileTab = () => {
 					}}
 					footer={
 						<div className="flex gap-2.5">
-							<Button color="secondary">Edit</Button>
+							<Button variant="secondary">Edit</Button>
 						</div>
 					}
 					footerProps={{
@@ -208,7 +208,7 @@ const StaffProfileTab = () => {
 					}}
 					footer={
 						<div className="flex gap-2.5">
-							<Button color="secondary">Edit</Button>
+							<Button variant="secondary">Edit</Button>
 						</div>
 					}
 					footerProps={{
@@ -256,7 +256,7 @@ const StaffProfileTab = () => {
 					}}
 					footer={
 						<div className="flex gap-2.5">
-							<Button color="secondary">Edit</Button>
+							<Button variant="secondary">Edit</Button>
 						</div>
 					}
 					footerProps={{
@@ -308,7 +308,7 @@ const StaffProfileTab = () => {
 					}}
 					footer={
 						<div className="flex gap-2.5">
-							<Button color="secondary">Edit</Button>
+							<Button variant="secondary">Edit</Button>
 						</div>
 					}
 					footerProps={{
@@ -350,7 +350,7 @@ const StaffProfileTab = () => {
 					}}
 					footer={
 						<div className="flex gap-2.5">
-							<Button color="secondary">Edit</Button>
+							<Button variant="secondary">Edit</Button>
 						</div>
 					}
 					footerProps={{
@@ -390,7 +390,7 @@ const StaffProfileTab = () => {
 					}}
 					footer={
 						<div className="flex gap-2.5">
-							<Button color="secondary">Mark absent</Button>
+							<Button variant="secondary">Mark absent</Button>
 						</div>
 					}
 					footerProps={{

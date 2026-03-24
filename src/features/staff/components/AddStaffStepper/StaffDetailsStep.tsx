@@ -1,4 +1,6 @@
-import { Avatar, Input, Label, ListBox, Select, Switch } from "@heroui/react"
+import { Avatar, FieldError,
+	Input, Label, ListBox, Select, Switch, TextField,
+	} from "@heroui/react"
 import { useState } from "react"
 import { Controller, useFormContext } from "react-hook-form"
 
@@ -80,36 +82,34 @@ const StaffDetailsStep = () => {
 					control={control}
 					name="firstName"
 					render={({ field }) => (
-						<Input
+						<TextField isRequired isInvalid={!!errors.firstName} variant="secondary">
+
+							<Label>First Name</Label>
+
+							<Input
 							{...field}
-							errorMessage={errors.firstName?.message}
-							isInvalid={!!errors.firstName}
-							isRequired
-							label="First Name"
-							labelPlacement="inside"
-							placeholder="Enter first name"
-							radius="md"
-							size="sm"
-							variant="flat"
-						/>
+							placeholder="Enter first name"/>
+
+							<FieldError>{errors.firstName?.message}</FieldError>
+
+						</TextField>
 					)}
 				/>
 				<Controller
 					control={control}
 					name="lastName"
 					render={({ field }) => (
-						<Input
+						<TextField isRequired isInvalid={!!errors.lastName} variant="secondary">
+
+							<Label>Last Name</Label>
+
+							<Input
 							{...field}
-							errorMessage={errors.lastName?.message}
-							isInvalid={!!errors.lastName}
-							isRequired
-							label="Last Name"
-							labelPlacement="inside"
-							placeholder="Enter last name"
-							radius="md"
-							size="sm"
-							variant="flat"
-						/>
+							placeholder="Enter last name"/>
+
+							<FieldError>{errors.lastName?.message}</FieldError>
+
+						</TextField>
 					)}
 				/>
 				<Controller
@@ -154,19 +154,18 @@ const StaffDetailsStep = () => {
 					control={control}
 					name="email"
 					render={({ field }) => (
-						<Input
+						<TextField isRequired isInvalid={!!errors.email} variant="secondary">
+
+							<Label>Email</Label>
+
+							<Input
 							{...field}
-							errorMessage={errors.email?.message}
-							isInvalid={!!errors.email}
-							isRequired
-							label="Email"
-							labelPlacement="inside"
 							placeholder="Enter email address"
-							radius="md"
-							size="sm"
-							type="email"
-							variant="flat"
-						/>
+							type="email"/>
+
+							<FieldError>{errors.email?.message}</FieldError>
+
+						</TextField>
 					)}
 				/>
 				<Controller

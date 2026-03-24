@@ -51,13 +51,13 @@ export default function RegeneratePinModal({ employeeId }: Props) {
 							<div className="flex w-full flex-col gap-3">
 								<Button
 									className="w-full"
-									color="primary"
-									isLoading={regenerateMutation.isPending}
+									variant="primary"
+									isPending={regenerateMutation.isPending}
 									onPress={handleRegenerate}
 								>
 									Regenerate
 								</Button>
-								<Button color="default" fullWidth isDisabled={regenerateMutation.isPending} slot="close" size="md">
+								<Button fullWidth isDisabled={regenerateMutation.isPending} slot="close" size="md">
 									Cancel
 								</Button>
 							</div>

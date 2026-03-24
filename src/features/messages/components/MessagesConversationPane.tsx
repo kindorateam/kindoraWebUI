@@ -30,7 +30,7 @@ const MessagesConversationPane = ({ thread }: MessagesConversationPaneProps) => 
 							<p className="text-[14px] text-black leading-5">{thread?.name ?? "No chat selected"}</p>
 							<div className="mt-3 flex flex-wrap gap-3">
 								{thread?.parents.map((parent) => (
-									<Chip key={parent} className="bg-[#bfd8f8] px-2 text-[12px] text-black leading-4" radius="full">
+									<Chip key={parent} className="bg-[#bfd8f8] px-2 text-[12px] text-black leading-4">
 										<div className="flex items-center gap-1">
 											<span className="flex size-5 items-center justify-center rounded-full bg-white/80">
 												<MdiAccount className="size-3 text-[#8d8d93]" />
@@ -44,13 +44,13 @@ const MessagesConversationPane = ({ thread }: MessagesConversationPaneProps) => 
 					</div>
 
 					<div className="flex items-center gap-2">
-						<Button isIconOnly className="text-primary" radius="full" variant="light">
+						<Button isIconOnly className="text-primary" variant="ghost">
 							<MdiStarOutline className="size-6" />
 						</Button>
-						<Button isIconOnly radius="full" variant="light">
+						<Button isIconOnly variant="ghost">
 							<MdiMagnify className="size-5 text-[#a1a1aa]" />
 						</Button>
-						<Button isIconOnly radius="full" variant="light">
+						<Button isIconOnly variant="ghost">
 							<MdiDotsVertical className="size-5 text-[#a1a1aa]" />
 						</Button>
 					</div>
@@ -68,16 +68,16 @@ const MessagesConversationPane = ({ thread }: MessagesConversationPaneProps) => 
 
 				<div className="px-5 pt-3 pb-0">
 					<div className="flex items-center gap-3 rounded-[18px] bg-default-100 px-4 py-3 shadow-[0px_1px_2px_0px_rgba(0,0,0,0.05)]">
-						<Button isIconOnly radius="full" variant="light">
+						<Button isIconOnly variant="ghost">
 							<SolarPaperclipLinear className="size-6 text-[#a1a1aa]" />
 						</Button>
 						<Input
 							aria-label="Type your message"
 							className="flex-1"
 							placeholder="Type your message here"
-							variant="flat"
+							variant="secondary"
 						/>
-						<Button isIconOnly className="size-12 rounded-full bg-primary text-white" color="primary">
+						<Button isIconOnly className="size-12 rounded-full bg-primary text-white" variant="primary">
 							<MingcuteSendFill className="size-6" />
 						</Button>
 					</div>

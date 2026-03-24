@@ -27,7 +27,7 @@ const ParentTooltipContent = ({ parents }: ParentTooltipContentProps) => {
 				)
 			})}
 			<Separator />
-			<Button color="primary" size="sm" startContent={<TablerMessage className="size-4" />} variant="flat">
+			<Button variant="ghost" size="sm">
 				New message
 			</Button>
 		</div>

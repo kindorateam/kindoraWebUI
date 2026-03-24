@@ -1,4 +1,6 @@
-import { Button, Input } from "@heroui/react"
+import { Button, FieldError,
+	Input, Label, TextField,
+	} from "@heroui/react"
 
 import MdiMagnify from "~icons/mdi/magnify"
 import TablerLink from "~icons/tabler/link"
@@ -27,21 +29,24 @@ const MessagesSidebar = ({
 			<div className="flex h-full min-h-0 flex-col overflow-hidden">
 				<div className="flex items-center gap-2">
 					<div className="relative flex-1">
-						<Input
-							aria-label="Search chat"
-							className="w-full"
+						<TextField className="w-full">
+
+							<Label>Search chat</Label>
+
+							<Input
+							aria-
 							placeholder="Search chat"
 							radius="lg"
-							size="sm"
-							startContent={<MdiMagnify className="size-6 shrink-0 text-[#a1a1aa]" />}
+
 							value={searchValue}
-							onValueChange={onSearchChange}
-						/>
+							onChange={(e: React.ChangeEvent<HTMLInputElement>) => (onSearchChange)(e.target.value)}/>
+
+						</TextField>
 					</div>
 					<Button
 						isIconOnly
 						className="h-[46px] min-w-[46px] rounded-xl bg-default-100 shadow-[0px_1px_2px_0px_rgba(0,0,0,0.05)]"
-						variant="light"
+						variant="ghost"
 					>
 						<TablerLink className="size-7 text-[#8d8d93]" />
 					</Button>

@@ -24,21 +24,17 @@ const RoomsTable = () => {
 			<div className="flex flex-col gap-4">
 				<div className="flex items-center justify-end gap-5">
 					<Switch
-						classNames={{ label: "text-neutral-600 text-sm" }}
+						className="text-sm"
 						isSelected={viewDeactivated}
-						onValueChange={(value) => {
-							setViewDeactivated(value)
+						onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+							setViewDeactivated(e.target.checked)
 							setPage(1)
 						}}
 						size="sm"
 					>
 						View deactivated
 					</Switch>
-					<Button
-						color="primary"
-						endContent={<TablerCirclePlusFilled className="size-5 text-white" />}
-						onPress={openAddRoomModal}
-					>
+					<Button variant="primary" onPress={openAddRoomModal}>
 						Add Room
 					</Button>
 				</div>

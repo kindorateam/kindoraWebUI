@@ -29,8 +29,8 @@ const NewslettersTable = ({ onCreateNew }: NewslettersTableProps) => {
 			<Card.Content className="p-4">
 				<div className="flex items-center justify-end mb-2">
 					<Button
-						color="primary"
-						endContent={<TablerCirclePlusFilled className="size-5 text-white" />}
+						variant="primary"
+
 						onPress={onCreateNew}
 					>
 						Create New

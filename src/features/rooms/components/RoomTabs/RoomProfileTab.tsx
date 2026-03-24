@@ -1,4 +1,18 @@
-import { Avatar, Button, Card, Chip, Input, Label, ListBox, NumberField, Select, Spinner, toast } from "@heroui/react"
+import {
+	Avatar,
+	Button,
+	Card,
+	Chip,
+	FieldError,
+	Input,
+	Label,
+	ListBox,
+	NumberField,
+	Select,
+	Spinner,
+	TextField,
+	toast,
+} from "@heroui/react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useEffect, useRef, useState } from "react"
 import { Controller, useForm } from "react-hook-form"
@@ -253,18 +267,13 @@ const RoomProfileTab = ({ roomId }: RoomProfileTabProps) => {
 									control={control}
 									name="name"
 									render={({ field }) => (
-										<Input
-											{...field}
-											className="col-span-2"
-											errorMessage={errors.name?.message}
-											isInvalid={!!errors.name}
-											isRequired
-											label="Room Name"
-											labelPlacement="inside"
-											radius="md"
-											size="sm"
-											variant="flat"
-										/>
+										<TextField className="col-span-2" isRequired isInvalid={!!errors.name} variant="secondary">
+											<Label>Room Name</Label>
+
+											<Input {...field} />
+
+											<FieldError>{errors.name?.message}</FieldError>
+										</TextField>
 									)}
 								/>
 								<Controller
@@ -404,22 +413,10 @@ const RoomProfileTab = ({ roomId }: RoomProfileTabProps) => {
 									</Avatar>
 								</div>
 								<div className="flex gap-5">
-									<Button
-										color="primary"
-										endContent={<TablerCloudUpload className="size-5" />}
-										onPress={() => setIsImagePickerOpen(true)}
-										radius="md"
-										size="sm"
-									>
+									<Button variant="primary" onPress={() => setIsImagePickerOpen(true)} size="sm">
 										Upload Picture
 									</Button>
-									<Button
-										color="danger"
-										endContent={<TablerTrash className="size-5" />}
-										onPress={handleDeletePicture}
-										radius="md"
-										size="sm"
-									>
+									<Button variant="danger" onPress={handleDeletePicture} size="sm">
 										Delete Picture
 									</Button>
 								</div>
@@ -440,7 +437,7 @@ const RoomProfileTab = ({ roomId }: RoomProfileTabProps) => {
 							>
 								<Label>Select Staff</Label>
 								<Select.Trigger>
-									<Select.Value placeholder="Select staff to add" />
+									<Select.Value />
 									<Select.Indicator />
 								</Select.Trigger>
 								<Select.Popover>
@@ -448,19 +445,7 @@ const RoomProfileTab = ({ roomId }: RoomProfileTabProps) => {
 										renderEmptyState={() => (
 											<div className="flex flex-wrap gap-2 p-2">
 												{assignedStaff.map((staff) => (
-													<Chip
-														key={staff.id}
-														onClose={() => {
-															const newStaff = assignedStaff.filter((s) => s.id !== staff.id)
-															setAssignedStaff(newStaff)
-															setValue(
-																"staffIds",
-																newStaff.map((s) => s.id),
-																{ shouldDirty: true },
-															)
-														}}
-														variant="flat"
-													>
+													<Chip key={staff.id} variant="soft">
 														{staff.name}
 													</Chip>
 												))}
@@ -470,7 +455,7 @@ const RoomProfileTab = ({ roomId }: RoomProfileTabProps) => {
 										{staffOptions.map((staff) => (
 											<ListBox.Item id={staff.id} key={staff.id} textValue={staff.name}>
 												<div className="flex items-center gap-2">
-													<Avatar className="size-8 bg-[#1D6FE8] text-white" showFallback>
+													<Avatar className="size-8 bg-[#1D6FE8] text-white">
 														<Avatar.Image
 															src={
 																"avatar" in staff && staff.avatar && staff.avatar !== "/assets/avatars/default.jpg"
@@ -501,34 +486,7 @@ const RoomProfileTab = ({ roomId }: RoomProfileTabProps) => {
 							{assignedStaff.length > 0 && (
 								<div className="flex flex-wrap gap-2">
 									{assignedStaff.map((staff) => (
-										<Chip
-											key={staff.id}
-											avatar={
-												<Avatar className="size-7 bg-[#1D6FE8] text-white" showFallback>
-													<Avatar.Image
-														src={
-															"avatar" in staff && staff.avatar && staff.avatar !== "/assets/avatars/default.jpg"
-																? getMediaUrl(staff.avatar)
-																: undefined
-														}
-														alt={staff.name}
-													/>
-													<Avatar.Fallback>
-														<OouiUserAvatar className="size-3" />
-													</Avatar.Fallback>
-												</Avatar>
-											}
-											onClose={() => {
-												const newStaff = assignedStaff.filter((s) => s.id !== staff.id)
-												setAssignedStaff(newStaff)
-												setValue(
-													"staffIds",
-													newStaff.map((s) => s.id),
-													{ shouldDirty: true },
-												)
-											}}
-											variant="flat"
-										>
+										<Chip key={staff.id} variant="secondary">
 											{staff.name}
 										</Chip>
 									))}
@@ -539,33 +497,22 @@ const RoomProfileTab = ({ roomId }: RoomProfileTabProps) => {
 
 					<div className="flex items-center justify-between">
 						<Button
-							color="danger"
-							endContent={<TablerTrash className="size-5" />}
+							variant="danger"
 							isDisabled={isSaving}
 							onPress={() => openDeactivateRoomModal(roomId, room.name)}
-							radius="md"
 							size="md"
 							type="button"
 						>
 							Deactivate Room
 						</Button>
 						<div className="flex gap-5">
-							<Button
-								isDisabled={isSaving}
-								onPress={handleCancel}
-								radius="md"
-								size="md"
-								type="button"
-								variant="bordered"
-							>
+							<Button isDisabled={isSaving} onPress={handleCancel} size="md" type="button" variant="outline">
 								Cancel
 							</Button>
 							<Button
-								color="primary"
-								endContent={!isSaving && <TablerCheck className="size-5" />}
+								variant="primary"
 								isDisabled={!hasChanges || !isValid}
-								isLoading={isSaving}
-								radius="md"
+								isPending={isSaving}
 								size="md"
 								type="submit"
 							>

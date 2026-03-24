@@ -31,7 +31,7 @@ const StudentsTable = () => {
 		() => (
 			<div className="flex flex-col gap-4">
 				<div className="flex items-center justify-end">
-					<Button color="primary" endContent={<TablerCirclePlusFilled className="size-5 text-white" />}>
+					<Button variant="primary">
 						Add Student
 					</Button>
 				</div>

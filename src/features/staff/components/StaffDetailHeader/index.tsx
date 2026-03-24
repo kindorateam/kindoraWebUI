@@ -4,11 +4,12 @@ import {
 	Button,
 	Calendar,
 	Chip,
+	Label,
+	ListBox,
 	Popover,
 	PopoverContent,
 	PopoverTrigger,
 	Select,
-	SelectItem,
 	Separator,
 	Tooltip,
 } from "@heroui/react"
@@ -71,7 +72,7 @@ const StaffDetailHeader = ({ employeeData, tabs, onSignOut, onGeneratePin, onSen
 											<Chip
 												className="bg-secondary-50 font-medium text-secondary text-sm capitalize"
 												size="sm"
-												variant="flat"
+												variant="soft"
 											>
 												{employeeData.role}
 											</Chip>
@@ -82,14 +83,14 @@ const StaffDetailHeader = ({ employeeData, tabs, onSignOut, onGeneratePin, onSen
 									{employeeData?.pinCode != null && (
 										<div className="flex items-center gap-2">
 											<span className="text-neutral-600 text-sm">Pin</span>
-											<Chip className="bg-secondary-50 font-medium text-secondary text-sm" size="sm" variant="flat">
+											<Chip className="bg-secondary-50 font-medium text-secondary text-sm" size="sm" variant="soft">
 												{employeeData.pinCode}
 											</Chip>
 											{/* TODO: Wire to generate pin API when available */}
 											<Tooltip>
 												<Button
 													aria-label="Generate new pin"
-													color="primary"
+													variant="primary"
 													isIconOnly
 													onPress={onGeneratePin}
 													radius="full"
@@ -119,21 +120,33 @@ const StaffDetailHeader = ({ employeeData, tabs, onSignOut, onGeneratePin, onSen
 							{/* TODO: Replace mock absence data with API data when available */}
 							<div className="flex items-center gap-3">
 								<span className="shrink-0 text-neutral-600 text-sm">Absence date</span>
-								<Chip className="bg-secondary-50 font-medium text-secondary text-sm" size="sm" variant="flat">
+								<Chip className="bg-secondary-50 font-medium text-secondary text-sm" size="sm" variant="soft">
 									Nov 20 - Nov 26
 								</Chip>
 								<Popover placement="bottom">
 									<PopoverTrigger>
-										<Button aria-label="Set absence dates" color="primary" isIconOnly radius="full" size="sm">
+										<Button aria-label="Set absence dates" variant="primary" isIconOnly size="sm">
 											<SolarCalendarBroken className="size-4" />
 										</Button>
 									</PopoverTrigger>
 									<PopoverContent className="p-4">
 										<div className="flex flex-col gap-4">
-											<Select defaultSelectedKeys={["vacation"]} label="Reason" radius="md" size="sm">
-												{ABSENCE_REASONS.map((item) => (
-													<SelectItem key={item.key}>{item.label}</SelectItem>
-												))}
+											<Select defaultSelectedKey="vacation">
+												<Label>Reason</Label>
+												<Select.Trigger>
+													<Select.Value />
+													<Select.Indicator />
+												</Select.Trigger>
+												<Select.Popover>
+													<ListBox>
+														{ABSENCE_REASONS.map((item) => (
+															<ListBox.Item id={item.key} key={item.key} textValue={item.label}>
+																{item.label}
+																<ListBox.ItemIndicator />
+															</ListBox.Item>
+														))}
+													</ListBox>
+												</Select.Popover>
 											</Select>
 											<Calendar aria-label="Absence date" />
 										</div>
@@ -145,24 +158,12 @@ const StaffDetailHeader = ({ employeeData, tabs, onSignOut, onGeneratePin, onSen
 
 					<div className="flex flex-col gap-3">
 						{/* Sign Out button */}
-						<Button
-							color="primary"
-							endContent={<PhSignInBold className="size-5 text-white" />}
-							onPress={onSignOut}
-							radius="md"
-						>
+						<Button variant="primary" onPress={onSignOut}>
 							Sign Out
 						</Button>
 						{/* Send Invite */}
 						{/* TODO: Wire to send invite API when available */}
-						<Button
-							className="text-white"
-							color="success"
-							endContent={<MingcuteSendFill className="size-4" />}
-							onPress={onSendInvite}
-							radius="md"
-							size="sm"
-						>
+						<Button className="text-white" variant="primary" onPress={onSendInvite} size="sm">
 							Send Invite
 						</Button>
 					</div>

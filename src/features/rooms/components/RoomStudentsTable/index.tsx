@@ -44,22 +44,10 @@ const RoomStudentsTable = ({ roomId }: RoomStudentsTableProps) => {
 
 	const topContent = (
 		<div className="flex items-center justify-end gap-5">
-			<Button
-				color="primary"
-				variant="bordered"
-				radius="md"
-				size="md"
-				isDisabled={!hasSelection}
-				endContent={<MageExchangeA className="size-5" />}
-				onPress={handleTransfer}
-			>
+			<Button variant="outline" size="md" isDisabled={!hasSelection} onPress={handleTransfer}>
 				Transfer to another Room
 			</Button>
-			<Button
-				color="primary"
-				endContent={<TablerCirclePlusFilled className="size-5 text-white" />}
-				onPress={() => openAddStudentModal(roomId)}
-			>
+			<Button variant="primary" onPress={() => openAddStudentModal(roomId)}>
 				Add Student
 			</Button>
 		</div>

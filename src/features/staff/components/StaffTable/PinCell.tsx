@@ -24,7 +24,7 @@ const PinCell = ({ pinCode }: PinCellProps) => {
 			<Button
 				isIconOnly
 				size="sm"
-				variant="light"
+				variant="ghost"
 				onPress={() => setIsVisible(!isVisible)}
 				aria-label={isVisible ? "Hide PIN" : "Show PIN"}
 			>

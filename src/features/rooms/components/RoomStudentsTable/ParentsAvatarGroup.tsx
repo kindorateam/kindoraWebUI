@@ -27,7 +27,7 @@ const ParentsAvatarGroup = ({ parents }: ParentsAvatarGroupProps) => {
 	const overflowCount = parents.length - MAX_VISIBLE
 
 	return (
-		<Tooltip closeDelay={0} color="primary" delay={300}>
+		<Tooltip delay={300}>
 			<div className="flex -space-x-2">
 				{visible.map((parent) => {
 					const fullName = `${parent.firstName} ${parent.lastName}`

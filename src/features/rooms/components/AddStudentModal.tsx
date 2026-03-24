@@ -106,7 +106,7 @@ const AddStudentModal = () => {
 							>
 								<Label>Student's Name</Label>
 								<Select.Trigger>
-									<Select.Value placeholder="Select students" />
+									<Select.Value />
 									<Select.Indicator />
 								</Select.Trigger>
 								<Select.Popover>
@@ -130,12 +130,11 @@ const AddStudentModal = () => {
 					</Modal.Body>
 					<Modal.Footer>
 						<Button
-							color="primary"
+							variant="primary"
 							fullWidth
 							isDisabled={!isFormValid || isLoadingStudents}
-							isLoading={addStudentsMutation.isPending}
+							isPending={addStudentsMutation.isPending}
 							onPress={handleSubmit}
-							radius="md"
 						>
 							Add Students
 						</Button>

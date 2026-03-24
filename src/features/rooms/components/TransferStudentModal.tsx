@@ -108,7 +108,7 @@ const TransferStudentModal = ({ onSuccess }: TransferStudentModalProps) => {
 							>
 								<Label>Target Room</Label>
 								<Select.Trigger>
-									<Select.Value placeholder="Select a room" />
+									<Select.Value />
 									<Select.Indicator />
 								</Select.Trigger>
 								<Select.Popover>
@@ -132,12 +132,11 @@ const TransferStudentModal = ({ onSuccess }: TransferStudentModalProps) => {
 					</Modal.Body>
 					<Modal.Footer>
 						<Button
-							color="primary"
+							variant="primary"
 							fullWidth
 							isDisabled={!isFormValid || isLoadingRooms}
-							isLoading={moveStudentsMutation.isPending}
+							isPending={moveStudentsMutation.isPending}
 							onPress={handleSubmit}
-							radius="md"
 						>
 							Transfer
 						</Button>

@@ -116,7 +116,7 @@ const OTPVerificationForm = ({ email, onBack, onSuccess, context = "login", code
 						<div className="flex items-center gap-1">
 							<p className="text-sm text-warning">{email}</p>
 							<Tooltip>
-								<Button className="size-6 min-w-6" isIconOnly onPress={onBack} variant="light">
+								<Button className="size-6 min-w-6" isIconOnly onPress={onBack} variant="ghost">
 									<TablerEdit className="size-4 text-warning" />
 								</Button>
 								<Tooltip.Content>Change email</Tooltip.Content>
@@ -175,9 +175,9 @@ const OTPVerificationForm = ({ email, onBack, onSuccess, context = "login", code
 				<form className="w-full" onSubmit={handleSubmit(onSubmit)}>
 					<Button
 						className="w-full"
-						color="primary"
+						variant="primary"
 						isDisabled={!isValid}
-						isLoading={isSubmitting}
+						isPending={isSubmitting}
 						size="md"
 						type="submit"
 					>
@@ -190,7 +190,7 @@ const OTPVerificationForm = ({ email, onBack, onSuccess, context = "login", code
 					{resendTimeLeft > 0 ? (
 						<span className="text-default-400 text-xs">Send a new code in {resendTimeLeft}s</span>
 					) : (
-						<Link className="cursor-pointer text-primary text-xs" onPress={handleResendCode} underline="none">
+						<Link className="cursor-pointer text-primary text-xs" onPress={handleResendCode} className="underline">
 							Send a new code
 						</Link>
 					)}

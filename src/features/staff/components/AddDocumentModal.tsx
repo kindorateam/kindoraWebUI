@@ -1,4 +1,16 @@
-import { Button, DatePicker, type DateValue, Input, Label, ListBox, Modal, Select, toast } from "@heroui/react"
+import {
+	Button,
+	DatePicker,
+	type DateValue,
+	FieldError,
+	Input,
+	Label,
+	ListBox,
+	Modal,
+	Select,
+	TextField,
+	toast,
+} from "@heroui/react"
 import { useAtomValue } from "jotai"
 import { useCallback, useRef, useState } from "react"
 
@@ -147,7 +159,7 @@ export default function AddDocumentModal({ employeeId }: Props) {
 											</div>
 										</button>
 									</div>
-									<Button color="primary" fullWidth isDisabled={!uploadedFile} onPress={handleNext}>
+									<Button variant="primary" fullWidth isDisabled={!uploadedFile} onPress={handleNext}>
 										Next
 									</Button>
 								</div>
@@ -155,9 +167,9 @@ export default function AddDocumentModal({ employeeId }: Props) {
 								<div className="flex flex-col gap-6">
 									<div className="flex flex-col gap-3">
 										<Input
-											label={undefined}
 											value={uploadedFile?.name ?? ""}
-											onValueChange={(val) => {
+											onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+												const val = e.target.value
 												if (uploadedFile) {
 													const renamed = new File([uploadedFile], val, { type: uploadedFile.type })
 													setUploadedFile(renamed)
@@ -187,22 +199,29 @@ export default function AddDocumentModal({ employeeId }: Props) {
 											</Select.Popover>
 										</Select>
 										<DatePicker label="Expiration date" value={expiryDate} onChange={setExpiryDate} />
-										<Input label="Notes" value={notes} onValueChange={setNotes} />
+										<TextField>
+											<Label>Notes</Label>
+
+											<Input
+												value={notes}
+												onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNotes(e.target.value)}
+											/>
+										</TextField>
 									</div>
 									<div className="flex flex-col gap-3">
 										<Button
-											color="primary"
+											variant="primary"
 											fullWidth
 											isDisabled={!type}
-											isLoading={uploadMutation.isPending}
+											isPending={uploadMutation.isPending}
 											onPress={handleSave}
 										>
 											Save
 										</Button>
-										<Button color="default" fullWidth variant="bordered" onPress={handleBack}>
+										<Button fullWidth variant="outline" onPress={handleBack}>
 											Back
 										</Button>
-										<Button color="default" fullWidth variant="bordered" onPress={handleClose}>
+										<Button fullWidth variant="outline" onPress={handleClose}>
 											Cancel
 										</Button>
 									</div>
