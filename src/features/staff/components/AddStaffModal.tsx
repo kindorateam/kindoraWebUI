@@ -1,4 +1,4 @@
-import { Modal, ModalBody, ModalContent, addToast } from "@heroui/react"
+import { Modal, toast } from "@heroui/react"
 import { useAtomValue } from "jotai"
 import { useState } from "react"
 
@@ -15,10 +15,9 @@ const AddStaffModal = () => {
 	const handleComplete = (data: AddStaffFormData) => {
 		// TODO: Implement API call to create staff
 		console.log("Staff data:", data)
-		addToast({
-			title: "Staff creation not implemented yet",
+		toast("Staff creation not implemented yet", {
 			description: "This feature is coming soon",
-			color: "warning",
+			variant: "warning",
 		})
 		closeAddStaffModal()
 	}
@@ -32,25 +31,21 @@ const AddStaffModal = () => {
 	}
 
 	return (
-		<Modal
-			classNames={{ closeButton: "cursor-pointer" }}
-			isOpen={isOpen}
-			onOpenChange={(open) => !open && closeAddStaffModal()}
-			placement="center"
-			scrollBehavior="outside"
-			size={isLastStep ? "4xl" : "xl"}
-		>
-			<ModalContent>
-				<ModalBody className="p-0">
-					<AddStaffStepper
-						isLoading={false}
-						onCancel={handleCancel}
-						onComplete={handleComplete}
-						onStepChange={handleStepChange}
-					/>
-				</ModalBody>
-			</ModalContent>
-		</Modal>
+		<Modal.Backdrop isOpen={isOpen} onOpenChange={(open) => !open && closeAddStaffModal()}>
+			<Modal.Container className={isLastStep ? "max-w-4xl" : "max-w-xl"}>
+				<Modal.Dialog>
+					<Modal.CloseTrigger />
+					<Modal.Body className="p-0">
+						<AddStaffStepper
+							isLoading={false}
+							onCancel={handleCancel}
+							onComplete={handleComplete}
+							onStepChange={handleStepChange}
+						/>
+					</Modal.Body>
+				</Modal.Dialog>
+			</Modal.Container>
+		</Modal.Backdrop>
 	)
 }
 

@@ -6,12 +6,12 @@ import {
 	Chip,
 	DateInput,
 	Input,
+	Label,
+	ListBox,
 	Modal,
-	ModalContent,
 	Select,
-	SelectItem,
 	Spinner,
-	addToast,
+	toast,
 } from "@heroui/react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { parseDate } from "@internationalized/date"
@@ -179,34 +179,30 @@ const StaffProfileTab = ({ employeeId }: StaffProfileTabProps) => {
 									setValue("avatarFile", null)
 									if (avatarFileUrl) URL.revokeObjectURL(avatarFileUrl)
 									setAvatarFileUrl(null)
-									addToast({
-										title: "Employee updated",
+									toast("Employee updated", {
 										description: "Profile has been saved successfully.",
-										color: "success",
+										variant: "success",
 									})
 								},
 								onError: (error) => {
-									addToast({
-										title: "Profile updated but avatar upload failed",
+									toast("Profile updated but avatar upload failed", {
 										description: getErrorMessage(error),
-										color: "warning",
+										variant: "warning",
 									})
 								},
 							},
 						)
 					} else {
-						addToast({
-							title: "Employee updated",
+						toast("Employee updated", {
 							description: "Profile has been saved successfully.",
-							color: "success",
+							variant: "success",
 						})
 					}
 				},
 				onError: (error) => {
-					addToast({
-						title: "Failed to update employee",
+					toast("Failed to update employee", {
 						description: getErrorMessage(error),
-						color: "danger",
+						variant: "danger",
 					})
 				},
 			},
@@ -395,22 +391,26 @@ const StaffProfileTab = ({ employeeId }: StaffProfileTabProps) => {
 										render={({ field }) => (
 											<Select
 												className="flex-1"
-												label="State"
-												labelPlacement="inside"
-												onSelectionChange={(keys) => {
-													const selected = Array.from(keys)[0]
-													if (selected !== undefined) {
-														field.onChange(String(selected))
-													}
+												selectedKey={field.value ?? null}
+												onSelectionChange={(key) => {
+													if (key !== null) field.onChange(String(key))
 												}}
-												radius="md"
-												selectedKeys={field.value ? [field.value] : []}
-												size="sm"
-												variant="flat"
 											>
-												{US_STATES.map((s) => (
-													<SelectItem key={s.key}>{s.label}</SelectItem>
-												))}
+												<Label>State</Label>
+												<Select.Trigger>
+													<Select.Value />
+													<Select.Indicator />
+												</Select.Trigger>
+												<Select.Popover>
+													<ListBox>
+														{US_STATES.map((s) => (
+															<ListBox.Item id={s.key} key={s.key} textValue={s.label}>
+																{s.label}
+																<ListBox.ItemIndicator />
+															</ListBox.Item>
+														))}
+													</ListBox>
+												</Select.Popover>
 											</Select>
 										)}
 									/>
@@ -491,22 +491,26 @@ const StaffProfileTab = ({ employeeId }: StaffProfileTabProps) => {
 								render={({ field }) => (
 									<Select
 										className="flex-1"
-										label="Role"
-										labelPlacement="inside"
-										onSelectionChange={(keys) => {
-											const selected = Array.from(keys)[0]
-											if (selected !== undefined) {
-												field.onChange(String(selected))
-											}
+										selectedKey={field.value ?? null}
+										onSelectionChange={(key) => {
+											if (key !== null) field.onChange(String(key))
 										}}
-										radius="md"
-										selectedKeys={field.value ? [field.value] : []}
-										size="sm"
-										variant="flat"
 									>
-										{DEGREE_OPTIONS.map((d) => (
-											<SelectItem key={d.key}>{d.label}</SelectItem>
-										))}
+										<Label>Role</Label>
+										<Select.Trigger>
+											<Select.Value />
+											<Select.Indicator />
+										</Select.Trigger>
+										<Select.Popover>
+											<ListBox>
+												{DEGREE_OPTIONS.map((d) => (
+													<ListBox.Item id={d.key} key={d.key} textValue={d.label}>
+														{d.label}
+														<ListBox.ItemIndicator />
+													</ListBox.Item>
+												))}
+											</ListBox>
+										</Select.Popover>
 									</Select>
 								)}
 							/>
@@ -540,22 +544,26 @@ const StaffProfileTab = ({ employeeId }: StaffProfileTabProps) => {
 										<Select
 											className="flex-1"
 											isDisabled
-											label="Sign up status"
-											labelPlacement="inside"
-											onSelectionChange={(keys) => {
-												const selected = Array.from(keys)[0]
-												if (selected !== undefined) {
-													field.onChange(String(selected))
-												}
+											selectedKey={field.value ?? null}
+											onSelectionChange={(key) => {
+												if (key !== null) field.onChange(String(key))
 											}}
-											radius="md"
-											selectedKeys={field.value ? [field.value] : []}
-											size="sm"
-											variant="flat"
 										>
-											{SIGNUP_STATUS_OPTIONS.map((s) => (
-												<SelectItem key={s.key}>{s.label}</SelectItem>
-											))}
+											<Label>Sign up status</Label>
+											<Select.Trigger>
+												<Select.Value />
+												<Select.Indicator />
+											</Select.Trigger>
+											<Select.Popover>
+												<ListBox>
+													{SIGNUP_STATUS_OPTIONS.map((s) => (
+														<ListBox.Item id={s.key} key={s.key} textValue={s.label}>
+															{s.label}
+															<ListBox.ItemIndicator />
+														</ListBox.Item>
+													))}
+												</ListBox>
+											</Select.Popover>
 										</Select>
 									)}
 								/>
@@ -565,25 +573,27 @@ const StaffProfileTab = ({ employeeId }: StaffProfileTabProps) => {
 									render={({ field }) => (
 										<Select
 											className="flex-1"
-											errorMessage={errors.role?.message}
-											isInvalid={!!errors.role}
 											isRequired
-											label="Role"
-											labelPlacement="inside"
-											onSelectionChange={(keys) => {
-												const selected = Array.from(keys)[0]
-												if (selected !== undefined) {
-													field.onChange(String(selected))
-												}
+											selectedKey={field.value ?? null}
+											onSelectionChange={(key) => {
+												if (key !== null) field.onChange(String(key))
 											}}
-											radius="md"
-											selectedKeys={field.value ? [field.value] : []}
-											size="sm"
-											variant="flat"
 										>
-											{STAFF_ROLES.map((r) => (
-												<SelectItem key={r.key}>{r.label}</SelectItem>
-											))}
+											<Label>Role</Label>
+											<Select.Trigger>
+												<Select.Value />
+												<Select.Indicator />
+											</Select.Trigger>
+											<Select.Popover>
+												<ListBox>
+													{STAFF_ROLES.map((r) => (
+														<ListBox.Item id={r.key} key={r.key} textValue={r.label}>
+															{r.label}
+															<ListBox.ItemIndicator />
+														</ListBox.Item>
+													))}
+												</ListBox>
+											</Select.Popover>
 										</Select>
 									)}
 								/>
@@ -595,20 +605,27 @@ const StaffProfileTab = ({ employeeId }: StaffProfileTabProps) => {
 									render={({ field }) => (
 										<div className="flex flex-1 flex-col gap-2">
 											<Select
-												label="Assigned rooms"
-												labelPlacement="inside"
+												selectionMode="multiple"
+												selectedKeys={new Set(field.value || [])}
 												onSelectionChange={(keys) => {
 													field.onChange(Array.from(keys) as string[])
 												}}
-												radius="md"
-												selectedKeys={new Set(field.value || [])}
-												selectionMode="multiple"
-												size="sm"
-												variant="flat"
 											>
-												{MOCK_ROOMS.map((room) => (
-													<SelectItem key={room.key}>{room.label}</SelectItem>
-												))}
+												<Label>Assigned rooms</Label>
+												<Select.Trigger>
+													<Select.Value />
+													<Select.Indicator />
+												</Select.Trigger>
+												<Select.Popover>
+													<ListBox>
+														{MOCK_ROOMS.map((room) => (
+															<ListBox.Item id={room.key} key={room.key} textValue={room.label}>
+																{room.label}
+																<ListBox.ItemIndicator />
+															</ListBox.Item>
+														))}
+													</ListBox>
+												</Select.Popover>
 											</Select>
 											{assignedRooms.length > 0 && (
 												<div className="flex flex-wrap gap-2">
@@ -809,7 +826,7 @@ const StaffProfileTab = ({ employeeId }: StaffProfileTabProps) => {
 					{/* Action Buttons */}
 					<div className="flex items-center gap-5">
 						<Button
-							className="mr-auto text-tiny shadow-small"
+							className="mr-auto text-xs shadow-small"
 							color="danger"
 							endContent={<MaterialSymbolsDeleteOutline className="size-5" />}
 							onPress={() => setIsDeactivateModalOpen(true)}
@@ -835,34 +852,34 @@ const StaffProfileTab = ({ employeeId }: StaffProfileTabProps) => {
 						</Button>
 					</div>
 				</form>
-				<Modal
-					isOpen={isDeactivateModalOpen}
-					onOpenChange={(open) => !open && handleCloseDeactivateModal()}
-					placement="center"
-					size="sm"
-				>
-					<ModalContent>
-						<div className="flex flex-col items-center gap-5 px-7 py-8">
-							<div className="flex flex-col items-center gap-3 text-center">
-								<div className="flex size-12 items-center justify-center rounded-full bg-danger-100">
-									<TablerAlertTriangle className="size-6 text-danger" />
+				<Modal.Backdrop isOpen={isDeactivateModalOpen} onOpenChange={(open) => !open && handleCloseDeactivateModal()}>
+					<Modal.Container>
+						<Modal.Dialog>
+							<Modal.CloseTrigger />
+							<Modal.Body>
+								<div className="flex flex-col items-center gap-5 px-7 py-8">
+									<div className="flex flex-col items-center gap-3 text-center">
+										<div className="flex size-12 items-center justify-center rounded-full bg-danger-100">
+											<TablerAlertTriangle className="size-6 text-danger" />
+										</div>
+										<h3 className="font-medium text-xl leading-7">Deactivate Account</h3>
+										<p className="text-foreground text-sm leading-5">
+											Are you sure you want to deactivate this staff account?
+										</p>
+									</div>
+									<div className="flex w-full flex-col gap-3">
+										<Button className="w-full" color="danger" onPress={handleCloseDeactivateModal}>
+											Deactivate
+										</Button>
+										<Button fullWidth slot="close" size="md">
+											Cancel
+										</Button>
+									</div>
 								</div>
-								<h3 className="font-medium text-xl leading-7">Deactivate Account</h3>
-								<p className="text-foreground text-sm leading-5">
-									Are you sure you want to deactivate this staff account?
-								</p>
-							</div>
-							<div className="flex w-full flex-col gap-3">
-								<Button className="w-full" color="danger" onPress={handleCloseDeactivateModal}>
-									Deactivate
-								</Button>
-								<Button fullWidth onPress={handleCloseDeactivateModal} size="md">
-									Cancel
-								</Button>
-							</div>
-						</div>
-					</ModalContent>
-				</Modal>
+							</Modal.Body>
+						</Modal.Dialog>
+					</Modal.Container>
+				</Modal.Backdrop>
 			</CardBody>
 		</Card>
 	)

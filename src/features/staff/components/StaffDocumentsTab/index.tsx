@@ -1,16 +1,4 @@
-import {
-	Button,
-	Card,
-	CardBody,
-	Pagination,
-	Spinner,
-	Table,
-	TableBody,
-	TableCell,
-	TableColumn,
-	TableHeader,
-	TableRow,
-} from "@heroui/react"
+import { Button, Card, CardBody, Pagination, Spinner, Table } from "@heroui/react"
 import { useMemo, useState } from "react"
 
 import TableError from "@/components/TableError"
@@ -59,44 +47,38 @@ const StaffDocumentsTab = ({ employeeId }: StaffDocumentsTabProps) => {
 						<span className="text-default-400 text-small">Total {documents.length} documents</span>
 					</div>
 					<div className="flex min-h-[647.5px] flex-col justify-between">
-						<Table
-							aria-label="Employee documents table"
-							removeWrapper
-							classNames={{
-								tr: "border-b border-default-200 last:border-b-0",
-								th: "py-0",
-								td: "py-0",
-								tbody: "[&>tr]:h-[55px]",
-								emptyWrapper: "h-[550px]",
-							}}
-						>
-							<TableHeader columns={columns}>
-								{(column) => (
-									<TableColumn key={column.key} align={column.align}>
-										{column.label}
-									</TableColumn>
-								)}
-							</TableHeader>
-							<TableBody
-								emptyContent={
-									error ? (
-										<TableError onRetry={refetch} />
-									) : (
-										<div className="flex flex-col items-center gap-3">
-											<p className="text-default-500 text-lg">No documents yet</p>
-											<p className="text-default-400 text-sm">Upload documents to get started</p>
-										</div>
-									)
-								}
-								items={error || isLoading ? [] : items}
-								isLoading={isLoading}
-								loadingContent={<Spinner size="lg" />}
-							>
-								{(doc) => (
-									<TableRow key={doc.id}>{(columnKey) => <TableCell>{renderCell(doc, columnKey)}</TableCell>}</TableRow>
-								)}
-							</TableBody>
-						</Table>
+						<Table.ScrollContainer>
+							<Table.Content aria-label="Employee documents table">
+								<Table.Header columns={columns}>
+									{(column) => (
+										<Table.Column key={column.key} className="py-0" align={column.align}>
+											{column.label}
+										</Table.Column>
+									)}
+								</Table.Header>
+								<Table.Body
+									emptyContent={
+										error ? (
+											<TableError onRetry={refetch} />
+										) : (
+											<div className="flex flex-col items-center gap-3">
+												<p className="text-default-500 text-lg">No documents yet</p>
+												<p className="text-default-400 text-sm">Upload documents to get started</p>
+											</div>
+										)
+									}
+									items={error || isLoading ? [] : items}
+									isLoading={isLoading}
+									loadingContent={<Spinner size="lg" />}
+								>
+									{(doc) => (
+										<Table.Row key={doc.id} className="h-[55px] border-b border-default-200 last:border-b-0">
+											{(columnKey) => <Table.Cell className="py-0">{renderCell(doc, columnKey)}</Table.Cell>}
+										</Table.Row>
+									)}
+								</Table.Body>
+							</Table.Content>
+						</Table.ScrollContainer>
 						{pages > 1 && (
 							<div className="flex w-full justify-center pt-4">
 								<Pagination
