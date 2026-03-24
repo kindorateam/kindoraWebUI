@@ -21,13 +21,11 @@ const MessagesConversationPane = ({ thread }: MessagesConversationPaneProps) => 
 			<div className="rounded-t-[14px] rounded-b-[16px] border border-default-200 bg-white px-4 py-3 shadow-[0px_1px_3px_0px_rgba(0,0,0,0.1),0px_1px_2px_0px_rgba(0,0,0,0.1)]">
 				<div className="flex items-start justify-between gap-4">
 					<div className="flex min-w-0 items-start gap-3">
-						<Avatar
-							classNames={{ base: "bg-primary text-white", icon: "text-white" }}
-							fallback={<MdiAccount className="size-[22.4px] text-white" />}
-							name={thread?.name ?? "No chat selected"}
-							radius="full"
-							size="sm"
-						/>
+						<Avatar className="bg-primary text-white" size="sm">
+							<Avatar.Fallback>
+								<MdiAccount className="size-[22.4px] text-white" />
+							</Avatar.Fallback>
+						</Avatar>
 						<div className="min-w-0">
 							<p className="text-[14px] text-black leading-5">{thread?.name ?? "No chat selected"}</p>
 							<div className="mt-3 flex flex-wrap gap-3">
@@ -75,11 +73,7 @@ const MessagesConversationPane = ({ thread }: MessagesConversationPaneProps) => 
 						</Button>
 						<Input
 							aria-label="Type your message"
-							classNames={{
-								base: "flex-1",
-								inputWrapper: "bg-transparent shadow-none px-0 h-auto min-h-0",
-								input: "text-[14px] leading-5 text-foreground placeholder:text-[#71717a]",
-							}}
+							className="flex-1"
 							placeholder="Type your message here"
 							variant="flat"
 						/>

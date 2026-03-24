@@ -29,11 +29,7 @@ const MessagesSidebar = ({
 					<div className="relative flex-1">
 						<Input
 							aria-label="Search chat"
-							classNames={{
-								base: "w-full",
-								inputWrapper: "h-[46px] rounded-xl bg-default-100 px-3 shadow-[0px_1px_2px_0px_rgba(0,0,0,0.05)]",
-								input: "pl-1 text-[14px] leading-5 text-foreground placeholder:text-[#52525b]",
-							}}
+							className="w-full"
 							placeholder="Search chat"
 							radius="lg"
 							size="sm"
