@@ -1,4 +1,4 @@
-import { Button, ButtonGroup, Switch, Tab, Tabs } from "@heroui/react"
+import { Button, ButtonGroup, Label, Switch, Tabs } from "@heroui/react"
 import { useAtom } from "jotai"
 
 import TablerChevronLeft from "~icons/tabler/chevron-left"
@@ -40,13 +40,28 @@ const CalendarToolbar = ({ title, onNavigatePrev, onNavigateNext, onNavigateToda
 			</div>
 
 			<div className="flex items-center gap-4">
-				<Switch size="sm" isSelected={hideWeekends} onValueChange={setHideWeekends}>
-					Hide weekends
+				<Switch size="sm" isSelected={hideWeekends} onChange={(e) => setHideWeekends(e.target.checked)}>
+					<Switch.Control>
+						<Switch.Thumb />
+					</Switch.Control>
+					<Switch.Content>
+						<Label>Hide weekends</Label>
+					</Switch.Content>
 				</Switch>
 
 				<Tabs size="sm" selectedKey={currentView} onSelectionChange={(key) => setCurrentView(key as CalendarViewType)}>
+					<Tabs.ListContainer>
+						<Tabs.List aria-label="Calendar view">
+							{CALENDAR_VIEW_OPTIONS.map((opt) => (
+								<Tabs.Tab key={opt.key} id={opt.key}>
+									{opt.label}
+									<Tabs.Indicator />
+								</Tabs.Tab>
+							))}
+						</Tabs.List>
+					</Tabs.ListContainer>
 					{CALENDAR_VIEW_OPTIONS.map((opt) => (
-						<Tab key={opt.key} title={opt.label} />
+						<Tabs.Panel key={opt.key} id={opt.key} />
 					))}
 				</Tabs>
 

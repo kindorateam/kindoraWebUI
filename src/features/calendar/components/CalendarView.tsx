@@ -3,7 +3,7 @@ import interactionPlugin from "@fullcalendar/interaction"
 import multiMonthPlugin from "@fullcalendar/multimonth"
 import FullCalendar from "@fullcalendar/react"
 import timeGridPlugin from "@fullcalendar/timegrid"
-import { Spinner, addToast } from "@heroui/react"
+import { Spinner, toast } from "@heroui/react"
 import { useAtom, useAtomValue } from "jotai"
 import { useCallback, useEffect, useRef, useState } from "react"
 
@@ -99,10 +99,9 @@ const CalendarView = () => {
 				{
 					onError: (error) => {
 						dropInfo.revert()
-						addToast({
-							title: "Failed to move event",
+						toast("Failed to move event", {
 							description: getErrorMessage(error),
-							color: "danger",
+							variant: "danger",
 						})
 					},
 				},
@@ -124,10 +123,9 @@ const CalendarView = () => {
 				{
 					onError: (error) => {
 						resizeInfo.revert()
-						addToast({
-							title: "Failed to resize event",
+						toast("Failed to resize event", {
 							description: getErrorMessage(error),
-							color: "danger",
+							variant: "danger",
 						})
 					},
 				},

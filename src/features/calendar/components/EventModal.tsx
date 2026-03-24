@@ -1,17 +1,4 @@
-import {
-	Button,
-	Input,
-	Modal,
-	ModalBody,
-	ModalContent,
-	ModalFooter,
-	ModalHeader,
-	Select,
-	SelectItem,
-	Switch,
-	Textarea,
-	addToast,
-} from "@heroui/react"
+import { Button, Input, Label, ListBox, Modal, Select, Switch, Textarea, toast } from "@heroui/react"
 import { useAtomValue } from "jotai"
 import { useEffect, useState } from "react"
 
@@ -94,18 +81,14 @@ const EventModal = () => {
 		}
 
 		const onSuccess = () => {
-			addToast({
-				title: isEditMode ? "Event updated" : "Event created",
-				color: "success",
-			})
+			toast(isEditMode ? "Event updated" : "Event created", { variant: "success" })
 			closeEventModal()
 		}
 
 		const onError = (error: Error) => {
-			addToast({
-				title: `Failed to ${isEditMode ? "update" : "create"} event`,
+			toast(`Failed to ${isEditMode ? "update" : "create"} event`, {
 				description: getErrorMessage(error),
-				color: "danger",
+				variant: "danger",
 			})
 		}
 
@@ -135,107 +118,113 @@ const EventModal = () => {
 	}
 
 	return (
-		<Modal
-			classNames={{ closeButton: "cursor-pointer" }}
-			isOpen={isOpen}
-			onOpenChange={(open) => !open && handleClose()}
-			placement="center"
-			size="md"
-		>
-			<ModalContent>
-				<ModalHeader>{isEditMode ? "Edit Event" : "New Event"}</ModalHeader>
-				<ModalBody className="gap-4">
-					<Input
-						label="Title"
-						placeholder="Event title"
-						value={formData.title}
-						onValueChange={(v) => updateField("title", v)}
-						isRequired
-						autoFocus
-					/>
-
-					<Textarea
-						label="Description"
-						placeholder="Optional description"
-						value={formData.description}
-						onValueChange={(v) => updateField("description", v)}
-						minRows={2}
-					/>
-
-					<Switch size="sm" isSelected={formData.allDay} onValueChange={(v) => updateField("allDay", v)}>
-						All day
-					</Switch>
-
-					<div className="grid grid-cols-2 gap-3">
+		<Modal.Backdrop isOpen={isOpen} onOpenChange={(open) => !open && handleClose()}>
+			<Modal.Container>
+				<Modal.Dialog>
+					<Modal.CloseTrigger />
+					<Modal.Header>
+						<Modal.Heading>{isEditMode ? "Edit Event" : "New Event"}</Modal.Heading>
+					</Modal.Header>
+					<Modal.Body className="gap-4">
 						<Input
-							type="date"
-							label="Start date"
-							value={formData.startDate}
-							onValueChange={(v) => updateField("startDate", v)}
+							label="Title"
+							placeholder="Event title"
+							value={formData.title}
+							onValueChange={(v) => updateField("title", v)}
 							isRequired
+							autoFocus
 						/>
-						{!formData.allDay && (
-							<Input
-								type="time"
-								label="Start time"
-								value={formData.startTime}
-								onValueChange={(v) => updateField("startTime", v)}
-							/>
-						)}
-					</div>
 
-					<div className="grid grid-cols-2 gap-3">
-						<Input
-							type="date"
-							label="End date"
-							value={formData.endDate}
-							onValueChange={(v) => updateField("endDate", v)}
-							isRequired
+						<Textarea
+							label="Description"
+							placeholder="Optional description"
+							value={formData.description}
+							onValueChange={(v) => updateField("description", v)}
+							minRows={2}
 						/>
-						{!formData.allDay && (
-							<Input
-								type="time"
-								label="End time"
-								value={formData.endTime}
-								onValueChange={(v) => updateField("endTime", v)}
-							/>
-						)}
-					</div>
 
-					<Select
-						label="Color"
-						selectedKeys={[formData.color]}
-						onSelectionChange={(keys) => {
-							const selected = Array.from(keys)[0]
-							if (selected) updateField("color", String(selected))
-						}}
-					>
-						{EVENT_COLOR_OPTIONS.map((opt) => (
-							<SelectItem
-								key={opt.key}
-								startContent={<div className="size-3 rounded-full" style={{ backgroundColor: opt.key }} />}
-							>
-								{opt.label}
-							</SelectItem>
-						))}
-					</Select>
-				</ModalBody>
-				<ModalFooter>
-					{isEditMode && (
-						<Button color="danger" variant="light" onPress={handleDelete} isDisabled={isLoading}>
-							Delete
+						<Switch size="sm" isSelected={formData.allDay} onChange={(e) => updateField("allDay", e.target.checked)}>
+							<Switch.Control><Switch.Thumb /></Switch.Control>
+							<Switch.Content><Label>All day</Label></Switch.Content>
+						</Switch>
+
+						<div className="grid grid-cols-2 gap-3">
+							<Input
+								type="date"
+								label="Start date"
+								value={formData.startDate}
+								onValueChange={(v) => updateField("startDate", v)}
+								isRequired
+							/>
+							{!formData.allDay && (
+								<Input
+									type="time"
+									label="Start time"
+									value={formData.startTime}
+									onValueChange={(v) => updateField("startTime", v)}
+								/>
+							)}
+						</div>
+
+						<div className="grid grid-cols-2 gap-3">
+							<Input
+								type="date"
+								label="End date"
+								value={formData.endDate}
+								onValueChange={(v) => updateField("endDate", v)}
+								isRequired
+							/>
+							{!formData.allDay && (
+								<Input
+									type="time"
+									label="End time"
+									value={formData.endTime}
+									onValueChange={(v) => updateField("endTime", v)}
+								/>
+							)}
+						</div>
+
+						<Select
+							selectedKey={formData.color}
+							onSelectionChange={(key) => {
+								if (key !== null) updateField("color", String(key))
+							}}
+						>
+							<Label>Color</Label>
+							<Select.Trigger>
+								<Select.Value />
+								<Select.Indicator />
+							</Select.Trigger>
+							<Select.Popover>
+								<ListBox>
+									{EVENT_COLOR_OPTIONS.map((opt) => (
+										<ListBox.Item id={opt.key} key={opt.key} textValue={opt.label}>
+											<div className="size-3 rounded-full" style={{ backgroundColor: opt.key }} />
+											{opt.label}
+											<ListBox.ItemIndicator />
+										</ListBox.Item>
+									))}
+								</ListBox>
+							</Select.Popover>
+						</Select>
+					</Modal.Body>
+					<Modal.Footer>
+						{isEditMode && (
+							<Button color="danger" variant="light" onPress={handleDelete} isDisabled={isLoading}>
+								Delete
+							</Button>
+						)}
+						<div className="flex-1" />
+						<Button color="default" variant="flat" onPress={handleClose} isDisabled={isLoading}>
+							Cancel
 						</Button>
-					)}
-					<div className="flex-1" />
-					<Button color="default" variant="flat" onPress={handleClose} isDisabled={isLoading}>
-						Cancel
-					</Button>
-					<Button color="primary" onPress={handleSubmit} isLoading={isLoading} isDisabled={!formData.title.trim()}>
-						{isEditMode ? "Save" : "Create"}
-					</Button>
-				</ModalFooter>
-			</ModalContent>
-		</Modal>
+						<Button color="primary" onPress={handleSubmit} isLoading={isLoading} isDisabled={!formData.title.trim()}>
+							{isEditMode ? "Save" : "Create"}
+						</Button>
+					</Modal.Footer>
+				</Modal.Dialog>
+			</Modal.Container>
+		</Modal.Backdrop>
 	)
 }
 
