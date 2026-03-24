@@ -8,7 +8,7 @@ interface PinCellProps {
 	pinCode: number | null | undefined
 }
 
-export default function PinCell({ pinCode }: PinCellProps) {
+const PinCell = ({ pinCode }: PinCellProps) => {
 	const [isVisible, setIsVisible] = useState(false)
 
 	if (pinCode === null || pinCode === undefined) {
@@ -33,3 +33,5 @@ export default function PinCell({ pinCode }: PinCellProps) {
 		</div>
 	)
 }
+
+export default PinCell

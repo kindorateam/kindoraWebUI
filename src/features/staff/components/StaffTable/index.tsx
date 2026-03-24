@@ -1,17 +1,4 @@
-import {
-	Button,
-	Card,
-	CardBody,
-	Pagination,
-	Spinner,
-	Switch,
-	Table,
-	TableBody,
-	TableCell,
-	TableColumn,
-	TableHeader,
-	TableRow,
-} from "@heroui/react"
+import { Button, Card, CardBody, Pagination, Spinner, Switch, Table } from "@heroui/react"
 import { useNavigate } from "@tanstack/react-router"
 import { useCallback, useMemo, useState } from "react"
 
@@ -88,46 +75,42 @@ const StaffTable = () => {
 			<Card>
 				<CardBody className="flex flex-col gap-4 p-4">
 					{topContent}
-					<Table
-						aria-label="Employees table"
-						removeWrapper
-						classNames={{
-							base: "min-h-[595.5px]",
-							tr: "border-b border-default-200 last:border-b-0",
-							th: "py-0",
-							td: "py-0",
-							tbody: "[&>tr]:h-[55px]",
-							emptyWrapper: "h-[550px]",
-						}}
-					>
-						<TableHeader columns={columns}>
-							{(column) => (
-								<TableColumn key={column.key} align={column.align}>
-									{column.label}
-								</TableColumn>
-							)}
-						</TableHeader>
-						<TableBody
-							emptyContent={
-								error ? (
-									<TableError onRetry={refetch} />
-								) : (
-									<div className="flex flex-col items-center gap-3">
-										<p className="text-default-500 text-lg">No staff members yet</p>
-										<p className="text-default-400 text-sm">Add your first staff member to get started</p>
-									</div>
-								)
-							}
-							items={error || isLoading ? [] : items}
-							isLoading={isLoading}
-							loadingContent={<Spinner size="lg" />}
-						>
-							{(employee) => (
-								<TableRow key={employee.id}>
-									{(columnKey) => <TableCell>{renderCell(employee, columnKey, renderCellOptions)}</TableCell>}
-								</TableRow>
-							)}
-						</TableBody>
+					<Table className="min-h-[595.5px]">
+						<Table.ScrollContainer>
+							<Table.Content aria-label="Employees table">
+								<Table.Header className="[&>tr>th]:py-0" columns={columns}>
+									{(column) => (
+										<Table.Column key={column.key} align={column.align}>
+											{column.label}
+										</Table.Column>
+									)}
+								</Table.Header>
+								<Table.Body
+									className="[&>tr]:h-[55px] [&>tr]:border-b [&>tr]:border-default-200 [&>tr:last-child]:border-b-0"
+									emptyContent={
+										error ? (
+											<TableError onRetry={refetch} />
+										) : (
+											<div className="flex h-[550px] flex-col items-center justify-center gap-3">
+												<p className="text-default-500 text-lg">No staff members yet</p>
+												<p className="text-default-400 text-sm">Add your first staff member to get started</p>
+											</div>
+										)
+									}
+									items={error || isLoading ? [] : items}
+									isLoading={isLoading}
+									loadingContent={<Spinner size="lg" />}
+								>
+									{(employee) => (
+										<Table.Row key={employee.id}>
+											{(columnKey) => (
+												<Table.Cell className="py-0">{renderCell(employee, columnKey, renderCellOptions)}</Table.Cell>
+											)}
+										</Table.Row>
+									)}
+								</Table.Body>
+							</Table.Content>
+						</Table.ScrollContainer>
 					</Table>
 					{pages > 1 && (
 						<div className="mt-auto flex w-full justify-center">

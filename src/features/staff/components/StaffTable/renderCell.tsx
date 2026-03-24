@@ -1,4 +1,4 @@
-import { Avatar, Badge, Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@heroui/react"
+import { Avatar, Badge, Button, Dropdown, Label } from "@heroui/react"
 
 import TablerEdit from "~icons/tabler/edit"
 import TablerEye from "~icons/tabler/eye"
@@ -33,16 +33,13 @@ export function renderCell(employee: EmployeeSummary, columnKey: React.Key, opti
 					onClick={() => onEmployeeClick(employee.id)}
 					type="button"
 				>
-					<Badge
-						color={employee.checkedIn ? "success" : "danger"}
-						content=""
-						isInvisible={false}
-						isOneChar
-						placement="bottom-right"
-						shape="circle"
-					>
-						<Avatar color="primary" showFallback size="sm" src={avatarUrl} />
-					</Badge>
+					<Badge.Anchor>
+						<Avatar color="primary" size="sm">
+							<Avatar.Image alt={fullName} src={avatarUrl} />
+							<Avatar.Fallback>{fullName.charAt(0)}</Avatar.Fallback>
+						</Avatar>
+						<Badge color={employee.checkedIn ? "success" : "danger"} />
+					</Badge.Anchor>
 					<div className="flex flex-col">
 						<span className="font-medium text-sm hover:text-brand hover:underline">{fullName}</span>
 					</div>
@@ -61,8 +58,8 @@ export function renderCell(employee: EmployeeSummary, columnKey: React.Key, opti
 		case "actions":
 			return (
 				<div className="flex justify-center">
-					<Dropdown classNames={{ content: "min-w-0" }}>
-						<DropdownTrigger>
+					<Dropdown className="min-w-0">
+						<Dropdown.Trigger>
 							<Button isIconOnly radius="md" variant="light">
 								<svg
 									aria-hidden="true"
@@ -79,30 +76,35 @@ export function renderCell(employee: EmployeeSummary, columnKey: React.Key, opti
 									<circle cx={12} cy={19} r={1} />
 								</svg>
 							</Button>
-						</DropdownTrigger>
-						<DropdownMenu aria-label="Employee actions">
-							<DropdownItem
-								key="view"
-								className="text-success"
-								startContent={<TablerEye aria-hidden className="size-5" />}
-							>
-								View
-							</DropdownItem>
-							<DropdownItem
-								key="edit"
-								className="text-warning"
-								startContent={<TablerEdit aria-hidden className="size-5" />}
-							>
-								Edit
-							</DropdownItem>
-							<DropdownItem
-								key="deactivate"
-								className="text-danger"
-								startContent={<TablerTrash aria-hidden className="size-5" />}
-							>
-								Deactivate
-							</DropdownItem>
-						</DropdownMenu>
+						</Dropdown.Trigger>
+						<Dropdown.Popover>
+							<Dropdown.Menu aria-label="Employee actions">
+								<Dropdown.Item
+									id="view"
+									textValue="View"
+									className="text-success"
+									startContent={<TablerEye aria-hidden className="size-5" />}
+								>
+									<Label>View</Label>
+								</Dropdown.Item>
+								<Dropdown.Item
+									id="edit"
+									textValue="Edit"
+									className="text-warning"
+									startContent={<TablerEdit aria-hidden className="size-5" />}
+								>
+									<Label>Edit</Label>
+								</Dropdown.Item>
+								<Dropdown.Item
+									id="deactivate"
+									textValue="Deactivate"
+									className="text-danger"
+									startContent={<TablerTrash aria-hidden className="size-5" />}
+								>
+									<Label>Deactivate</Label>
+								</Dropdown.Item>
+							</Dropdown.Menu>
+						</Dropdown.Popover>
 					</Dropdown>
 				</div>
 			)

@@ -4,12 +4,12 @@ import {
 	Button,
 	Calendar,
 	Chip,
-	Divider,
 	Popover,
 	PopoverContent,
 	PopoverTrigger,
 	Select,
 	SelectItem,
+	Separator,
 	Tooltip,
 } from "@heroui/react"
 
@@ -44,24 +44,21 @@ const StaffDetailHeader = ({ employeeData, tabs, onSignOut, onGeneratePin, onSen
 					<div className="flex items-start gap-10">
 						{/* Avatar with online/offline status badge */}
 						<div className="relative shrink-0">
-							<Badge
-								color={employeeData?.checkedIn ? "success" : "danger"}
-								content=""
-								isInvisible={false}
-								isOneChar
-								placement="bottom-right"
-								shape="circle"
-							>
-								<Avatar className="size-25 border-4 border-white shadow-md" showFallback src={avatarUrl} />
-							</Badge>
+							<Badge.Anchor>
+								<Avatar className="size-25 border-4 border-white shadow-md">
+									<Avatar.Image alt={fullName} src={avatarUrl} />
+									<Avatar.Fallback>{fullName.charAt(0)}</Avatar.Fallback>
+								</Avatar>
+								<Badge color={employeeData?.checkedIn ? "success" : "danger"} />
+							</Badge.Anchor>
 						</div>
 
 						{/* Info column */}
 						<div className="flex flex-col gap-5">
-							{/* Name + Divider */}
+							{/* Name + Separator */}
 							<div className="flex flex-col gap-1">
 								<h1 className="font-semibold text-4xl">{fullName}</h1>
-								<Divider />
+								<Separator />
 							</div>
 
 							{/* Row 1: Role, Pin, Rooms */}
@@ -89,7 +86,7 @@ const StaffDetailHeader = ({ employeeData, tabs, onSignOut, onGeneratePin, onSen
 												{employeeData.pinCode}
 											</Chip>
 											{/* TODO: Wire to generate pin API when available */}
-											<Tooltip content="Generate new pin" delay={500}>
+											<Tooltip>
 												<Button
 													aria-label="Generate new pin"
 													color="primary"
@@ -100,6 +97,7 @@ const StaffDetailHeader = ({ employeeData, tabs, onSignOut, onGeneratePin, onSen
 												>
 													<GrommetIconsUpdate className="size-4" />
 												</Button>
+												<Tooltip.Content>Generate new pin</Tooltip.Content>
 											</Tooltip>
 										</div>
 									)}
