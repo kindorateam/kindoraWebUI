@@ -1,4 +1,4 @@
-import { Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@heroui/react"
+import { Table } from "@heroui/react"
 
 import type { DataTableProps } from "@/types/table"
 
@@ -25,44 +25,42 @@ const DataTable = <T,>({
 
 	return (
 		<div className={`w-full ${className}`}>
-			<Table
-				aria-label="Data table"
-				classNames={{
-					wrapper: "min-w-full p-0 shadow-none! bg-transparent",
-					base: "p-0",
-					thead: '[&>tr]:first:rounded-none [&>[aria-hidden="true"]]:hidden',
-					tr: "border-b last:border-b-0 border-black/4! data-[first=true]:pt-2!",
-					th: "p-0 pb-4 bg-transparent text-xs!",
-					td: "p-0 py-2.5",
-				}}
-			>
-				<TableHeader columns={columns}>
-					{(column) => (
-						<TableColumn
-							align={column.align ?? "start"}
-							className={`text-left font-medium text-sm text-text-secondary tracking-wider ${column.className ?? ""}`}
-							key={column.key}
-						>
-							{column.label}
-						</TableColumn>
-					)}
-				</TableHeader>
-				<TableBody items={data}>
-					{(item) => (
-						<TableRow key={getRowKey(item)} onClick={() => onRowClick?.(item)}>
-							{(columnKey) => {
-								const column = columns.find((col) => col.key === columnKey)
-								return (
-									<TableCell className="whitespace-nowrap">
-										{column?.renderCell
-											? column.renderCell(item, column)
-											: String((item as Record<string, unknown>)[columnKey])}
-									</TableCell>
-								)
-							}}
-						</TableRow>
-					)}
-				</TableBody>
+			<Table className="p-0">
+				<Table.ScrollContainer>
+					<Table.Content aria-label="Data table" className="min-w-full bg-transparent p-0 shadow-none!">
+						<Table.Header className='[&>tr]:first:rounded-none [&>[aria-hidden="true"]]:hidden' columns={columns}>
+							{(column) => (
+								<Table.Column
+									align={column.align ?? "start"}
+									className={`bg-transparent p-0 pb-4 text-left text-xs! font-medium text-text-secondary tracking-wider ${column.className ?? ""}`}
+									key={column.key}
+								>
+									{column.label}
+								</Table.Column>
+							)}
+						</Table.Header>
+						<Table.Body items={data}>
+							{(item) => (
+								<Table.Row
+									className="border-b border-black/4! last:border-b-0 data-[first=true]:pt-2!"
+									key={getRowKey(item)}
+									onClick={() => onRowClick?.(item)}
+								>
+									{(columnKey) => {
+										const column = columns.find((col) => col.key === columnKey)
+										return (
+											<Table.Cell className="whitespace-nowrap p-0 py-2.5">
+												{column?.renderCell
+													? column.renderCell(item, column)
+													: String((item as Record<string, unknown>)[columnKey])}
+											</Table.Cell>
+										)
+									}}
+								</Table.Row>
+							)}
+						</Table.Body>
+					</Table.Content>
+				</Table.ScrollContainer>
 			</Table>
 		</div>
 	)
