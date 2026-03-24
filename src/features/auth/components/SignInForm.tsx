@@ -1,4 +1,4 @@
-import { Button, CardBody, CardFooter, CardHeader, Checkbox, Divider, Input, Link } from "@heroui/react"
+import { Button, Card, Checkbox, Input, Label, Link, Separator } from "@heroui/react"
 import { useCallback, useState } from "react"
 import { Controller, useForm } from "react-hook-form"
 
@@ -55,11 +55,11 @@ const SignInForm = ({ onForgotPassword, onVerificationRequired, defaultEmail }: 
 
 	return (
 		<>
-			<CardHeader className="px-7 pt-8 pb-4">
+			<Card.Header className="px-7 pt-8 pb-4">
 				<h1 className="font-semibold text-xl">Sign in</h1>
-			</CardHeader>
+			</Card.Header>
 
-			<CardBody className="gap-4 px-7 pt-4 pb-4">
+			<Card.Content className="gap-4 px-7 pt-4 pb-4">
 				{error && (
 					<div className="rounded-md bg-red-50 p-3 text-red-600 text-sm" role="alert">
 						{error}
@@ -129,7 +129,12 @@ const SignInForm = ({ onForgotPassword, onVerificationRequired, defaultEmail }: 
 							name="rememberMe"
 							render={({ field: { value, onChange, ...field } }) => (
 								<Checkbox {...field} isSelected={value} onValueChange={onChange}>
-									<span className="text-sm">Remember me</span>
+									<Checkbox.Control>
+										<Checkbox.Indicator />
+									</Checkbox.Control>
+									<Checkbox.Content>
+										<Label className="text-sm">Remember me</Label>
+									</Checkbox.Content>
 								</Checkbox>
 							)}
 						/>
@@ -153,12 +158,12 @@ const SignInForm = ({ onForgotPassword, onVerificationRequired, defaultEmail }: 
 						Sign In
 					</Button>
 				</form>
-			</CardBody>
-			<CardFooter className="flex-col px-7 pt-4 pb-8">
+			</Card.Content>
+			<Card.Footer className="flex-col px-7 pt-4 pb-8">
 				<div className="flex items-center gap-4 pb-4">
-					<Divider className="flex-1" />
+					<Separator className="flex-1" />
 					<span className="text-default-400 text-small">OR</span>
-					<Divider className="flex-1" />
+					<Separator className="flex-1" />
 				</div>
 
 				<Button
@@ -173,7 +178,7 @@ const SignInForm = ({ onForgotPassword, onVerificationRequired, defaultEmail }: 
 				>
 					Sign in with Google
 				</Button>
-			</CardFooter>
+			</Card.Footer>
 		</>
 	)
 }

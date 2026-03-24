@@ -1,4 +1,4 @@
-import { Button, CardBody, CardFooter, CardHeader, InputOtp, Link, Tooltip } from "@heroui/react"
+import { Button, Card, InputOTP, Link, Tooltip } from "@heroui/react"
 import { useCallback, useEffect, useState } from "react"
 import { Controller, useForm } from "react-hook-form"
 
@@ -99,11 +99,11 @@ const OTPVerificationForm = ({ email, onBack, onSuccess, context = "login", code
 
 	return (
 		<>
-			<CardHeader className="px-7 pt-8 pb-0">
+			<Card.Header className="px-7 pt-8 pb-0">
 				<h1 className="font-medium text-2xl">We email you a code</h1>
-			</CardHeader>
+			</Card.Header>
 
-			<CardBody className="gap-4 px-7 pt-4 pb-5">
+			<Card.Content className="gap-4 px-7 pt-4 pb-5">
 				{displayError && (
 					<div className="rounded-md bg-red-50 p-3 text-red-600 text-sm" role="alert">
 						{displayError}
@@ -115,10 +115,11 @@ const OTPVerificationForm = ({ email, onBack, onSuccess, context = "login", code
 						<p className="text-default-600 text-sm">Enter the verification code sent to</p>
 						<div className="flex items-center gap-1">
 							<p className="text-sm text-warning">{email}</p>
-							<Tooltip content="Change email">
+							<Tooltip>
 								<Button className="size-6 min-w-6" isIconOnly onPress={onBack} variant="light">
 									<TablerEdit className="size-4 text-warning" />
 								</Button>
+								<Tooltip.Content>Change email</Tooltip.Content>
 							</Tooltip>
 						</div>
 					</div>
@@ -128,15 +129,22 @@ const OTPVerificationForm = ({ email, onBack, onSuccess, context = "login", code
 							control={control}
 							name="otp"
 							render={({ field }) => (
-								<InputOtp
+								<InputOTP
 									{...field}
-									color={errors.otp ? "danger" : "default"}
-									errorMessage={errors.otp?.message}
-									isInvalid={!!errors.otp}
-									isRequired
-									length={6}
-									size="lg"
-								/>
+									maxLength={6}
+								>
+									<InputOTP.Group>
+										<InputOTP.Slot index={0} />
+										<InputOTP.Slot index={1} />
+										<InputOTP.Slot index={2} />
+									</InputOTP.Group>
+									<InputOTP.Separator />
+									<InputOTP.Group>
+										<InputOTP.Slot index={3} />
+										<InputOTP.Slot index={4} />
+										<InputOTP.Slot index={5} />
+									</InputOTP.Group>
+								</InputOTP>
 							)}
 							rules={{
 								required: "Verification code is required",
@@ -161,9 +169,9 @@ const OTPVerificationForm = ({ email, onBack, onSuccess, context = "login", code
 						</div>
 					</div>
 				</div>
-			</CardBody>
+			</Card.Content>
 
-			<CardFooter className="flex-col gap-4 px-7 pt-0 pb-8">
+			<Card.Footer className="flex-col gap-4 px-7 pt-0 pb-8">
 				<form className="w-full" onSubmit={handleSubmit(onSubmit)}>
 					<Button
 						className="w-full"
@@ -187,7 +195,7 @@ const OTPVerificationForm = ({ email, onBack, onSuccess, context = "login", code
 						</Link>
 					)}
 				</div>
-			</CardFooter>
+			</Card.Footer>
 		</>
 	)
 }

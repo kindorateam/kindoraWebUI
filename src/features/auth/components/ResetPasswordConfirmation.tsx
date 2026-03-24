@@ -1,4 +1,4 @@
-import { Button, CardBody } from "@heroui/react"
+import { Button, Card } from "@heroui/react"
 
 interface ResetPasswordConfirmationProps {
 	onBackToSignIn: () => void
@@ -10,7 +10,7 @@ const shieldIconCheck2 = "http://localhost:3845/assets/f52e6248518522c15ff5b3dab
 
 export default function ResetPasswordConfirmation({ onBackToSignIn }: ResetPasswordConfirmationProps) {
 	return (
-		<CardBody className="flex flex-col items-center gap-5 px-7 py-8">
+		<Card.Content className="flex flex-col items-center gap-5 px-7 py-8">
 			<div className="flex flex-col items-center gap-3">
 				<div className="relative h-[74px] w-[70px] overflow-clip">
 					<div className="absolute inset-0">
@@ -30,6 +30,6 @@ export default function ResetPasswordConfirmation({ onBackToSignIn }: ResetPassw
 			<Button className="w-full" color="primary" onPress={onBackToSignIn} size="md">
 				Back to Sign In
 			</Button>
-		</CardBody>
+		</Card.Content>
 	)
 }

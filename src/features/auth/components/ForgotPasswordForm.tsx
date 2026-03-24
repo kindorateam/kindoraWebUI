@@ -1,4 +1,4 @@
-import { Button, CardBody, CardFooter, CardHeader, Input } from "@heroui/react"
+import { Button, Card, Input } from "@heroui/react"
 import { useCallback, useEffect, useState } from "react"
 import { Controller, useForm } from "react-hook-form"
 
@@ -64,11 +64,11 @@ const ForgotPasswordForm = ({ onBack, onNext, defaultEmail }: ForgotPasswordForm
 
 	return (
 		<>
-			<CardHeader className="px-7 pt-8 pb-4">
+			<Card.Header className="px-7 pt-8 pb-4">
 				<h1 className="font-semibold text-xl">Forgot Password?</h1>
-			</CardHeader>
+			</Card.Header>
 
-			<CardBody className="gap-4 px-7 pt-4 pb-4">
+			<Card.Content className="gap-4 px-7 pt-4 pb-4">
 				<p className="text-gray-600 text-sm">We will email you a code to your email address</p>
 
 				{error && <div className="rounded-md bg-danger-50 p-3 text-danger text-sm">{error}</div>}
@@ -99,9 +99,9 @@ const ForgotPasswordForm = ({ onBack, onNext, defaultEmail }: ForgotPasswordForm
 						},
 					}}
 				/>
-			</CardBody>
+			</Card.Content>
 
-			<CardFooter className="flex-col gap-4 px-7 pt-4 pb-8">
+			<Card.Footer className="flex-col gap-4 px-7 pt-4 pb-8">
 				<form className="w-full" onSubmit={handleSubmit(onSubmit)}>
 					<Button
 						className="w-full"
@@ -117,7 +117,7 @@ const ForgotPasswordForm = ({ onBack, onNext, defaultEmail }: ForgotPasswordForm
 				<Button className="w-full" onPress={onBack} size="md" variant="bordered">
 					Back
 				</Button>
-			</CardFooter>
+			</Card.Footer>
 		</>
 	)
 }

@@ -1,4 +1,4 @@
-import { Button, CardBody, CardFooter, CardHeader, Input } from "@heroui/react"
+import { Button, Card, Input } from "@heroui/react"
 import { useCallback, useMemo, useState } from "react"
 import { Controller, useForm } from "react-hook-form"
 
@@ -75,11 +75,11 @@ const ResetPasswordForm = ({ email, token, onBack, onResetSuccess }: ResetPasswo
 
 	return (
 		<>
-			<CardHeader className="px-7 pt-8 pb-4">
+			<Card.Header className="px-7 pt-8 pb-4">
 				<h1 className="font-medium text-xl leading-7">Create a new password</h1>
-			</CardHeader>
+			</Card.Header>
 
-			<CardBody className="px-7 pt-4 pb-0">
+			<Card.Content className="px-7 pt-4 pb-0">
 				<form className="flex flex-col gap-5" id={formId} onSubmit={handleSubmit(onSubmit)}>
 					{error && <div className="rounded-md bg-danger-50 p-3 text-danger text-sm">{error}</div>}
 
@@ -180,9 +180,9 @@ const ResetPasswordForm = ({ email, token, onBack, onResetSuccess }: ResetPasswo
 						))}
 					</div>
 				</form>
-			</CardBody>
+			</Card.Content>
 
-			<CardFooter className="flex-col gap-3 px-7 pt-5 pb-8">
+			<Card.Footer className="flex-col gap-3 px-7 pt-5 pb-8">
 				<Button
 					className="h-10 w-full"
 					color="primary"
@@ -197,7 +197,7 @@ const ResetPasswordForm = ({ email, token, onBack, onResetSuccess }: ResetPasswo
 				<Button className="h-10 w-full" onPress={onBack} radius="lg" variant="bordered">
 					Back
 				</Button>
-			</CardFooter>
+			</Card.Footer>
 		</>
 	)
 }

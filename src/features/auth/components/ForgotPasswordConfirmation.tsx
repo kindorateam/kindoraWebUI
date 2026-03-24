@@ -1,4 +1,4 @@
-import { Button, CardBody } from "@heroui/react"
+import { Button, Card } from "@heroui/react"
 
 import LineMdEmailCheck from "~icons/line-md/email-check"
 
@@ -9,7 +9,7 @@ interface ForgotPasswordConfirmationProps {
 
 const ForgotPasswordConfirmation = ({ email: _email, onNext }: ForgotPasswordConfirmationProps) => {
 	return (
-		<CardBody className="flex flex-col items-center gap-5 px-7 py-8">
+		<Card.Content className="flex flex-col items-center gap-5 px-7 py-8">
 			<div className="flex flex-col items-center gap-3">
 				<div className="flex h-[74px] w-[150px] items-center justify-center">
 					<LineMdEmailCheck className="size-16 text-warning" />
@@ -23,7 +23,7 @@ const ForgotPasswordConfirmation = ({ email: _email, onNext }: ForgotPasswordCon
 			<Button className="w-full" color="primary" onPress={onNext} size="md">
 				Next
 			</Button>
-		</CardBody>
+		</Card.Content>
 	)
 }
 
