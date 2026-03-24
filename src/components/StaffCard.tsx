@@ -1,4 +1,4 @@
-import { Card, CardBody, CardFooter, CardHeader } from "@heroui/react"
+import { Card } from "@heroui/react"
 
 import Text from "./Text"
 
@@ -7,9 +7,9 @@ interface StaffCardProps {
 	footer?: React.ReactNode // optional
 	className?: string
 	cardProps?: React.ComponentProps<typeof Card>
-	headerProps?: React.ComponentProps<typeof CardHeader>
-	bodyProps?: React.ComponentProps<typeof CardBody>
-	footerProps?: React.ComponentProps<typeof CardFooter>
+	headerProps?: React.ComponentProps<typeof Card.Header>
+	bodyProps?: React.ComponentProps<typeof Card.Content>
+	footerProps?: React.ComponentProps<typeof Card.Footer>
 	children: React.ReactNode
 }
 
@@ -25,11 +25,10 @@ const StaffCard = ({
 }: StaffCardProps) => {
 	return (
 		<Card
-			className={["gap-7 bg-black/2 p-6.5", className].filter(Boolean).join(" ")}
-			classNames={{ base: "shadow-none rounded-[20px]" }}
+			className={["gap-7 rounded-[20px] bg-black/2 p-6.5 shadow-none", className].filter(Boolean).join(" ")}
 			{...cardProps}
 		>
-			<CardHeader className="p-0" {...headerProps}>
+			<Card.Header className="p-0" {...headerProps}>
 				{typeof title === "string" ? (
 					<Text as="h3" size={18} weight="semibold">
 						{title}
@@ -37,16 +36,16 @@ const StaffCard = ({
 				) : (
 					title
 				)}
-			</CardHeader>
+			</Card.Header>
 
-			<CardBody className="gap-5 p-0" {...bodyProps}>
+			<Card.Content className="gap-5 p-0" {...bodyProps}>
 				{children}
-			</CardBody>
+			</Card.Content>
 
 			{footer ? (
-				<CardFooter className="p-0" {...footerProps}>
+				<Card.Footer className="p-0" {...footerProps}>
 					{footer}
-				</CardFooter>
+				</Card.Footer>
 			) : null}
 		</Card>
 	)

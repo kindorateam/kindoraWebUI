@@ -9,29 +9,16 @@ interface IdentityChipProps {
 
 const IdentityChip = ({ fullName, src }: IdentityChipProps) => {
 	return (
-		<Chip
-			avatar={
-				<Avatar
-					classNames={{
-						base: "h-8 w-8 bg-[#1D6FE8] text-white",
-						fallback: "text-white",
-						icon: "h-full w-full",
-						img: "object-cover",
-					}}
-					fallback={<OouiUserAvatar className="size-4" />}
-					name={fullName}
-					showFallback
-					size="sm"
-					src={src}
-				/>
-			}
-			classNames={{
-				base: "bg-primary-50 px-3 py-1.5",
-				content: "text-sm",
-			}}
-			variant="flat"
-		>
-			{fullName}
+		<Chip className="bg-primary-50 px-3 py-1.5 text-sm" variant="flat">
+			<div className="flex items-center gap-1.5">
+				<Avatar className="h-5 w-5 shrink-0 bg-[#1D6FE8] text-white">
+					{src ? <Avatar.Image alt={fullName} className="object-cover" src={src} /> : null}
+					<Avatar.Fallback className="text-white">
+						<OouiUserAvatar className="size-3" />
+					</Avatar.Fallback>
+				</Avatar>
+				<span>{fullName}</span>
+			</div>
 		</Chip>
 	)
 }

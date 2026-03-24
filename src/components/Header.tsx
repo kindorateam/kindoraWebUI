@@ -1,16 +1,4 @@
-import {
-	Avatar,
-	Badge,
-	Button,
-	Dropdown,
-	DropdownItem,
-	DropdownMenu,
-	DropdownSection,
-	DropdownTrigger,
-	Navbar,
-	NavbarContent,
-	NavbarItem,
-} from "@heroui/react"
+import { Avatar, Badge, Button, Dropdown, Label, Navbar, NavbarContent, NavbarItem, Separator } from "@heroui/react"
 import { memo, useCallback } from "react"
 
 import Breadcrumbs from "@/components/Breadcrumbs"
@@ -42,7 +30,7 @@ const Header = memo(() => {
 			</NavbarContent>
 
 			<NavbarContent className="items-center gap-5" justify="end">
-				<Badge color="danger" content="3" shape="circle">
+				<Badge.Anchor>
 					<Button
 						aria-label="more than 99 notifications"
 						className="bg-white shadow-md"
@@ -52,58 +40,76 @@ const Header = memo(() => {
 					>
 						<MdiBellOutline />
 					</Button>
-				</Badge>
+					<Badge color="danger">3</Badge>
+				</Badge.Anchor>
 				<Dropdown className="p-0" placement="bottom-end">
-					<DropdownTrigger>
+					<Dropdown.Trigger>
 						<Avatar
 							as="button"
-							className="transition-transform lg:h-10 lg:w-10"
+							className="cursor-pointer transition-transform lg:h-10 lg:w-10"
 							color="secondary"
-							name="Jason Hughes"
 							size="sm"
-							src="https://i.pravatar.cc/150?u=a042581f4e29026704d"
-						/>
-					</DropdownTrigger>
-					<DropdownMenu aria-label="Profile Actions" className="p-7">
-						<DropdownSection className="m-0" dividerProps={{ className: "my-1.5" }} showDivider>
-							<DropdownItem className="p-0" key="profile">
-								<p className="font-semibold lg:text-lg">{user?.name}</p>
-								<p className="font-semibold text-brand lg:text-xs">{user?.email}</p>
-							</DropdownItem>
-						</DropdownSection>
+						>
+							<Avatar.Image alt="Jason Hughes" src="https://i.pravatar.cc/150?u=a042581f4e29026704d" />
+							<Avatar.Fallback>JH</Avatar.Fallback>
+						</Avatar>
+					</Dropdown.Trigger>
+					<Dropdown.Popover>
+						<Dropdown.Menu aria-label="Profile Actions" className="p-7">
+							<Dropdown.Section className="m-0">
+								<Dropdown.Item id="profile" textValue={user?.name ?? "profile"}>
+									<Label>
+										<p className="font-semibold lg:text-lg">{user?.name}</p>
+										<p className="font-semibold text-brand lg:text-xs">{user?.email}</p>
+									</Label>
+								</Dropdown.Item>
+							</Dropdown.Section>
 
-						<DropdownSection className="m-0" dividerProps={{ className: "my-1.5" }} showDivider>
-							<DropdownItem
-								className="px-0 py-2"
-								key="settings"
-								startContent={<MdiCardAccountDetailsOutline className="h-4 w-4" />}
-							>
-								My profile
-							</DropdownItem>
-							<DropdownItem className="px-0 py-2" key="team_settings" startContent={<MdiDomain className="h-4 w-4" />}>
-								School settings
-							</DropdownItem>
-							<DropdownItem
-								className="px-0 py-2"
-								key="analytics"
-								startContent={<MdiCreditCardOutline className="h-4 w-4" />}
-							>
-								Subscription
-							</DropdownItem>
-						</DropdownSection>
+							<Separator className="my-1.5" />
 
-						<DropdownSection>
-							<DropdownItem
-								className="px-0 py-2"
-								color="danger"
-								key="logout"
-								onClick={handleLogout}
-								startContent={<MaterialSymbolsLogoutRounded className="h-4 w-4" />}
-							>
-								Log Out
-							</DropdownItem>
-						</DropdownSection>
-					</DropdownMenu>
+							<Dropdown.Section className="m-0">
+								<Dropdown.Item
+									className="px-0 py-2"
+									id="settings"
+									textValue="My profile"
+									startContent={<MdiCardAccountDetailsOutline className="h-4 w-4" />}
+								>
+									<Label>My profile</Label>
+								</Dropdown.Item>
+								<Dropdown.Item
+									className="px-0 py-2"
+									id="team_settings"
+									textValue="School settings"
+									startContent={<MdiDomain className="h-4 w-4" />}
+								>
+									<Label>School settings</Label>
+								</Dropdown.Item>
+								<Dropdown.Item
+									className="px-0 py-2"
+									id="analytics"
+									textValue="Subscription"
+									startContent={<MdiCreditCardOutline className="h-4 w-4" />}
+								>
+									<Label>Subscription</Label>
+								</Dropdown.Item>
+							</Dropdown.Section>
+
+							<Separator className="my-1.5" />
+
+							<Dropdown.Section>
+								<Dropdown.Item
+									className="px-0 py-2"
+									color="danger"
+									id="logout"
+									onPress={handleLogout}
+									textValue="Log Out"
+									startContent={<MaterialSymbolsLogoutRounded className="h-4 w-4" />}
+								>
+									<Label>Log Out</Label>
+								</Dropdown.Item>
+							</Dropdown.Section>
+						</Dropdown.Menu>
+					</Dropdown.Popover>
 				</Dropdown>
 			</NavbarContent>
 		</Navbar>

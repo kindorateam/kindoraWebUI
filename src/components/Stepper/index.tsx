@@ -1,4 +1,4 @@
-import { Button, Progress } from "@heroui/react"
+import { Button, ProgressBar } from "@heroui/react"
 
 export interface StepperStep {
 	key: string
@@ -59,21 +59,19 @@ const Stepper = ({
 	return (
 		<div className={className}>
 			<div className="mb-8">
-				<Progress
-					aria-label="Step progress"
-					classNames={{
-						base: "w-full",
-						track: "h-3 bg-default-200",
-						indicator: "bg-primary rounded-xl",
-						labelWrapper: "mb-2",
-						label: "text-base text-foreground",
-						value: "text-base text-foreground text-right",
-					}}
-					label={currentStepData?.label}
-					showValueLabel={showValueLabel}
-					value={progressValue}
-					valueLabel={nextStepData?.label ?? currentStepData?.label}
-				/>
+				<div className="mb-2 flex justify-between">
+					<span className="text-base text-foreground">{currentStepData?.label}</span>
+					{showValueLabel && (
+						<span className="text-right text-base text-foreground">
+							{nextStepData?.label ?? currentStepData?.label}
+						</span>
+					)}
+				</div>
+				<ProgressBar aria-label="Step progress" className="w-full" value={progressValue}>
+					<ProgressBar.Track className="h-3 bg-default-200">
+						<ProgressBar.Fill className="rounded-xl bg-primary" />
+					</ProgressBar.Track>
+				</ProgressBar>
 			</div>
 
 			<div className="mb-6">{currentStepData?.content}</div>

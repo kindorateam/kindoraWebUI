@@ -1,14 +1,10 @@
-import { BreadcrumbItem, Breadcrumbs as HeroUIBreadcrumbs } from "@heroui/react"
+import { Breadcrumbs as HeroUIBreadcrumbs } from "@heroui/react"
 import { Link } from "@tanstack/react-router"
 import { memo } from "react"
 
 import usePageMetadata from "@/hooks/usePageMetadata"
 
 import Text from "./Text"
-
-const breadcrumbItemClasses = {
-	separator: "text-base text-neutral-500",
-}
 
 const Breadcrumbs = memo(() => {
 	const { breadcrumbs, pageTitle } = usePageMetadata()
@@ -22,9 +18,9 @@ const Breadcrumbs = memo(() => {
 	}
 
 	return (
-		<HeroUIBreadcrumbs itemClasses={breadcrumbItemClasses} separator="/" variant="light">
+		<HeroUIBreadcrumbs separator="/" variant="light">
 			{filteredBreadcrumbs.map((crumb, index) => (
-				<BreadcrumbItem key={crumb.path}>
+				<HeroUIBreadcrumbs.Item className="text-base text-neutral-500" key={crumb.path}>
 					{index === filteredBreadcrumbs.length - 1 ? (
 						<Text color="neutral-600">{crumb.title}</Text>
 					) : (
@@ -34,7 +30,7 @@ const Breadcrumbs = memo(() => {
 							</Text>
 						</Link>
 					)}
-				</BreadcrumbItem>
+				</HeroUIBreadcrumbs.Item>
 			))}
 		</HeroUIBreadcrumbs>
 	)

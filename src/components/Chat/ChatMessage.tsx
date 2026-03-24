@@ -18,7 +18,10 @@ export type ChatMessageProps = Omit<ChatReply, "id"> & {
 
 const ChatMessage = ({ messageId, author, timestamp, text, onReply, replies = [] }: ChatMessageProps) => (
 	<article className="flex gap-3">
-		<Avatar className="shrink-0" name={author.name} size="sm" src={author.avatarUrl} />
+		<Avatar className="shrink-0" size="sm">
+			{author.avatarUrl ? <Avatar.Image alt={author.name} src={author.avatarUrl} /> : null}
+			<Avatar.Fallback>{author.name.slice(0, 2).toUpperCase()}</Avatar.Fallback>
+		</Avatar>
 
 		<div className="space-y-2.5">
 			<header className="flex gap-2.5 pt-2">
@@ -37,7 +40,7 @@ const ChatMessage = ({ messageId, author, timestamp, text, onReply, replies = []
 			</div>
 
 			<div>
-				<Button color="text" disableRipple onPress={() => onReply?.(messageId)}>
+				<Button color="text" onPress={() => onReply?.(messageId)}>
 					Reply
 				</Button>
 			</div>

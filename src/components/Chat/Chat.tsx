@@ -1,4 +1,4 @@
-import { Avatar, Image, Input } from "@heroui/react"
+import { Avatar, Input } from "@heroui/react"
 import { useCallback } from "react"
 
 import Button from "@/components/Button"
@@ -38,7 +38,10 @@ const Chat = () => {
 			<div>
 				<div className="grid grid-cols-[max-content_1fr] gap-3.5">
 					<div>
-						<Avatar name="John Doe" src="https://i.pravatar.cc/150?img=3" />
+						<Avatar>
+							<Avatar.Image alt="John Doe" src="https://i.pravatar.cc/150?img=3" />
+							<Avatar.Fallback>JD</Avatar.Fallback>
+						</Avatar>
 					</div>
 
 					<div>
@@ -66,7 +69,7 @@ const Chat = () => {
 							</Text>
 						</div>
 						<div className="mb-4">
-							<Image alt="Olivia feeding" src="https://i.pravatar.cc/150?img=3" width="100%" />
+							<img alt="Olivia feeding" className="w-full" src="https://i.pravatar.cc/150?img=3" />
 						</div>
 						<div className="mb-5 flex items-center gap-2">
 							<EmojiGroup />
@@ -79,9 +82,7 @@ const Chat = () => {
 						</div>
 						<div className="mb-5">
 							<Input
-								classNames={{
-									inputWrapper: "bg-transparent border-1 border-black/10 rounded-[14px] shadow-none",
-								}}
+								className="rounded-[14px] border border-black/10 bg-transparent shadow-none"
 								placeholder="Add a comment"
 							/>
 						</div>
