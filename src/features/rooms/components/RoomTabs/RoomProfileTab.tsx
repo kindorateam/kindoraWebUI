@@ -21,9 +21,6 @@ import { getErrorMessage } from "@/utils/error"
 import { getMediaUrl } from "@/utils/media"
 import MaterialSymbolsAddAPhotoRounded from "~icons/material-symbols/add-a-photo-rounded"
 import OouiUserAvatar from "~icons/ooui/user-avatar"
-import TablerCheck from "~icons/tabler/check"
-import TablerCloudUpload from "~icons/tabler/cloud-upload"
-import TablerTrash from "~icons/tabler/trash"
 
 import { ROOM_AGE_OPTIONS } from "../../constants"
 import { useInfiniteAllEmployees, useRoom, useUpdateRoom, useUpdateRoomLogo } from "../../hooks/useRooms"
@@ -114,8 +111,9 @@ const RoomProfileTab = ({ roomId }: RoomProfileTabProps) => {
 	useEffect(() => {
 		if (!staffObserverRef.current || !hasNextPage || isFetchingNextPage) return
 		const observer = new IntersectionObserver(
-			([entry]) => {
-				if (entry.isIntersecting) fetchNextPage()
+			(entries) => {
+				const entry = entries[0]
+				if (entry?.isIntersecting) fetchNextPage()
 			},
 			{ threshold: 0.5 },
 		)
@@ -123,20 +121,11 @@ const RoomProfileTab = ({ roomId }: RoomProfileTabProps) => {
 		return () => observer.disconnect()
 	}, [hasNextPage, isFetchingNextPage, fetchNextPage])
 
-	const handleStaffSelectionChange = (keys: "all" | Set<React.Key>) => {
-		if (keys === "all") {
-			setAssignedStaff(staffOptions)
-			setValue(
-				"staffIds",
-				staffOptions.map((s) => s.id),
-				{ shouldDirty: true },
-			)
-		} else {
-			const selectedIds = Array.from(keys) as string[]
-			const selectedStaff = staffOptions.filter((e) => selectedIds.includes(e.id))
-			setAssignedStaff(selectedStaff)
-			setValue("staffIds", selectedIds, { shouldDirty: true })
-		}
+	const handleStaffSelectionChange = (keys: React.Key | React.Key[] | null) => {
+		const selectedIds = Array.isArray(keys) ? (keys as string[]) : keys ? [String(keys)] : []
+		const selectedStaff = staffOptions.filter((e) => selectedIds.includes(e.id))
+		setAssignedStaff(selectedStaff)
+		setValue("staffIds", selectedIds, { shouldDirty: true })
 	}
 
 	const handleImageSelect = (image: string | File) => {
@@ -399,8 +388,6 @@ const RoomProfileTab = ({ roomId }: RoomProfileTabProps) => {
 								<div>
 									<Avatar
 										className="size-25 bg-[#1D6FE8] text-white shadow-md"
-										showFallback
-										src={avatarPreview?.startsWith("linear-gradient") ? undefined : (avatarPreview ?? undefined)}
 										style={avatarPreview?.startsWith("linear-gradient") ? { background: avatarPreview } : undefined}
 									>
 										<Avatar.Image
@@ -431,9 +418,9 @@ const RoomProfileTab = ({ roomId }: RoomProfileTabProps) => {
 						<div className="flex flex-col gap-5">
 							<h3 className="font-medium text-xl">Staff</h3>
 							<Select
-								selectedKeys={new Set(assignedStaff.map((s) => s.id))}
 								selectionMode="multiple"
-								onSelectionChange={handleStaffSelectionChange}
+								value={assignedStaff.map((s) => s.id)}
+								onChange={handleStaffSelectionChange}
 							>
 								<Label>Select Staff</Label>
 								<Select.Trigger>

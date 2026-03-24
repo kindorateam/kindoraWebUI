@@ -47,12 +47,7 @@ const DeleteDocumentModal = ({ studentId }: Props) => {
 								<Button className="w-full" variant="danger" isPending={deleteMutation.isPending} onPress={handleDelete}>
 									Yes, delete
 								</Button>
-								<Button
-									fullWidth
-									isDisabled={deleteMutation.isPending}
-									onPress={closeDeleteDocumentModal}
-									size="md"
-								>
+								<Button fullWidth isDisabled={deleteMutation.isPending} onPress={closeDeleteDocumentModal} size="md">
 									Cancel
 								</Button>
 							</div>

@@ -2,8 +2,6 @@ import { Button, Card, Spinner, Table } from "@heroui/react"
 import { useState } from "react"
 
 import TableError from "@/components/TableError"
-import MageExchangeA from "~icons/mage/exchange-a"
-import TablerCirclePlusFilled from "~icons/tabler/circle-plus-filled"
 
 import { useRoom } from "../../hooks/useRooms"
 import { openAddStudentModal } from "../../stores/addStudentModal.store"
@@ -64,7 +62,7 @@ const RoomStudentsTable = ({ roomId }: RoomStudentsTableProps) => {
 							selectionMode="multiple"
 							selectedKeys={selectedKeys}
 							onSelectionChange={setSelectedKeys}
-							className="min-h-[595.5px] [&_tbody>tr]:h-[55px] [&_tbody>tr]:border-b [&_tbody>tr]:border-default-200 [&_tbody>tr:last-child]:border-b-0 [&_th]:py-0 [&_th:first-child]:w-8 [&_th:first-child]:text-center [&_th:first-child]:pe-0 [&_td]:py-0 [&_td:first-child]:w-8 [&_td:first-child]:text-center [&_td:first-child]:pe-0"
+							className="min-h-[595.5px] [&_tbody>tr:last-child]:border-b-0 [&_tbody>tr]:h-[55px] [&_tbody>tr]:border-default-200 [&_tbody>tr]:border-b [&_td:first-child]:w-8 [&_td:first-child]:pe-0 [&_td:first-child]:text-center [&_td]:py-0 [&_th:first-child]:w-8 [&_th:first-child]:pe-0 [&_th:first-child]:text-center [&_th]:py-0"
 						>
 							<Table.Header>
 								{columns.map((column) => (

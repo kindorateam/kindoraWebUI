@@ -138,8 +138,12 @@ const ConfirmStep = () => {
 					<div className="flex w-full items-center justify-between">
 						<span className="text-default-600 text-sm">Invite staff to join Kindora on their devices?</span>
 						<Switch isSelected={field.value} onChange={field.onChange} size="sm">
-							<Switch.Control><Switch.Thumb /></Switch.Control>
-							<Switch.Content><Label>Invite</Label></Switch.Content>
+							<Switch.Control>
+								<Switch.Thumb />
+							</Switch.Control>
+							<Switch.Content>
+								<Label>Invite</Label>
+							</Switch.Content>
 						</Switch>
 					</div>
 				)}

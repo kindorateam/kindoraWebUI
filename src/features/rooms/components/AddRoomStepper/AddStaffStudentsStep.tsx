@@ -55,8 +55,9 @@ const AddStaffStudentsStep = () => {
 	useEffect(() => {
 		if (!employeesObserverRef.current || !hasNextEmployees || isFetchingNextEmployees) return
 		const observer = new IntersectionObserver(
-			([entry]) => {
-				if (entry.isIntersecting) fetchNextEmployees()
+			(entries) => {
+				const entry = entries[0]
+				if (entry?.isIntersecting) fetchNextEmployees()
 			},
 			{ threshold: 0.5 },
 		)
@@ -69,8 +70,9 @@ const AddStaffStudentsStep = () => {
 	useEffect(() => {
 		if (!studentsObserverRef.current || !hasNextStudents || isFetchingNextStudents) return
 		const observer = new IntersectionObserver(
-			([entry]) => {
-				if (entry.isIntersecting) fetchNextStudents()
+			(entries) => {
+				const entry = entries[0]
+				if (entry?.isIntersecting) fetchNextStudents()
 			},
 			{ threshold: 0.5 },
 		)
@@ -117,10 +119,10 @@ const AddStaffStudentsStep = () => {
 					render={({ field }) => (
 						<Select
 							isInvalid={!!errors.staffIds}
-							selectedKeys={new Set(field.value || [])}
 							selectionMode="multiple"
-							onSelectionChange={(keys) => {
-								field.onChange(Array.from(keys) as string[])
+							value={field.value || []}
+							onChange={(keys) => {
+								field.onChange(keys as string[])
 							}}
 						>
 							<Label>Add staff</Label>
@@ -155,10 +157,10 @@ const AddStaffStudentsStep = () => {
 					render={({ field }) => (
 						<Select
 							isInvalid={!!errors.studentIds}
-							selectedKeys={new Set(field.value || [])}
 							selectionMode="multiple"
-							onSelectionChange={(keys) => {
-								field.onChange(Array.from(keys) as string[])
+							value={field.value || []}
+							onChange={(keys) => {
+								field.onChange(keys as string[])
 							}}
 						>
 							<Label>Add students</Label>

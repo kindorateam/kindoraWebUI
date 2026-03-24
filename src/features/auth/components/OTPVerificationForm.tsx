@@ -29,7 +29,7 @@ const OTPVerificationForm = ({ email, onBack, onSuccess, context = "login", code
 	const {
 		control,
 		handleSubmit,
-		formState: { errors, isSubmitting, isValid },
+		formState: { isSubmitting, isValid },
 	} = useForm<OTPVerificationFormData>({
 		defaultValues: {
 			otp: "",
@@ -129,10 +129,7 @@ const OTPVerificationForm = ({ email, onBack, onSuccess, context = "login", code
 							control={control}
 							name="otp"
 							render={({ field }) => (
-								<InputOTP
-									{...field}
-									maxLength={6}
-								>
+								<InputOTP {...field} maxLength={6}>
 									<InputOTP.Group>
 										<InputOTP.Slot index={0} />
 										<InputOTP.Slot index={1} />
@@ -190,7 +187,7 @@ const OTPVerificationForm = ({ email, onBack, onSuccess, context = "login", code
 					{resendTimeLeft > 0 ? (
 						<span className="text-default-400 text-xs">Send a new code in {resendTimeLeft}s</span>
 					) : (
-						<Link className="cursor-pointer text-primary text-xs" onPress={handleResendCode} className="underline">
+						<Link className="cursor-pointer text-primary text-xs underline" onPress={handleResendCode}>
 							Send a new code
 						</Link>
 					)}

@@ -1,9 +1,5 @@
 import { Button, Chip, Dropdown, Label } from "@heroui/react"
 
-import TablerDownload from "~icons/tabler/download"
-import TablerEye from "~icons/tabler/eye"
-import TablerTrash from "~icons/tabler/trash"
-
 import { getEmployeeDocumentDownloadUrl } from "../../services/staff.service"
 import { openDeleteDocumentModal } from "../../stores/deleteDocumentModal.store"
 
@@ -116,20 +112,13 @@ export function renderCell(document: EmployeeDocument, columnKey: React.Key) {
 						</Dropdown.Trigger>
 						<Dropdown.Popover className="min-w-0">
 							<Dropdown.Menu aria-label="Document actions">
-								<Dropdown.Item
-									id="view"
-									textValue="View"
-									className="text-success"
-
-									onPress={() => handleView(document)}
-								>
+								<Dropdown.Item id="view" textValue="View" className="text-success" onPress={() => handleView(document)}>
 									<Label>View</Label>
 								</Dropdown.Item>
 								<Dropdown.Item
 									id="download"
 									textValue="Download"
 									className="text-warning"
-
 									onPress={() => handleDownload(document)}
 								>
 									<Label>Download</Label>
@@ -138,7 +127,6 @@ export function renderCell(document: EmployeeDocument, columnKey: React.Key) {
 									id="delete"
 									textValue="Delete"
 									className="text-danger"
-
 									onPress={() => openDeleteDocumentModal(document.id)}
 								>
 									<Label>Delete</Label>

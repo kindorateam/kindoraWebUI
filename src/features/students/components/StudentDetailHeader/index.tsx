@@ -1,7 +1,6 @@
 import { Avatar, Badge, Button, Chip, Separator } from "@heroui/react"
 
 import IdentityChip from "@/components/IdentityChip"
-import MageExchangeA from "~icons/mage/exchange-a"
 import SolarCalendarBroken from "~icons/solar/calendar-broken"
 
 import type { Student } from "../../types"
@@ -50,7 +49,6 @@ const StudentDetailHeader = ({ student, onMoveToRoom, onScheduleAbsence }: Stude
 
 						<Button
 							className="ml-auto shadow-sm"
-
 							isDisabled={!onMoveToRoom}
 							onPress={onMoveToRoom}
 							size="md"
@@ -62,13 +60,7 @@ const StudentDetailHeader = ({ student, onMoveToRoom, onScheduleAbsence }: Stude
 
 					<div className="flex items-center gap-4">
 						<span className="text-neutral-600 text-sm">Schedule absence</span>
-						<Button
-							variant="primary"
-							isDisabled={!onScheduleAbsence}
-							isIconOnly
-							onPress={onScheduleAbsence}
-							size="sm"
-						>
+						<Button variant="primary" isDisabled={!onScheduleAbsence} isIconOnly onPress={onScheduleAbsence} size="sm">
 							<SolarCalendarBroken className="size-4 text-white" />
 						</Button>
 

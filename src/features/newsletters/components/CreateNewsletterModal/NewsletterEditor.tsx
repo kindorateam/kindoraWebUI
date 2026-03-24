@@ -52,14 +52,7 @@ interface ToolbarButtonProps {
 
 const ToolbarButton = ({ icon, tooltip, onPress, isActive = false, isDisabled = false }: ToolbarButtonProps) => (
 	<Tooltip delay={500}>
-		<Button
-			isIconOnly
-			isDisabled={isDisabled}
-			onPress={onPress}
-			size="sm"
-			tabIndex={-1}
-			variant={isActive ? "flat" : "light"}
-		>
+		<Button isIconOnly isDisabled={isDisabled} onPress={onPress} size="sm" variant={isActive ? "secondary" : "ghost"}>
 			{icon}
 		</Button>
 		<Tooltip.Content>{tooltip}</Tooltip.Content>
@@ -521,15 +514,14 @@ const NewsletterEditor = ({ content, onChange }: NewsletterEditorProps) => {
 				<div className="mx-1 w-px bg-default-200" />
 
 				{/* Link */}
-				<Popover isOpen={isLinkOpen} onOpenChange={setIsLinkOpen} placement="bottom">
+				<Popover isOpen={isLinkOpen} onOpenChange={setIsLinkOpen}>
 					<Tooltip delay={500}>
 						<Popover.Trigger>
 							<Button
 								isIconOnly
 								onPress={openLinkPopover}
 								size="sm"
-								tabIndex={-1}
-								variant={editor.isActive("link") ? "flat" : "light"}
+								variant={editor.isActive("link") ? "secondary" : "ghost"}
 							>
 								<TablerLink className="size-4" />
 							</Button>
@@ -543,7 +535,7 @@ const NewsletterEditor = ({ content, onChange }: NewsletterEditorProps) => {
 									placeholder="https://example.com"
 									value={linkUrl}
 									onKeyDown={(e) => e.key === "Enter" && setLink()}
-									onChange={(e: React.ChangeEvent<HTMLInputElement>) => (setLinkUrl)(e.target.value)}
+									onChange={(e: React.ChangeEvent<HTMLInputElement>) => setLinkUrl(e.target.value)}
 								/>
 								<Button variant="primary" onPress={setLink} size="sm">
 									{linkUrl ? "Set" : "Remove"}
@@ -554,10 +546,10 @@ const NewsletterEditor = ({ content, onChange }: NewsletterEditorProps) => {
 				</Popover>
 
 				{/* Image */}
-				<Popover isOpen={isImageOpen} onOpenChange={setIsImageOpen} placement="bottom">
+				<Popover isOpen={isImageOpen} onOpenChange={setIsImageOpen}>
 					<Tooltip delay={500}>
 						<Popover.Trigger>
-							<Button isIconOnly size="sm" tabIndex={-1} variant="ghost">
+							<Button isIconOnly size="sm" variant="ghost">
 								<TablerPhoto className="size-4" />
 							</Button>
 						</Popover.Trigger>
@@ -570,7 +562,7 @@ const NewsletterEditor = ({ content, onChange }: NewsletterEditorProps) => {
 									placeholder="Image URL"
 									value={imageUrl}
 									onKeyDown={(e) => e.key === "Enter" && addImage()}
-									onChange={(e: React.ChangeEvent<HTMLInputElement>) => (setImageUrl)(e.target.value)}
+									onChange={(e: React.ChangeEvent<HTMLInputElement>) => setImageUrl(e.target.value)}
 								/>
 								<Button variant="primary" isDisabled={!imageUrl} onPress={addImage} size="sm">
 									Add

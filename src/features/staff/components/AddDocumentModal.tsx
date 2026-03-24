@@ -1,8 +1,9 @@
 import {
 	Button,
+	Calendar,
+	DateField,
 	DatePicker,
 	type DateValue,
-	FieldError,
 	Input,
 	Label,
 	ListBox,
@@ -198,7 +199,29 @@ export default function AddDocumentModal({ employeeId }: Props) {
 												</ListBox>
 											</Select.Popover>
 										</Select>
-										<DatePicker label="Expiration date" value={expiryDate} onChange={setExpiryDate} />
+										<DatePicker value={expiryDate} onChange={setExpiryDate}>
+											<Label>Expiration date</Label>
+											<DateField.Group fullWidth>
+												<DateField.Input>{(segment) => <DateField.Segment segment={segment} />}</DateField.Input>
+												<DateField.Suffix>
+													<DatePicker.Trigger>
+														<DatePicker.TriggerIndicator />
+													</DatePicker.Trigger>
+												</DateField.Suffix>
+											</DateField.Group>
+											<DatePicker.Popover>
+												<Calendar aria-label="Expiration date">
+													<Calendar.Header>
+														<Calendar.NavButton slot="previous" />
+														<Calendar.Heading />
+														<Calendar.NavButton slot="next" />
+													</Calendar.Header>
+													<Calendar.Grid>
+														<Calendar.GridBody>{(date) => <Calendar.Cell date={date} />}</Calendar.GridBody>
+													</Calendar.Grid>
+												</Calendar>
+											</DatePicker.Popover>
+										</DatePicker>
 										<TextField>
 											<Label>Notes</Label>
 

@@ -44,10 +44,8 @@ const TemplatesPanel = ({ onSelectTemplate }: TemplatesPanelProps) => {
 			{mockTemplates.map((template) => (
 				<Card
 					key={template.id}
-					isPressable
-					className="border border-default-200"
-					onPress={() => onSelectTemplate(template.html)}
-					shadow="none"
+					className="cursor-pointer border border-default-200 shadow-none"
+					onClick={() => onSelectTemplate(template.html)}
 				>
 					<Card.Content className="p-3">
 						<p className="font-medium text-sm">{template.name}</p>

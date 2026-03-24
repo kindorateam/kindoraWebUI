@@ -32,7 +32,7 @@ const MedicalInfoStep = () => {
 		}
 	}
 
-	const handleRemoveAllergy = (allergy: string) => {
+	const _handleRemoveAllergy = (allergy: string) => {
 		setValue(
 			"allergies",
 			allergies.filter((a) => a !== allergy),

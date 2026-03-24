@@ -1,9 +1,5 @@
 import { Avatar, Badge, Button, Dropdown, Label } from "@heroui/react"
 
-import TablerEdit from "~icons/tabler/edit"
-import TablerEye from "~icons/tabler/eye"
-import TablerTrash from "~icons/tabler/trash"
-
 import { getEmployeeAvatarUrl, getEmployeeFullName } from "../../types"
 
 import PinCell from "./PinCell"
@@ -79,28 +75,13 @@ export function renderCell(employee: EmployeeSummary, columnKey: React.Key, opti
 						</Dropdown.Trigger>
 						<Dropdown.Popover>
 							<Dropdown.Menu aria-label="Employee actions">
-								<Dropdown.Item
-									id="view"
-									textValue="View"
-									className="text-success"
-
-								>
+								<Dropdown.Item id="view" textValue="View" className="text-success">
 									<Label>View</Label>
 								</Dropdown.Item>
-								<Dropdown.Item
-									id="edit"
-									textValue="Edit"
-									className="text-warning"
-
-								>
+								<Dropdown.Item id="edit" textValue="Edit" className="text-warning">
 									<Label>Edit</Label>
 								</Dropdown.Item>
-								<Dropdown.Item
-									id="deactivate"
-									textValue="Deactivate"
-									className="text-danger"
-
-								>
+								<Dropdown.Item id="deactivate" textValue="Deactivate" className="text-danger">
 									<Label>Deactivate</Label>
 								</Dropdown.Item>
 							</Dropdown.Menu>

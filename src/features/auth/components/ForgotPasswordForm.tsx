@@ -1,6 +1,4 @@
-import { Button, Card, FieldError,
-	Input, Label, TextField,
-	} from "@heroui/react"
+import { Button, Card, FieldError, Input, Label, TextField } from "@heroui/react"
 import { useCallback, useEffect, useState } from "react"
 import { Controller, useForm } from "react-hook-form"
 
@@ -80,16 +78,11 @@ const ForgotPasswordForm = ({ onBack, onNext, defaultEmail }: ForgotPasswordForm
 					name="email"
 					render={({ field }) => (
 						<TextField isRequired isInvalid={!!errors.email} variant="secondary">
-
 							<Label>Email</Label>
 
-							<Input
-							{...field}
-							placeholder="Enter your email"
-							type="email"/>
+							<Input {...field} placeholder="Enter your email" type="email" />
 
 							<FieldError>{errors.email?.message}</FieldError>
-
 						</TextField>
 					)}
 					rules={{

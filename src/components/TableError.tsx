@@ -1,7 +1,6 @@
 import { Button, Card } from "@heroui/react"
 
 import StreamlineEmojisCloudWithRain2 from "~icons/streamline-emojis/cloud-with-rain-2"
-import TablerRefresh from "~icons/tabler/refresh"
 
 interface TableErrorProps {
 	onRetry?: () => void

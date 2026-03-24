@@ -7,8 +7,6 @@ import {
 	Label,
 	ListBox,
 	Popover,
-	PopoverContent,
-	PopoverTrigger,
 	Select,
 	Separator,
 	Tooltip,
@@ -17,8 +15,6 @@ import {
 import IdentityChip from "@/components/IdentityChip"
 import { ABSENCE_REASONS } from "@/features/rooms/constants"
 import GrommetIconsUpdate from "~icons/grommet-icons/update"
-import MingcuteSendFill from "~icons/mingcute/send-fill"
-import PhSignInBold from "~icons/ph/sign-in-bold"
 import SolarCalendarBroken from "~icons/solar/calendar-broken"
 
 import { MOCK_ROOMS } from "../../constants"
@@ -93,7 +89,7 @@ const StaffDetailHeader = ({ employeeData, tabs, onSignOut, onGeneratePin, onSen
 													variant="primary"
 													isIconOnly
 													onPress={onGeneratePin}
-													radius="full"
+													className="rounded-full"
 													size="sm"
 												>
 													<GrommetIconsUpdate className="size-4" />
@@ -123,34 +119,36 @@ const StaffDetailHeader = ({ employeeData, tabs, onSignOut, onGeneratePin, onSen
 								<Chip className="bg-secondary-50 font-medium text-secondary text-sm" size="sm" variant="soft">
 									Nov 20 - Nov 26
 								</Chip>
-								<Popover placement="bottom">
-									<PopoverTrigger>
+								<Popover>
+									<Popover.Trigger>
 										<Button aria-label="Set absence dates" variant="primary" isIconOnly size="sm">
 											<SolarCalendarBroken className="size-4" />
 										</Button>
-									</PopoverTrigger>
-									<PopoverContent className="p-4">
-										<div className="flex flex-col gap-4">
-											<Select defaultSelectedKey="vacation">
-												<Label>Reason</Label>
-												<Select.Trigger>
-													<Select.Value />
-													<Select.Indicator />
-												</Select.Trigger>
-												<Select.Popover>
-													<ListBox>
-														{ABSENCE_REASONS.map((item) => (
-															<ListBox.Item id={item.key} key={item.key} textValue={item.label}>
-																{item.label}
-																<ListBox.ItemIndicator />
-															</ListBox.Item>
-														))}
-													</ListBox>
-												</Select.Popover>
-											</Select>
-											<Calendar aria-label="Absence date" />
-										</div>
-									</PopoverContent>
+									</Popover.Trigger>
+									<Popover.Content className="p-4">
+										<Popover.Dialog>
+											<div className="flex flex-col gap-4">
+												<Select defaultValue="vacation">
+													<Label>Reason</Label>
+													<Select.Trigger>
+														<Select.Value />
+														<Select.Indicator />
+													</Select.Trigger>
+													<Select.Popover>
+														<ListBox>
+															{ABSENCE_REASONS.map((item) => (
+																<ListBox.Item id={item.key} key={item.key} textValue={item.label}>
+																	{item.label}
+																	<ListBox.ItemIndicator />
+																</ListBox.Item>
+															))}
+														</ListBox>
+													</Select.Popover>
+												</Select>
+												<Calendar aria-label="Absence date" />
+											</div>
+										</Popover.Dialog>
+									</Popover.Content>
 								</Popover>
 							</div>
 						</div>

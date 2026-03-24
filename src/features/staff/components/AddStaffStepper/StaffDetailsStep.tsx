@@ -1,6 +1,4 @@
-import { Avatar, FieldError,
-	Input, Label, ListBox, Select, Switch, TextField,
-	} from "@heroui/react"
+import { Avatar, FieldError, Input, Label, ListBox, Select, Switch, TextField } from "@heroui/react"
 import { useState } from "react"
 import { Controller, useFormContext } from "react-hook-form"
 
@@ -83,15 +81,11 @@ const StaffDetailsStep = () => {
 					name="firstName"
 					render={({ field }) => (
 						<TextField isRequired isInvalid={!!errors.firstName} variant="secondary">
-
 							<Label>First Name</Label>
 
-							<Input
-							{...field}
-							placeholder="Enter first name"/>
+							<Input {...field} placeholder="Enter first name" />
 
 							<FieldError>{errors.firstName?.message}</FieldError>
-
 						</TextField>
 					)}
 				/>
@@ -100,15 +94,11 @@ const StaffDetailsStep = () => {
 					name="lastName"
 					render={({ field }) => (
 						<TextField isRequired isInvalid={!!errors.lastName} variant="secondary">
-
 							<Label>Last Name</Label>
 
-							<Input
-							{...field}
-							placeholder="Enter last name"/>
+							<Input {...field} placeholder="Enter last name" />
 
 							<FieldError>{errors.lastName?.message}</FieldError>
-
 						</TextField>
 					)}
 				/>
@@ -144,9 +134,7 @@ const StaffDetailsStep = () => {
 									))}
 								</ListBox>
 							</Select.Popover>
-							{errors.role?.message && (
-								<span className="text-danger text-xs">{errors.role.message}</span>
-							)}
+							{errors.role?.message && <span className="text-danger text-xs">{errors.role.message}</span>}
 						</Select>
 					)}
 				/>
@@ -155,16 +143,11 @@ const StaffDetailsStep = () => {
 					name="email"
 					render={({ field }) => (
 						<TextField isRequired isInvalid={!!errors.email} variant="secondary">
-
 							<Label>Email</Label>
 
-							<Input
-							{...field}
-							placeholder="Enter email address"
-							type="email"/>
+							<Input {...field} placeholder="Enter email address" type="email" />
 
 							<FieldError>{errors.email?.message}</FieldError>
-
 						</TextField>
 					)}
 				/>
@@ -175,8 +158,12 @@ const StaffDetailsStep = () => {
 						<div className="flex items-center justify-between py-3">
 							<span className="text-default-600 text-sm">Invite staff to join Kindora on their devices?</span>
 							<Switch isSelected={field.value} onChange={field.onChange}>
-								<Switch.Control><Switch.Thumb /></Switch.Control>
-								<Switch.Content><Label>Invite</Label></Switch.Content>
+								<Switch.Control>
+									<Switch.Thumb />
+								</Switch.Control>
+								<Switch.Content>
+									<Label>Invite</Label>
+								</Switch.Content>
 							</Switch>
 						</div>
 					)}

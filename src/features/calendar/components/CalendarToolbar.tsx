@@ -3,7 +3,6 @@ import { useAtom } from "jotai"
 
 import TablerChevronLeft from "~icons/tabler/chevron-left"
 import TablerChevronRight from "~icons/tabler/chevron-right"
-import TablerPlus from "~icons/tabler/plus"
 
 import { CALENDAR_VIEW_OPTIONS } from "../constants"
 import { calendarViewAtom, hideWeekendsAtom } from "../stores/calendarSettings.store"
@@ -49,7 +48,7 @@ const CalendarToolbar = ({ title, onNavigatePrev, onNavigateNext, onNavigateToda
 					</Switch.Content>
 				</Switch>
 
-				<Tabs size="sm" selectedKey={currentView} onSelectionChange={(key) => setCurrentView(key as CalendarViewType)}>
+				<Tabs selectedKey={currentView} onSelectionChange={(key) => setCurrentView(key as CalendarViewType)}>
 					<Tabs.ListContainer>
 						<Tabs.List aria-label="Calendar view">
 							{CALENDAR_VIEW_OPTIONS.map((opt) => (

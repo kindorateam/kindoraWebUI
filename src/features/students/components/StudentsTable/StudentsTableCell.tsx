@@ -1,4 +1,4 @@
-import { Avatar, Badge, Button, Chip, Dropdown, ListBox, Tooltip } from "@heroui/react"
+import { Avatar, Button, Chip, Dropdown, ListBox, Tooltip } from "@heroui/react"
 
 import TablerAsterisk from "~icons/tabler/asterisk"
 import TablerCalendarX from "~icons/tabler/calendar-x"
@@ -26,19 +26,14 @@ const AvatarWithBadges = ({ student }: { student: Student }) => {
 	return (
 		<div className="relative">
 			{student.checkedIn && (
-				<span className="absolute bottom-0 right-0 z-10 size-3 rounded-full border-2 border-white bg-success" />
+				<span className="absolute right-0 bottom-0 z-10 size-3 rounded-full border-2 border-white bg-success" />
 			)}
 			{hasMedicalIssue && (
-				<span className="absolute left-0 top-0 z-10 flex items-center justify-center">
+				<span className="absolute top-0 left-0 z-10 flex items-center justify-center">
 					<TablerAsterisk className="size-3.5 text-danger [&_path]:stroke-3" />
 				</span>
 			)}
-			<Avatar
-				className="shrink-0 bg-primary text-white"
-				name={`${student.firstName[0]}${student.lastName[0]}`}
-				size="sm"
-				src={student.avatar?.path}
-			>
+			<Avatar className="shrink-0 bg-primary text-white" size="sm">
 				<Avatar.Image src={student.avatar?.path} alt={`${student.firstName[0]}${student.lastName[0]}`} />
 				<Avatar.Fallback>{`${student.firstName[0]}${student.lastName[0]}`}</Avatar.Fallback>
 			</Avatar>

@@ -1,6 +1,4 @@
-import { Avatar, Card, Chip, FieldError,
-	Input, Label, TextField,
-	} from "@heroui/react"
+import { Avatar, Card, Chip, Input, Label, TextField } from "@heroui/react"
 
 import JamMedical from "~icons/jam/medical"
 import LucideUserRound from "~icons/lucide/user-round"
@@ -12,7 +10,7 @@ interface StudentProfileTabProps {
 	student: Student
 }
 
-const readOnlyFieldClassNames = {
+const _readOnlyFieldClassNames = {
 	inputWrapper: "bg-default-100 shadow-sm data-[hover=true]:bg-default-100 group-data-[focus=true]:bg-default-100",
 	input: "text-sm",
 	label: "text-xs text-default-600",
@@ -70,12 +68,10 @@ const StudentProfileTab = ({ student }: StudentProfileTabProps) => {
 
 						<div className="grid gap-2 lg:grid-cols-3">
 							{personalInfoFields.map((field) => (
-								<Input
-									className={field.className} readOnly
-									key={field.key}
-									label={field.label}
-									value={field.value}
-									variant="secondary"/>
+								<TextField key={field.key} className={field.className} variant="secondary" isReadOnly>
+									<Label>{field.label}</Label>
+									<Input value={field.value} />
+								</TextField>
 							))}
 						</div>
 
@@ -105,52 +101,34 @@ const StudentProfileTab = ({ student }: StudentProfileTabProps) => {
 
 								<div className="grid gap-2 lg:grid-cols-3">
 									<TextField variant="secondary" isReadOnly>
-
 										<Label>First Name</Label>
 
-										<Input
-										value={parent.firstName}/>
-
+										<Input value={parent.firstName} />
 									</TextField>
 									<TextField variant="secondary" isReadOnly>
-
 										<Label>Last Name</Label>
 
-										<Input
-										value={parent.lastName}/>
-
+										<Input value={parent.lastName} />
 									</TextField>
 									<TextField variant="secondary" isReadOnly>
-
 										<Label>Relationship to student</Label>
 
-										<Input
-										value={parent.relationshipToStudent ?? "N/A"}/>
-
+										<Input value={parent.relationshipToStudent ?? "N/A"} />
 									</TextField>
 									<TextField variant="secondary" isReadOnly>
-
 										<Label>Email</Label>
 
-										<Input
-										value={parent.email ?? "N/A"}/>
-
+										<Input value={parent.email ?? "N/A"} />
 									</TextField>
 									<TextField variant="secondary" isReadOnly>
-
 										<Label>Phone</Label>
 
-										<Input
-										value={parent.phone ?? "N/A"}/>
-
+										<Input value={parent.phone ?? "N/A"} />
 									</TextField>
 									<TextField variant="secondary" isReadOnly>
-
 										<Label>Pin</Label>
 
-										<Input
-										value={parent.pin ?? "N/A"}/>
-
+										<Input value={parent.pin ?? "N/A"} />
 									</TextField>
 								</div>
 							</div>
@@ -174,52 +152,39 @@ const StudentProfileTab = ({ student }: StudentProfileTabProps) => {
 
 								<div className="grid gap-2 lg:grid-cols-3">
 									<TextField variant="secondary" isReadOnly>
-
 										<Label>First Name</Label>
 
-										<Input
-										value={sibling.firstName}/>
-
+										<Input value={sibling.firstName} />
 									</TextField>
 									<TextField variant="secondary" isReadOnly>
-
 										<Label>Last Name</Label>
 
-										<Input
-										value={sibling.lastName}/>
-
+										<Input value={sibling.lastName} />
 									</TextField>
 									<TextField variant="secondary" isReadOnly>
-
 										<Label>Relationship to student</Label>
 
-										<Input
-										value={sibling.relationshipToStudent ?? "N/A"}/>
-
+										<Input value={sibling.relationshipToStudent ?? "N/A"} />
 									</TextField>
 									<TextField className="lg:col-span-2" variant="secondary" isReadOnly>
-
 										<Label>Date of Birth</Label>
 
 										<Input
-										value={
-											sibling.dateOfBirth
-												? new Date(sibling.dateOfBirth).toLocaleDateString("en-US", {
-														month: "short",
-														day: "numeric",
-														year: "numeric",
-													})
-												: "N/A"
-										}/>
-
+											value={
+												sibling.dateOfBirth
+													? new Date(sibling.dateOfBirth).toLocaleDateString("en-US", {
+															month: "short",
+															day: "numeric",
+															year: "numeric",
+														})
+													: "N/A"
+											}
+										/>
 									</TextField>
 									<TextField variant="secondary" isReadOnly>
-
 										<Label>Assigned rooms</Label>
 
-										<Input
-										value={sibling.assignedRoomTitle ?? student.room?.title ?? "No room assigned"}/>
-
+										<Input value={sibling.assignedRoomTitle ?? student.room?.title ?? "No room assigned"} />
 									</TextField>
 								</div>
 							</div>
@@ -243,44 +208,29 @@ const StudentProfileTab = ({ student }: StudentProfileTabProps) => {
 
 								<div className="grid gap-2 lg:grid-cols-3">
 									<TextField variant="secondary" isReadOnly>
-
 										<Label>First Name</Label>
 
-										<Input
-										value={guardian.firstName}/>
-
+										<Input value={guardian.firstName} />
 									</TextField>
 									<TextField variant="secondary" isReadOnly>
-
 										<Label>Last Name</Label>
 
-										<Input
-										value={guardian.lastName}/>
-
+										<Input value={guardian.lastName} />
 									</TextField>
 									<TextField variant="secondary" isReadOnly>
-
 										<Label>Relationship to student</Label>
 
-										<Input
-										value={guardian.relationshipToStudent ?? "N/A"}/>
-
+										<Input value={guardian.relationshipToStudent ?? "N/A"} />
 									</TextField>
 									<TextField className="lg:col-span-2" variant="secondary" isReadOnly>
-
 										<Label>Phone</Label>
 
-										<Input
-										value={guardian.phone ?? "N/A"}/>
-
+										<Input value={guardian.phone ?? "N/A"} />
 									</TextField>
 									<TextField variant="secondary" isReadOnly>
-
 										<Label>Pin</Label>
 
-										<Input
-										value={guardian.pin ?? "N/A"}/>
-
+										<Input value={guardian.pin ?? "N/A"} />
 									</TextField>
 								</div>
 							</div>
@@ -296,20 +246,14 @@ const StudentProfileTab = ({ student }: StudentProfileTabProps) => {
 
 					<div className="grid gap-2 lg:grid-cols-2">
 						<TextField variant="secondary" isReadOnly>
-
 							<Label>Allergies</Label>
 
-							<Input
-							value={student.medicalInfo?.allergies?.[0] ?? "No allergies"}/>
-
+							<Input value={student.medicalInfo?.allergies?.[0] ?? "No allergies"} />
 						</TextField>
 						<TextField variant="secondary" isReadOnly>
-
 							<Label>Medications</Label>
 
-							<Input
-							value={student.medicalInfo?.medications ?? "-"}/>
-
+							<Input value={student.medicalInfo?.medications ?? "-"} />
 						</TextField>
 						<div className="flex flex-wrap gap-2 lg:col-span-2">
 							{(student.medicalInfo?.allergies?.length ? student.medicalInfo.allergies : ["No allergies"]).map(
@@ -321,20 +265,14 @@ const StudentProfileTab = ({ student }: StudentProfileTabProps) => {
 							)}
 						</div>
 						<TextField variant="secondary" isReadOnly>
-
 							<Label>Doctor</Label>
 
-							<Input
-							value={student.medicalInfo?.doctor ?? "N/A"}/>
-
+							<Input value={student.medicalInfo?.doctor ?? "N/A"} />
 						</TextField>
 						<TextField variant="secondary" isReadOnly>
-
 							<Label>Doctor Phone</Label>
 
-							<Input
-							value={student.medicalInfo?.doctorPhone ?? "N/A"}/>
-
+							<Input value={student.medicalInfo?.doctorPhone ?? "N/A"} />
 						</TextField>
 					</div>
 				</section>

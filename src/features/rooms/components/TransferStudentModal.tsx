@@ -32,8 +32,9 @@ const TransferStudentModal = ({ onSuccess }: TransferStudentModalProps) => {
 	useEffect(() => {
 		if (!observerRef.current || !hasNextPage || isFetchingNextPage) return
 		const observer = new IntersectionObserver(
-			([entry]) => {
-				if (entry.isIntersecting) fetchNextPage()
+			(entries) => {
+				const entry = entries[0]
+				if (entry?.isIntersecting) fetchNextPage()
 			},
 			{ threshold: 0.5 },
 		)

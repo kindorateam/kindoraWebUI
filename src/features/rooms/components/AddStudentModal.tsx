@@ -32,8 +32,9 @@ const AddStudentModal = () => {
 	useEffect(() => {
 		if (!observerRef.current || !hasNextPage || isFetchingNextPage) return
 		const observer = new IntersectionObserver(
-			([entry]) => {
-				if (entry.isIntersecting) fetchNextPage()
+			(entries) => {
+				const entry = entries[0]
+				if (entry?.isIntersecting) fetchNextPage()
 			},
 			{ threshold: 0.5 },
 		)
@@ -94,14 +95,10 @@ const AddStudentModal = () => {
 							</div>
 						) : (
 							<Select
-								selectedKeys={selectedStudentIds}
 								selectionMode="multiple"
-								onSelectionChange={(keys) => {
-									if (keys === "all") {
-										setSelectedStudentIds(new Set(availableStudents.map((s) => s.id)))
-									} else {
-										setSelectedStudentIds(new Set(keys as Set<string>))
-									}
+								value={Array.from(selectedStudentIds)}
+								onChange={(keys) => {
+									setSelectedStudentIds(new Set(keys as string[]))
 								}}
 							>
 								<Label>Student's Name</Label>

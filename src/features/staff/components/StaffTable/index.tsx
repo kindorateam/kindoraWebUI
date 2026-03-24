@@ -1,9 +1,8 @@
-import { Button, Card, Pagination, Spinner, Switch, Table } from "@heroui/react"
+import { Button, Card, Spinner, Switch, Table } from "@heroui/react"
 import { useNavigate } from "@tanstack/react-router"
 import { useCallback, useMemo, useState } from "react"
 
 import TableError from "@/components/TableError"
-import TablerCirclePlusFilled from "~icons/tabler/circle-plus-filled"
 
 import { useEmployees } from "../../hooks/useStaff"
 import { openAddStaffModal } from "../../stores/addStaffModal.store"
@@ -74,35 +73,47 @@ const StaffTable = () => {
 					<Table className="min-h-[595.5px]">
 						<Table.ScrollContainer>
 							<Table.Content aria-label="Employees table">
-								<Table.Header className="[&>tr>th]:py-0" columns={columns}>
-									{(column) => (
-										<Table.Column key={column.key} align={column.align}>
+								<Table.Header className="[&>tr>th]:py-0">
+									{columns.map((column) => (
+										<Table.Column key={column.key} className={column.align === "center" ? "text-center" : ""}>
 											{column.label}
 										</Table.Column>
-									)}
+									))}
 								</Table.Header>
-								<Table.Body
-									className="[&>tr]:h-[55px] [&>tr]:border-b [&>tr]:border-default-200 [&>tr:last-child]:border-b-0"
-									emptyContent={
-										error ? (
-											<TableError onRetry={refetch} />
-										) : (
-											<div className="flex h-[550px] flex-col items-center justify-center gap-3">
-												<p className="text-default-500 text-lg">No staff members yet</p>
-												<p className="text-default-400 text-sm">Add your first staff member to get started</p>
-											</div>
-										)
-									}
-									items={error || isLoading ? [] : items}
-									isPending={isLoading}
-									loadingContent={<Spinner size="lg" />}
-								>
-									{(employee) => (
-										<Table.Row key={employee.id}>
-											{(columnKey) => (
-												<Table.Cell className="py-0">{renderCell(employee, columnKey, renderCellOptions)}</Table.Cell>
-											)}
+								<Table.Body className="[&>tr:last-child]:border-b-0 [&>tr]:h-[55px] [&>tr]:border-default-200 [&>tr]:border-b">
+									{isLoading ? (
+										<Table.Row>
+											<Table.Cell colSpan={columns.length}>
+												<div className="flex justify-center py-8">
+													<Spinner size="lg" />
+												</div>
+											</Table.Cell>
 										</Table.Row>
+									) : error ? (
+										<Table.Row>
+											<Table.Cell colSpan={columns.length}>
+												<TableError onRetry={refetch} />
+											</Table.Cell>
+										</Table.Row>
+									) : items.length === 0 ? (
+										<Table.Row>
+											<Table.Cell colSpan={columns.length}>
+												<div className="flex h-[550px] flex-col items-center justify-center gap-3">
+													<p className="text-default-500 text-lg">No staff members yet</p>
+													<p className="text-default-400 text-sm">Add your first staff member to get started</p>
+												</div>
+											</Table.Cell>
+										</Table.Row>
+									) : (
+										items.map((employee) => (
+											<Table.Row key={employee.id}>
+												{columns.map((column) => (
+													<Table.Cell className="py-0" key={column.key}>
+														{renderCell(employee, column.key, renderCellOptions)}
+													</Table.Cell>
+												))}
+											</Table.Row>
+										))
 									)}
 								</Table.Body>
 							</Table.Content>

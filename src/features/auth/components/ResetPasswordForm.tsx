@@ -167,12 +167,11 @@ const ResetPasswordForm = ({ email, token, onBack, onResetSuccess }: ResetPasswo
 
 			<Card.Footer className="flex-col gap-3 px-7 pt-5 pb-8">
 				<Button
-					className="h-10 w-full"
+					className="h-10 w-full rounded-lg"
 					variant="primary"
 					form={formId}
 					isDisabled={!canSubmit}
 					isPending={isSubmitting}
-					radius="lg"
 					type="submit"
 				>
 					Reset password

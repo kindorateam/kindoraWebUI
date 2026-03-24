@@ -1,8 +1,5 @@
-import { Button, FieldError,
-	Input, Label, TextField,
-	} from "@heroui/react"
+import { Button, Input, Label, TextField } from "@heroui/react"
 
-import MdiMagnify from "~icons/mdi/magnify"
 import TablerLink from "~icons/tabler/link"
 
 import ThreadCard from "./ThreadCard"
@@ -30,17 +27,13 @@ const MessagesSidebar = ({
 				<div className="flex items-center gap-2">
 					<div className="relative flex-1">
 						<TextField className="w-full">
-
 							<Label>Search chat</Label>
 
 							<Input
-							aria-
-							placeholder="Search chat"
-							radius="lg"
-
-							value={searchValue}
-							onChange={(e: React.ChangeEvent<HTMLInputElement>) => (onSearchChange)(e.target.value)}/>
-
+								placeholder="Search chat"
+								value={searchValue}
+								onChange={(e: React.ChangeEvent<HTMLInputElement>) => onSearchChange(e.target.value)}
+							/>
 						</TextField>
 					</div>
 					<Button

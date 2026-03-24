@@ -100,14 +100,7 @@ const RoomDetailHeader = ({ activeTab, roomId, onTabChange }: RoomDetailHeaderPr
 					</div>
 				</div>
 
-				<Tabs
-					color="primary"
-					onSelectionChange={(key) => onTabChange(key as TabType)}
-					selectedKey={activeTab}
-					radius="sm"
-					size="sm"
-					variant="primary"
-				>
+				<Tabs onSelectionChange={(key) => onTabChange(key as TabType)} selectedKey={activeTab}>
 					<Tabs.ListContainer>
 						<Tabs.List aria-label="Room details tabs" className="shadow-md">
 							<Tabs.Tab id="students">
@@ -124,9 +117,9 @@ const RoomDetailHeader = ({ activeTab, roomId, onTabChange }: RoomDetailHeaderPr
 							</Tabs.Tab>
 						</Tabs.List>
 					</Tabs.ListContainer>
-					<Tabs.Panel id="students" >{null}</Tabs.Panel>
-					<Tabs.Panel id="activity" >{null}</Tabs.Panel>
-					<Tabs.Panel id="profile" >{null}</Tabs.Panel>
+					<Tabs.Panel id="students">{null}</Tabs.Panel>
+					<Tabs.Panel id="activity">{null}</Tabs.Panel>
+					<Tabs.Panel id="profile">{null}</Tabs.Panel>
 				</Tabs>
 			</div>
 		</div>

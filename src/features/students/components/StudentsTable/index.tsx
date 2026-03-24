@@ -1,9 +1,8 @@
-import { Button, Card, Pagination, Spinner, Table } from "@heroui/react"
+import { Button, Card, Spinner, Table } from "@heroui/react"
 import { useNavigate } from "@tanstack/react-router"
 import { useCallback, useMemo, useState } from "react"
 
 import TableError from "@/components/TableError"
-import TablerCirclePlusFilled from "~icons/tabler/circle-plus-filled"
 
 import { useStudents } from "../../hooks/useStudents"
 import StudentsEmptyState from "../StudentsEmptyState"
@@ -31,9 +30,7 @@ const StudentsTable = () => {
 		() => (
 			<div className="flex flex-col gap-4">
 				<div className="flex items-center justify-end">
-					<Button variant="primary">
-						Add Student
-					</Button>
+					<Button variant="primary">Add Student</Button>
 				</div>
 				<span className="text-default-400 text-sm">Total {total} students</span>
 			</div>
@@ -49,7 +46,7 @@ const StudentsTable = () => {
 					<Table.ScrollContainer>
 						<Table.Content
 							aria-label="Students table"
-							className="[&_tbody>tr]:h-[55px] [&_tbody>tr]:border-b [&_tbody>tr]:border-default-200 [&_tbody>tr:last-child]:border-b-0 [&_th]:py-0 [&_td]:py-0"
+							className="[&_tbody>tr:last-child]:border-b-0 [&_tbody>tr]:h-[55px] [&_tbody>tr]:border-default-200 [&_tbody>tr]:border-b [&_td]:py-0 [&_th]:py-0"
 						>
 							<Table.Header>
 								{columns.map((column) => (
@@ -58,24 +55,41 @@ const StudentsTable = () => {
 									</Table.Column>
 								))}
 							</Table.Header>
-							<Table.Body
-								emptyContent={
-									isLoading ? <Spinner size="lg" /> : error ? <TableError onRetry={refetch} /> : <StudentsEmptyState />
-								}
-								items={error || isLoading ? [] : students}
-							>
-								{(student) => (
-									<Table.Row key={student.id}>
-										{columns.map((column) => (
-											<Table.Cell key={column.key}>
-												<StudentsTableCell
-													columnKey={column.key}
-													onStudentClick={handleStudentClick}
-													student={student}
-												/>
-											</Table.Cell>
-										))}
+							<Table.Body>
+								{isLoading ? (
+									<Table.Row>
+										<Table.Cell colSpan={columns.length}>
+											<div className="flex justify-center py-8">
+												<Spinner size="lg" />
+											</div>
+										</Table.Cell>
 									</Table.Row>
+								) : error ? (
+									<Table.Row>
+										<Table.Cell colSpan={columns.length}>
+											<TableError onRetry={refetch} />
+										</Table.Cell>
+									</Table.Row>
+								) : students.length === 0 ? (
+									<Table.Row>
+										<Table.Cell colSpan={columns.length}>
+											<StudentsEmptyState />
+										</Table.Cell>
+									</Table.Row>
+								) : (
+									students.map((student) => (
+										<Table.Row key={student.id}>
+											{columns.map((column) => (
+												<Table.Cell key={column.key}>
+													<StudentsTableCell
+														columnKey={column.key}
+														onStudentClick={handleStudentClick}
+														student={student}
+													/>
+												</Table.Cell>
+											))}
+										</Table.Row>
+									))
 								)}
 							</Table.Body>
 						</Table.Content>
@@ -83,10 +97,16 @@ const StudentsTable = () => {
 					{totalPages > 1 && (
 						<div className="flex w-full justify-center pt-4">
 							<div className="flex items-center gap-2">
-							<Button size="sm" variant="outline" isDisabled={page <= 1} onPress={() => setPage(page - 1)}>Prev</Button>
-							<span className="text-sm">Page {page} of {totalPages}</span>
-							<Button size="sm" variant="outline" isDisabled={page >= totalPages} onPress={() => setPage(page + 1)}>Next</Button>
-						</div>
+								<Button size="sm" variant="outline" isDisabled={page <= 1} onPress={() => setPage(page - 1)}>
+									Prev
+								</Button>
+								<span className="text-sm">
+									Page {page} of {totalPages}
+								</span>
+								<Button size="sm" variant="outline" isDisabled={page >= totalPages} onPress={() => setPage(page + 1)}>
+									Next
+								</Button>
+							</div>
 						</div>
 					)}
 				</div>

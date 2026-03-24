@@ -37,7 +37,7 @@ const AddStaffModal = () => {
 					<Modal.CloseTrigger />
 					<Modal.Body className="p-0">
 						<AddStaffStepper
-							isPending={false}
+							isLoading={false}
 							onCancel={handleCancel}
 							onComplete={handleComplete}
 							onStepChange={handleStepChange}

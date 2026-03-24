@@ -1,16 +1,4 @@
-import {
-	Button,
-	FieldError,
-	Input,
-	Label,
-	ListBox,
-	Modal,
-	Select,
-	Switch,
-	TextArea,
-	TextField,
-	toast,
-} from "@heroui/react"
+import { Button, Input, Label, ListBox, Modal, Select, Switch, TextArea, TextField, toast } from "@heroui/react"
 import { useAtomValue } from "jotai"
 import { useEffect, useState } from "react"
 
@@ -149,15 +137,14 @@ const EventModal = () => {
 							/>
 						</TextField>
 
-						<TextArea
-							label="Description"
-							placeholder="Optional description"
-							value={formData.description}
-							onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-								((v) => updateField("description", v))(e.target.value)
-							}
-							minRows={2}
-						/>
+						<TextField>
+							<Label>Description</Label>
+							<TextArea
+								placeholder="Optional description"
+								value={formData.description}
+								onChange={(e) => ((v: string) => updateField("description", v))(e.target.value)}
+							/>
+						</TextField>
 
 						<Switch
 							size="sm"

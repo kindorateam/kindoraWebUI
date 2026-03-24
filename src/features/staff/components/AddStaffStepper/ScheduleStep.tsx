@@ -29,14 +29,14 @@ const ScheduleStep = () => {
 				render={({ field }) => (
 					<Select
 						isInvalid={!!errors.workingDays}
-						onSelectionChange={(keys) => {
-							const selected = Array.from(keys) as string[]
+						onChange={(keys) => {
+							const selected = (keys as string[]).slice()
 							selected.sort(
 								(a, b) => WORKING_DAYS.findIndex((d) => d.key === a) - WORKING_DAYS.findIndex((d) => d.key === b),
 							)
 							field.onChange(selected)
 						}}
-						selectedKeys={new Set(field.value || [])}
+						value={field.value || []}
 						selectionMode="multiple"
 					>
 						<Label>Schedule working days</Label>
@@ -54,9 +54,7 @@ const ScheduleStep = () => {
 								))}
 							</ListBox>
 						</Select.Popover>
-						{errors.workingDays?.message && (
-							<span className="text-danger text-xs">{errors.workingDays.message}</span>
-						)}
+						{errors.workingDays?.message && <span className="text-danger text-xs">{errors.workingDays.message}</span>}
 					</Select>
 				)}
 			/>

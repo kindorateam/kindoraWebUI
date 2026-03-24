@@ -17,7 +17,7 @@ const ParentsAvatarGroup = ({ parents }: ParentsAvatarGroupProps) => {
 
 	return (
 		<Tooltip>
-			<div className="flex -space-x-2">
+			<div className="-space-x-2 flex">
 				{parents.slice(0, 2).map((parent) => {
 					const fullName = `${parent.firstName} ${parent.lastName}`
 					return (

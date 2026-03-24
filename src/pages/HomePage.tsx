@@ -21,9 +21,11 @@ const HomePage = () => {
 			<div className="text-center">
 				<h1 className="font-bold text-4xl text-gray-900">Welcome to Kindora</h1>
 				<p className="text-gray-600 text-lg">Kindergarten Management System</p>
-				<Button as={Link} variant="primary" size="lg" to="/login">
-					Get Started
-				</Button>
+				<Link to="/login">
+					<Button variant="primary" size="lg">
+						Get Started
+					</Button>
+				</Link>
 			</div>
 		</div>
 	)

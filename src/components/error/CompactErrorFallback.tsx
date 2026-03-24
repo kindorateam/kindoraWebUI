@@ -2,7 +2,6 @@ import { Button } from "@heroui/react"
 
 import { getUserMessage } from "@/utils/error"
 import MdiAlertOutline from "~icons/mdi/alert-outline"
-import MdiRefresh from "~icons/mdi/refresh"
 
 import type { ErrorFallbackProps } from "@/types/error"
 

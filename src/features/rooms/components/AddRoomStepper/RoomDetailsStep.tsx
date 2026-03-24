@@ -1,6 +1,4 @@
-import { Avatar, FieldError,
-	Input, Label, ListBox, NumberField, Select, TextField,
-	} from "@heroui/react"
+import { Avatar, FieldError, Input, Label, ListBox, NumberField, Select, TextField } from "@heroui/react"
 import { useState } from "react"
 import { Controller, useFormContext } from "react-hook-form"
 
@@ -90,15 +88,11 @@ const RoomDetailsStep = () => {
 					name="name"
 					render={({ field }) => (
 						<TextField isRequired isInvalid={!!errors.name} variant="secondary">
-
 							<Label>Room Name</Label>
 
-							<Input
-							{...field}
-							placeholder="Enter room name"/>
+							<Input {...field} placeholder="Enter room name" />
 
 							<FieldError>{errors.name?.message}</FieldError>
-
 						</TextField>
 					)}
 				/>

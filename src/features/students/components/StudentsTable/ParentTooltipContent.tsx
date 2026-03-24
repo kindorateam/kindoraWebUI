@@ -1,7 +1,5 @@
 import { Avatar, Button, Separator } from "@heroui/react"
 
-import TablerMessage from "~icons/tabler/message"
-
 import type { StudentParent } from "../../types"
 
 interface ParentTooltipContentProps {

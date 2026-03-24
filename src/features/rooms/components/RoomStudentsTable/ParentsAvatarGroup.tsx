@@ -28,7 +28,7 @@ const ParentsAvatarGroup = ({ parents }: ParentsAvatarGroupProps) => {
 
 	return (
 		<Tooltip delay={300}>
-			<div className="flex -space-x-2">
+			<div className="-space-x-2 flex">
 				{visible.map((parent) => {
 					const fullName = `${parent.firstName} ${parent.lastName}`
 					return (

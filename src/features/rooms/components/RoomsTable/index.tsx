@@ -1,9 +1,8 @@
-import { Button, Card, Pagination, Spinner, Switch, Table } from "@heroui/react"
+import { Button, Card, Spinner, Switch, Table } from "@heroui/react"
 import { useAtom } from "jotai"
 import { useMemo, useState } from "react"
 
 import TableError from "@/components/TableError"
-import TablerCirclePlusFilled from "~icons/tabler/circle-plus-filled"
 
 import { useRooms } from "../../hooks/useRooms"
 import { openAddRoomModal } from "../../stores/addRoomModal.store"
@@ -51,7 +50,7 @@ const RoomsTable = () => {
 					<Table.ScrollContainer>
 						<Table.Content
 							aria-label="Rooms table"
-							className="[&_tbody>tr]:h-[55px] [&_tbody>tr]:border-b [&_tbody>tr]:border-default-200 [&_tbody>tr:last-child]:border-b-0 [&_th]:py-0 [&_td]:py-0"
+							className="[&_tbody>tr:last-child]:border-b-0 [&_tbody>tr]:h-[55px] [&_tbody>tr]:border-default-200 [&_tbody>tr]:border-b [&_td]:py-0 [&_th]:py-0"
 						>
 							<Table.Header>
 								{columns.map((column) => (

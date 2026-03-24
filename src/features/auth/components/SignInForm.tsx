@@ -2,8 +2,6 @@ import { Button, Card, Checkbox, FieldError, Input, Label, Link, Separator, Text
 import { useCallback, useState } from "react"
 import { Controller, useForm } from "react-hook-form"
 
-import MaterialIconThemeGoogle from "~icons/material-icon-theme/google"
-
 import { EMAIL_PATTERN } from "../constants"
 import useAuth from "../hooks/useAuth"
 
@@ -92,24 +90,15 @@ const SignInForm = ({ onForgotPassword, onVerificationRequired, defaultEmail }: 
 							control={control}
 							name="password"
 							render={({ field }) => (
-								<Input
-									{...field}
-									endContent={
-										<PasswordVisibilityToggle
-											isVisible={isPasswordVisible}
-											onToggle={() => setIsPasswordVisible(!isPasswordVisible)}
-										/>
-									}
-									errorMessage={errors.password?.message}
-									isInvalid={!!errors.password}
-									isRequired
-									label="Password"
-									labelPlacement="inside"
-									placeholder="Enter your password"
-									size="sm"
-									type={isPasswordVisible ? "text" : "password"}
-									variant="secondary"
-								/>
+								<TextField isRequired isInvalid={!!errors.password} variant="secondary">
+									<Label>Password</Label>
+									<Input {...field} placeholder="Enter your password" type={isPasswordVisible ? "text" : "password"} />
+									<PasswordVisibilityToggle
+										isVisible={isPasswordVisible}
+										onToggle={() => setIsPasswordVisible(!isPasswordVisible)}
+									/>
+									<FieldError>{errors.password?.message}</FieldError>
+								</TextField>
 							)}
 							rules={{
 								required: "Password is required",
@@ -132,9 +121,8 @@ const SignInForm = ({ onForgotPassword, onVerificationRequired, defaultEmail }: 
 							)}
 						/>
 						<Link
-							className="cursor-pointer rounded-xl px-3 py-0 font-normal text-default-400 text-xs leading-4"
+							className="cursor-pointer rounded-xl px-3 py-0 font-normal text-default-400 text-xs leading-4 no-underline"
 							onPress={onForgotPassword}
-							underline="none"
 						>
 							Forgot password?
 						</Link>

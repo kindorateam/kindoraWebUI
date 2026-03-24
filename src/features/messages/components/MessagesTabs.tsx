@@ -21,22 +21,22 @@ const MessagesTabs = ({ activeTab, onSelectionChange }: MessagesTabsProps) => {
 				>
 					<Tabs.Tab
 						id="all"
-						className="h-6 rounded-lg px-3 text-[12px] leading-4 text-[#71717a] data-[selected]:text-white"
+						className="h-6 rounded-lg px-3 text-[#71717a] text-[12px] leading-4 data-[selected]:text-white"
 					>
 						All messages
 						<Tabs.Indicator className="rounded-lg bg-primary shadow-[0px_1px_2px_0px_rgba(0,0,0,0.05)]" />
 					</Tabs.Tab>
 					<Tabs.Tab
 						id="favorites"
-						className="h-6 rounded-lg px-3 text-[12px] leading-4 text-[#71717a] data-[selected]:text-white"
+						className="h-6 rounded-lg px-3 text-[#71717a] text-[12px] leading-4 data-[selected]:text-white"
 					>
 						Favorites
 						<Tabs.Indicator className="rounded-lg bg-primary shadow-[0px_1px_2px_0px_rgba(0,0,0,0.05)]" />
 					</Tabs.Tab>
 				</Tabs.List>
 			</Tabs.ListContainer>
-			<Tabs.Panel id="all" >{null}</Tabs.Panel>
-			<Tabs.Panel id="favorites" >{null}</Tabs.Panel>
+			<Tabs.Panel id="all">{null}</Tabs.Panel>
+			<Tabs.Panel id="favorites">{null}</Tabs.Panel>
 		</Tabs>
 	)
 }

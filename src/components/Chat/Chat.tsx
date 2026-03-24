@@ -4,7 +4,6 @@ import { useCallback } from "react"
 import Button from "@/components/Button"
 import Text from "@/components/Text"
 import useAppDrawer from "@/hooks/useAppDrawer"
-import MdiFilterVariant from "~icons/mdi/filter-variant"
 
 import ChatMessage from "./ChatMessage"
 import EmojiGroup from "./EmojiGroup"

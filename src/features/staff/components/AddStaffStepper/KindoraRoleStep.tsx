@@ -71,9 +71,7 @@ const KindoraRoleStep = () => {
 									))}
 								</ListBox>
 							</Select.Popover>
-							{errors.role?.message && (
-								<span className="text-danger text-xs">{errors.role.message}</span>
-							)}
+							{errors.role?.message && <span className="text-danger text-xs">{errors.role.message}</span>}
 						</Select>
 					)}
 				/>
@@ -90,13 +88,9 @@ const KindoraRoleStep = () => {
 						>
 							<Label>Hire date</Label>
 							<DateField.Group>
-								<DateField.Input>
-									{(segment) => <DateField.Segment segment={segment} />}
-								</DateField.Input>
+								<DateField.Input>{(segment) => <DateField.Segment segment={segment} />}</DateField.Input>
 							</DateField.Group>
-							{errors.hireDate?.message && (
-								<span className="text-danger text-xs">{errors.hireDate.message}</span>
-							)}
+							{errors.hireDate?.message && <span className="text-danger text-xs">{errors.hireDate.message}</span>}
 						</DateField>
 					)}
 				/>
@@ -107,10 +101,10 @@ const KindoraRoleStep = () => {
 					render={({ field }) => (
 						<Select
 							isInvalid={!!errors.assignedRooms}
-							onSelectionChange={(keys) => {
-								field.onChange(Array.from(keys) as string[])
+							onChange={(keys) => {
+								field.onChange(keys as string[])
 							}}
-							selectedKeys={new Set(field.value || [])}
+							value={field.value || []}
 							selectionMode="multiple"
 						>
 							<Label>Assigned rooms</Label>
@@ -141,10 +135,10 @@ const KindoraRoleStep = () => {
 					render={({ field }) => (
 						<Select
 							isInvalid={!!errors.permissions}
-							onSelectionChange={(keys) => {
-								field.onChange(Array.from(keys) as string[])
+							onChange={(keys) => {
+								field.onChange(keys as string[])
 							}}
-							selectedKeys={new Set(field.value || [])}
+							value={field.value || []}
 							selectionMode="multiple"
 						>
 							<Label>Permissions</Label>
@@ -162,9 +156,7 @@ const KindoraRoleStep = () => {
 									))}
 								</ListBox>
 							</Select.Popover>
-							{errors.permissions?.message && (
-								<span className="text-danger text-xs">{errors.permissions.message}</span>
-							)}
+							{errors.permissions?.message && <span className="text-danger text-xs">{errors.permissions.message}</span>}
 						</Select>
 					)}
 				/>

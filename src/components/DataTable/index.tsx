@@ -2,7 +2,13 @@ import { Table } from "@heroui/react"
 
 import type { DataTableProps } from "@/types/table"
 
-const DataTable = <T,>({
+const alignClassMap = {
+	start: "text-left",
+	center: "text-center",
+	end: "text-right",
+} as const
+
+const DataTable = <T extends Record<string, unknown>>({
 	columns,
 	data,
 	isLoading = false,
@@ -28,36 +34,30 @@ const DataTable = <T,>({
 			<Table className="p-0">
 				<Table.ScrollContainer>
 					<Table.Content aria-label="Data table" className="min-w-full bg-transparent p-0 shadow-none!">
-						<Table.Header className='[&>tr]:first:rounded-none [&>[aria-hidden="true"]]:hidden' columns={columns}>
-							{(column) => (
+						<Table.Header className='[&>[aria-hidden="true"]]:hidden [&>tr]:first:rounded-none'>
+							{columns.map((column) => (
 								<Table.Column
-									align={column.align ?? "start"}
-									className={`bg-transparent p-0 pb-4 text-left text-xs! font-medium text-text-secondary tracking-wider ${column.className ?? ""}`}
+									className={`bg-transparent p-0 pb-4 font-medium text-text-secondary text-xs! tracking-wider ${alignClassMap[column.align ?? "start"]} ${column.className ?? ""}`}
 									key={column.key}
 								>
 									{column.label}
 								</Table.Column>
-							)}
+							))}
 						</Table.Header>
-						<Table.Body items={data}>
-							{(item) => (
+						<Table.Body>
+							{data.map((item) => (
 								<Table.Row
-									className="border-b border-black/4! last:border-b-0 data-[first=true]:pt-2!"
+									className="border-black/4! border-b last:border-b-0 data-[first=true]:pt-2!"
 									key={getRowKey(item)}
 									onClick={() => onRowClick?.(item)}
 								>
-									{(columnKey) => {
-										const column = columns.find((col) => col.key === columnKey)
-										return (
-											<Table.Cell className="whitespace-nowrap p-0 py-2.5">
-												{column?.renderCell
-													? column.renderCell(item, column)
-													: String((item as Record<string, unknown>)[columnKey])}
-											</Table.Cell>
-										)
-									}}
+									{columns.map((column) => (
+										<Table.Cell className="whitespace-nowrap p-0 py-2.5" key={column.key}>
+											{column.renderCell ? column.renderCell(item, column) : String(item[column.key] ?? "")}
+										</Table.Cell>
+									))}
 								</Table.Row>
-							)}
+							))}
 						</Table.Body>
 					</Table.Content>
 				</Table.ScrollContainer>

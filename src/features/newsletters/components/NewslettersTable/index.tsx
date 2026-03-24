@@ -1,7 +1,5 @@
 import { Button, Card, Spinner, Table } from "@heroui/react"
 
-import TablerCirclePlusFilled from "~icons/tabler/circle-plus-filled"
-
 import columns from "./columns"
 import { renderCell } from "./renderCell"
 
@@ -27,29 +25,34 @@ const NewslettersTable = ({ onCreateNew }: NewslettersTableProps) => {
 	return (
 		<Card>
 			<Card.Content className="p-4">
-				<div className="flex items-center justify-end mb-2">
-					<Button
-						variant="primary"
-
-						onPress={onCreateNew}
-					>
+				<div className="mb-2 flex items-center justify-end">
+					<Button variant="primary" onPress={onCreateNew}>
 						Create New
 					</Button>
 				</div>
 				<Table aria-label="Newsletters table">
-					<Table.ScrollContainer minWidth={500}>
-						<Table.Content>
-							<Table.Header columns={columns}>
-								{(column) => <Table.Column id={column.key}>{column.label}</Table.Column>}
+					<Table.ScrollContainer>
+						<Table.Content className="min-w-[500px]">
+							<Table.Header>
+								{columns.map((column) => (
+									<Table.Column key={column.key}>{column.label}</Table.Column>
+								))}
 							</Table.Header>
-							<Table.Body
-								items={isLoading ? [] : newsletters}
-								renderEmptyState={() => <div className="py-8 text-center text-default-400">No newsletters sent</div>}
-							>
-								{(newsletter) => (
-									<Table.Row id={newsletter.id}>
-										{(columnKey) => <Table.Cell>{renderCell(newsletter, columnKey)}</Table.Cell>}
+							<Table.Body>
+								{newsletters.length === 0 ? (
+									<Table.Row>
+										<Table.Cell colSpan={columns.length}>
+											<div className="py-8 text-center text-default-400">No newsletters sent</div>
+										</Table.Cell>
 									</Table.Row>
+								) : (
+									newsletters.map((newsletter) => (
+										<Table.Row key={newsletter.id}>
+											{columns.map((column) => (
+												<Table.Cell key={column.key}>{renderCell(newsletter, column.key)}</Table.Cell>
+											))}
+										</Table.Row>
+									))
 								)}
 							</Table.Body>
 						</Table.Content>

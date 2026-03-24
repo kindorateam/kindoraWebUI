@@ -21,16 +21,12 @@ import { Controller, useForm } from "react-hook-form"
 
 import { getErrorMessage } from "@/utils/error"
 import { formatUSPhone } from "@/utils/format"
-import CiSave from "~icons/ci/save"
 import EosIconsRoleBindingOutlined from "~icons/eos-icons/role-binding-outlined"
 import JamMedical from "~icons/jam/medical"
 import LucideUserRound from "~icons/lucide/user-round"
-import MaterialSymbolsDeleteOutline from "~icons/material-symbols/delete-outline"
 import StreamlineUltimateEmergencyCall from "~icons/streamline-ultimate/emergency-call"
 import TablerAlertTriangle from "~icons/tabler/alert-triangle"
 import TablerCertificate from "~icons/tabler/certificate"
-import TablerCloudUpload from "~icons/tabler/cloud-upload"
-import TablerTrash from "~icons/tabler/trash"
 
 import { DEGREE_OPTIONS, MOCK_ROOMS, SIGNUP_STATUS_OPTIONS, STAFF_ROLES, US_STATES } from "../../constants"
 import { useEmployee, useUpdateEmployee, useUpdateEmployeeAvatar } from "../../hooks/useStaff"
@@ -140,7 +136,7 @@ const StaffProfileTab = ({ employeeId }: StaffProfileTabProps) => {
 		}
 	}
 
-	const handleRemoveRoom = (roomKey: string) => {
+	const _handleRemoveRoom = (roomKey: string) => {
 		setValue(
 			"assignedRooms",
 			assignedRooms.filter((r) => r !== roomKey),
@@ -242,11 +238,10 @@ const StaffProfileTab = ({ employeeId }: StaffProfileTabProps) => {
 						<SectionHeader icon={<LucideUserRound className="size-5" />} title="Personal info" />
 						<div className="flex flex-col gap-6">
 							<div className="flex items-center gap-3">
-								<Avatar
-									className="size-20 border-4 border-white shadow-md"
-									showFallback
-									src={avatarPreview ?? undefined}
-								/>
+								<Avatar className="size-20 border-4 border-white shadow-md">
+									<Avatar.Image src={avatarPreview ?? undefined} alt="Employee avatar" />
+									<Avatar.Fallback />
+								</Avatar>
 								<div className="flex flex-col gap-3">
 									<Button className="cursor-pointer" variant="primary" size="sm">
 										Upload Picture
@@ -325,12 +320,14 @@ const StaffProfileTab = ({ employeeId }: StaffProfileTabProps) => {
 											<DateField
 												className="flex-1"
 												granularity="day"
-												label="Birthday"
-												labelPlacement="inside"
 												onChange={(value) => handleDateChange(value, field.onChange)}
 												value={parseDateValue(field.value)}
-												variant="secondary"
-											/>
+											>
+												<Label>Birthday</Label>
+												<DateField.Group>
+													<DateField.Input>{(segment) => <DateField.Segment segment={segment} />}</DateField.Input>
+												</DateField.Group>
+											</DateField>
 										)}
 									/>
 									<Controller
@@ -340,12 +337,14 @@ const StaffProfileTab = ({ employeeId }: StaffProfileTabProps) => {
 											<DateField
 												className="flex-1"
 												granularity="day"
-												label="Enroll date"
-												labelPlacement="inside"
 												onChange={(value) => handleDateChange(value, field.onChange)}
 												value={parseDateValue(field.value)}
-												variant="secondary"
-											/>
+											>
+												<Label>Enroll date</Label>
+												<DateField.Group>
+													<DateField.Input>{(segment) => <DateField.Segment segment={segment} />}</DateField.Input>
+												</DateField.Group>
+											</DateField>
 										)}
 									/>
 								</div>
@@ -551,9 +550,9 @@ const StaffProfileTab = ({ employeeId }: StaffProfileTabProps) => {
 										<div className="flex flex-1 flex-col gap-2">
 											<Select
 												selectionMode="multiple"
-												selectedKeys={new Set(field.value || [])}
-												onSelectionChange={(keys) => {
-													field.onChange(Array.from(keys) as string[])
+												value={field.value || []}
+												onChange={(keys) => {
+													field.onChange(keys as string[])
 												}}
 											>
 												<Label>Assigned rooms</Label>
@@ -591,12 +590,14 @@ const StaffProfileTab = ({ employeeId }: StaffProfileTabProps) => {
 										<DateField
 											className="flex-1"
 											granularity="day"
-											label="Hire date"
-											labelPlacement="inside"
 											onChange={(value) => handleDateChange(value, field.onChange)}
 											value={parseDateValue(field.value)}
-											variant="secondary"
-										/>
+										>
+											<Label>Hire date</Label>
+											<DateField.Group>
+												<DateField.Input>{(segment) => <DateField.Segment segment={segment} />}</DateField.Input>
+											</DateField.Group>
+										</DateField>
 									)}
 								/>
 							</div>
