@@ -81,15 +81,11 @@ const StaffDocumentsTab = ({ employeeId }: StaffDocumentsTabProps) => {
 						</Table.ScrollContainer>
 						{pages > 1 && (
 							<div className="flex w-full justify-center pt-4">
-								<Pagination
-									isCompact
-									showControls
-									showShadow
-									color="primary"
-									page={page}
-									total={pages}
-									onChange={(newPage) => setPage(newPage)}
-								/>
+								<div className="flex items-center gap-2">
+							<Button size="sm" variant="outline" isDisabled={page <= 1} onPress={() => setPage(page - 1)}>Prev</Button>
+							<span className="text-sm">Page {page} of {pages}</span>
+							<Button size="sm" variant="outline" isDisabled={page >= pages} onPress={() => setPage(page + 1)}>Next</Button>
+						</div>
 							</div>
 						)}
 					</div>

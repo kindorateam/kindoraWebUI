@@ -40,7 +40,7 @@ const CalendarToolbar = ({ title, onNavigatePrev, onNavigateNext, onNavigateToda
 			</div>
 
 			<div className="flex items-center gap-4">
-				<Switch size="sm" isSelected={hideWeekends} onChange={(e) => setHideWeekends(e.target.checked)}>
+				<Switch size="sm" isSelected={hideWeekends} onChange={(isSelected: boolean) => setHideWeekends(isSelected)}>
 					<Switch.Control>
 						<Switch.Thumb />
 					</Switch.Control>
@@ -48,8 +48,6 @@ const CalendarToolbar = ({ title, onNavigatePrev, onNavigateNext, onNavigateToda
 						<Label>Hide weekends</Label>
 					</Switch.Content>
 				</Switch>
-
-
 
 				<Tabs size="sm" selectedKey={currentView} onSelectionChange={(key) => setCurrentView(key as CalendarViewType)}>
 					<Tabs.ListContainer>
@@ -63,16 +61,13 @@ const CalendarToolbar = ({ title, onNavigatePrev, onNavigateNext, onNavigateToda
 						</Tabs.List>
 					</Tabs.ListContainer>
 					{CALENDAR_VIEW_OPTIONS.map((opt) => (
-						<Tabs.Panel key={opt.key} id={opt.key} >{null}</Tabs.Panel>
+						<Tabs.Panel key={opt.key} id={opt.key}>
+							{null}
+						</Tabs.Panel>
 					))}
 				</Tabs>
 
-				<Button
-					variant="primary"
-					size="sm"
-
-					onPress={() => openCreateEventModal()}
-				>
+				<Button variant="primary" size="sm" onPress={() => openCreateEventModal()}>
 					Add Event
 				</Button>
 			</div>

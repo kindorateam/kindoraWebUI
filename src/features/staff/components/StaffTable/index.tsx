@@ -49,7 +49,7 @@ const StaffTable = () => {
 					<Switch
 						className="text-sm"
 						isSelected={showDeactivated}
-						onChange={(e: React.ChangeEvent<HTMLInputElement>) => setShowDeactivated(e.target.checked)}
+						onChange={(isSelected: boolean) => setShowDeactivated(isSelected)}
 						size="sm"
 					>
 						View deactivated
@@ -110,15 +110,17 @@ const StaffTable = () => {
 					</Table>
 					{pages > 1 && (
 						<div className="mt-auto flex w-full justify-center">
-							<Pagination
-								isCompact
-								showControls
-								showShadow
-								color="primary"
-								page={page}
-								total={pages}
-								onChange={(newPage) => setPage(newPage)}
-							/>
+							<div className="flex items-center gap-2">
+								<Button size="sm" variant="outline" isDisabled={page <= 1} onPress={() => setPage(page - 1)}>
+									Prev
+								</Button>
+								<span className="text-sm">
+									Page {page} of {pages}
+								</span>
+								<Button size="sm" variant="outline" isDisabled={page >= pages} onPress={() => setPage(page + 1)}>
+									Next
+								</Button>
+							</div>
 						</div>
 					)}
 				</Card.Content>

@@ -1,6 +1,16 @@
-import { Button, FieldError,
-	Input, Label, ListBox, Modal, Select, Switch, TextArea, toast, TextField,
-	} from "@heroui/react"
+import {
+	Button,
+	FieldError,
+	Input,
+	Label,
+	ListBox,
+	Modal,
+	Select,
+	Switch,
+	TextArea,
+	TextField,
+	toast,
+} from "@heroui/react"
 import { useAtomValue } from "jotai"
 import { useEffect, useState } from "react"
 
@@ -129,78 +139,89 @@ const EventModal = () => {
 					</Modal.Header>
 					<Modal.Body className="gap-4">
 						<TextField isRequired>
-
 							<Label>Title</Label>
 
 							<Input
-							placeholder="Event title"
-							value={formData.title}
-							onChange={(e: React.ChangeEvent<HTMLInputElement>) => ((v) => updateField("title", v))(e.target.value)}
-							autoFocus/>
-
+								placeholder="Event title"
+								value={formData.title}
+								onChange={(e: React.ChangeEvent<HTMLInputElement>) => ((v) => updateField("title", v))(e.target.value)}
+								autoFocus
+							/>
 						</TextField>
 
 						<TextArea
 							label="Description"
 							placeholder="Optional description"
 							value={formData.description}
-							onChange={(e: React.ChangeEvent<HTMLInputElement>) => ((v) => updateField("description", v))(e.target.value)}
+							onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+								((v) => updateField("description", v))(e.target.value)
+							}
 							minRows={2}
 						/>
 
-
-
-						<Switch size="sm" isSelected={formData.allDay} onChange={(e) => updateField("allDay", e.target.checked)}>
-							<Switch.Control><Switch.Thumb /></Switch.Control>
-							<Switch.Content><Label>All day</Label></Switch.Content>
+						<Switch
+							size="sm"
+							isSelected={formData.allDay}
+							onChange={(isSelected: boolean) => updateField("allDay", isSelected)}
+						>
+							<Switch.Control>
+								<Switch.Thumb />
+							</Switch.Control>
+							<Switch.Content>
+								<Label>All day</Label>
+							</Switch.Content>
 						</Switch>
 
 						<div className="grid grid-cols-2 gap-3">
 							<TextField isRequired>
-
 								<Label>Start date</Label>
 
 								<Input
-								type="date"
-								value={formData.startDate}
-								onChange={(e: React.ChangeEvent<HTMLInputElement>) => ((v) => updateField("startDate", v))(e.target.value)}/>
-
+									type="date"
+									value={formData.startDate}
+									onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+										((v) => updateField("startDate", v))(e.target.value)
+									}
+								/>
 							</TextField>
 							{!formData.allDay && (
 								<TextField>
-
 									<Label>Start time</Label>
 
 									<Input
-									type="time"
-									value={formData.startTime}
-									onChange={(e: React.ChangeEvent<HTMLInputElement>) => ((v) => updateField("startTime", v))(e.target.value)}/>
-
+										type="time"
+										value={formData.startTime}
+										onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+											((v) => updateField("startTime", v))(e.target.value)
+										}
+									/>
 								</TextField>
 							)}
 						</div>
 
 						<div className="grid grid-cols-2 gap-3">
 							<TextField isRequired>
-
 								<Label>End date</Label>
 
 								<Input
-								type="date"
-								value={formData.endDate}
-								onChange={(e: React.ChangeEvent<HTMLInputElement>) => ((v) => updateField("endDate", v))(e.target.value)}/>
-
+									type="date"
+									value={formData.endDate}
+									onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+										((v) => updateField("endDate", v))(e.target.value)
+									}
+								/>
 							</TextField>
 							{!formData.allDay && (
 								<TextField>
-
 									<Label>End time</Label>
 
 									<Input
-									type="time"
-									value={formData.endTime}
-									onChange={(e: React.ChangeEvent<HTMLInputElement>) => ((v) => updateField("endTime", v))(e.target.value)}/>
-
+										type="time"
+										value={formData.endTime}
+										onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+											((v) => updateField("endTime", v))(e.target.value)
+										}
+									/>
 								</TextField>
 							)}
 						</div>

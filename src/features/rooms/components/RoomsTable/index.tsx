@@ -26,8 +26,8 @@ const RoomsTable = () => {
 					<Switch
 						className="text-sm"
 						isSelected={viewDeactivated}
-						onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-							setViewDeactivated(e.target.checked)
+						onChange={(isSelected: boolean) => {
+							setViewDeactivated(isSelected)
 							setPage(1)
 						}}
 						size="sm"
@@ -88,15 +88,17 @@ const RoomsTable = () => {
 					</Table.ScrollContainer>
 					{totalPages > 1 && (
 						<div className="flex w-full justify-center pt-4">
-							<Pagination
-								isCompact
-								showControls
-								showShadow
-								color="primary"
-								page={page}
-								total={totalPages}
-								onChange={(newPage) => setPage(newPage)}
-							/>
+							<div className="flex items-center gap-2">
+								<Button size="sm" variant="outline" isDisabled={page <= 1} onPress={() => setPage(page - 1)}>
+									Prev
+								</Button>
+								<span className="text-sm">
+									Page {page} of {totalPages}
+								</span>
+								<Button size="sm" variant="outline" isDisabled={page >= totalPages} onPress={() => setPage(page + 1)}>
+									Next
+								</Button>
+							</div>
 						</div>
 					)}
 				</div>
