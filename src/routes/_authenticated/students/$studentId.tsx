@@ -1,4 +1,4 @@
-import { Spinner, Tab, Tabs } from "@heroui/react"
+import { Spinner, Tabs } from "@heroui/react"
 import { createFileRoute, useNavigate } from "@tanstack/react-router"
 
 import { RouteErrorBoundary } from "@/components/error"
@@ -98,21 +98,31 @@ function StudentDetailPage() {
 					student={student}
 				/>
 				<main className="container mx-auto max-w-4xl flex-1">
-					<Tabs
-						aria-label="Student details tabs"
-						classNames={{ tabList: "shadow-md" }}
-						color="primary"
-						onSelectionChange={(key) => handleTabChange(key as TabType)}
-						radius="sm"
-						selectedKey={tab}
-						size="sm"
-						variant="solid"
-					>
-						<Tab key="activity" title="Activity" />
-						<Tab key="profile" title="Profile" />
-						<Tab key="documents" title="Documents" />
-						<Tab key="imunization" title="Imunization" />
-						<Tab key="billing" title="Billing" />
+					<Tabs onSelectionChange={(key) => handleTabChange(key as TabType)} selectedKey={tab}>
+						<Tabs.ListContainer>
+							<Tabs.List aria-label="Student details tabs" className="shadow-md">
+								<Tabs.Tab id="activity">
+									Activity
+									<Tabs.Indicator />
+								</Tabs.Tab>
+								<Tabs.Tab id="profile">
+									Profile
+									<Tabs.Indicator />
+								</Tabs.Tab>
+								<Tabs.Tab id="documents">
+									Documents
+									<Tabs.Indicator />
+								</Tabs.Tab>
+								<Tabs.Tab id="imunization">
+									Imunization
+									<Tabs.Indicator />
+								</Tabs.Tab>
+								<Tabs.Tab id="billing">
+									Billing
+									<Tabs.Indicator />
+								</Tabs.Tab>
+							</Tabs.List>
+						</Tabs.ListContainer>
 					</Tabs>
 
 					<div className="mt-6">

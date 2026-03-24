@@ -1,4 +1,4 @@
-import { Spinner, Tab, Tabs } from "@heroui/react"
+import { Spinner, Tabs } from "@heroui/react"
 import { createFileRoute, useNavigate } from "@tanstack/react-router"
 
 import { RouteErrorBoundary } from "@/components/error"
@@ -65,18 +65,19 @@ function StaffDetailLayout() {
 	const handleTabChange = useTabNavigation(tab, "profile", navigate)
 
 	const tabsContent = (
-		<Tabs
-			aria-label="Employee details tabs"
-			classNames={{ tabList: "shadow-md" }}
-			color="primary"
-			onSelectionChange={(key) => handleTabChange(key as TabType)}
-			radius="sm"
-			selectedKey={tab}
-			size="sm"
-			variant="solid"
-		>
-			<Tab key="profile" title="Profile" />
-			<Tab key="documents" title="Documents" />
+		<Tabs onSelectionChange={(key) => handleTabChange(key as TabType)} selectedKey={tab}>
+			<Tabs.ListContainer>
+				<Tabs.List aria-label="Employee details tabs" className="shadow-md">
+					<Tabs.Tab id="profile">
+						Profile
+						<Tabs.Indicator />
+					</Tabs.Tab>
+					<Tabs.Tab id="documents">
+						Documents
+						<Tabs.Indicator />
+					</Tabs.Tab>
+				</Tabs.List>
+			</Tabs.ListContainer>
 		</Tabs>
 	)
 

@@ -2,10 +2,8 @@ import { atom } from "jotai"
 
 import { appStore } from "./jotaiStore"
 
-import type { DrawerProps } from "@heroui/react"
-
-type DrawerPlacement = NonNullable<DrawerProps["placement"]>
-type DrawerSize = NonNullable<DrawerProps["size"]>
+type DrawerPlacement = "top" | "bottom" | "left" | "right"
+type DrawerSize = "xs" | "sm" | "md" | "lg" | "xl" | "full"
 
 interface DrawerOptions {
 	title?: string
