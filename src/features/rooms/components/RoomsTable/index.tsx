@@ -1,17 +1,4 @@
-import {
-	Button,
-	Card,
-	CardBody,
-	Pagination,
-	Spinner,
-	Switch,
-	Table,
-	TableBody,
-	TableCell,
-	TableColumn,
-	TableHeader,
-	TableRow,
-} from "@heroui/react"
+import { Button, Card, Pagination, Spinner, Switch, Table } from "@heroui/react"
 import { useAtom } from "jotai"
 import { useMemo, useState } from "react"
 
@@ -62,46 +49,47 @@ const RoomsTable = () => {
 
 	return (
 		<Card>
-			<CardBody className="flex flex-col gap-4 p-4">
+			<Card.Content className="flex flex-col gap-4 p-4">
 				{topContent}
 				<div className="flex min-h-[647.5px] flex-col justify-between">
-					<Table
-						aria-label="Rooms table"
-						removeWrapper
-						classNames={{
-							tr: "border-b border-default-200 last:border-b-0",
-							th: "py-0",
-							td: "py-0",
-							tbody: "[&>tr]:h-[55px]",
-							emptyWrapper: "h-[550px]",
-						}}
-					>
-						<TableHeader columns={columns}>
-							{(column) => (
-								<TableColumn key={column.key} align={column.align}>
-									{column.label}
-								</TableColumn>
-							)}
-						</TableHeader>
-						<TableBody
-							emptyContent={
-								error ? <TableError onRetry={refetch} /> : <RoomsEmptyState isDeactivatedView={viewDeactivated} />
-							}
-							items={error || isLoading ? [] : rooms}
-							isLoading={isLoading}
-							loadingContent={<Spinner size="lg" />}
+					<Table.ScrollContainer>
+						<Table.Content
+							aria-label="Rooms table"
+							className="[&_tbody>tr]:h-[55px] [&_tbody>tr]:border-b [&_tbody>tr]:border-default-200 [&_tbody>tr:last-child]:border-b-0 [&_th]:py-0 [&_td]:py-0"
 						>
-							{(room) => (
-								<TableRow key={room.id}>
-									{(columnKey) => (
-										<TableCell>
-											<RoomsTableCell columnKey={columnKey} room={room} />
-										</TableCell>
-									)}
-								</TableRow>
-							)}
-						</TableBody>
-					</Table>
+							<Table.Header>
+								{columns.map((column) => (
+									<Table.Column key={column.key} className={column.align === "center" ? "text-center" : undefined}>
+										{column.label}
+									</Table.Column>
+								))}
+							</Table.Header>
+							<Table.Body
+								items={error || isLoading ? [] : rooms}
+								renderEmptyState={() =>
+									error ? <TableError onRetry={refetch} /> : <RoomsEmptyState isDeactivatedView={viewDeactivated} />
+								}
+							>
+								{isLoading ? (
+									<Table.Row>
+										<Table.Cell colSpan={columns.length} className="h-[550px] text-center">
+											<Spinner size="lg" />
+										</Table.Cell>
+									</Table.Row>
+								) : (
+									rooms.map((room) => (
+										<Table.Row key={room.id}>
+											{columns.map((column) => (
+												<Table.Cell key={column.key}>
+													<RoomsTableCell columnKey={column.key} room={room} />
+												</Table.Cell>
+											))}
+										</Table.Row>
+									))
+								)}
+							</Table.Body>
+						</Table.Content>
+					</Table.ScrollContainer>
 					{totalPages > 1 && (
 						<div className="flex w-full justify-center pt-4">
 							<Pagination
@@ -116,7 +104,7 @@ const RoomsTable = () => {
 						</div>
 					)}
 				</div>
-			</CardBody>
+			</Card.Content>
 		</Card>
 	)
 }

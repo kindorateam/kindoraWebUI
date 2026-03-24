@@ -1,4 +1,4 @@
-import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, addToast } from "@heroui/react"
+import { Button, Dropdown, Label, toast } from "@heroui/react"
 
 import PhCheckCircleBold from "~icons/ph/check-circle-bold"
 import PhSignOutBold from "~icons/ph/sign-out-bold"
@@ -32,17 +32,10 @@ const StudentActionsDropdown = ({ student, roomId }: Props) => {
 			{ roomId, studentId: student.id },
 			{
 				onSuccess: () => {
-					addToast({
-						title: `${student.name} ${action}`,
-						color: "success",
-					})
+					toast.success(`${student.name} ${action}`)
 				},
 				onError: () => {
-					addToast({
-						title: "Action failed",
-						description: `Failed to ${isCheckingOut ? "check out" : "check in"} ${student.name}. Please try again.`,
-						color: "danger",
-					})
+					toast.error(`Failed to ${isCheckingOut ? "check out" : "check in"} ${student.name}. Please try again.`)
 				},
 			},
 		)
@@ -50,8 +43,8 @@ const StudentActionsDropdown = ({ student, roomId }: Props) => {
 
 	return (
 		<div className="flex justify-center">
-			<Dropdown classNames={{ content: "min-w-0" }}>
-				<DropdownTrigger>
+			<Dropdown>
+				<Dropdown.Trigger>
 					<Button isIconOnly isLoading={isLoading} radius="md" variant="light">
 						<svg
 							aria-hidden="true"
@@ -68,40 +61,48 @@ const StudentActionsDropdown = ({ student, roomId }: Props) => {
 							<circle cx={12} cy={19} r={1} />
 						</svg>
 					</Button>
-				</DropdownTrigger>
-				<DropdownMenu aria-label="Student actions">
-					<DropdownItem key="view" className="text-success" startContent={<TablerEye aria-hidden className="size-5" />}>
-						View
-					</DropdownItem>
-					<DropdownItem
-						key="edit"
-						className="text-warning"
-						startContent={<TablerEdit aria-hidden className="size-5" />}
-					>
-						Edit
-					</DropdownItem>
-					<DropdownItem
-						key="check"
-						className="text-primary"
-						startContent={
-							student.checkedIn ? (
-								<PhSignOutBold aria-hidden className="size-5" />
-							) : (
-								<PhCheckCircleBold aria-hidden className="size-5" />
-							)
-						}
-						onPress={handleCheckAction}
-					>
-						{student.checkedIn ? "Check out" : "Check in"}
-					</DropdownItem>
-					<DropdownItem
-						key="absent"
-						startContent={<SolarCalendarBroken aria-hidden className="size-5" />}
-						onPress={() => openMarkAbsentModal(student.id, student.name)}
-					>
-						Mark absent
-					</DropdownItem>
-				</DropdownMenu>
+				</Dropdown.Trigger>
+				<Dropdown.Popover>
+					<Dropdown.Menu aria-label="Student actions">
+						<Dropdown.Item id="view" textValue="View" className="text-success">
+							<Label>
+								<TablerEye aria-hidden className="size-5" />
+								View
+							</Label>
+						</Dropdown.Item>
+						<Dropdown.Item id="edit" textValue="Edit" className="text-warning">
+							<Label>
+								<TablerEdit aria-hidden className="size-5" />
+								Edit
+							</Label>
+						</Dropdown.Item>
+						<Dropdown.Item
+							id="check"
+							textValue={student.checkedIn ? "Check out" : "Check in"}
+							className="text-primary"
+							onAction={handleCheckAction}
+						>
+							<Label>
+								{student.checkedIn ? (
+									<PhSignOutBold aria-hidden className="size-5" />
+								) : (
+									<PhCheckCircleBold aria-hidden className="size-5" />
+								)}
+								{student.checkedIn ? "Check out" : "Check in"}
+							</Label>
+						</Dropdown.Item>
+						<Dropdown.Item
+							id="absent"
+							textValue="Mark absent"
+							onAction={() => openMarkAbsentModal(student.id, student.name)}
+						>
+							<Label>
+								<SolarCalendarBroken aria-hidden className="size-5" />
+								Mark absent
+							</Label>
+						</Dropdown.Item>
+					</Dropdown.Menu>
+				</Dropdown.Popover>
 			</Dropdown>
 		</div>
 	)

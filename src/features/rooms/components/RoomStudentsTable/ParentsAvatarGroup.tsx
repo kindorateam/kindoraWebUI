@@ -1,4 +1,4 @@
-import { Avatar, AvatarGroup, Tooltip } from "@heroui/react"
+import { Avatar, Tooltip } from "@heroui/react"
 
 import { getMediaUrl } from "@/utils/media"
 
@@ -15,53 +15,42 @@ interface ParentsAvatarGroupProps {
 const avatarFallbackClassName = "font-semibold text-[10px] text-default-600 leading-none"
 const avatarImgClassName = "object-cover grayscale saturate-0"
 const countAvatarFallbackClassName = "font-semibold text-[11px] text-default-700 leading-none"
-const noHoverTranslateClassName =
-	"data-[hover=true]:!translate-x-0 data-[focus-visible=true]:!translate-x-0 rtl:data-[hover=true]:!translate-x-0 rtl:data-[focus-visible=true]:!translate-x-0"
+
+const MAX_VISIBLE = 2
 
 const ParentsAvatarGroup = ({ parents }: ParentsAvatarGroupProps) => {
 	if (parents.length === 0) {
 		return <span className="text-default-400 text-sm">No parents</span>
 	}
 
+	const visible = parents.slice(0, MAX_VISIBLE)
+	const overflowCount = parents.length - MAX_VISIBLE
+
 	return (
-		<Tooltip closeDelay={0} color="primary" content={<ParentTooltipContent parents={parents} />} delay={300}>
-			<AvatarGroup
-				isBordered
-				max={2}
-				renderCount={(count) => (
-					<Avatar
-						color="default"
-						classNames={{
-							base: noHoverTranslateClassName,
-							fallback: countAvatarFallbackClassName,
-						}}
-						fallback={<span>+{count}</span>}
-						isBordered
-						showFallback
-						size="sm"
-					/>
-				)}
-			>
-				{parents.map((parent) => {
+		<Tooltip closeDelay={0} color="primary" delay={300}>
+			<div className="flex -space-x-2">
+				{visible.map((parent) => {
 					const fullName = `${parent.firstName} ${parent.lastName}`
 					return (
-						<Avatar
-							classNames={{
-								base: noHoverTranslateClassName,
-								fallback: avatarFallbackClassName,
-								img: avatarImgClassName,
-							}}
-							getInitials={getAvatarInitials}
-							isBordered
-							key={parent.id}
-							name={fullName}
-							showFallback
-							size="sm"
-							src={parent.avatar ? getMediaUrl(parent.avatar) : undefined}
-						/>
+						<Avatar key={parent.id}>
+							<Avatar.Image
+								src={parent.avatar ? getMediaUrl(parent.avatar) : undefined}
+								alt={fullName}
+								className={avatarImgClassName}
+							/>
+							<Avatar.Fallback className={avatarFallbackClassName}>{getAvatarInitials(fullName)}</Avatar.Fallback>
+						</Avatar>
 					)
 				})}
-			</AvatarGroup>
+				{overflowCount > 0 && (
+					<Avatar>
+						<Avatar.Fallback className={countAvatarFallbackClassName}>+{overflowCount}</Avatar.Fallback>
+					</Avatar>
+				)}
+			</div>
+			<Tooltip.Content>
+				<ParentTooltipContent parents={parents} />
+			</Tooltip.Content>
 		</Tooltip>
 	)
 }

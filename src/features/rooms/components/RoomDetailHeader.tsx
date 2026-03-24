@@ -1,4 +1,4 @@
-import { Avatar, Tab, Tabs, Tooltip } from "@heroui/react"
+import { Avatar, Tabs, Tooltip } from "@heroui/react"
 
 import IdentityChip from "@/components/IdentityChip"
 import LabeledNumberBadge from "@/components/LabeledNumberBadge"
@@ -35,12 +35,7 @@ const RoomDetailHeader = ({ activeTab, roomId, onTabChange }: RoomDetailHeaderPr
 		{
 			label: "Ratio",
 			icon: (
-				<Tooltip
-					closeDelay={0}
-					color="primary"
-					content={isGoodRatio ? `Ratio is met (1:${ratioValue})` : `Ratio is not met (1:${ratioValue})`}
-					delay={300}
-				>
+				<Tooltip closeDelay={0} color="primary" delay={300}>
 					<span className="inline-flex cursor-default items-center justify-center">
 						{isGoodRatio ? (
 							<PhSmileyDuotone className="size-5 text-success" />
@@ -48,6 +43,9 @@ const RoomDetailHeader = ({ activeTab, roomId, onTabChange }: RoomDetailHeaderPr
 							<PhSmileySadDuotone className="size-5 text-danger" />
 						)}
 					</span>
+					<Tooltip.Content>
+						{isGoodRatio ? `Ratio is met (1:${ratioValue})` : `Ratio is not met (1:${ratioValue})`}
+					</Tooltip.Content>
 				</Tooltip>
 			),
 		},
@@ -60,17 +58,16 @@ const RoomDetailHeader = ({ activeTab, roomId, onTabChange }: RoomDetailHeaderPr
 			<div className="container mx-auto max-w-4xl">
 				<div className="mb-13 flex">
 					<div className="me-7">
-						<Avatar
-							classNames={{
-								base: "size-37.5 bg-[#1D6FE8] text-white",
-								fallback: "text-white",
-								img: "object-cover",
-							}}
-							fallback={<MaterialSymbolsAddAPhotoRounded className="size-25" />}
-							name={room?.name ?? "Room"}
-							showFallback
-							src={room?.logo ? getMediaUrl(room.logo) : undefined}
-						/>
+						<Avatar className="size-37.5 bg-[#1D6FE8] text-white">
+							<Avatar.Image
+								src={room?.logo ? getMediaUrl(room.logo) : undefined}
+								alt={room?.name ?? "Room"}
+								className="object-cover"
+							/>
+							<Avatar.Fallback className="text-white">
+								<MaterialSymbolsAddAPhotoRounded className="size-25" />
+							</Avatar.Fallback>
+						</Avatar>
 					</div>
 					<div className="w-full">
 						<h1 className="mb-2 font-semibold leading-none lg:text-[36px]">{room?.name ?? "Room"}</h1>
@@ -104,8 +101,6 @@ const RoomDetailHeader = ({ activeTab, roomId, onTabChange }: RoomDetailHeaderPr
 				</div>
 
 				<Tabs
-					aria-label="Room details tabs"
-					classNames={{ tabList: "shadow-md" }}
 					color="primary"
 					onSelectionChange={(key) => onTabChange(key as TabType)}
 					selectedKey={activeTab}
@@ -113,9 +108,25 @@ const RoomDetailHeader = ({ activeTab, roomId, onTabChange }: RoomDetailHeaderPr
 					size="sm"
 					variant="solid"
 				>
-					<Tab key="students" title="Students" />
-					<Tab key="activity" title="Activity" />
-					<Tab key="profile" title="Profile" />
+					<Tabs.ListContainer>
+						<Tabs.List aria-label="Room details tabs" className="shadow-md">
+							<Tabs.Tab id="students">
+								Students
+								<Tabs.Indicator />
+							</Tabs.Tab>
+							<Tabs.Tab id="activity">
+								Activity
+								<Tabs.Indicator />
+							</Tabs.Tab>
+							<Tabs.Tab id="profile">
+								Profile
+								<Tabs.Indicator />
+							</Tabs.Tab>
+						</Tabs.List>
+					</Tabs.ListContainer>
+					<Tabs.Panel id="students" />
+					<Tabs.Panel id="activity" />
+					<Tabs.Panel id="profile" />
 				</Tabs>
 			</div>
 		</div>

@@ -1,15 +1,4 @@
-import {
-	Button,
-	Card,
-	CardBody,
-	Spinner,
-	Table,
-	TableBody,
-	TableCell,
-	TableColumn,
-	TableHeader,
-	TableRow,
-} from "@heroui/react"
+import { Button, Card, Spinner, Table } from "@heroui/react"
 import { useState } from "react"
 
 import TableError from "@/components/TableError"
@@ -79,44 +68,46 @@ const RoomStudentsTable = ({ roomId }: RoomStudentsTableProps) => {
 	return (
 		<>
 			<Card>
-				<CardBody className="flex flex-col gap-4 p-4">
+				<Card.Content className="flex flex-col gap-4 p-4">
 					{topContent}
-					<Table
-						aria-label="Students table"
-						removeWrapper
-						selectionMode="multiple"
-						selectedKeys={selectedKeys}
-						onSelectionChange={setSelectedKeys}
-						classNames={{
-							base: "min-h-[595.5px]",
-							tr: "border-b border-default-200 last:border-b-0",
-							th: "py-0 first:w-8 first:text-center first:pe-0",
-							td: "py-0 first:w-8 first:text-center first:pe-0",
-							tbody: "[&>tr]:h-[55px]",
-							emptyWrapper: "h-[550px]",
-						}}
-					>
-						<TableHeader columns={columns}>
-							{(column) => (
-								<TableColumn key={column.key} align={column.align}>
-									{column.label}
-								</TableColumn>
-							)}
-						</TableHeader>
-						<TableBody
-							emptyContent={error ? <TableError onRetry={refetch} /> : "No students in this room"}
-							items={error || isLoading ? [] : students}
-							isLoading={isLoading}
-							loadingContent={<Spinner size="lg" />}
+					<Table.ScrollContainer>
+						<Table.Content
+							aria-label="Students table"
+							selectionMode="multiple"
+							selectedKeys={selectedKeys}
+							onSelectionChange={setSelectedKeys}
+							className="min-h-[595.5px] [&_tbody>tr]:h-[55px] [&_tbody>tr]:border-b [&_tbody>tr]:border-default-200 [&_tbody>tr:last-child]:border-b-0 [&_th]:py-0 [&_th:first-child]:w-8 [&_th:first-child]:text-center [&_th:first-child]:pe-0 [&_td]:py-0 [&_td:first-child]:w-8 [&_td:first-child]:text-center [&_td:first-child]:pe-0"
 						>
-							{(student) => (
-								<TableRow key={student.id}>
-									{(columnKey) => <TableCell>{renderCell(student, columnKey, roomId)}</TableCell>}
-								</TableRow>
-							)}
-						</TableBody>
-					</Table>
-				</CardBody>
+							<Table.Header>
+								{columns.map((column) => (
+									<Table.Column key={column.key} className={column.align === "center" ? "text-center" : undefined}>
+										{column.label}
+									</Table.Column>
+								))}
+							</Table.Header>
+							<Table.Body
+								items={error || isLoading ? [] : students}
+								renderEmptyState={() => (error ? <TableError onRetry={refetch} /> : "No students in this room")}
+							>
+								{isLoading ? (
+									<Table.Row>
+										<Table.Cell colSpan={columns.length} className="h-[550px] text-center">
+											<Spinner size="lg" />
+										</Table.Cell>
+									</Table.Row>
+								) : (
+									students.map((student) => (
+										<Table.Row key={student.id}>
+											{columns.map((column) => (
+												<Table.Cell key={column.key}>{renderCell(student, column.key, roomId)}</Table.Cell>
+											))}
+										</Table.Row>
+									))
+								)}
+							</Table.Body>
+						</Table.Content>
+					</Table.ScrollContainer>
+				</Card.Content>
 			</Card>
 			<AddStudentModal />
 			<MarkAbsentModal />

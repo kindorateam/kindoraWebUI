@@ -1,4 +1,4 @@
-import { Avatar, Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Tooltip } from "@heroui/react"
+import { Avatar, Button, Dropdown, Label, Tooltip } from "@heroui/react"
 import { Link, useRouter } from "@tanstack/react-router"
 
 import { getMediaUrl } from "@/utils/media"
@@ -36,19 +36,16 @@ const RoomsTableCell = ({ room, columnKey }: RoomsTableCellProps) => {
 					search={{ tab: "students" }}
 					to="/rooms/$roomId"
 				>
-					<Avatar
-						classNames={{
-							base: "h-8 w-8 bg-[#1D6FE8] text-white",
-							fallback: "text-white",
-							icon: "h-full w-full",
-							img: "object-cover",
-						}}
-						fallback={<MaterialSymbolsAddAPhotoRounded className="size-4.5" />}
-						name={room.name}
-						showFallback
-						size="sm"
-						src={room.logo ? getMediaUrl(room.logo) : undefined}
-					/>
+					<Avatar className="h-8 w-8 bg-[#1D6FE8] text-white">
+						<Avatar.Image
+							src={room.logo ? getMediaUrl(room.logo) : undefined}
+							alt={room.name}
+							className="object-cover"
+						/>
+						<Avatar.Fallback className="text-white">
+							<MaterialSymbolsAddAPhotoRounded className="size-4.5" />
+						</Avatar.Fallback>
+					</Avatar>
 					<span className="font-medium text-sm">{room.name}</span>
 				</Link>
 			)
@@ -78,12 +75,7 @@ const RoomsTableCell = ({ room, columnKey }: RoomsTableCellProps) => {
 			const isGoodRatio = actualRatio <= room.ratio
 
 			return (
-				<Tooltip
-					closeDelay={0}
-					color="primary"
-					content={isGoodRatio ? `Ratio is met (1:${room.ratio})` : `Ratio is not met (1:${room.ratio})`}
-					delay={300}
-				>
+				<Tooltip closeDelay={0} color="primary" delay={300}>
 					<span className="inline-flex cursor-default items-center justify-center">
 						{isGoodRatio ? (
 							<PhSmileyDuotone className="size-5 text-success" />
@@ -91,6 +83,9 @@ const RoomsTableCell = ({ room, columnKey }: RoomsTableCellProps) => {
 							<PhSmileySadDuotone className="size-5 text-danger" />
 						)}
 					</span>
+					<Tooltip.Content>
+						{isGoodRatio ? `Ratio is met (1:${room.ratio})` : `Ratio is not met (1:${room.ratio})`}
+					</Tooltip.Content>
 				</Tooltip>
 			)
 		}
@@ -98,8 +93,8 @@ const RoomsTableCell = ({ room, columnKey }: RoomsTableCellProps) => {
 		case "actions":
 			return (
 				<div className="flex justify-center">
-					<Dropdown classNames={{ content: "min-w-0" }}>
-						<DropdownTrigger>
+					<Dropdown>
+						<Dropdown.Trigger>
 							<Button isIconOnly radius="md" variant="light">
 								<svg
 									aria-hidden="true"
@@ -116,56 +111,70 @@ const RoomsTableCell = ({ room, columnKey }: RoomsTableCellProps) => {
 									<circle cx={12} cy={19} r={1} />
 								</svg>
 							</Button>
-						</DropdownTrigger>
-						<DropdownMenu aria-label="Room actions">
-							<DropdownItem
-								key="view"
-								className="text-success"
-								startContent={<TablerEye aria-hidden className="size-5" />}
-								onPress={() => {
-									void router.navigate({
-										to: "/rooms/$roomId",
-										params: { roomId: room.id },
-										search: { tab: "students" },
-									})
-								}}
-							>
-								View
-							</DropdownItem>
-							<DropdownItem
-								key="edit"
-								className="text-warning"
-								startContent={<TablerEdit aria-hidden className="size-5" />}
-								onPress={() => {
-									void router.navigate({
-										to: "/rooms/$roomId",
-										params: { roomId: room.id },
-										search: { tab: "profile" },
-									})
-								}}
-							>
-								Edit
-							</DropdownItem>
-							{isInactive ? (
-								<DropdownItem
-									key="activate"
+						</Dropdown.Trigger>
+						<Dropdown.Popover>
+							<Dropdown.Menu aria-label="Room actions">
+								<Dropdown.Item
+									id="view"
+									textValue="View"
 									className="text-success"
-									startContent={<TablerPlayerPlay aria-hidden className="size-5" />}
-									onPress={() => activateMutation.mutate(room.id)}
+									onAction={() => {
+										void router.navigate({
+											to: "/rooms/$roomId",
+											params: { roomId: room.id },
+											search: { tab: "students" },
+										})
+									}}
 								>
-									Activate
-								</DropdownItem>
-							) : (
-								<DropdownItem
-									key="deactivate"
-									className="text-danger"
-									startContent={<TablerTrash aria-hidden className="size-5" />}
-									onPress={() => openDeactivateRoomModal(room.id, room.name)}
+									<Label>
+										<TablerEye aria-hidden className="size-5" />
+										View
+									</Label>
+								</Dropdown.Item>
+								<Dropdown.Item
+									id="edit"
+									textValue="Edit"
+									className="text-warning"
+									onAction={() => {
+										void router.navigate({
+											to: "/rooms/$roomId",
+											params: { roomId: room.id },
+											search: { tab: "profile" },
+										})
+									}}
 								>
-									Deactivate
-								</DropdownItem>
-							)}
-						</DropdownMenu>
+									<Label>
+										<TablerEdit aria-hidden className="size-5" />
+										Edit
+									</Label>
+								</Dropdown.Item>
+								{isInactive ? (
+									<Dropdown.Item
+										id="activate"
+										textValue="Activate"
+										className="text-success"
+										onAction={() => activateMutation.mutate(room.id)}
+									>
+										<Label>
+											<TablerPlayerPlay aria-hidden className="size-5" />
+											Activate
+										</Label>
+									</Dropdown.Item>
+								) : (
+									<Dropdown.Item
+										id="deactivate"
+										textValue="Deactivate"
+										className="text-danger"
+										onAction={() => openDeactivateRoomModal(room.id, room.name)}
+									>
+										<Label>
+											<TablerTrash aria-hidden className="size-5" />
+											Deactivate
+										</Label>
+									</Dropdown.Item>
+								)}
+							</Dropdown.Menu>
+						</Dropdown.Popover>
 					</Dropdown>
 				</div>
 			)
