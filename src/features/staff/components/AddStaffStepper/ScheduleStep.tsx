@@ -1,4 +1,4 @@
-import { Select, SelectItem } from "@heroui/react"
+import { Label, ListBox, Select } from "@heroui/react"
 import { Controller, useFormContext } from "react-hook-form"
 
 import SolarCalendarBroken from "~icons/solar/calendar-broken"
@@ -28,10 +28,7 @@ const ScheduleStep = () => {
 				name="workingDays"
 				render={({ field }) => (
 					<Select
-						errorMessage={errors.workingDays?.message}
 						isInvalid={!!errors.workingDays}
-						label="Schedule working days"
-						labelPlacement="inside"
 						onSelectionChange={(keys) => {
 							const selected = Array.from(keys) as string[]
 							selected.sort(
@@ -39,15 +36,27 @@ const ScheduleStep = () => {
 							)
 							field.onChange(selected)
 						}}
-						radius="md"
 						selectedKeys={new Set(field.value || [])}
 						selectionMode="multiple"
-						size="sm"
-						variant="flat"
 					>
-						{WORKING_DAYS.map((day) => (
-							<SelectItem key={day.key}>{day.label}</SelectItem>
-						))}
+						<Label>Schedule working days</Label>
+						<Select.Trigger>
+							<Select.Value />
+							<Select.Indicator />
+						</Select.Trigger>
+						<Select.Popover>
+							<ListBox>
+								{WORKING_DAYS.map((day) => (
+									<ListBox.Item id={day.key} key={day.key} textValue={day.label}>
+										{day.label}
+										<ListBox.ItemIndicator />
+									</ListBox.Item>
+								))}
+							</ListBox>
+						</Select.Popover>
+						{errors.workingDays?.message && (
+							<span className="text-danger text-xs">{errors.workingDays.message}</span>
+						)}
 					</Select>
 				)}
 			/>

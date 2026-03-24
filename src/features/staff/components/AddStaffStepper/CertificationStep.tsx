@@ -1,4 +1,4 @@
-import { Input, Select, SelectItem } from "@heroui/react"
+import { Input, Label, ListBox, Select } from "@heroui/react"
 import { Controller, useFormContext } from "react-hook-form"
 
 import TablerCertificate from "~icons/tabler/certificate"
@@ -29,24 +29,32 @@ const CertificationStep = () => {
 					name="degree"
 					render={({ field }) => (
 						<Select
-							errorMessage={errors.degree?.message}
 							isInvalid={!!errors.degree}
-							label="Degree"
-							labelPlacement="inside"
-							onSelectionChange={(keys) => {
-								const selected = Array.from(keys)[0]
-								if (selected !== undefined) {
-									field.onChange(String(selected))
+							onSelectionChange={(key) => {
+								if (key !== undefined) {
+									field.onChange(String(key))
 								}
 							}}
-							radius="md"
-							selectedKeys={field.value ? [field.value] : []}
-							size="sm"
-							variant="flat"
+							selectedKey={field.value ?? null}
 						>
-							{DEGREE_OPTIONS.map((degree) => (
-								<SelectItem key={degree.key}>{degree.label}</SelectItem>
-							))}
+							<Label>Degree</Label>
+							<Select.Trigger>
+								<Select.Value />
+								<Select.Indicator />
+							</Select.Trigger>
+							<Select.Popover>
+								<ListBox>
+									{DEGREE_OPTIONS.map((degree) => (
+										<ListBox.Item id={degree.key} key={degree.key} textValue={degree.label}>
+											{degree.label}
+											<ListBox.ItemIndicator />
+										</ListBox.Item>
+									))}
+								</ListBox>
+							</Select.Popover>
+							{errors.degree?.message && (
+								<span className="text-danger text-xs">{errors.degree.message}</span>
+							)}
 						</Select>
 					)}
 				/>

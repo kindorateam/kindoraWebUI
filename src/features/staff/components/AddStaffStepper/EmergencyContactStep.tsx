@@ -1,4 +1,4 @@
-import { Input, Select, SelectItem } from "@heroui/react"
+import { Input, Label, ListBox, Select } from "@heroui/react"
 import { Controller, useFormContext } from "react-hook-form"
 
 import StreamlineUltimateEmergencyCall from "~icons/streamline-ultimate/emergency-call"
@@ -65,24 +65,32 @@ const EmergencyContactStep = () => {
 					name="emergencyContactRelationship"
 					render={({ field }) => (
 						<Select
-							errorMessage={errors.emergencyContactRelationship?.message}
 							isInvalid={!!errors.emergencyContactRelationship}
-							label="Relationship to staff"
-							labelPlacement="inside"
-							onSelectionChange={(keys) => {
-								const selected = Array.from(keys)[0]
-								if (selected !== undefined) {
-									field.onChange(String(selected))
+							onSelectionChange={(key) => {
+								if (key !== undefined) {
+									field.onChange(String(key))
 								}
 							}}
-							radius="md"
-							selectedKeys={field.value ? [field.value] : []}
-							size="sm"
-							variant="flat"
+							selectedKey={field.value ?? null}
 						>
-							{RELATIONSHIP_OPTIONS.map((option) => (
-								<SelectItem key={option.key}>{option.label}</SelectItem>
-							))}
+							<Label>Relationship to staff</Label>
+							<Select.Trigger>
+								<Select.Value />
+								<Select.Indicator />
+							</Select.Trigger>
+							<Select.Popover>
+								<ListBox>
+									{RELATIONSHIP_OPTIONS.map((option) => (
+										<ListBox.Item id={option.key} key={option.key} textValue={option.label}>
+											{option.label}
+											<ListBox.ItemIndicator />
+										</ListBox.Item>
+									))}
+								</ListBox>
+							</Select.Popover>
+							{errors.emergencyContactRelationship?.message && (
+								<span className="text-danger text-xs">{errors.emergencyContactRelationship.message}</span>
+							)}
 						</Select>
 					)}
 				/>

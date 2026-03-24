@@ -1,4 +1,4 @@
-import { DateInput, Input, Select, SelectItem, Textarea } from "@heroui/react"
+import { DateField, Input, Label, ListBox, Select, TextArea } from "@heroui/react"
 import { parseDate } from "@internationalized/date"
 import { Controller, useFormContext } from "react-hook-form"
 
@@ -65,36 +65,36 @@ const PersonalInfoStep = () => {
 					control={control}
 					name="birthday"
 					render={({ field }) => (
-						<DateInput
-							errorMessage={errors.birthday?.message}
+						<DateField
 							granularity="day"
 							isInvalid={!!errors.birthday}
-							label="Birthday"
-							labelPlacement="inside"
 							onChange={(value) => handleDateChange(value, field.onChange)}
-							radius="md"
-							size="sm"
 							value={parseDateValue(field.value)}
-							variant="flat"
-						/>
+						>
+							<Label>Birthday</Label>
+							<DateField.Group>
+								<DateField.Input>{(segment) => <DateField.Segment segment={segment} />}</DateField.Input>
+							</DateField.Group>
+							{errors.birthday?.message && <span className="text-danger text-xs">{errors.birthday.message}</span>}
+						</DateField>
 					)}
 				/>
 				<Controller
 					control={control}
 					name="enrollDate"
 					render={({ field }) => (
-						<DateInput
-							errorMessage={errors.enrollDate?.message}
+						<DateField
 							granularity="day"
 							isInvalid={!!errors.enrollDate}
-							label="Enroll date"
-							labelPlacement="inside"
 							onChange={(value) => handleDateChange(value, field.onChange)}
-							radius="md"
-							size="sm"
 							value={parseDateValue(field.value)}
-							variant="flat"
-						/>
+						>
+							<Label>Enroll date</Label>
+							<DateField.Group>
+								<DateField.Input>{(segment) => <DateField.Segment segment={segment} />}</DateField.Input>
+							</DateField.Group>
+							{errors.enrollDate?.message && <span className="text-danger text-xs">{errors.enrollDate.message}</span>}
+						</DateField>
 					)}
 				/>
 				<Controller
@@ -102,24 +102,30 @@ const PersonalInfoStep = () => {
 					name="state"
 					render={({ field }) => (
 						<Select
-							errorMessage={errors.state?.message}
 							isInvalid={!!errors.state}
-							label="State"
-							labelPlacement="inside"
-							onSelectionChange={(keys) => {
-								const selected = Array.from(keys)[0]
-								if (selected !== undefined) {
-									field.onChange(String(selected))
+							onSelectionChange={(key) => {
+								if (key !== undefined) {
+									field.onChange(String(key))
 								}
 							}}
-							radius="md"
-							selectedKeys={field.value ? [field.value] : []}
-							size="sm"
-							variant="flat"
+							selectedKey={field.value ?? null}
 						>
-							{US_STATES.map((state) => (
-								<SelectItem key={state.key}>{state.label}</SelectItem>
-							))}
+							<Label>State</Label>
+							<Select.Trigger>
+								<Select.Value />
+								<Select.Indicator />
+							</Select.Trigger>
+							<Select.Popover>
+								<ListBox>
+									{US_STATES.map((state) => (
+										<ListBox.Item id={state.key} key={state.key} textValue={state.label}>
+											{state.label}
+											<ListBox.ItemIndicator />
+										</ListBox.Item>
+									))}
+								</ListBox>
+							</Select.Popover>
+							{errors.state?.message && <span className="text-danger text-xs">{errors.state.message}</span>}
 						</Select>
 					)}
 				/>
@@ -178,7 +184,7 @@ const PersonalInfoStep = () => {
 					control={control}
 					name="notes"
 					render={({ field }) => (
-						<Textarea
+						<TextArea
 							{...field}
 							errorMessage={errors.notes?.message}
 							isInvalid={!!errors.notes}

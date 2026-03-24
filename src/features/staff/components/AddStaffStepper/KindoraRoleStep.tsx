@@ -1,4 +1,4 @@
-import { DateInput, Select, SelectItem } from "@heroui/react"
+import { DateField, Label, ListBox, Select } from "@heroui/react"
 import { parseDate } from "@internationalized/date"
 import { Controller, useFormContext } from "react-hook-form"
 
@@ -48,24 +48,32 @@ const KindoraRoleStep = () => {
 					name="role"
 					render={({ field }) => (
 						<Select
-							errorMessage={errors.role?.message}
 							isInvalid={!!errors.role}
-							label="Role"
-							labelPlacement="inside"
-							onSelectionChange={(keys) => {
-								const selected = Array.from(keys)[0]
-								if (selected !== undefined) {
-									field.onChange(String(selected))
+							onSelectionChange={(key) => {
+								if (key !== undefined) {
+									field.onChange(String(key))
 								}
 							}}
-							radius="md"
-							selectedKeys={field.value ? [field.value] : []}
-							size="sm"
-							variant="flat"
+							selectedKey={field.value ?? null}
 						>
-							{STAFF_ROLES.map((role) => (
-								<SelectItem key={role.key}>{role.label}</SelectItem>
-							))}
+							<Label>Role</Label>
+							<Select.Trigger>
+								<Select.Value />
+								<Select.Indicator />
+							</Select.Trigger>
+							<Select.Popover>
+								<ListBox>
+									{STAFF_ROLES.map((role) => (
+										<ListBox.Item id={role.key} key={role.key} textValue={role.label}>
+											{role.label}
+											<ListBox.ItemIndicator />
+										</ListBox.Item>
+									))}
+								</ListBox>
+							</Select.Popover>
+							{errors.role?.message && (
+								<span className="text-danger text-xs">{errors.role.message}</span>
+							)}
 						</Select>
 					)}
 				/>
@@ -74,18 +82,22 @@ const KindoraRoleStep = () => {
 					control={control}
 					name="hireDate"
 					render={({ field }) => (
-						<DateInput
-							errorMessage={errors.hireDate?.message}
+						<DateField
 							granularity="day"
 							isInvalid={!!errors.hireDate}
-							label="Hire date"
-							labelPlacement="inside"
 							onChange={(value) => handleDateChange(value, field.onChange)}
-							radius="md"
-							size="sm"
 							value={parseDateValue(field.value)}
-							variant="flat"
-						/>
+						>
+							<Label>Hire date</Label>
+							<DateField.Group>
+								<DateField.Input>
+									{(segment) => <DateField.Segment segment={segment} />}
+								</DateField.Input>
+							</DateField.Group>
+							{errors.hireDate?.message && (
+								<span className="text-danger text-xs">{errors.hireDate.message}</span>
+							)}
+						</DateField>
 					)}
 				/>
 
@@ -94,22 +106,31 @@ const KindoraRoleStep = () => {
 					name="assignedRooms"
 					render={({ field }) => (
 						<Select
-							errorMessage={errors.assignedRooms?.message}
 							isInvalid={!!errors.assignedRooms}
-							label="Assigned rooms"
-							labelPlacement="inside"
 							onSelectionChange={(keys) => {
 								field.onChange(Array.from(keys) as string[])
 							}}
-							radius="md"
 							selectedKeys={new Set(field.value || [])}
 							selectionMode="multiple"
-							size="sm"
-							variant="flat"
 						>
-							{MOCK_ROOMS.map((room) => (
-								<SelectItem key={room.key}>{room.label}</SelectItem>
-							))}
+							<Label>Assigned rooms</Label>
+							<Select.Trigger>
+								<Select.Value />
+								<Select.Indicator />
+							</Select.Trigger>
+							<Select.Popover>
+								<ListBox>
+									{MOCK_ROOMS.map((room) => (
+										<ListBox.Item id={room.key} key={room.key} textValue={room.label}>
+											{room.label}
+											<ListBox.ItemIndicator />
+										</ListBox.Item>
+									))}
+								</ListBox>
+							</Select.Popover>
+							{errors.assignedRooms?.message && (
+								<span className="text-danger text-xs">{errors.assignedRooms.message}</span>
+							)}
 						</Select>
 					)}
 				/>
@@ -119,22 +140,31 @@ const KindoraRoleStep = () => {
 					name="permissions"
 					render={({ field }) => (
 						<Select
-							errorMessage={errors.permissions?.message}
 							isInvalid={!!errors.permissions}
-							label="Permissions"
-							labelPlacement="inside"
 							onSelectionChange={(keys) => {
 								field.onChange(Array.from(keys) as string[])
 							}}
-							radius="md"
 							selectedKeys={new Set(field.value || [])}
 							selectionMode="multiple"
-							size="sm"
-							variant="flat"
 						>
-							{PERMISSION_OPTIONS.map((permission) => (
-								<SelectItem key={permission.key}>{permission.label}</SelectItem>
-							))}
+							<Label>Permissions</Label>
+							<Select.Trigger>
+								<Select.Value />
+								<Select.Indicator />
+							</Select.Trigger>
+							<Select.Popover>
+								<ListBox>
+									{PERMISSION_OPTIONS.map((permission) => (
+										<ListBox.Item id={permission.key} key={permission.key} textValue={permission.label}>
+											{permission.label}
+											<ListBox.ItemIndicator />
+										</ListBox.Item>
+									))}
+								</ListBox>
+							</Select.Popover>
+							{errors.permissions?.message && (
+								<span className="text-danger text-xs">{errors.permissions.message}</span>
+							)}
 						</Select>
 					)}
 				/>
