@@ -1,14 +1,4 @@
-import {
-	Avatar,
-	Badge,
-	Button,
-	Chip,
-	Dropdown,
-	DropdownItem,
-	DropdownMenu,
-	DropdownTrigger,
-	Tooltip,
-} from "@heroui/react"
+import { Avatar, Badge, Button, Chip, Dropdown, ListBox, Tooltip } from "@heroui/react"
 
 import TablerAsterisk from "~icons/tabler/asterisk"
 import TablerCalendarX from "~icons/tabler/calendar-x"
@@ -29,81 +19,50 @@ interface StudentsTableCellProps {
 	onStudentClick?: (studentId: string) => void
 }
 
+const AvatarWithBadges = ({ student }: { student: Student }) => {
+	const hasMedicalIssue =
+		student.tags?.some((tag) => tag.toLowerCase().includes("allergy") || tag.toLowerCase().includes("medical")) ?? false
+
+	return (
+		<div className="relative">
+			{student.checkedIn && (
+				<span className="absolute bottom-0 right-0 z-10 size-3 rounded-full border-2 border-white bg-success" />
+			)}
+			{hasMedicalIssue && (
+				<span className="absolute left-0 top-0 z-10 flex items-center justify-center">
+					<TablerAsterisk className="size-3.5 text-danger [&_path]:stroke-3" />
+				</span>
+			)}
+			<Avatar
+				className="shrink-0 bg-primary text-white"
+				name={`${student.firstName[0]}${student.lastName[0]}`}
+				size="sm"
+				src={student.avatar?.path}
+			>
+				<Avatar.Image src={student.avatar?.path} alt={`${student.firstName[0]}${student.lastName[0]}`} />
+				<Avatar.Fallback>{`${student.firstName[0]}${student.lastName[0]}`}</Avatar.Fallback>
+			</Avatar>
+		</div>
+	)
+}
+
 const StudentsTableCell = ({ student, columnKey, onStudentClick }: StudentsTableCellProps) => {
 	const fullName = `${student.firstName} ${student.lastName}`
 
 	switch (columnKey) {
 		case "name": {
-			const hasMedicalIssue =
-				student.tags?.some((tag) => tag.toLowerCase().includes("allergy") || tag.toLowerCase().includes("medical")) ??
-				false
-
 			return onStudentClick ? (
 				<button
 					className="flex cursor-pointer items-center gap-3 text-left"
 					onClick={() => onStudentClick(student.id)}
 					type="button"
 				>
-					<div className="relative">
-						<Badge
-							isDot
-							color="success"
-							shape="circle"
-							placement="bottom-right"
-							isInvisible={!student.checkedIn}
-							classNames={{ badge: "size-3 border-2 border-white" }}
-						>
-							<Badge
-								isOneChar
-								content={<TablerAsterisk className="size-3.5 text-danger [&_path]:stroke-3" />}
-								isInvisible={!hasMedicalIssue}
-								placement="top-left"
-								shape="circle"
-								classNames={{ badge: "bg-transparent border-0 p-0" }}
-							>
-								<Avatar
-									className="shrink-0"
-									classNames={{ base: "bg-primary text-white" }}
-									name={`${student.firstName[0]}${student.lastName[0]}`}
-									showFallback
-									size="sm"
-									src={student.avatar?.path}
-								/>
-							</Badge>
-						</Badge>
-					</div>
+					<AvatarWithBadges student={student} />
 					<span className="text-default-foreground text-sm">{fullName}</span>
 				</button>
 			) : (
 				<div className="flex items-center gap-3">
-					<div className="relative">
-						<Badge
-							isDot
-							color="success"
-							shape="circle"
-							placement="bottom-right"
-							isInvisible={!student.checkedIn}
-							classNames={{ badge: "size-3 border-2 border-white" }}
-						>
-							<Badge
-								isOneChar
-								content={<TablerAsterisk className="size-3.5 text-danger [&_path]:stroke-3" />}
-								isInvisible={!hasMedicalIssue}
-								placement="top-left"
-								shape="circle"
-								classNames={{ badge: "bg-transparent border-0 p-0" }}
-							>
-								<Avatar
-									className="shrink-0"
-									classNames={{ base: "bg-primary text-white" }}
-									name={`${student.firstName[0]}${student.lastName[0]}`}
-									showFallback
-									size="sm"
-									src={student.avatar?.path}
-								/>
-							</Badge>
-						</Badge>
-					</div>
+					<AvatarWithBadges student={student} />
 					<span className="text-default-foreground text-sm">{fullName}</span>
 				</div>
 			)
@@ -115,17 +74,16 @@ const StudentsTableCell = ({ student, columnKey, onStudentClick }: StudentsTable
 		case "room":
 			return student.room ? (
 				<Chip
-					classNames={{ base: "bg-primary-50 px-3", content: "text-sm text-default-foreground px-1 font-regular" }}
+					className="bg-primary-50 px-3"
 					size="sm"
 					variant="flat"
 					startContent={
-						<Avatar
-							classNames={{ base: "size-5 bg-default-300 text-[10px] text-default-700" }}
-							name={student.room.title[0]}
-						/>
+						<Avatar className="size-5 bg-default-300 text-[10px] text-default-700">
+							<Avatar.Fallback>{student.room.title[0]}</Avatar.Fallback>
+						</Avatar>
 					}
 				>
-					{student.room.title}
+					<span className="px-1 font-regular text-default-foreground text-sm">{student.room.title}</span>
 				</Chip>
 			) : (
 				<span className="text-default-400 text-sm">—</span>
@@ -139,15 +97,16 @@ const StudentsTableCell = ({ student, columnKey, onStudentClick }: StudentsTable
 			return (
 				<div className="flex items-center gap-1">
 					{visibleTags.map((tag) => (
-						<Chip classNames={{ base: "bg-default-100", content: "text-sm" }} key={tag} size="sm" variant="flat">
-							{tag}
+						<Chip className="bg-default-100" key={tag} size="sm" variant="flat">
+							<span className="text-sm">{tag}</span>
 						</Chip>
 					))}
 					{hiddenTags.length > 0 && (
-						<Tooltip content={hiddenTags.join(", ")}>
-							<Chip classNames={{ base: "bg-default-100 cursor-pointer", content: "text-sm" }} size="sm" variant="flat">
-								+{hiddenTags.length}
+						<Tooltip>
+							<Chip className="cursor-pointer bg-default-100" size="sm" variant="flat">
+								<span className="text-sm">+{hiddenTags.length}</span>
 							</Chip>
+							<Tooltip.Content>{hiddenTags.join(", ")}</Tooltip.Content>
 						</Tooltip>
 					)}
 				</div>
@@ -157,8 +116,8 @@ const StudentsTableCell = ({ student, columnKey, onStudentClick }: StudentsTable
 		case "actions":
 			return (
 				<div className="flex justify-center">
-					<Dropdown classNames={{ content: "min-w-0" }}>
-						<DropdownTrigger>
+					<Dropdown>
+						<Dropdown.Trigger>
 							<Button isIconOnly radius="md" size="sm" variant="light">
 								<svg
 									aria-hidden="true"
@@ -175,36 +134,36 @@ const StudentsTableCell = ({ student, columnKey, onStudentClick }: StudentsTable
 									<circle cx={12} cy={19} r={1} />
 								</svg>
 							</Button>
-						</DropdownTrigger>
-						<DropdownMenu aria-label="Student actions">
-							<DropdownItem
-								key="view"
-								className="text-success"
-								startContent={<TablerEye aria-hidden className="size-5" />}
-							>
-								View
-							</DropdownItem>
-							<DropdownItem
-								key="edit"
-								className="text-warning"
-								startContent={<TablerEdit aria-hidden className="size-5" />}
-							>
-								Edit
-							</DropdownItem>
-							<DropdownItem key="sign-in-out" startContent={<TablerLogin aria-hidden className="size-5" />}>
-								Sign In/Out
-							</DropdownItem>
-							<DropdownItem key="mark-absent" startContent={<TablerCalendarX aria-hidden className="size-5" />}>
-								Mark absent
-							</DropdownItem>
-							<DropdownItem
-								key="delete"
-								className="text-danger"
-								startContent={<TablerTrash aria-hidden className="size-5" />}
-							>
-								Delete
-							</DropdownItem>
-						</DropdownMenu>
+						</Dropdown.Trigger>
+						<Dropdown.Popover className="min-w-0">
+							<Dropdown.Menu aria-label="Student actions">
+								<Dropdown.Item id="view" textValue="View" className="text-success">
+									<ListBox.ItemIndicator />
+									<TablerEye aria-hidden className="size-5" />
+									<span>View</span>
+								</Dropdown.Item>
+								<Dropdown.Item id="edit" textValue="Edit" className="text-warning">
+									<ListBox.ItemIndicator />
+									<TablerEdit aria-hidden className="size-5" />
+									<span>Edit</span>
+								</Dropdown.Item>
+								<Dropdown.Item id="sign-in-out" textValue="Sign In/Out">
+									<ListBox.ItemIndicator />
+									<TablerLogin aria-hidden className="size-5" />
+									<span>Sign In/Out</span>
+								</Dropdown.Item>
+								<Dropdown.Item id="mark-absent" textValue="Mark absent">
+									<ListBox.ItemIndicator />
+									<TablerCalendarX aria-hidden className="size-5" />
+									<span>Mark absent</span>
+								</Dropdown.Item>
+								<Dropdown.Item id="delete" textValue="Delete" className="text-danger">
+									<ListBox.ItemIndicator />
+									<TablerTrash aria-hidden className="size-5" />
+									<span>Delete</span>
+								</Dropdown.Item>
+							</Dropdown.Menu>
+						</Dropdown.Popover>
 					</Dropdown>
 				</div>
 			)

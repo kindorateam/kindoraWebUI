@@ -1,16 +1,4 @@
-import {
-	Button,
-	Card,
-	CardBody,
-	Pagination,
-	Spinner,
-	Table,
-	TableBody,
-	TableCell,
-	TableColumn,
-	TableHeader,
-	TableRow,
-} from "@heroui/react"
+import { Button, Card, Pagination, Spinner, Table } from "@heroui/react"
 import { useMemo, useState } from "react"
 
 import TableError from "@/components/TableError"
@@ -45,7 +33,7 @@ const StudentDocumentsTab = ({ studentId }: StudentDocumentsTabProps) => {
 	return (
 		<>
 			<Card>
-				<CardBody className="flex flex-col gap-4 p-4">
+				<Card.Content className="flex flex-col gap-4 p-4">
 					<div className="flex flex-col gap-4">
 						<div className="flex items-center justify-end">
 							<Button
@@ -56,49 +44,46 @@ const StudentDocumentsTab = ({ studentId }: StudentDocumentsTabProps) => {
 								Add Document
 							</Button>
 						</div>
-						<span className="text-default-400 text-small">Total {documents.length} documents</span>
+						<span className="text-default-400 text-sm">Total {documents.length} documents</span>
 					</div>
 					<div className="flex min-h-[647.5px] flex-col justify-between">
-						<Table
-							aria-label="Student documents table"
-							removeWrapper
-							classNames={{
-								tr: "border-b border-default-200 last:border-b-0",
-								th: "py-0",
-								td: "py-0",
-								tbody: "[&>tr]:h-[55px]",
-								emptyWrapper: "h-[550px]",
-							}}
-						>
-							<TableHeader columns={columns}>
-								{(column) => (
-									<TableColumn key={column.key} align={column.align}>
-										{column.label}
-									</TableColumn>
-								)}
-							</TableHeader>
-							<TableBody
-								emptyContent={
-									error ? (
-										<TableError onRetry={refetch} />
-									) : (
-										<div className="flex flex-col items-center gap-3">
-											<p className="text-default-500 text-lg">No documents yet</p>
-											<p className="text-default-400 text-sm">Upload documents to get started</p>
-										</div>
-									)
-								}
-								items={error || isLoading ? [] : items}
-								isLoading={isLoading}
-								loadingContent={<Spinner size="lg" />}
+						<Table.ScrollContainer>
+							<Table.Content
+								aria-label="Student documents table"
+								className="[&_tbody>tr]:h-[55px] [&_tbody>tr]:border-b [&_tbody>tr]:border-default-200 [&_tbody>tr:last-child]:border-b-0 [&_th]:py-0 [&_td]:py-0"
 							>
-								{(document) => (
-									<TableRow key={document.id}>
-										{(columnKey) => <TableCell>{renderCell(document, columnKey)}</TableCell>}
-									</TableRow>
-								)}
-							</TableBody>
-						</Table>
+								<Table.Header>
+									{columns.map((column) => (
+										<Table.Column key={column.key} className={column.align === "center" ? "text-center" : ""}>
+											{column.label}
+										</Table.Column>
+									))}
+								</Table.Header>
+								<Table.Body
+									emptyContent={
+										isLoading ? (
+											<Spinner size="lg" />
+										) : error ? (
+											<TableError onRetry={refetch} />
+										) : (
+											<div className="flex flex-col items-center gap-3">
+												<p className="text-default-500 text-lg">No documents yet</p>
+												<p className="text-default-400 text-sm">Upload documents to get started</p>
+											</div>
+										)
+									}
+									items={error || isLoading ? [] : items}
+								>
+									{(document) => (
+										<Table.Row key={document.id}>
+											{columns.map((column) => (
+												<Table.Cell key={column.key}>{renderCell(document, column.key)}</Table.Cell>
+											))}
+										</Table.Row>
+									)}
+								</Table.Body>
+							</Table.Content>
+						</Table.ScrollContainer>
 						{pages > 1 && (
 							<div className="flex w-full justify-center pt-4">
 								<Pagination
@@ -113,7 +98,7 @@ const StudentDocumentsTab = ({ studentId }: StudentDocumentsTabProps) => {
 							</div>
 						)}
 					</div>
-				</CardBody>
+				</Card.Content>
 			</Card>
 			<AddDocumentModal studentId={studentId} />
 			<DeleteDocumentModal studentId={studentId} />

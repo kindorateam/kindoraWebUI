@@ -1,4 +1,4 @@
-import { Avatar, AvatarGroup, Tooltip } from "@heroui/react"
+import { Avatar, Tooltip } from "@heroui/react"
 
 import ParentTooltipContent from "./ParentTooltipContent"
 
@@ -8,9 +8,6 @@ interface ParentsAvatarGroupProps {
 	parents: StudentParent[]
 }
 
-const avatarGroupNoHoverTranslateClassName =
-	"data-[hover=true]:!translate-x-0 data-[focus-visible=true]:!translate-x-0 rtl:data-[hover=true]:!translate-x-0 rtl:data-[focus-visible=true]:!translate-x-0"
-
 const ParentsAvatarGroup = ({ parents }: ParentsAvatarGroupProps) => {
 	if (parents.length === 0) {
 		return <span className="text-default-400 text-sm">—</span>
@@ -19,33 +16,26 @@ const ParentsAvatarGroup = ({ parents }: ParentsAvatarGroupProps) => {
 	const extraCount = parents.length - 2
 
 	return (
-		<Tooltip closeDelay={0} content={<ParentTooltipContent parents={parents} />} delay={300}>
-			<AvatarGroup>
+		<Tooltip>
+			<div className="flex -space-x-2">
 				{parents.slice(0, 2).map((parent) => {
 					const fullName = `${parent.firstName} ${parent.lastName}`
 					return (
-						<Avatar
-							classNames={{ base: avatarGroupNoHoverTranslateClassName }}
-							key={parent.id}
-							name={fullName}
-							showFallback
-							size="sm"
-							src={parent.avatar?.path}
-						/>
+						<Avatar key={parent.id} size="sm">
+							<Avatar.Image src={parent.avatar?.path} alt={fullName} />
+							<Avatar.Fallback>{`${parent.firstName[0]}${parent.lastName[0]}`}</Avatar.Fallback>
+						</Avatar>
 					)
 				})}
 				{extraCount > 0 && (
-					<Avatar
-						classNames={{
-							base: `bg-default-100 text-default-700 ${avatarGroupNoHoverTranslateClassName}`,
-							name: "font-semibold text-[10px] leading-none",
-						}}
-						getInitials={() => `+${extraCount}`}
-						name={`+${extraCount}`}
-						size="sm"
-					/>
+					<Avatar className="bg-default-100 text-default-700" size="sm">
+						<Avatar.Fallback className="font-semibold text-[10px] leading-none">{`+${extraCount}`}</Avatar.Fallback>
+					</Avatar>
 				)}
-			</AvatarGroup>
+			</div>
+			<Tooltip.Content>
+				<ParentTooltipContent parents={parents} />
+			</Tooltip.Content>
 		</Tooltip>
 	)
 }

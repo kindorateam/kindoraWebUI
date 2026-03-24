@@ -1,16 +1,4 @@
-import {
-	Button,
-	Card,
-	CardBody,
-	Pagination,
-	Spinner,
-	Table,
-	TableBody,
-	TableCell,
-	TableColumn,
-	TableHeader,
-	TableRow,
-} from "@heroui/react"
+import { Button, Card, Pagination, Spinner, Table } from "@heroui/react"
 import { useNavigate } from "@tanstack/react-router"
 import { useCallback, useMemo, useState } from "react"
 
@@ -47,7 +35,7 @@ const StudentsTable = () => {
 						Add Student
 					</Button>
 				</div>
-				<span className="text-default-400 text-small">Total {total} students</span>
+				<span className="text-default-400 text-sm">Total {total} students</span>
 			</div>
 		),
 		[total],
@@ -55,44 +43,43 @@ const StudentsTable = () => {
 
 	return (
 		<Card>
-			<CardBody className="flex flex-col gap-4 p-4">
+			<Card.Content className="flex flex-col gap-4 p-4">
 				{topContent}
 				<div className="flex min-h-[647.5px] flex-col justify-between">
-					<Table
-						aria-label="Students table"
-						removeWrapper
-						classNames={{
-							tr: "border-b border-default-200 last:border-b-0",
-							th: "py-0",
-							td: "py-0",
-							tbody: "[&>tr]:h-[55px]",
-							emptyWrapper: "h-[550px]",
-						}}
-					>
-						<TableHeader columns={columns}>
-							{(column) => (
-								<TableColumn key={column.key} align={column.align}>
-									{column.label}
-								</TableColumn>
-							)}
-						</TableHeader>
-						<TableBody
-							emptyContent={error ? <TableError onRetry={refetch} /> : <StudentsEmptyState />}
-							items={error || isLoading ? [] : students}
-							isLoading={isLoading}
-							loadingContent={<Spinner size="lg" />}
+					<Table.ScrollContainer>
+						<Table.Content
+							aria-label="Students table"
+							className="[&_tbody>tr]:h-[55px] [&_tbody>tr]:border-b [&_tbody>tr]:border-default-200 [&_tbody>tr:last-child]:border-b-0 [&_th]:py-0 [&_td]:py-0"
 						>
-							{(student) => (
-								<TableRow key={student.id}>
-									{(columnKey) => (
-										<TableCell>
-											<StudentsTableCell columnKey={columnKey} onStudentClick={handleStudentClick} student={student} />
-										</TableCell>
-									)}
-								</TableRow>
-							)}
-						</TableBody>
-					</Table>
+							<Table.Header>
+								{columns.map((column) => (
+									<Table.Column key={column.key} className={column.align === "center" ? "text-center" : ""}>
+										{column.label}
+									</Table.Column>
+								))}
+							</Table.Header>
+							<Table.Body
+								emptyContent={
+									isLoading ? <Spinner size="lg" /> : error ? <TableError onRetry={refetch} /> : <StudentsEmptyState />
+								}
+								items={error || isLoading ? [] : students}
+							>
+								{(student) => (
+									<Table.Row key={student.id}>
+										{columns.map((column) => (
+											<Table.Cell key={column.key}>
+												<StudentsTableCell
+													columnKey={column.key}
+													onStudentClick={handleStudentClick}
+													student={student}
+												/>
+											</Table.Cell>
+										))}
+									</Table.Row>
+								)}
+							</Table.Body>
+						</Table.Content>
+					</Table.ScrollContainer>
 					{totalPages > 1 && (
 						<div className="flex w-full justify-center pt-4">
 							<Pagination
@@ -107,7 +94,7 @@ const StudentsTable = () => {
 						</div>
 					)}
 				</div>
-			</CardBody>
+			</Card.Content>
 		</Card>
 	)
 }

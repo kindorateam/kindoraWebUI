@@ -1,4 +1,4 @@
-import { Avatar, Button, Divider } from "@heroui/react"
+import { Avatar, Button, Separator } from "@heroui/react"
 
 import TablerMessage from "~icons/tabler/message"
 
@@ -15,15 +15,18 @@ const ParentTooltipContent = ({ parents }: ParentTooltipContentProps) => {
 				const fullName = `${parent.firstName} ${parent.lastName}`
 				return (
 					<div key={parent.id}>
-						{index > 0 && <Divider className="mb-3" />}
+						{index > 0 && <Separator className="mb-3" />}
 						<div className="flex items-center gap-2">
-							<Avatar name={fullName} showFallback size="sm" src={parent.avatar?.path} />
+							<Avatar size="sm">
+								<Avatar.Image src={parent.avatar?.path} alt={fullName} />
+								<Avatar.Fallback>{`${parent.firstName[0]}${parent.lastName[0]}`}</Avatar.Fallback>
+							</Avatar>
 							<span className="font-medium text-sm">{fullName}</span>
 						</div>
 					</div>
 				)
 			})}
-			<Divider />
+			<Separator />
 			<Button color="primary" size="sm" startContent={<TablerMessage className="size-4" />} variant="flat">
 				New message
 			</Button>

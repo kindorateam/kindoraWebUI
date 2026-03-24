@@ -1,4 +1,4 @@
-import { Avatar, Card, CardBody, Chip, Input } from "@heroui/react"
+import { Avatar, Card, Chip, Input } from "@heroui/react"
 
 import JamMedical from "~icons/jam/medical"
 import LucideUserRound from "~icons/lucide/user-round"
@@ -13,7 +13,7 @@ interface StudentProfileTabProps {
 const readOnlyFieldClassNames = {
 	inputWrapper: "bg-default-100 shadow-sm data-[hover=true]:bg-default-100 group-data-[focus=true]:bg-default-100",
 	input: "text-sm",
-	label: "text-tiny text-default-600",
+	label: "text-xs text-default-600",
 }
 
 const StudentProfileTab = ({ student }: StudentProfileTabProps) => {
@@ -53,7 +53,7 @@ const StudentProfileTab = ({ student }: StudentProfileTabProps) => {
 
 	return (
 		<Card className="p-5" radius="md" shadow="sm">
-			<CardBody className="gap-10 p-0">
+			<Card.Content className="gap-10 p-0">
 				<section className="flex flex-col gap-6">
 					<div className="flex items-center gap-2 px-4 py-1.5">
 						<LucideUserRound className="size-5 text-foreground" />
@@ -61,7 +61,10 @@ const StudentProfileTab = ({ student }: StudentProfileTabProps) => {
 					</div>
 
 					<div className="flex flex-col gap-2">
-						<Avatar className="size-11 shadow-sm" showFallback src={student.avatar?.path} />
+						<Avatar className="size-11 shadow-sm">
+							<Avatar.Image src={student.avatar?.path} alt="Student avatar" />
+							<Avatar.Fallback />
+						</Avatar>
 
 						<div className="grid gap-2 lg:grid-cols-3">
 							{personalInfoFields.map((field) => (
@@ -98,12 +101,10 @@ const StudentProfileTab = ({ student }: StudentProfileTabProps) => {
 					<div className="flex flex-col gap-6">
 						{(student.parents ?? []).map((parent) => (
 							<div className="flex flex-col gap-2" key={parent.id}>
-								<Avatar
-									className="size-11 shadow-sm"
-									name={`${parent.firstName} ${parent.lastName}`}
-									showFallback
-									src={parent.avatar?.path}
-								/>
+								<Avatar className="size-11 shadow-sm">
+									<Avatar.Image src={parent.avatar?.path} alt={`${parent.firstName} ${parent.lastName}`} />
+									<Avatar.Fallback>{`${parent.firstName[0]}${parent.lastName[0]}`}</Avatar.Fallback>
+								</Avatar>
 
 								<div className="grid gap-2 lg:grid-cols-3">
 									<Input
@@ -175,12 +176,10 @@ const StudentProfileTab = ({ student }: StudentProfileTabProps) => {
 					<div className="flex flex-col gap-6">
 						{(student.siblings ?? []).map((sibling) => (
 							<div className="flex flex-col gap-2" key={sibling.id}>
-								<Avatar
-									className="size-11 shadow-sm"
-									name={`${sibling.firstName} ${sibling.lastName}`}
-									showFallback
-									src={sibling.avatar?.path}
-								/>
+								<Avatar className="size-11 shadow-sm">
+									<Avatar.Image src={sibling.avatar?.path} alt={`${sibling.firstName} ${sibling.lastName}`} />
+									<Avatar.Fallback>{`${sibling.firstName[0]}${sibling.lastName[0]}`}</Avatar.Fallback>
+								</Avatar>
 
 								<div className="grid gap-2 lg:grid-cols-3">
 									<Input
@@ -252,12 +251,10 @@ const StudentProfileTab = ({ student }: StudentProfileTabProps) => {
 					<div className="flex flex-col gap-6">
 						{(student.guardians ?? []).map((guardian) => (
 							<div className="flex flex-col gap-2" key={guardian.id}>
-								<Avatar
-									className="size-11 shadow-sm"
-									name={`${guardian.firstName} ${guardian.lastName}`}
-									showFallback
-									src={guardian.avatar?.path}
-								/>
+								<Avatar className="size-11 shadow-sm">
+									<Avatar.Image src={guardian.avatar?.path} alt={`${guardian.firstName} ${guardian.lastName}`} />
+									<Avatar.Fallback>{`${guardian.firstName[0]}${guardian.lastName[0]}`}</Avatar.Fallback>
+								</Avatar>
 
 								<div className="grid gap-2 lg:grid-cols-3">
 									<Input
@@ -366,7 +363,7 @@ const StudentProfileTab = ({ student }: StudentProfileTabProps) => {
 						/>
 					</div>
 				</section>
-			</CardBody>
+			</Card.Content>
 		</Card>
 	)
 }

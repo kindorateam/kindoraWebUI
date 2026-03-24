@@ -1,4 +1,4 @@
-import { Button, Chip, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@heroui/react"
+import { Button, Chip, Dropdown, ListBox } from "@heroui/react"
 
 import TablerDownload from "~icons/tabler/download"
 import TablerEye from "~icons/tabler/eye"
@@ -95,8 +95,8 @@ export function renderCell(document: StudentDocument, columnKey: React.Key) {
 		case "actions":
 			return (
 				<div className="flex justify-center">
-					<Dropdown classNames={{ content: "min-w-0" }}>
-						<DropdownTrigger>
+					<Dropdown>
+						<Dropdown.Trigger>
 							<Button isIconOnly radius="md" variant="light">
 								<svg
 									aria-hidden="true"
@@ -113,33 +113,41 @@ export function renderCell(document: StudentDocument, columnKey: React.Key) {
 									<circle cx={12} cy={19} r={1} />
 								</svg>
 							</Button>
-						</DropdownTrigger>
-						<DropdownMenu aria-label="Document actions">
-							<DropdownItem
-								key="view"
-								className="text-success"
-								startContent={<TablerEye aria-hidden className="size-5" />}
-								onPress={() => handleView(document)}
-							>
-								View
-							</DropdownItem>
-							<DropdownItem
-								key="download"
-								className="text-warning"
-								startContent={<TablerDownload aria-hidden className="size-5" />}
-								onPress={() => handleDownload(document)}
-							>
-								Download
-							</DropdownItem>
-							<DropdownItem
-								key="delete"
-								className="text-danger"
-								startContent={<TablerTrash aria-hidden className="size-5" />}
-								onPress={() => openDeleteDocumentModal(document.id)}
-							>
-								Delete
-							</DropdownItem>
-						</DropdownMenu>
+						</Dropdown.Trigger>
+						<Dropdown.Popover className="min-w-0">
+							<Dropdown.Menu aria-label="Document actions">
+								<Dropdown.Item
+									id="view"
+									textValue="View"
+									className="text-success"
+									onAction={() => handleView(document)}
+								>
+									<ListBox.ItemIndicator />
+									<TablerEye aria-hidden className="size-5" />
+									<span>View</span>
+								</Dropdown.Item>
+								<Dropdown.Item
+									id="download"
+									textValue="Download"
+									className="text-warning"
+									onAction={() => handleDownload(document)}
+								>
+									<ListBox.ItemIndicator />
+									<TablerDownload aria-hidden className="size-5" />
+									<span>Download</span>
+								</Dropdown.Item>
+								<Dropdown.Item
+									id="delete"
+									textValue="Delete"
+									className="text-danger"
+									onAction={() => openDeleteDocumentModal(document.id)}
+								>
+									<ListBox.ItemIndicator />
+									<TablerTrash aria-hidden className="size-5" />
+									<span>Delete</span>
+								</Dropdown.Item>
+							</Dropdown.Menu>
+						</Dropdown.Popover>
 					</Dropdown>
 				</div>
 			)

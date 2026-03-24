@@ -1,4 +1,4 @@
-import { Avatar, Badge, Button, Chip, Divider } from "@heroui/react"
+import { Avatar, Badge, Button, Chip, Separator } from "@heroui/react"
 
 import IdentityChip from "@/components/IdentityChip"
 import MageExchangeA from "~icons/mage/exchange-a"
@@ -28,25 +28,18 @@ const StudentDetailHeader = ({ student, onMoveToRoom, onScheduleAbsence }: Stude
 	return (
 		<div className="container mx-auto max-w-4xl">
 			<div className="mb-7 flex items-start gap-10">
-				<Badge
-					color={student.checkedIn ? "success" : "danger"}
-					isInvisible={false}
-					isOneChar
-					placement="bottom-right"
-					shape="circle"
-				>
-					<Avatar
-						className="size-25 shrink-0 border-4 border-white shadow-md"
-						name={`${student.firstName[0]}${student.lastName[0]}`}
-						showFallback
-						src={student.avatar?.path}
-					/>
-				</Badge>
+				<Badge.Anchor>
+					<Avatar className="size-25 shrink-0 border-4 border-white shadow-md">
+						<Avatar.Image src={student.avatar?.path} alt={studentName} />
+						<Avatar.Fallback>{`${student.firstName[0]}${student.lastName[0]}`}</Avatar.Fallback>
+					</Avatar>
+					<Badge color={student.checkedIn ? "success" : "danger"} placement="bottom-right" shape="circle" />
+				</Badge.Anchor>
 
 				<div className="flex min-w-0 flex-1 flex-col gap-6 pt-1">
 					<div className="flex flex-col gap-2">
 						<h1 className="font-semibold text-4xl leading-none">{studentName}</h1>
-						<Divider />
+						<Separator />
 					</div>
 
 					<div className="flex items-center gap-6">
@@ -83,8 +76,8 @@ const StudentDetailHeader = ({ student, onMoveToRoom, onScheduleAbsence }: Stude
 
 						<div className="flex items-center gap-3">
 							<span className="text-neutral-600 text-sm">Absence date</span>
-							<Chip className="bg-secondary-100/80" classNames={{ content: "text-sm text-secondary-600" }} size="sm">
-								{formatAbsenceDate(student)}
+							<Chip className="bg-secondary-100/80" size="sm">
+								<span className="text-secondary-600 text-sm">{formatAbsenceDate(student)}</span>
 							</Chip>
 						</div>
 					</div>
