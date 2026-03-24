@@ -1,15 +1,4 @@
-import {
-	Button,
-	Modal,
-	ModalBody,
-	ModalContent,
-	ModalFooter,
-	ModalHeader,
-	RangeCalendar,
-	Select,
-	SelectItem,
-	addToast,
-} from "@heroui/react"
+import { Button, Label, ListBox, Modal, RangeCalendar, Select, toast } from "@heroui/react"
 import { getLocalTimeZone, today } from "@internationalized/date"
 import { useAtomValue } from "jotai"
 import { useState } from "react"
@@ -21,8 +10,8 @@ import { ABSENCE_REASONS } from "../constants"
 import { useMarkStudentAbsent } from "../hooks/useRooms"
 import { closeMarkAbsentModal, markAbsentModalAtom } from "../stores/markAbsentModal.store"
 
-import type { RangeValue } from "@heroui/react"
 import type { CalendarDate } from "@internationalized/date"
+import type { RangeValue } from "react-aria-components"
 
 /**
  * Converts CalendarDate to RFC3339 timestamp string
@@ -56,17 +45,13 @@ const MarkAbsentModal = () => {
 			},
 			{
 				onSuccess: () => {
-					addToast({
-						title: `${studentName} marked as absent`,
-						color: "success",
-					})
+					toast(`${studentName} marked as absent`, { variant: "success" })
 					handleClose()
 				},
 				onError: (error) => {
-					addToast({
-						title: "Failed to mark absent",
+					toast("Failed to mark absent", {
 						description: getErrorMessage(error),
-						color: "danger",
+						variant: "danger",
 					})
 				},
 			},
@@ -85,67 +70,72 @@ const MarkAbsentModal = () => {
 	const isFormValid = reason && dateRange.start && dateRange.end
 
 	return (
-		<Modal
-			classNames={{ closeButton: "cursor-pointer" }}
-			isOpen={isOpen}
-			onOpenChange={(open) => !open && handleClose()}
-			placement="center"
-			size="sm"
-		>
-			<ModalContent>
-				<ModalHeader className="flex flex-col items-center gap-2 pb-0">
-					<div className="flex size-12 items-center justify-center rounded-full bg-primary-100">
-						<SolarCalendarBroken className="size-6 text-primary" />
-					</div>
-					<span className="font-semibold text-lg">Mark Absent</span>
-					<span className="font-normal text-default-500 text-sm">{studentName}</span>
-				</ModalHeader>
-				<ModalBody className="gap-4 py-4">
-					<Select
-						label="Reason"
-						placeholder="Select absence reason"
-						selectedKeys={reason ? [reason] : []}
-						onSelectionChange={(keys) => {
-							const selected = Array.from(keys)[0]
-							if (selected) setReason(String(selected))
-						}}
-						isRequired
-					>
-						{ABSENCE_REASONS.map((item) => (
-							<SelectItem key={item.key}>{item.label}</SelectItem>
-						))}
-					</Select>
-					<div className="flex flex-col gap-2">
-						<span className="text-default-700 text-sm">Date Range</span>
-						<RangeCalendar
-							aria-label="Absence date range"
-							value={dateRange}
-							onChange={setDateRange}
-							minValue={todayDate}
-							classNames={{
-								base: "w-full",
-								content: "w-full",
+		<Modal.Backdrop isOpen={isOpen} onOpenChange={(open) => !open && handleClose()}>
+			<Modal.Container>
+				<Modal.Dialog>
+					<Modal.CloseTrigger />
+					<Modal.Header>
+						<div className="flex flex-col items-center gap-2 pb-0">
+							<div className="flex size-12 items-center justify-center rounded-full bg-primary-100">
+								<SolarCalendarBroken className="size-6 text-primary" />
+							</div>
+							<Modal.Heading>Mark Absent</Modal.Heading>
+							<span className="font-normal text-default-500 text-sm">{studentName}</span>
+						</div>
+					</Modal.Header>
+					<Modal.Body className="gap-4">
+						<Select
+							isRequired
+							selectedKey={reason || null}
+							onSelectionChange={(key) => {
+								if (key !== null) setReason(String(key))
 							}}
-						/>
-					</div>
-				</ModalBody>
-				<ModalFooter className="flex-col gap-2">
-					<Button
-						color="primary"
-						fullWidth
-						isLoading={markAbsentMutation.isPending}
-						isDisabled={!isFormValid}
-						onPress={handleSubmit}
-						size="md"
-					>
-						Confirm
-					</Button>
-					<Button color="default" fullWidth isDisabled={markAbsentMutation.isPending} onPress={handleClose} size="md">
-						Cancel
-					</Button>
-				</ModalFooter>
-			</ModalContent>
-		</Modal>
+						>
+							<Label>Reason</Label>
+							<Select.Trigger>
+								<Select.Value placeholder="Select absence reason" />
+								<Select.Indicator />
+							</Select.Trigger>
+							<Select.Popover>
+								<ListBox>
+									{ABSENCE_REASONS.map((item) => (
+										<ListBox.Item id={item.key} key={item.key} textValue={item.label}>
+											{item.label}
+											<ListBox.ItemIndicator />
+										</ListBox.Item>
+									))}
+								</ListBox>
+							</Select.Popover>
+						</Select>
+						<div className="flex flex-col gap-2">
+							<span className="text-default-700 text-sm">Date Range</span>
+							<RangeCalendar
+								aria-label="Absence date range"
+								className="w-full"
+								minValue={todayDate}
+								onChange={setDateRange}
+								value={dateRange}
+							/>
+						</div>
+					</Modal.Body>
+					<Modal.Footer className="flex-col gap-2">
+						<Button
+							color="primary"
+							fullWidth
+							isDisabled={!isFormValid}
+							isLoading={markAbsentMutation.isPending}
+							onPress={handleSubmit}
+							size="md"
+						>
+							Confirm
+						</Button>
+						<Button color="default" fullWidth isDisabled={markAbsentMutation.isPending} onPress={handleClose} size="md">
+							Cancel
+						</Button>
+					</Modal.Footer>
+				</Modal.Dialog>
+			</Modal.Container>
+		</Modal.Backdrop>
 	)
 }
 

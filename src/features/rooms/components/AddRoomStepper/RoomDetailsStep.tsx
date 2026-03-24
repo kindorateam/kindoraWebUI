@@ -1,4 +1,4 @@
-import { Avatar, Input, NumberInput, Select, SelectItem } from "@heroui/react"
+import { Avatar, Input, Label, ListBox, NumberField, Select } from "@heroui/react"
 import { useState } from "react"
 import { Controller, useFormContext } from "react-hook-form"
 
@@ -60,14 +60,10 @@ const RoomDetailsStep = () => {
 							type="button"
 						/>
 					) : (
-						<Avatar
-							className="size-14 cursor-pointer text-lg"
-							color="primary"
-							name={name || "R"}
-							onClick={handleAvatarClick}
-							showFallback
-							src={avatarPreview}
-						/>
+						<Avatar className="size-14 cursor-pointer text-lg" color="primary" onClick={handleAvatarClick} showFallback>
+							<Avatar.Image src={avatarPreview ?? undefined} alt={name || "R"} />
+							<Avatar.Fallback>{name?.charAt(0) || "R"}</Avatar.Fallback>
+						</Avatar>
 					)}
 					<button
 						className="-right-1 -top-1 absolute flex size-6 cursor-pointer items-center justify-center rounded-full bg-warning"
@@ -108,40 +104,42 @@ const RoomDetailsStep = () => {
 					control={control}
 					name="capacity"
 					render={({ field }) => (
-						<NumberInput
-							errorMessage={errors.capacity?.message}
-							formatOptions={{ useGrouping: false }}
+						<NumberField
 							isInvalid={!!errors.capacity}
 							isRequired
-							label="Room Capacity"
-							labelPlacement="inside"
 							minValue={1}
-							onValueChange={(value) => field.onChange(value ?? 1)}
-							placeholder="Enter capacity"
-							radius="md"
+							onChange={(value) => field.onChange(Number.isNaN(value) ? 1 : value)}
 							value={field.value}
-							variant="flat"
-						/>
+						>
+							<Label>Room Capacity</Label>
+							<NumberField.Group>
+								<NumberField.DecrementButton />
+								<NumberField.Input placeholder="Enter capacity" />
+								<NumberField.IncrementButton />
+							</NumberField.Group>
+							{errors.capacity?.message && <span className="text-danger text-xs">{errors.capacity.message}</span>}
+						</NumberField>
 					)}
 				/>
 				<Controller
 					control={control}
 					name="ratio"
 					render={({ field }) => (
-						<NumberInput
-							errorMessage={errors.ratio?.message}
-							formatOptions={{ useGrouping: false }}
+						<NumberField
 							isInvalid={!!errors.ratio}
 							isRequired
-							label="Students per staff"
-							labelPlacement="inside"
 							minValue={1}
-							onValueChange={(value) => field.onChange(value ?? 1)}
-							placeholder="Enter ratio"
-							radius="md"
+							onChange={(value) => field.onChange(Number.isNaN(value) ? 1 : value)}
 							value={field.value}
-							variant="flat"
-						/>
+						>
+							<Label>Students per staff</Label>
+							<NumberField.Group>
+								<NumberField.DecrementButton />
+								<NumberField.Input placeholder="Enter ratio" />
+								<NumberField.IncrementButton />
+							</NumberField.Group>
+							{errors.ratio?.message && <span className="text-danger text-xs">{errors.ratio.message}</span>}
+						</NumberField>
 					)}
 				/>
 				<div className="grid grid-cols-2 gap-3">
@@ -150,28 +148,35 @@ const RoomDetailsStep = () => {
 						name="minAge"
 						render={({ field }) => (
 							<Select
-								errorMessage={errors.minAge?.message}
 								isInvalid={!!errors.minAge}
 								isRequired
-								label="Min Age"
-								labelPlacement="inside"
-								onSelectionChange={(keys) => {
-									const selected = Array.from(keys)[0]
-									if (selected !== undefined) {
-										field.onChange(Number(selected))
+								selectedKey={field.value !== undefined ? String(field.value) : null}
+								onSelectionChange={(key) => {
+									if (key !== null) {
+										field.onChange(Number(key))
 										// Only cross-validate when both ages are selected
 										if (maxAge !== undefined) {
 											void trigger(["minAge", "maxAge"])
 										}
 									}
 								}}
-								radius="md"
-								selectedKeys={field.value !== undefined ? [String(field.value)] : []}
-								variant="flat"
 							>
-								{ROOM_AGE_OPTIONS.map((option) => (
-									<SelectItem key={option.key}>{option.label}</SelectItem>
-								))}
+								<Label>Min Age</Label>
+								<Select.Trigger>
+									<Select.Value />
+									<Select.Indicator />
+								</Select.Trigger>
+								<Select.Popover>
+									<ListBox>
+										{ROOM_AGE_OPTIONS.map((option) => (
+											<ListBox.Item id={String(option.key)} key={option.key} textValue={option.label}>
+												{option.label}
+												<ListBox.ItemIndicator />
+											</ListBox.Item>
+										))}
+									</ListBox>
+								</Select.Popover>
+								{errors.minAge?.message && <span className="text-danger text-xs">{errors.minAge.message}</span>}
 							</Select>
 						)}
 					/>
@@ -180,28 +185,35 @@ const RoomDetailsStep = () => {
 						name="maxAge"
 						render={({ field }) => (
 							<Select
-								errorMessage={errors.maxAge?.message}
 								isInvalid={!!errors.maxAge}
 								isRequired
-								label="Max Age"
-								labelPlacement="inside"
-								onSelectionChange={(keys) => {
-									const selected = Array.from(keys)[0]
-									if (selected !== undefined) {
-										field.onChange(Number(selected))
+								selectedKey={field.value !== undefined ? String(field.value) : null}
+								onSelectionChange={(key) => {
+									if (key !== null) {
+										field.onChange(Number(key))
 										// Only cross-validate when both ages are selected
 										if (minAge !== undefined) {
 											void trigger(["minAge", "maxAge"])
 										}
 									}
 								}}
-								radius="md"
-								selectedKeys={field.value !== undefined ? [String(field.value)] : []}
-								variant="flat"
 							>
-								{ROOM_AGE_OPTIONS.map((option) => (
-									<SelectItem key={option.key}>{option.label}</SelectItem>
-								))}
+								<Label>Max Age</Label>
+								<Select.Trigger>
+									<Select.Value />
+									<Select.Indicator />
+								</Select.Trigger>
+								<Select.Popover>
+									<ListBox>
+										{ROOM_AGE_OPTIONS.map((option) => (
+											<ListBox.Item id={String(option.key)} key={option.key} textValue={option.label}>
+												{option.label}
+												<ListBox.ItemIndicator />
+											</ListBox.Item>
+										))}
+									</ListBox>
+								</Select.Popover>
+								{errors.maxAge?.message && <span className="text-danger text-xs">{errors.maxAge.message}</span>}
 							</Select>
 						)}
 					/>

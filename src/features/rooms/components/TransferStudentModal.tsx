@@ -1,18 +1,6 @@
-import {
-	Button,
-	Modal,
-	ModalBody,
-	ModalContent,
-	ModalFooter,
-	ModalHeader,
-	Select,
-	SelectItem,
-	Spinner,
-	addToast,
-} from "@heroui/react"
-import { useInfiniteScroll } from "@heroui/use-infinite-scroll"
+import { Button, Label, ListBox, Modal, Select, Spinner, toast } from "@heroui/react"
 import { useAtomValue } from "jotai"
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 
 import { getErrorMessage } from "@/utils/error"
 
@@ -35,18 +23,23 @@ const TransferStudentModal = ({ onSuccess }: TransferStudentModalProps) => {
 	const moveStudentsMutation = useMoveStudentsToRoom()
 
 	const [selectedRoomId, setSelectedRoomId] = useState<string>("")
-	const [isSelectOpen, setIsSelectOpen] = useState(false)
 
 	// Filter out the current room from the list
 	const availableRooms = rooms.filter((room) => room.id !== sourceRoomId)
 
-	// Infinite scroll for rooms list - enabled when Select dropdown is open
-	const [, scrollerRef] = useInfiniteScroll({
-		hasMore: hasNextPage ?? false,
-		isEnabled: isSelectOpen,
-		shouldUseLoader: false,
-		onLoadMore: fetchNextPage,
-	})
+	// IntersectionObserver-based infinite scroll for rooms list
+	const observerRef = useRef<HTMLDivElement>(null)
+	useEffect(() => {
+		if (!observerRef.current || !hasNextPage || isFetchingNextPage) return
+		const observer = new IntersectionObserver(
+			([entry]) => {
+				if (entry.isIntersecting) fetchNextPage()
+			},
+			{ threshold: 0.5 },
+		)
+		observer.observe(observerRef.current)
+		return () => observer.disconnect()
+	}, [hasNextPage, isFetchingNextPage, fetchNextPage])
 
 	const handleSubmit = () => {
 		if (!sourceRoomId || !selectedRoomId || studentIds.length === 0) return
@@ -60,22 +53,20 @@ const TransferStudentModal = ({ onSuccess }: TransferStudentModalProps) => {
 			{
 				onSuccess: () => {
 					const count = studentIds.length
-					addToast({
-						title: count === 1 ? "Student transferred" : "Students transferred",
+					toast(count === 1 ? "Student transferred" : "Students transferred", {
 						description:
 							count === 1
 								? "Student has been transferred to the new room."
 								: `${count} students have been transferred to the new room.`,
-						color: "success",
+						variant: "success",
 					})
 					onSuccess?.()
 					handleClose()
 				},
 				onError: (error) => {
-					addToast({
-						title: "Failed to transfer students",
+					toast("Failed to transfer students", {
 						description: getErrorMessage(error),
-						color: "danger",
+						variant: "danger",
 					})
 				},
 			},
@@ -93,61 +84,67 @@ const TransferStudentModal = ({ onSuccess }: TransferStudentModalProps) => {
 	const isFormValid = !!selectedRoomId
 
 	return (
-		<Modal
-			classNames={{ closeButton: "cursor-pointer" }}
-			isOpen={isOpen}
-			onOpenChange={(open) => !open && handleClose()}
-			placement="center"
-			size="sm"
-		>
-			<ModalContent>
-				<ModalHeader className="flex flex-col gap-1 pb-0">
-					<span className="font-medium text-xl">Transfer to another Room</span>
-					<span className="font-normal text-default-500 text-sm">
-						{studentIds.length} {studentIds.length === 1 ? "student" : "students"} selected
-					</span>
-				</ModalHeader>
-				<ModalBody className="gap-5 py-5">
-					{isLoadingRooms ? (
-						<div className="flex h-14 items-center justify-center">
-							<Spinner size="md" />
-						</div>
-					) : (
-						<Select
-							isLoading={isFetchingNextPage}
-							items={availableRooms}
-							label="Target Room"
-							listboxProps={{ emptyContent: "No rooms available" }}
-							maxListboxHeight={256}
-							onOpenChange={setIsSelectOpen}
-							onSelectionChange={(keys) => {
-								const selected = Array.from(keys)[0]
-								if (selected) setSelectedRoomId(String(selected))
-							}}
-							placeholder="Select a room"
+		<Modal.Backdrop isOpen={isOpen} onOpenChange={(open) => !open && handleClose()}>
+			<Modal.Container>
+				<Modal.Dialog>
+					<Modal.CloseTrigger />
+					<Modal.Header>
+						<Modal.Heading>Transfer to another Room</Modal.Heading>
+						<span className="font-normal text-default-500 text-sm">
+							{studentIds.length} {studentIds.length === 1 ? "student" : "students"} selected
+						</span>
+					</Modal.Header>
+					<Modal.Body className="gap-5">
+						{isLoadingRooms ? (
+							<div className="flex h-14 items-center justify-center">
+								<Spinner size="md" />
+							</div>
+						) : (
+							<Select
+								selectedKey={selectedRoomId || null}
+								onSelectionChange={(key) => {
+									if (key !== null) setSelectedRoomId(String(key))
+								}}
+							>
+								<Label>Target Room</Label>
+								<Select.Trigger>
+									<Select.Value placeholder="Select a room" />
+									<Select.Indicator />
+								</Select.Trigger>
+								<Select.Popover>
+									<ListBox>
+										{availableRooms.map((room) => (
+											<ListBox.Item id={room.id} key={room.id} textValue={room.name}>
+												{room.name}
+												<ListBox.ItemIndicator />
+											</ListBox.Item>
+										))}
+										{isFetchingNextPage && (
+											<ListBox.Item id="loading-rooms" textValue="Loading...">
+												<span className="text-default-400 text-sm">Loading more...</span>
+											</ListBox.Item>
+										)}
+									</ListBox>
+									<div ref={observerRef} />
+								</Select.Popover>
+							</Select>
+						)}
+					</Modal.Body>
+					<Modal.Footer>
+						<Button
+							color="primary"
+							fullWidth
+							isDisabled={!isFormValid || isLoadingRooms}
+							isLoading={moveStudentsMutation.isPending}
+							onPress={handleSubmit}
 							radius="md"
-							scrollRef={scrollerRef}
-							selectedKeys={selectedRoomId ? [selectedRoomId] : []}
-							variant="flat"
 						>
-							{(room) => <SelectItem key={room.id}>{room.name}</SelectItem>}
-						</Select>
-					)}
-				</ModalBody>
-				<ModalFooter className="pt-0">
-					<Button
-						color="primary"
-						fullWidth
-						isLoading={moveStudentsMutation.isPending}
-						isDisabled={!isFormValid || isLoadingRooms}
-						onPress={handleSubmit}
-						radius="md"
-					>
-						Transfer
-					</Button>
-				</ModalFooter>
-			</ModalContent>
-		</Modal>
+							Transfer
+						</Button>
+					</Modal.Footer>
+				</Modal.Dialog>
+			</Modal.Container>
+		</Modal.Backdrop>
 	)
 }
 

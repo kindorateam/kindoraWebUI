@@ -1,19 +1,6 @@
-import {
-	Avatar,
-	Button,
-	Card,
-	CardBody,
-	Chip,
-	Input,
-	NumberInput,
-	Select,
-	SelectItem,
-	Spinner,
-	addToast,
-} from "@heroui/react"
-import { useInfiniteScroll } from "@heroui/use-infinite-scroll"
+import { Avatar, Button, Card, Chip, Input, Label, ListBox, NumberField, Select, Spinner, toast } from "@heroui/react"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { Controller, useForm } from "react-hook-form"
 
 import { getErrorMessage } from "@/utils/error"
@@ -48,7 +35,6 @@ const RoomProfileTab = ({ roomId }: RoomProfileTabProps) => {
 
 	const [isImagePickerOpen, setIsImagePickerOpen] = useState(false)
 	const [assignedStaff, setAssignedStaff] = useState<StaffItem[]>([])
-	const [isStaffSelectOpen, setIsStaffSelectOpen] = useState(false)
 
 	const {
 		control,
@@ -109,13 +95,19 @@ const RoomProfileTab = ({ roomId }: RoomProfileTabProps) => {
 		return 0
 	})
 
-	// Infinite scroll for staff list - enabled when Select dropdown is open
-	const [, staffScrollerRef] = useInfiniteScroll({
-		hasMore: hasNextPage ?? false,
-		isEnabled: isStaffSelectOpen,
-		shouldUseLoader: false,
-		onLoadMore: fetchNextPage,
-	})
+	// IntersectionObserver-based infinite scroll for staff list
+	const staffObserverRef = useRef<HTMLDivElement>(null)
+	useEffect(() => {
+		if (!staffObserverRef.current || !hasNextPage || isFetchingNextPage) return
+		const observer = new IntersectionObserver(
+			([entry]) => {
+				if (entry.isIntersecting) fetchNextPage()
+			},
+			{ threshold: 0.5 },
+		)
+		observer.observe(staffObserverRef.current)
+		return () => observer.disconnect()
+	}, [hasNextPage, isFetchingNextPage, fetchNextPage])
 
 	const handleStaffSelectionChange = (keys: "all" | Set<React.Key>) => {
 		if (keys === "all") {
@@ -194,34 +186,30 @@ const RoomProfileTab = ({ roomId }: RoomProfileTabProps) => {
 							{
 								onSuccess: () => {
 									setValue("avatarFile", null)
-									addToast({
-										title: "Room updated",
+									toast("Room updated", {
 										description: "Room details have been saved successfully.",
-										color: "success",
+										variant: "success",
 									})
 								},
 								onError: (error) => {
-									addToast({
-										title: "Room updated but logo upload failed",
+									toast("Room updated but logo upload failed", {
 										description: getErrorMessage(error),
-										color: "warning",
+										variant: "warning",
 									})
 								},
 							},
 						)
 					} else {
-						addToast({
-							title: "Room updated",
+						toast("Room updated", {
 							description: "Room details have been saved successfully.",
-							color: "success",
+							variant: "success",
 						})
 					}
 				},
 				onError: (error) => {
-					addToast({
-						title: "Failed to update room",
+					toast("Failed to update room", {
 						description: getErrorMessage(error),
-						color: "danger",
+						variant: "danger",
 					})
 				},
 			},
@@ -236,9 +224,9 @@ const RoomProfileTab = ({ roomId }: RoomProfileTabProps) => {
 	if (isLoading) {
 		return (
 			<Card>
-				<CardBody className="flex h-96 items-center justify-center">
+				<Card.Content className="flex h-96 items-center justify-center">
 					<Spinner size="lg" />
-				</CardBody>
+				</Card.Content>
 			</Card>
 		)
 	}
@@ -246,16 +234,16 @@ const RoomProfileTab = ({ roomId }: RoomProfileTabProps) => {
 	if (!room) {
 		return (
 			<Card>
-				<CardBody className="flex h-96 items-center justify-center">
+				<Card.Content className="flex h-96 items-center justify-center">
 					<p className="text-default-500">Room not found</p>
-				</CardBody>
+				</Card.Content>
 			</Card>
 		)
 	}
 
 	return (
 		<Card>
-			<CardBody className="gap-8 p-5 md:p-8">
+			<Card.Content className="gap-8 p-5 md:p-8">
 				<form className="flex flex-col gap-8" onSubmit={handleSubmit(onSubmit)}>
 					<div className="grid grid-cols-1 gap-8 md:grid-cols-2">
 						<div className="flex flex-col gap-5">
@@ -284,27 +272,33 @@ const RoomProfileTab = ({ roomId }: RoomProfileTabProps) => {
 									name="minAge"
 									render={({ field }) => (
 										<Select
-											errorMessage={errors.minAge?.message}
 											isInvalid={!!errors.minAge}
 											isRequired
-											label="Min age"
-											labelPlacement="inside"
-											onSelectionChange={(keys) => {
-												const selected = Array.from(keys)[0]
-												if (selected !== undefined) {
-													field.onChange(Number(selected))
+											selectedKey={field.value !== undefined ? String(field.value) : null}
+											onSelectionChange={(key) => {
+												if (key !== null) {
+													field.onChange(Number(key))
 													// Re-validate both age fields to check cross-field constraint
-													trigger(["minAge", "maxAge"])
+													void trigger(["minAge", "maxAge"])
 												}
 											}}
-											radius="md"
-											size="sm"
-											selectedKeys={field.value !== undefined ? [String(field.value)] : []}
-											variant="flat"
 										>
-											{ROOM_AGE_OPTIONS.map((option) => (
-												<SelectItem key={option.key}>{option.label}</SelectItem>
-											))}
+											<Label>Min age</Label>
+											<Select.Trigger>
+												<Select.Value />
+												<Select.Indicator />
+											</Select.Trigger>
+											<Select.Popover>
+												<ListBox>
+													{ROOM_AGE_OPTIONS.map((option) => (
+														<ListBox.Item id={String(option.key)} key={option.key} textValue={option.label}>
+															{option.label}
+															<ListBox.ItemIndicator />
+														</ListBox.Item>
+													))}
+												</ListBox>
+											</Select.Popover>
+											{errors.minAge?.message && <span className="text-danger text-xs">{errors.minAge.message}</span>}
 										</Select>
 									)}
 								/>
@@ -313,27 +307,33 @@ const RoomProfileTab = ({ roomId }: RoomProfileTabProps) => {
 									name="maxAge"
 									render={({ field }) => (
 										<Select
-											errorMessage={errors.maxAge?.message}
 											isInvalid={!!errors.maxAge}
 											isRequired
-											label="Max age"
-											labelPlacement="inside"
-											onSelectionChange={(keys) => {
-												const selected = Array.from(keys)[0]
-												if (selected !== undefined) {
-													field.onChange(Number(selected))
+											selectedKey={field.value !== undefined ? String(field.value) : null}
+											onSelectionChange={(key) => {
+												if (key !== null) {
+													field.onChange(Number(key))
 													// Re-validate both age fields to check cross-field constraint
-													trigger(["minAge", "maxAge"])
+													void trigger(["minAge", "maxAge"])
 												}
 											}}
-											radius="md"
-											size="sm"
-											selectedKeys={field.value !== undefined ? [String(field.value)] : []}
-											variant="flat"
 										>
-											{ROOM_AGE_OPTIONS.map((option) => (
-												<SelectItem key={option.key}>{option.label}</SelectItem>
-											))}
+											<Label>Max age</Label>
+											<Select.Trigger>
+												<Select.Value />
+												<Select.Indicator />
+											</Select.Trigger>
+											<Select.Popover>
+												<ListBox>
+													{ROOM_AGE_OPTIONS.map((option) => (
+														<ListBox.Item id={String(option.key)} key={option.key} textValue={option.label}>
+															{option.label}
+															<ListBox.ItemIndicator />
+														</ListBox.Item>
+													))}
+												</ListBox>
+											</Select.Popover>
+											{errors.maxAge?.message && <span className="text-danger text-xs">{errors.maxAge.message}</span>}
 										</Select>
 									)}
 								/>
@@ -341,40 +341,44 @@ const RoomProfileTab = ({ roomId }: RoomProfileTabProps) => {
 									control={control}
 									name="capacity"
 									render={({ field }) => (
-										<NumberInput
-											errorMessage={errors.capacity?.message}
-											formatOptions={{ useGrouping: false }}
+										<NumberField
 											isInvalid={!!errors.capacity}
 											isRequired
-											label="Max capacity"
-											labelPlacement="inside"
 											minValue={1}
-											onValueChange={(value) => field.onChange(value ?? 1)}
-											radius="md"
-											size="sm"
+											onChange={(value) => field.onChange(Number.isNaN(value) ? 1 : value)}
 											value={field.value}
-											variant="flat"
-										/>
+										>
+											<Label>Max capacity</Label>
+											<NumberField.Group>
+												<NumberField.DecrementButton />
+												<NumberField.Input />
+												<NumberField.IncrementButton />
+											</NumberField.Group>
+											{errors.capacity?.message && (
+												<span className="text-danger text-xs">{errors.capacity.message}</span>
+											)}
+										</NumberField>
 									)}
 								/>
 								<Controller
 									control={control}
 									name="ratio"
 									render={({ field }) => (
-										<NumberInput
-											errorMessage={errors.ratio?.message}
-											formatOptions={{ useGrouping: false }}
+										<NumberField
 											isInvalid={!!errors.ratio}
 											isRequired
-											label="Students per 1 staff"
-											labelPlacement="inside"
 											minValue={1}
-											onValueChange={(value) => field.onChange(value ?? 1)}
-											radius="md"
-											size="sm"
+											onChange={(value) => field.onChange(Number.isNaN(value) ? 1 : value)}
 											value={field.value}
-											variant="flat"
-										/>
+										>
+											<Label>Students per 1 staff</Label>
+											<NumberField.Group>
+												<NumberField.DecrementButton />
+												<NumberField.Input />
+												<NumberField.IncrementButton />
+											</NumberField.Group>
+											{errors.ratio?.message && <span className="text-danger text-xs">{errors.ratio.message}</span>}
+										</NumberField>
 									)}
 								/>
 							</div>
@@ -385,17 +389,19 @@ const RoomProfileTab = ({ roomId }: RoomProfileTabProps) => {
 							<div className="flex items-center gap-5">
 								<div>
 									<Avatar
-										classNames={{
-											base: "size-25 bg-[#1D6FE8] text-white shadow-md",
-											fallback: "text-white",
-											img: "object-cover",
-										}}
-										fallback={<MaterialSymbolsAddAPhotoRounded className="size-12.5" />}
-										name={room.name}
+										className="size-25 bg-[#1D6FE8] text-white shadow-md"
 										showFallback
 										src={avatarPreview?.startsWith("linear-gradient") ? undefined : (avatarPreview ?? undefined)}
 										style={avatarPreview?.startsWith("linear-gradient") ? { background: avatarPreview } : undefined}
-									/>
+									>
+										<Avatar.Image
+											src={avatarPreview?.startsWith("linear-gradient") ? undefined : (avatarPreview ?? undefined)}
+											alt={room.name}
+										/>
+										<Avatar.Fallback>
+											<MaterialSymbolsAddAPhotoRounded className="size-12.5" />
+										</Avatar.Fallback>
+									</Avatar>
 								</div>
 								<div className="flex gap-5">
 									<Button
@@ -428,93 +434,106 @@ const RoomProfileTab = ({ roomId }: RoomProfileTabProps) => {
 						<div className="flex flex-col gap-5">
 							<h3 className="font-medium text-xl">Staff</h3>
 							<Select
-								isLoading={isFetchingNextPage}
-								isMultiline
-								items={staffOptions}
-								label="Select Staff"
-								labelPlacement="inside"
-								maxListboxHeight={256}
-								onOpenChange={setIsStaffSelectOpen}
-								onSelectionChange={handleStaffSelectionChange}
-								placeholder="Select staff to add"
-								radius="md"
-								scrollRef={staffScrollerRef}
-								size="sm"
-								renderValue={(items) => (
-									<div className="flex flex-wrap gap-2">
-										{items.map((item) => (
-											<Chip
-												avatar={
-													<Avatar
-														classNames={{
-															base: "h-8 w-8 bg-[#1D6FE8] text-white",
-															fallback: "text-white",
-															icon: "h-full w-full",
-															img: "object-cover",
-														}}
-														fallback={<OouiUserAvatar className="size-4" />}
-														name={item.data?.name}
-														showFallback
-														size="sm"
-														src={
-															"avatar" in (item.data ?? {}) &&
-															(item.data as StaffMember).avatar &&
-															(item.data as StaffMember).avatar !== "/assets/avatars/default.jpg"
-																? getMediaUrl((item.data as StaffMember).avatar)
-																: undefined
-														}
-													/>
-												}
-												classNames={{
-													base: "bg-primary-50 h-7",
-													content: "text-sm",
-												}}
-												key={item.key}
-												onClose={() => {
-													const newStaff = assignedStaff.filter((s) => s.id !== item.key)
-													setAssignedStaff(newStaff)
-													setValue(
-														"staffIds",
-														newStaff.map((s) => s.id),
-														{ shouldDirty: true },
-													)
-												}}
-												variant="flat"
-											>
-												{item.data?.name}
-											</Chip>
-										))}
-									</div>
-								)}
 								selectedKeys={new Set(assignedStaff.map((s) => s.id))}
 								selectionMode="multiple"
-								variant="flat"
+								onSelectionChange={handleStaffSelectionChange}
 							>
-								{(staff) => (
-									<SelectItem key={staff.id} textValue={staff.name}>
-										<div className="flex items-center gap-2">
-											<Avatar
-												classNames={{
-													base: "h-8 w-8 bg-[#1D6FE8] text-white",
-													fallback: "text-white",
-													icon: "h-full w-full",
-													img: "object-cover",
-												}}
-												fallback={<OouiUserAvatar className="size-4" />}
-												name={staff.name}
-												showFallback
-												size="sm"
-												src={
-													"avatar" in staff && staff.avatar && staff.avatar !== "/assets/avatars/default.jpg"
-														? getMediaUrl(staff.avatar)
-														: undefined
-												}
-											/>
-											<span>{staff.name}</span>
-										</div>
-									</SelectItem>
-								)}
+								<Label>Select Staff</Label>
+								<Select.Trigger>
+									<Select.Value placeholder="Select staff to add" />
+									<Select.Indicator />
+								</Select.Trigger>
+								<Select.Popover>
+									<ListBox
+										renderEmptyState={() => (
+											<div className="flex flex-wrap gap-2 p-2">
+												{assignedStaff.map((staff) => (
+													<Chip
+														key={staff.id}
+														onClose={() => {
+															const newStaff = assignedStaff.filter((s) => s.id !== staff.id)
+															setAssignedStaff(newStaff)
+															setValue(
+																"staffIds",
+																newStaff.map((s) => s.id),
+																{ shouldDirty: true },
+															)
+														}}
+														variant="flat"
+													>
+														{staff.name}
+													</Chip>
+												))}
+											</div>
+										)}
+									>
+										{staffOptions.map((staff) => (
+											<ListBox.Item id={staff.id} key={staff.id} textValue={staff.name}>
+												<div className="flex items-center gap-2">
+													<Avatar className="size-8 bg-[#1D6FE8] text-white" showFallback>
+														<Avatar.Image
+															src={
+																"avatar" in staff && staff.avatar && staff.avatar !== "/assets/avatars/default.jpg"
+																	? getMediaUrl(staff.avatar)
+																	: undefined
+															}
+															alt={staff.name}
+														/>
+														<Avatar.Fallback>
+															<OouiUserAvatar className="size-4" />
+														</Avatar.Fallback>
+													</Avatar>
+													<span>{staff.name}</span>
+												</div>
+												<ListBox.ItemIndicator />
+											</ListBox.Item>
+										))}
+										{isFetchingNextPage && (
+											<ListBox.Item id="loading-staff" textValue="Loading...">
+												<span className="text-default-400 text-sm">Loading more...</span>
+											</ListBox.Item>
+										)}
+									</ListBox>
+									<div ref={staffObserverRef} />
+								</Select.Popover>
 							</Select>
+							{/* Selected staff chips */}
+							{assignedStaff.length > 0 && (
+								<div className="flex flex-wrap gap-2">
+									{assignedStaff.map((staff) => (
+										<Chip
+											key={staff.id}
+											avatar={
+												<Avatar className="size-7 bg-[#1D6FE8] text-white" showFallback>
+													<Avatar.Image
+														src={
+															"avatar" in staff && staff.avatar && staff.avatar !== "/assets/avatars/default.jpg"
+																? getMediaUrl(staff.avatar)
+																: undefined
+														}
+														alt={staff.name}
+													/>
+													<Avatar.Fallback>
+														<OouiUserAvatar className="size-3" />
+													</Avatar.Fallback>
+												</Avatar>
+											}
+											onClose={() => {
+												const newStaff = assignedStaff.filter((s) => s.id !== staff.id)
+												setAssignedStaff(newStaff)
+												setValue(
+													"staffIds",
+													newStaff.map((s) => s.id),
+													{ shouldDirty: true },
+												)
+											}}
+											variant="flat"
+										>
+											{staff.name}
+										</Chip>
+									))}
+								</div>
+							)}
 						</div>
 					</div>
 
@@ -555,7 +574,7 @@ const RoomProfileTab = ({ roomId }: RoomProfileTabProps) => {
 						</div>
 					</div>
 				</form>
-			</CardBody>
+			</Card.Content>
 		</Card>
 	)
 }

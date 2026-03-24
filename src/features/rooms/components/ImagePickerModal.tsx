@@ -1,4 +1,4 @@
-import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Tab, Tabs } from "@heroui/react"
+import { Button, Modal, Tabs } from "@heroui/react"
 import { useCallback, useRef, useState } from "react"
 
 import TablerCloudUpload from "~icons/tabler/cloud-upload"
@@ -89,99 +89,102 @@ const ImagePickerModal = ({ isOpen, onClose, onSelect }: ImagePickerModalProps) 
 		(selectedTab === "gallery" && !selectedGradient) || (selectedTab === "upload" && !uploadedFile)
 
 	return (
-		<Modal isOpen={isOpen} onClose={handleClose} size="md">
-			<ModalContent className="gap-0 p-5">
-				<ModalHeader className="mb-5 flex-col items-start gap-1 p-0">
-					<h2 className="font-semibold text-lg">Select Image</h2>
-				</ModalHeader>
-				<ModalBody className="mb-7 gap-4 p-0">
-					<Tabs
-						aria-label="Image picker tabs"
-						classNames={{
-							tabList: "w-full",
-							tab: "flex-1",
-							panel: "p-0",
-						}}
-						color="primary"
-						fullWidth
-						onSelectionChange={(key) => setSelectedTab(key as string)}
-						selectedKey={selectedTab}
-						variant="solid"
-					>
-						<Tab key="gallery" title="Gallery">
-							<div className="grid grid-cols-4 gap-2">
-								{gradients.map((gradient) => (
-									<button
-										className={`aspect-square cursor-pointer rounded-lg shadow-md transition-all hover:scale-105 ${
-											selectedGradient === gradient ? "ring-3 ring-primary ring-offset-2" : ""
-										}`}
-										key={gradient}
-										onClick={() => handleGradientSelect(gradient)}
-										style={{ background: gradient }}
-										type="button"
-									/>
-								))}
-							</div>
-						</Tab>
-						<Tab key="upload" title="Upload">
-							<div>
-								<input
-									accept="image/*"
-									className="hidden"
-									onChange={handleFileInputChange}
-									ref={fileInputRef}
-									type="file"
-								/>
-								{uploadPreview ? (
-									<div className="relative flex flex-col items-center gap-4">
-										<div
-											className="aspect-square w-32 overflow-hidden rounded-lg bg-center bg-cover shadow-md"
-											style={{ backgroundImage: `url(${uploadPreview})` }}
+		<Modal.Backdrop isOpen={isOpen} onOpenChange={(open) => !open && handleClose()}>
+			<Modal.Container>
+				<Modal.Dialog>
+					<Modal.CloseTrigger />
+					<Modal.Header>
+						<Modal.Heading>Select Image</Modal.Heading>
+					</Modal.Header>
+					<Modal.Body className="gap-4">
+						<Tabs selectedKey={selectedTab} onSelectionChange={(key) => setSelectedTab(key as string)}>
+							<Tabs.ListContainer>
+								<Tabs.List aria-label="Image picker tabs">
+									<Tabs.Tab id="gallery">
+										Gallery
+										<Tabs.Indicator />
+									</Tabs.Tab>
+									<Tabs.Tab id="upload">
+										Upload
+										<Tabs.Indicator />
+									</Tabs.Tab>
+								</Tabs.List>
+							</Tabs.ListContainer>
+							<Tabs.Panel id="gallery">
+								<div className="grid grid-cols-4 gap-2">
+									{gradients.map((gradient) => (
+										<button
+											className={`aspect-square cursor-pointer rounded-lg shadow-md transition-all hover:scale-105 ${
+												selectedGradient === gradient ? "ring-3 ring-primary ring-offset-2" : ""
+											}`}
+											key={gradient}
+											onClick={() => handleGradientSelect(gradient)}
+											style={{ background: gradient }}
+											type="button"
 										/>
-										<Button
-											color="danger"
-											onPress={() => {
-												setUploadedFile(null)
-												setUploadPreview(null)
-												if (fileInputRef.current) {
-													fileInputRef.current.value = ""
-												}
-											}}
-											size="sm"
-											variant="flat"
-										>
-											Remove
-										</Button>
-									</div>
-								) : (
-									<button
-										className={`flex min-h-[200px] w-full cursor-pointer flex-col items-center justify-center gap-3 rounded-lg border-2 border-dashed transition-colors ${
-											isDragging ? "border-primary bg-primary/10" : "border-gray-300 hover:border-primary"
-										}`}
-										onClick={() => fileInputRef.current?.click()}
-										onDragLeave={handleDragLeave}
-										onDragOver={handleDragOver}
-										onDrop={handleDrop}
-										type="button"
-									>
-										<TablerCloudUpload className="size-12 text-gray-400" />
-										<div className="text-center">
-											<p className="font-medium text-gray-600">Drag & drop your image here</p>
-											<p className="text-gray-400 text-sm">or click to browse</p>
+									))}
+								</div>
+							</Tabs.Panel>
+							<Tabs.Panel id="upload">
+								<div>
+									<input
+										accept="image/*"
+										className="hidden"
+										onChange={handleFileInputChange}
+										ref={fileInputRef}
+										type="file"
+									/>
+									{uploadPreview ? (
+										<div className="relative flex flex-col items-center gap-4">
+											<div
+												className="aspect-square w-32 overflow-hidden rounded-lg bg-center bg-cover shadow-md"
+												style={{ backgroundImage: `url(${uploadPreview})` }}
+											/>
+											<Button
+												color="danger"
+												onPress={() => {
+													setUploadedFile(null)
+													setUploadPreview(null)
+													if (fileInputRef.current) {
+														fileInputRef.current.value = ""
+													}
+												}}
+												size="sm"
+												variant="flat"
+											>
+												Remove
+											</Button>
 										</div>
-									</button>
-								)}
-							</div>
-						</Tab>
-					</Tabs>
-				</ModalBody>
-				<ModalFooter className="p-0">
-					<Button color="primary" fullWidth isDisabled={isUploadDisabled} onPress={handleUpload}>
-						Select
-					</Button>
-				</ModalFooter>
-			</ModalContent>
-		</Modal>
+									) : (
+										<button
+											className={`flex min-h-[200px] w-full cursor-pointer flex-col items-center justify-center gap-3 rounded-lg border-2 border-dashed transition-colors ${
+												isDragging ? "border-primary bg-primary/10" : "border-gray-300 hover:border-primary"
+											}`}
+											onClick={() => fileInputRef.current?.click()}
+											onDragLeave={handleDragLeave}
+											onDragOver={handleDragOver}
+											onDrop={handleDrop}
+											type="button"
+										>
+											<TablerCloudUpload className="size-12 text-gray-400" />
+											<div className="text-center">
+												<p className="font-medium text-gray-600">Drag & drop your image here</p>
+												<p className="text-gray-400 text-sm">or click to browse</p>
+											</div>
+										</button>
+									)}
+								</div>
+							</Tabs.Panel>
+						</Tabs>
+					</Modal.Body>
+					<Modal.Footer>
+						<Button color="primary" fullWidth isDisabled={isUploadDisabled} onPress={handleUpload}>
+							Select
+						</Button>
+					</Modal.Footer>
+				</Modal.Dialog>
+			</Modal.Container>
+		</Modal.Backdrop>
 	)
 }
 

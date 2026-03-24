@@ -1,4 +1,4 @@
-import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, addToast } from "@heroui/react"
+import { Button, Modal, toast } from "@heroui/react"
 import { useAtomValue } from "jotai"
 
 import { getErrorMessage } from "@/utils/error"
@@ -24,10 +24,9 @@ const DeactivateRoomModal = ({ onSuccess }: DeactivateRoomModalProps) => {
 				onSuccess?.()
 			},
 			onError: (error) => {
-				addToast({
-					title: "Failed to deactivate room",
+				toast("Failed to deactivate room", {
 					description: getErrorMessage(error),
-					color: "danger",
+					variant: "danger",
 				})
 			},
 		})
@@ -41,41 +40,40 @@ const DeactivateRoomModal = ({ onSuccess }: DeactivateRoomModalProps) => {
 	}
 
 	return (
-		<Modal
-			classNames={{ closeButton: "cursor-pointer" }}
-			isOpen={isOpen}
-			onOpenChange={(open) => !open && handleClose()}
-			placement="center"
-			size="sm"
-		>
-			<ModalContent>
-				<ModalHeader className="flex flex-col items-center gap-2 pb-0">
-					<div className="flex size-12 items-center justify-center rounded-full bg-danger-100">
-						<TablerAlertTriangle className="size-6 text-danger" />
-					</div>
-				</ModalHeader>
-				<ModalBody className="py-4 text-center">
-					<p className="text-default-600">
-						Are you sure you want to deactivate <strong>{roomName}</strong>?
-					</p>
-					<p className="text-default-400 text-sm">You can reactivate this room later from the deactivated list.</p>
-				</ModalBody>
-				<ModalFooter className="flex-col gap-2">
-					<Button
-						color="danger"
-						fullWidth
-						isLoading={inactivateMutation.isPending}
-						onPress={handleDeactivate}
-						size="md"
-					>
-						Deactivate
-					</Button>
-					<Button color="default" fullWidth isDisabled={inactivateMutation.isPending} onPress={handleClose} size="md">
-						Cancel
-					</Button>
-				</ModalFooter>
-			</ModalContent>
-		</Modal>
+		<Modal.Backdrop isOpen={isOpen} onOpenChange={(open) => !open && handleClose()}>
+			<Modal.Container>
+				<Modal.Dialog>
+					<Modal.CloseTrigger />
+					<Modal.Header>
+						<div className="flex flex-col items-center gap-2 pb-0">
+							<div className="flex size-12 items-center justify-center rounded-full bg-danger-100">
+								<TablerAlertTriangle className="size-6 text-danger" />
+							</div>
+						</div>
+					</Modal.Header>
+					<Modal.Body className="py-4 text-center">
+						<p className="text-default-600">
+							Are you sure you want to deactivate <strong>{roomName}</strong>?
+						</p>
+						<p className="text-default-400 text-sm">You can reactivate this room later from the deactivated list.</p>
+					</Modal.Body>
+					<Modal.Footer className="flex-col gap-2">
+						<Button
+							color="danger"
+							fullWidth
+							isLoading={inactivateMutation.isPending}
+							onPress={handleDeactivate}
+							size="md"
+						>
+							Deactivate
+						</Button>
+						<Button color="default" fullWidth isDisabled={inactivateMutation.isPending} onPress={handleClose} size="md">
+							Cancel
+						</Button>
+					</Modal.Footer>
+				</Modal.Dialog>
+			</Modal.Container>
+		</Modal.Backdrop>
 	)
 }
 

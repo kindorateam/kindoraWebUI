@@ -1,6 +1,5 @@
-import { Button, Select, SelectItem, Skeleton } from "@heroui/react"
-import { useInfiniteScroll } from "@heroui/use-infinite-scroll"
-import { useState } from "react"
+import { Button, Label, ListBox, Select, Skeleton } from "@heroui/react"
+import { useEffect, useRef } from "react"
 import { Controller, useFormContext } from "react-hook-form"
 
 import { getErrorMessage } from "@/utils/error"
@@ -51,25 +50,33 @@ const AddStaffStudentsStep = () => {
 	const isError = isStudentsError || isEmployeesError
 	const error = studentsError || employeesError
 
-	// Track when each Select dropdown is open for infinite scroll
-	const [isEmployeesSelectOpen, setIsEmployeesSelectOpen] = useState(false)
-	const [isStudentsSelectOpen, setIsStudentsSelectOpen] = useState(false)
+	// IntersectionObserver-based infinite scroll for employees
+	const employeesObserverRef = useRef<HTMLDivElement>(null)
+	useEffect(() => {
+		if (!employeesObserverRef.current || !hasNextEmployees || isFetchingNextEmployees) return
+		const observer = new IntersectionObserver(
+			([entry]) => {
+				if (entry.isIntersecting) fetchNextEmployees()
+			},
+			{ threshold: 0.5 },
+		)
+		observer.observe(employeesObserverRef.current)
+		return () => observer.disconnect()
+	}, [hasNextEmployees, isFetchingNextEmployees, fetchNextEmployees])
 
-	// Infinite scroll for employees list - enabled when dropdown is open
-	const [, employeesScrollerRef] = useInfiniteScroll({
-		hasMore: hasNextEmployees ?? false,
-		isEnabled: isEmployeesSelectOpen,
-		shouldUseLoader: false,
-		onLoadMore: fetchNextEmployees,
-	})
-
-	// Infinite scroll for students list - enabled when dropdown is open
-	const [, studentsScrollerRef] = useInfiniteScroll({
-		hasMore: hasNextStudents ?? false,
-		isEnabled: isStudentsSelectOpen,
-		shouldUseLoader: false,
-		onLoadMore: fetchNextStudents,
-	})
+	// IntersectionObserver-based infinite scroll for students
+	const studentsObserverRef = useRef<HTMLDivElement>(null)
+	useEffect(() => {
+		if (!studentsObserverRef.current || !hasNextStudents || isFetchingNextStudents) return
+		const observer = new IntersectionObserver(
+			([entry]) => {
+				if (entry.isIntersecting) fetchNextStudents()
+			},
+			{ threshold: 0.5 },
+		)
+		observer.observe(studentsObserverRef.current)
+		return () => observer.disconnect()
+	}, [hasNextStudents, isFetchingNextStudents, fetchNextStudents])
 
 	const refetchAll = () => Promise.all([refetchStudents(), refetchEmployees()])
 
@@ -109,28 +116,35 @@ const AddStaffStudentsStep = () => {
 					name="staffIds"
 					render={({ field }) => (
 						<Select
-							errorMessage={errors.staffIds?.message}
 							isInvalid={!!errors.staffIds}
-							isLoading={isFetchingNextEmployees}
-							items={employees}
-							label="Add staff"
-							labelPlacement="inside"
-							listboxProps={{
-								emptyContent: "No staff members available",
-							}}
-							maxListboxHeight={256}
-							onOpenChange={setIsEmployeesSelectOpen}
+							selectedKeys={new Set(field.value || [])}
+							selectionMode="multiple"
 							onSelectionChange={(keys) => {
 								field.onChange(Array.from(keys) as string[])
 							}}
-							placeholder="Select staff members"
-							radius="md"
-							scrollRef={employeesScrollerRef}
-							selectedKeys={new Set(field.value || [])}
-							selectionMode="multiple"
-							variant="flat"
 						>
-							{(employee) => <SelectItem key={employee.id}>{employee.name}</SelectItem>}
+							<Label>Add staff</Label>
+							<Select.Trigger>
+								<Select.Value placeholder="Select staff members" />
+								<Select.Indicator />
+							</Select.Trigger>
+							<Select.Popover>
+								<ListBox>
+									{employees.map((employee) => (
+										<ListBox.Item id={employee.id} key={employee.id} textValue={employee.name}>
+											{employee.name}
+											<ListBox.ItemIndicator />
+										</ListBox.Item>
+									))}
+									{isFetchingNextEmployees && (
+										<ListBox.Item id="loading-employees" textValue="Loading...">
+											<span className="text-default-400 text-sm">Loading more...</span>
+										</ListBox.Item>
+									)}
+								</ListBox>
+								<div ref={employeesObserverRef} />
+							</Select.Popover>
+							{errors.staffIds?.message && <span className="text-danger text-xs">{errors.staffIds.message}</span>}
 						</Select>
 					)}
 				/>
@@ -140,28 +154,35 @@ const AddStaffStudentsStep = () => {
 					name="studentIds"
 					render={({ field }) => (
 						<Select
-							errorMessage={errors.studentIds?.message}
 							isInvalid={!!errors.studentIds}
-							isLoading={isFetchingNextStudents}
-							items={students}
-							label="Add students"
-							labelPlacement="inside"
-							listboxProps={{
-								emptyContent: "No students available",
-							}}
-							maxListboxHeight={256}
-							onOpenChange={setIsStudentsSelectOpen}
+							selectedKeys={new Set(field.value || [])}
+							selectionMode="multiple"
 							onSelectionChange={(keys) => {
 								field.onChange(Array.from(keys) as string[])
 							}}
-							placeholder="Select students"
-							radius="md"
-							scrollRef={studentsScrollerRef}
-							selectedKeys={new Set(field.value || [])}
-							selectionMode="multiple"
-							variant="flat"
 						>
-							{(student) => <SelectItem key={student.id}>{student.name}</SelectItem>}
+							<Label>Add students</Label>
+							<Select.Trigger>
+								<Select.Value placeholder="Select students" />
+								<Select.Indicator />
+							</Select.Trigger>
+							<Select.Popover>
+								<ListBox>
+									{students.map((student) => (
+										<ListBox.Item id={student.id} key={student.id} textValue={student.name}>
+											{student.name}
+											<ListBox.ItemIndicator />
+										</ListBox.Item>
+									))}
+									{isFetchingNextStudents && (
+										<ListBox.Item id="loading-students" textValue="Loading...">
+											<span className="text-default-400 text-sm">Loading more...</span>
+										</ListBox.Item>
+									)}
+								</ListBox>
+								<div ref={studentsObserverRef} />
+							</Select.Popover>
+							{errors.studentIds?.message && <span className="text-danger text-xs">{errors.studentIds.message}</span>}
 						</Select>
 					)}
 				/>

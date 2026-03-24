@@ -1,4 +1,4 @@
-import { Modal, ModalBody, ModalContent, addToast } from "@heroui/react"
+import { Modal, toast } from "@heroui/react"
 import { useAtomValue } from "jotai"
 
 import { getErrorMessage } from "@/utils/error"
@@ -28,10 +28,9 @@ const AddRoomModal = () => {
 							},
 							onError: (error) => {
 								// Room created but logo upload failed
-								addToast({
-									title: "Room created but logo upload failed",
+								toast("Room created but logo upload failed", {
 									description: getErrorMessage(error),
-									color: "warning",
+									variant: "warning",
 								})
 								closeAddRoomModal()
 							},
@@ -42,10 +41,9 @@ const AddRoomModal = () => {
 				}
 			},
 			onError: (error) => {
-				addToast({
-					title: "Failed to create room",
+				toast("Failed to create room", {
 					description: getErrorMessage(error),
-					color: "danger",
+					variant: "danger",
 				})
 			},
 		})
@@ -58,19 +56,16 @@ const AddRoomModal = () => {
 	const isLoading = createRoomMutation.isPending || updateLogoMutation.isPending
 
 	return (
-		<Modal
-			classNames={{ closeButton: "cursor-pointer" }}
-			isOpen={isOpen}
-			onOpenChange={(open) => !open && closeAddRoomModal()}
-			placement="center"
-			size="md"
-		>
-			<ModalContent>
-				<ModalBody className="p-0">
-					<AddRoomStepper isLoading={isLoading} onCancel={handleCancel} onComplete={handleComplete} />
-				</ModalBody>
-			</ModalContent>
-		</Modal>
+		<Modal.Backdrop isOpen={isOpen} onOpenChange={(open) => !open && closeAddRoomModal()}>
+			<Modal.Container>
+				<Modal.Dialog>
+					<Modal.CloseTrigger />
+					<Modal.Body className="p-0">
+						<AddRoomStepper isLoading={isLoading} onCancel={handleCancel} onComplete={handleComplete} />
+					</Modal.Body>
+				</Modal.Dialog>
+			</Modal.Container>
+		</Modal.Backdrop>
 	)
 }
 
