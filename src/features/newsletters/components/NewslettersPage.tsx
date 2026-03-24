@@ -1,4 +1,5 @@
-import { Tab, Tabs, useDisclosure } from "@heroui/react"
+import { Tabs } from "@heroui/react"
+import { useState } from "react"
 
 import SubHeader from "@/components/SubHeader"
 
@@ -13,25 +14,31 @@ interface NewslettersPageProps {
 }
 
 export default function NewslettersPage({ activeTab, onTabChange }: NewslettersPageProps) {
-	const { isOpen, onOpen, onOpenChange } = useDisclosure()
+	const [isOpen, setIsOpen] = useState(false)
+	const onOpen = () => setIsOpen(true)
+	const onOpenChange = setIsOpen
 
 	return (
 		<div>
 			<SubHeader
 				bottomSlot={
-					<Tabs
-						aria-label="Newsletters tabs"
-						classNames={{ tabList: "shadow-md" }}
-						color="primary"
-						onSelectionChange={(key) => onTabChange(key as TabKey)}
-						radius="sm"
-						selectedKey={activeTab}
-						size="sm"
-						variant="solid"
-					>
-						<Tab key="sent" title="Sent" />
-						<Tab key="scheduled" title="Scheduled" />
-						<Tab key="drafts" title="Drafts" />
+					<Tabs selectedKey={activeTab} onSelectionChange={(key) => onTabChange(key as TabKey)}>
+						<Tabs.ListContainer>
+							<Tabs.List aria-label="Newsletters tabs">
+								<Tabs.Tab id="sent">
+									Sent
+									<Tabs.Indicator />
+								</Tabs.Tab>
+								<Tabs.Tab id="scheduled">
+									Scheduled
+									<Tabs.Indicator />
+								</Tabs.Tab>
+								<Tabs.Tab id="drafts">
+									Drafts
+									<Tabs.Indicator />
+								</Tabs.Tab>
+							</Tabs.List>
+						</Tabs.ListContainer>
 					</Tabs>
 				}
 			/>

@@ -18,7 +18,7 @@ export const HeaderFooterButton = ({
 	isActive = false,
 	isDisabled = false,
 }: HeaderFooterButtonProps) => (
-	<Tooltip closeDelay={0} content={tooltip} delay={500}>
+	<Tooltip delay={500}>
 		<Button
 			isIconOnly
 			isDisabled={isDisabled}
@@ -29,6 +29,7 @@ export const HeaderFooterButton = ({
 		>
 			{icon}
 		</Button>
+		<Tooltip.Content>{tooltip}</Tooltip.Content>
 	</Tooltip>
 )
 

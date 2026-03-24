@@ -1,15 +1,4 @@
-import {
-	Button,
-	Card,
-	CardBody,
-	Spinner,
-	Table,
-	TableBody,
-	TableCell,
-	TableColumn,
-	TableHeader,
-	TableRow,
-} from "@heroui/react"
+import { Button, Card, Spinner, Table } from "@heroui/react"
 
 import TablerCirclePlusFilled from "~icons/tabler/circle-plus-filled"
 
@@ -37,48 +26,41 @@ const NewslettersTable = ({ onCreateNew }: NewslettersTableProps) => {
 
 	return (
 		<Card>
-			<CardBody className="p-4">
-				<Table
-					aria-label="Newsletters table"
-					removeWrapper
-					topContent={
-						<div className="flex items-center justify-end">
-							<Button
-								color="primary"
-								endContent={<TablerCirclePlusFilled className="size-5 text-white" />}
-								onPress={onCreateNew}
-							>
-								Create New
-							</Button>
-						</div>
-					}
-					topContentPlacement="outside"
-					classNames={{
-						base: "min-h-[595.5px]",
-						tr: "border-b border-default-200 last:border-b-0",
-						th: "py-0",
-						td: "py-0",
-						tbody: "[&>tr]:h-[55px]",
-						emptyWrapper: "h-[550px]",
-					}}
-				>
-					<TableHeader columns={columns}>
-						{(column) => <TableColumn key={column.key}>{column.label}</TableColumn>}
-					</TableHeader>
-					<TableBody
-						emptyContent="No newsletters sent"
-						items={isLoading ? [] : newsletters}
-						isLoading={isLoading}
-						loadingContent={<Spinner size="lg" />}
+			<Card.Content className="p-4">
+				<div className="flex items-center justify-end mb-2">
+					<Button
+						color="primary"
+						endContent={<TablerCirclePlusFilled className="size-5 text-white" />}
+						onPress={onCreateNew}
 					>
-						{(newsletter) => (
-							<TableRow key={newsletter.id}>
-								{(columnKey) => <TableCell>{renderCell(newsletter, columnKey)}</TableCell>}
-							</TableRow>
-						)}
-					</TableBody>
+						Create New
+					</Button>
+				</div>
+				<Table aria-label="Newsletters table">
+					<Table.ScrollContainer minWidth={500}>
+						<Table.Content>
+							<Table.Header columns={columns}>
+								{(column) => <Table.Column id={column.key}>{column.label}</Table.Column>}
+							</Table.Header>
+							<Table.Body
+								items={isLoading ? [] : newsletters}
+								renderEmptyState={() => <div className="py-8 text-center text-default-400">No newsletters sent</div>}
+							>
+								{(newsletter) => (
+									<Table.Row id={newsletter.id}>
+										{(columnKey) => <Table.Cell>{renderCell(newsletter, columnKey)}</Table.Cell>}
+									</Table.Row>
+								)}
+							</Table.Body>
+						</Table.Content>
+					</Table.ScrollContainer>
 				</Table>
-			</CardBody>
+				{isLoading && (
+					<div className="flex justify-center py-8">
+						<Spinner size="lg" />
+					</div>
+				)}
+			</Card.Content>
 		</Card>
 	)
 }

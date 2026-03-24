@@ -1,4 +1,4 @@
-import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from "@heroui/react"
+import { Button, Modal } from "@heroui/react"
 import { useEffect, useState } from "react"
 
 import { hasNewsletterContent } from "../../utils/newsletter-content"
@@ -43,34 +43,27 @@ const CreateNewsletterModal = ({ isOpen, onOpenChange }: CreateNewsletterModalPr
 	const prevStep = () => setCurrentStep(1)
 
 	return (
-		<Modal
-			classNames={{
-				closeButton: "cursor-pointer",
-				base: "max-h-[90vh]",
-			}}
-			isOpen={isOpen}
-			onOpenChange={onOpenChange}
-			placement="center"
-			size="5xl"
-			scrollBehavior="inside"
-		>
-			<ModalContent>
-				{() => (
-					<>
-						<ModalHeader className="flex justify-between">
-							<span className="font-semibold text-xl">Create newsletter</span>
+		<Modal.Backdrop isOpen={isOpen} onOpenChange={onOpenChange}>
+			<Modal.Container>
+				<Modal.Dialog className="max-h-[90vh] w-full max-w-5xl">
+					<Modal.CloseTrigger />
+					<Modal.Header>
+						<div className="flex w-full justify-between">
+							<Modal.Heading className="font-semibold text-xl">Create newsletter</Modal.Heading>
 							<span className="text-default-500 text-sm">Step {currentStep}/2</span>
-						</ModalHeader>
+						</div>
+					</Modal.Header>
 
-						<ModalBody className="min-h-[500px] overflow-y-auto p-0">
-							{currentStep === 1 ? (
-								<Step1Editor content={content} onChange={setContent} onLoadTemplate={setContent} />
-							) : (
-								<Step2Preview content={content} />
-							)}
-						</ModalBody>
+					<Modal.Body className="min-h-[500px] overflow-y-auto p-0">
+						{currentStep === 1 ? (
+							<Step1Editor content={content} onChange={setContent} onLoadTemplate={setContent} />
+						) : (
+							<Step2Preview content={content} />
+						)}
+					</Modal.Body>
 
-						<ModalFooter className="flex justify-between">
+					<Modal.Footer>
+						<div className="flex w-full justify-between">
 							{currentStep === 1 ? (
 								<>
 									<Button color="default" onPress={handleAddToTemplates} variant="light">
@@ -98,11 +91,11 @@ const CreateNewsletterModal = ({ isOpen, onOpenChange }: CreateNewsletterModalPr
 									</div>
 								</>
 							)}
-						</ModalFooter>
-					</>
-				)}
-			</ModalContent>
-		</Modal>
+						</div>
+					</Modal.Footer>
+				</Modal.Dialog>
+			</Modal.Container>
+		</Modal.Backdrop>
 	)
 }
 

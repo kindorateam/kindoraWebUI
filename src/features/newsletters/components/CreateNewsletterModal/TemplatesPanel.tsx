@@ -1,4 +1,4 @@
-import { Card, CardBody } from "@heroui/react"
+import { Card } from "@heroui/react"
 
 interface Template {
 	id: string
@@ -49,9 +49,9 @@ const TemplatesPanel = ({ onSelectTemplate }: TemplatesPanelProps) => {
 					onPress={() => onSelectTemplate(template.html)}
 					shadow="none"
 				>
-					<CardBody className="p-3">
+					<Card.Content className="p-3">
 						<p className="font-medium text-sm">{template.name}</p>
-					</CardBody>
+					</Card.Content>
 				</Card>
 			))}
 		</div>

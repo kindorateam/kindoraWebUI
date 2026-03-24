@@ -1,4 +1,4 @@
-import { Card, CardBody } from "@heroui/react"
+import { Card } from "@heroui/react"
 
 import { hasNewsletterContent } from "../../utils/newsletter-content"
 
@@ -22,10 +22,10 @@ const Step2Preview = ({ content }: Step2PreviewProps) => {
 			<p className="mb-4 text-center text-default-500 text-sm">Preview how your newsletter will appear to recipients</p>
 
 			<Card className="border border-default-200" shadow="sm">
-				<CardBody className="p-8">
+				<Card.Content className="p-8">
 					{/* biome-ignore lint/security/noDangerouslySetInnerHtml: Content comes from local editor state. */}
 					<div className="newsletter-editor newsletter-preview" dangerouslySetInnerHTML={{ __html: content }} />
-				</CardBody>
+				</Card.Content>
 			</Card>
 		</div>
 	)

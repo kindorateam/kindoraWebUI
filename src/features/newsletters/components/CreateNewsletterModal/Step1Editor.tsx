@@ -1,4 +1,4 @@
-import { Tab, Tabs } from "@heroui/react"
+import { Tabs } from "@heroui/react"
 import { useState } from "react"
 
 import NewsletterEditor from "./NewsletterEditor"
@@ -18,17 +18,19 @@ const Step1Editor = ({ content, onChange, onLoadTemplate }: Step1EditorProps) =>
 			{/* Left Panel - Tabs */}
 			<div className="w-48 shrink-0 border-r">
 				<div className="p-3">
-					<Tabs
-						aria-label="Editor panels"
-						classNames={{ tabList: "w-full" }}
-						fullWidth
-						onSelectionChange={(key) => setActiveTab(key as "editor" | "templates")}
-						selectedKey={activeTab}
-						size="sm"
-						variant="solid"
-					>
-						<Tab key="editor" title="Editor" />
-						<Tab key="templates" title="Templates" />
+					<Tabs selectedKey={activeTab} onSelectionChange={(key) => setActiveTab(key as "editor" | "templates")}>
+						<Tabs.ListContainer>
+							<Tabs.List aria-label="Editor panels" className="w-full">
+								<Tabs.Tab id="editor">
+									Editor
+									<Tabs.Indicator />
+								</Tabs.Tab>
+								<Tabs.Tab id="templates">
+									Templates
+									<Tabs.Indicator />
+								</Tabs.Tab>
+							</Tabs.List>
+						</Tabs.ListContainer>
 					</Tabs>
 				</div>
 

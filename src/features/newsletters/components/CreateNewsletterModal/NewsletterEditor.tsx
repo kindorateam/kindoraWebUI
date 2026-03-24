@@ -1,4 +1,4 @@
-import { Button, Input, Popover, PopoverContent, PopoverTrigger, Tooltip } from "@heroui/react"
+import { Button, Input, Popover, Tooltip } from "@heroui/react"
 import Image from "@tiptap/extension-image"
 import Link from "@tiptap/extension-link"
 import Placeholder from "@tiptap/extension-placeholder"
@@ -51,7 +51,7 @@ interface ToolbarButtonProps {
 }
 
 const ToolbarButton = ({ icon, tooltip, onPress, isActive = false, isDisabled = false }: ToolbarButtonProps) => (
-	<Tooltip content={tooltip} delay={500} closeDelay={0}>
+	<Tooltip delay={500}>
 		<Button
 			isIconOnly
 			isDisabled={isDisabled}
@@ -62,6 +62,7 @@ const ToolbarButton = ({ icon, tooltip, onPress, isActive = false, isDisabled = 
 		>
 			{icon}
 		</Button>
+		<Tooltip.Content>{tooltip}</Tooltip.Content>
 	</Tooltip>
 )
 
@@ -521,62 +522,64 @@ const NewsletterEditor = ({ content, onChange }: NewsletterEditorProps) => {
 
 				{/* Link */}
 				<Popover isOpen={isLinkOpen} onOpenChange={setIsLinkOpen} placement="bottom">
-					<Tooltip content="Insert link" delay={500} closeDelay={0}>
-						<div>
-							<PopoverTrigger>
-								<Button
-									isIconOnly
-									onPress={openLinkPopover}
-									size="sm"
-									tabIndex={-1}
-									variant={editor.isActive("link") ? "flat" : "light"}
-								>
-									<TablerLink className="size-4" />
-								</Button>
-							</PopoverTrigger>
-						</div>
-					</Tooltip>
-					<PopoverContent className="p-2">
-						<div className="flex gap-2">
-							<Input
-								placeholder="https://example.com"
+					<Tooltip delay={500}>
+						<Popover.Trigger>
+							<Button
+								isIconOnly
+								onPress={openLinkPopover}
 								size="sm"
-								value={linkUrl}
-								onKeyDown={(e) => e.key === "Enter" && setLink()}
-								onValueChange={setLinkUrl}
-							/>
-							<Button color="primary" onPress={setLink} size="sm">
-								{linkUrl ? "Set" : "Remove"}
+								tabIndex={-1}
+								variant={editor.isActive("link") ? "flat" : "light"}
+							>
+								<TablerLink className="size-4" />
 							</Button>
-						</div>
-					</PopoverContent>
+						</Popover.Trigger>
+						<Tooltip.Content>Insert link</Tooltip.Content>
+					</Tooltip>
+					<Popover.Content>
+						<Popover.Dialog className="p-2">
+							<div className="flex gap-2">
+								<Input
+									placeholder="https://example.com"
+									size="sm"
+									value={linkUrl}
+									onKeyDown={(e) => e.key === "Enter" && setLink()}
+									onValueChange={setLinkUrl}
+								/>
+								<Button color="primary" onPress={setLink} size="sm">
+									{linkUrl ? "Set" : "Remove"}
+								</Button>
+							</div>
+						</Popover.Dialog>
+					</Popover.Content>
 				</Popover>
 
 				{/* Image */}
 				<Popover isOpen={isImageOpen} onOpenChange={setIsImageOpen} placement="bottom">
-					<Tooltip content="Insert image" delay={500} closeDelay={0}>
-						<div>
-							<PopoverTrigger>
-								<Button isIconOnly size="sm" tabIndex={-1} variant="light">
-									<TablerPhoto className="size-4" />
-								</Button>
-							</PopoverTrigger>
-						</div>
-					</Tooltip>
-					<PopoverContent className="p-2">
-						<div className="flex gap-2">
-							<Input
-								placeholder="Image URL"
-								size="sm"
-								value={imageUrl}
-								onKeyDown={(e) => e.key === "Enter" && addImage()}
-								onValueChange={setImageUrl}
-							/>
-							<Button color="primary" isDisabled={!imageUrl} onPress={addImage} size="sm">
-								Add
+					<Tooltip delay={500}>
+						<Popover.Trigger>
+							<Button isIconOnly size="sm" tabIndex={-1} variant="light">
+								<TablerPhoto className="size-4" />
 							</Button>
-						</div>
-					</PopoverContent>
+						</Popover.Trigger>
+						<Tooltip.Content>Insert image</Tooltip.Content>
+					</Tooltip>
+					<Popover.Content>
+						<Popover.Dialog className="p-2">
+							<div className="flex gap-2">
+								<Input
+									placeholder="Image URL"
+									size="sm"
+									value={imageUrl}
+									onKeyDown={(e) => e.key === "Enter" && addImage()}
+									onValueChange={setImageUrl}
+								/>
+								<Button color="primary" isDisabled={!imageUrl} onPress={addImage} size="sm">
+									Add
+								</Button>
+							</div>
+						</Popover.Dialog>
+					</Popover.Content>
 				</Popover>
 
 				<ToolbarButton
