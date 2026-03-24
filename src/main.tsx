@@ -1,4 +1,4 @@
-import { HeroUIProvider, ToastProvider } from "@heroui/react"
+import { Toast } from "@heroui/react"
 import { QueryClientProvider } from "@tanstack/react-query"
 import { Provider as JotaiProvider } from "jotai"
 import { createRoot } from "react-dom/client"
@@ -25,10 +25,8 @@ createRoot(rootElement).render(
 	>
 		<JotaiProvider store={appStore}>
 			<QueryClientProvider client={queryClient}>
-				<HeroUIProvider>
-					<ToastProvider />
-					<App />
-				</HeroUIProvider>
+				<Toast.Provider />
+				<App />
 			</QueryClientProvider>
 		</JotaiProvider>
 	</ErrorBoundary>,
