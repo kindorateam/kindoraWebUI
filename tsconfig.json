@@ -1,7 +1,7 @@
 {
 	"compilerOptions": {
-		"target": "ES2022",
-		"lib": ["ES2022", "DOM", "DOM.Iterable"],
+		"target": "ES2025",
+		"lib": ["ES2025", "DOM", "DOM.Iterable"],
 		"jsx": "react-jsx",
 		"module": "ESNext",
 		/* Bundler mode */
@@ -16,12 +16,10 @@
 		"noUncheckedIndexedAccess": true,
 		"noImplicitOverride": true,
 		/* Interop Constraints */
-		"esModuleInterop": true,
 		"forceConsistentCasingInFileNames": true,
 		/* Skip Lib Check */
 		"skipLibCheck": true,
 		/* Path Mapping */
-		"baseUrl": ".",
 		"paths": {
 			"@/*": ["./src/*"]
 		},

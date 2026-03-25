@@ -1,11 +1,10 @@
 import fs from "node:fs"
 import tailwindcss from "@tailwindcss/vite"
 import { tanstackRouter } from "@tanstack/router-plugin/vite"
-import react from "@vitejs/plugin-react-swc"
+import react from "@vitejs/plugin-react"
 import Icons from "unplugin-icons/vite"
 import { defineConfig } from "vite"
 import checker from "vite-plugin-checker"
-import tsconfigPaths from "vite-tsconfig-paths"
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -20,12 +19,14 @@ export default defineConfig({
 		}),
 		react(),
 		Icons({ compiler: "jsx", jsx: "react" }),
-		tsconfigPaths(),
 		checker({
 			typescript: true,
 		}),
 		tailwindcss(),
 	],
+	resolve: {
+		tsconfigPaths: true,
+	},
 	server: {
 		hmr: true,
 		https: {
