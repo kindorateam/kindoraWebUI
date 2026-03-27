@@ -1,5 +1,5 @@
 import { Button, Card, Checkbox, FieldError, Input, Label, Link, Separator, TextField } from "@heroui/react"
-import { useCallback, useState } from "react"
+import { useState } from "react"
 import { Controller, useForm } from "react-hook-form"
 
 import { EMAIL_PATTERN } from "../constants"
@@ -32,24 +32,21 @@ const SignInForm = ({ onForgotPassword, onVerificationRequired, defaultEmail }: 
 		mode: "onChange",
 	})
 
-	const onSubmit = useCallback(
-		async (data: SignInFormData) => {
-			try {
-				const result = await handleEmailLogin({
-					email: data.email,
-					password: data.password,
-				})
+	const onSubmit = async (data: SignInFormData) => {
+		try {
+			const result = await handleEmailLogin({
+				email: data.email,
+				password: data.password,
+			})
 
-				if (result?.needsVerification) {
-					const codeSentAt = Date.now()
-					onVerificationRequired?.(result.email, result.message, codeSentAt)
-				}
-			} catch (error) {
-				console.error("[SignInForm] Login failed:", error)
+			if (result?.needsVerification) {
+				const codeSentAt = Date.now()
+				onVerificationRequired?.(result.email, result.message, codeSentAt)
 			}
-		},
-		[handleEmailLogin, onVerificationRequired],
-	)
+		} catch (error) {
+			console.error("[SignInForm] Login failed:", error)
+		}
+	}
 
 	return (
 		<>

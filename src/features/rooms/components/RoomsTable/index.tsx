@@ -1,6 +1,6 @@
 import { Button, EmptyState, Label, Pagination, Spinner, Switch, Table } from "@heroui/react"
 import { useAtom } from "jotai"
-import { useMemo, useState } from "react"
+import { useState } from "react"
 
 import TableError from "@/components/TableError"
 
@@ -22,29 +22,27 @@ const RoomsTable = () => {
 	const startItem = (page - 1) * pageSize + 1
 	const endItem = Math.min(page * pageSize, total)
 
-	const topContent = useMemo(() => {
-		return (
-			<div className="flex items-center justify-end gap-5">
-				<Switch
-					isSelected={viewDeactivated}
-					onChange={(isSelected: boolean) => {
-						setViewDeactivated(isSelected)
-						setPage(1)
-					}}
-				>
-					<Switch.Control>
-						<Switch.Thumb />
-					</Switch.Control>
-					<Switch.Content>
-						<Label className="text-sm">View deactivated</Label>
-					</Switch.Content>
-				</Switch>
-				<Button variant="primary" onPress={openAddRoomModal}>
-					Add Room
-				</Button>
-			</div>
-		)
-	}, [viewDeactivated, setViewDeactivated])
+	const topContent = (
+		<div className="flex items-center justify-end gap-5">
+			<Switch
+				isSelected={viewDeactivated}
+				onChange={(isSelected: boolean) => {
+					setViewDeactivated(isSelected)
+					setPage(1)
+				}}
+			>
+				<Switch.Control>
+					<Switch.Thumb />
+				</Switch.Control>
+				<Switch.Content>
+					<Label className="text-sm">View deactivated</Label>
+				</Switch.Content>
+			</Switch>
+			<Button variant="primary" onPress={openAddRoomModal}>
+				Add Room
+			</Button>
+		</div>
+	)
 
 	return (
 		<div className="flex flex-col gap-4">

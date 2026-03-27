@@ -1,6 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router"
 import { useAtom } from "jotai"
-import { memo, useCallback, useMemo } from "react"
 
 import Logo from "@/assets/svg/logo.svg?no-inline"
 import { navDrawerExpandedItemsAtom, toggleNavDrawerItemAtom } from "@/stores"
@@ -11,50 +10,37 @@ import navDrawerData from "./navDrawer.data.tsx"
 
 import type { NavDrawerItem } from "./navDrawer.types"
 
-const NavDrawer = memo(() => {
+const NavDrawer = () => {
 	const matches = useRouterState({ select: (s) => s.matches })
 	const [manuallyExpandedItems] = useAtom(navDrawerExpandedItemsAtom)
 	const [, toggleExpanded] = useAtom(toggleNavDrawerItemAtom)
 
-	const isPathActive = useCallback(
-		(path: string) => matches.some((m) => m.pathname === path || m.pathname.startsWith(`${path}/`)),
-		[matches],
-	)
+	const isPathActive = (path: string) => matches.some((m) => m.pathname === path || m.pathname.startsWith(`${path}/`))
 
-	const hasActiveChild = useCallback(
-		(item: NavDrawerItem): boolean => {
-			if (!item.children) return false
-			return item.children.some((child) => isPathActive(child.path))
-		},
-		[isPathActive],
-	)
+	const hasActiveChild = (item: NavDrawerItem): boolean => {
+		if (!item.children) return false
+		return item.children.some((child) => isPathActive(child.path))
+	}
 
-	const autoExpandedItems = useMemo(() => navDrawerData.filter(hasActiveChild).map((i) => i.label), [hasActiveChild])
+	const autoExpandedItems = navDrawerData.filter(hasActiveChild).map((i) => i.label)
 
-	const expandedItems = useMemo(() => {
-		const combined = new Set([...autoExpandedItems, ...manuallyExpandedItems])
-		return Array.from(combined)
-	}, [autoExpandedItems, manuallyExpandedItems])
+	const combined = new Set([...autoExpandedItems, ...manuallyExpandedItems])
+	const expandedItems = Array.from(combined)
 
-	const handleToggleExpanded = useCallback(
-		(itemLabel: string) => {
-			toggleExpanded(itemLabel)
-		},
-		[toggleExpanded],
-	)
+	const handleToggleExpanded = (itemLabel: string) => {
+		toggleExpanded(itemLabel)
+	}
 
-	const menuItems = useMemo(() => {
-		return navDrawerData.map((item) => {
-			const hasChildren = item.children && item.children.length > 0
-			const isExpanded = expandedItems.includes(item.label)
+	const menuItems = navDrawerData.map((item) => {
+		const hasChildren = item.children && item.children.length > 0
+		const isExpanded = expandedItems.includes(item.label)
 
-			if (hasChildren) {
-				return <NavGroup isExpanded={isExpanded} item={item} key={item.label} onToggle={handleToggleExpanded} />
-			}
+		if (hasChildren) {
+			return <NavGroup isExpanded={isExpanded} item={item} key={item.label} onToggle={handleToggleExpanded} />
+		}
 
-			return <NavItem item={item} key={item.label} />
-		})
-	}, [expandedItems, handleToggleExpanded])
+		return <NavItem item={item} key={item.label} />
+	})
 
 	return (
 		<div className="relative h-screen">
@@ -70,8 +56,6 @@ const NavDrawer = memo(() => {
 			</aside>
 		</div>
 	)
-})
-
-NavDrawer.displayName = "NavDrawer"
+}
 
 export default NavDrawer

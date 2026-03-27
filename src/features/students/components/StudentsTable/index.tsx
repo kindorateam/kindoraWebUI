@@ -1,6 +1,6 @@
 import { Button, Card, Spinner, Table } from "@heroui/react"
 import { useNavigate } from "@tanstack/react-router"
-import { useCallback, useMemo, useState } from "react"
+import { useState } from "react"
 
 import TableError from "@/components/TableError"
 
@@ -15,27 +15,21 @@ const StudentsTable = () => {
 	const [page, setPage] = useState(1)
 	const { students, total, totalPages, isLoading, error, refetch } = useStudents({ page })
 
-	const handleStudentClick = useCallback(
-		(studentId: string) => {
-			void navigate({
-				to: "/students/$studentId",
-				params: { studentId },
-				search: { tab: "activity" },
-			})
-		},
-		[navigate],
-	)
+	const handleStudentClick = (studentId: string) => {
+		void navigate({
+			to: "/students/$studentId",
+			params: { studentId },
+			search: { tab: "activity" },
+		})
+	}
 
-	const topContent = useMemo(
-		() => (
-			<div className="flex flex-col gap-4">
-				<div className="flex items-center justify-end">
-					<Button variant="primary">Add Student</Button>
-				</div>
-				<span className="text-default-400 text-sm">Total {total} students</span>
+	const topContent = (
+		<div className="flex flex-col gap-4">
+			<div className="flex items-center justify-end">
+				<Button variant="primary">Add Student</Button>
 			</div>
-		),
-		[total],
+			<span className="text-default-400 text-sm">Total {total} students</span>
+		</div>
 	)
 
 	return (

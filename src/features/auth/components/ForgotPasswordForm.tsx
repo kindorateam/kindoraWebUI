@@ -1,5 +1,5 @@
 import { Button, Card, FieldError, Input, Label, TextField } from "@heroui/react"
-import { useCallback, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { Controller, useForm } from "react-hook-form"
 
 import { EMAIL_PATTERN } from "../constants"
@@ -39,7 +39,7 @@ const ForgotPasswordForm = ({ onBack, onNext, defaultEmail }: ForgotPasswordForm
 		}
 	}, [defaultEmail, reset])
 
-	const onSubmit = useCallback(async (data: ForgotPasswordFormData) => {
+	const onSubmit = async (data: ForgotPasswordFormData) => {
 		try {
 			setError(null)
 			await requestPasswordReset(data.email)
@@ -50,13 +50,13 @@ const ForgotPasswordForm = ({ onBack, onNext, defaultEmail }: ForgotPasswordForm
 		} catch (err) {
 			setError(err instanceof Error ? err.message : "Failed to send reset email. Please try again.")
 		}
-	}, [])
+	}
 
-	const handleNext = useCallback(() => {
+	const handleNext = () => {
 		if (codeSentAt) {
 			onNext(submittedEmail, codeSentAt)
 		}
-	}, [onNext, submittedEmail, codeSentAt])
+	}
 
 	if (emailSent) {
 		return <ForgotPasswordConfirmation email={submittedEmail} onNext={handleNext} />

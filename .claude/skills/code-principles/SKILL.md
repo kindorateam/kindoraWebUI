@@ -15,9 +15,7 @@ The simplest solution that works is the right one. Complexity must be earned.
 
 **Don't abstract HeroUI components** (already a Critical Rule in CLAUDE.md). The skill reinforces: a thin wrapper that just forwards props adds indirection for zero benefit. Only wrap when adding real shared logic (form validation, data fetching, complex state).
 
-**Memoize only when measured.** Reach for `useMemo`/`useCallback` only when:
-- You've identified a real performance problem, or
-- Reference identity matters (context values, effect dependencies, memo'd child props)
+**Never manually memoize.** This project uses `babel-plugin-react-compiler`, which auto-memoizes all components and hooks at build time. Do not use `useMemo`, `useCallback`, or `React.memo` — the compiler handles it. If you encounter existing manual memoization, remove it.
 
 **Keep components under ~150 lines.** Past this, extract a child component or a custom hook. The goal isn't a hard rule — it's recognizing that large components are usually doing too much.
 
@@ -109,6 +107,7 @@ While working in a feature, scan nearby files for these patterns:
 | Hook doing data fetch + UI state management | SRP | Split into separate hooks |
 | Props in an interface that nothing passes | YAGNI | Remove unused props |
 | Empty scaffold directories | YAGNI | Remove them |
+| Manual `useMemo`/`useCallback`/`React.memo` | KISS | Remove — React Compiler handles it |
 | Thin HeroUI wrapper that only forwards props | KISS | Remove wrapper, use HeroUI directly |
 | Unused shared component (e.g., DataTable not used by any feature) | YAGNI | Flag for deletion or justify its existence |
 

@@ -1,6 +1,5 @@
 import { Link } from "@tanstack/react-router"
 import clsx from "clsx"
-import { memo, useMemo } from "react"
 
 import type { NavDrawerItem } from "./navDrawer.types"
 
@@ -12,26 +11,24 @@ interface NavGroupProps {
 
 const baseClasses = "flex rounded-[14px] px-4 py-2 text-sm transition-colors"
 
-const NavGroup = memo(({ item, isExpanded, onToggle }: NavGroupProps) => {
+const NavGroup = ({ item, isExpanded, onToggle }: NavGroupProps) => {
 	const controlsId = `group-${item.label.replace(/\s+/g, "-")}`
-	const children = useMemo(() => {
-		return item.children?.map((child) => (
-			<Link
-				activeOptions={{ exact: false }}
-				activeProps={{
-					"aria-current": "page",
-					className: clsx(baseClasses, "bg-brand/20 text-brand"),
-				}}
-				inactiveProps={{
-					className: clsx(baseClasses, "text-neutral-800 hover:bg-brand/5 hover:text-brand"),
-				}}
-				key={child.path}
-				to={child.path}
-			>
-				{child.label}
-			</Link>
-		))
-	}, [item.children])
+	const children = item.children?.map((child) => (
+		<Link
+			activeOptions={{ exact: false }}
+			activeProps={{
+				"aria-current": "page",
+				className: clsx(baseClasses, "bg-brand/20 text-brand"),
+			}}
+			inactiveProps={{
+				className: clsx(baseClasses, "text-neutral-800 hover:bg-brand/5 hover:text-brand"),
+			}}
+			key={child.path}
+			to={child.path}
+		>
+			{child.label}
+		</Link>
+	))
 
 	const handleToggle = () => {
 		onToggle(item.label)
@@ -74,8 +71,6 @@ const NavGroup = memo(({ item, isExpanded, onToggle }: NavGroupProps) => {
 			)}
 		</div>
 	)
-})
-
-NavGroup.displayName = "NavGroup"
+}
 
 export default NavGroup

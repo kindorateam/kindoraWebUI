@@ -8,7 +8,7 @@ import TextAlign from "@tiptap/extension-text-align"
 import Underline from "@tiptap/extension-underline"
 import { EditorContent, NodeViewWrapper, ReactNodeViewRenderer, useEditor } from "@tiptap/react"
 import StarterKit from "@tiptap/starter-kit"
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 
 import { hasNewsletterContent } from "../../utils/newsletter-content"
 
@@ -233,7 +233,7 @@ const NewsletterEditor = ({ content, onChange }: NewsletterEditorProps) => {
 		}
 	}, [content, editor])
 
-	const setLink = useCallback(() => {
+	const setLink = () => {
 		if (!editor) return
 
 		if (linkUrl === "") {
@@ -244,23 +244,23 @@ const NewsletterEditor = ({ content, onChange }: NewsletterEditorProps) => {
 
 		setLinkUrl("")
 		setIsLinkOpen(false)
-	}, [editor, linkUrl])
+	}
 
-	const addImage = useCallback(() => {
+	const addImage = () => {
 		if (!editor || !imageUrl) return
 
 		editor.chain().focus().setImage({ src: imageUrl }).run()
 		setImageUrl("")
 		setIsImageOpen(false)
-	}, [editor, imageUrl])
+	}
 
-	const openLinkPopover = useCallback(() => {
+	const openLinkPopover = () => {
 		if (!editor) return
 
 		const previousUrl = editor.getAttributes("link").href || ""
 		setLinkUrl(previousUrl)
 		setIsLinkOpen(true)
-	}, [editor])
+	}
 
 	const listValue = editor?.isActive("taskList")
 		? "task"
@@ -270,106 +270,97 @@ const NewsletterEditor = ({ content, onChange }: NewsletterEditorProps) => {
 				? "ordered"
 				: "none"
 
-	const handleHeadingChange = useCallback(
-		(event: React.ChangeEvent<HTMLSelectElement>) => {
-			if (!editor) return
+	const handleHeadingChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+		if (!editor) return
 
-			const value = event.target.value
-			if (value === "paragraph") {
-				editor.chain().focus().setParagraph().run()
-				return
-			}
+		const value = event.target.value
+		if (value === "paragraph") {
+			editor.chain().focus().setParagraph().run()
+			return
+		}
 
-			const level = parseHeadingLevel(value)
-			if (level) {
-				editor.chain().focus().setHeading({ level }).run()
-			}
-		},
-		[editor],
-	)
+		const level = parseHeadingLevel(value)
+		if (level) {
+			editor.chain().focus().setHeading({ level }).run()
+		}
+	}
 
-	const handleListChange = useCallback(
-		(event: React.ChangeEvent<HTMLSelectElement>) => {
-			if (!editor) return
+	const handleListChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+		if (!editor) return
 
-			const value = event.target.value
-			suppressListSyncRef.current = false
+		const value = event.target.value
+		suppressListSyncRef.current = false
 
-			if (value === listValue) {
-				if (editor.isActive("bulletList")) {
-					editor.chain().focus().toggleBulletList().run()
-				}
-				if (editor.isActive("orderedList")) {
-					editor.chain().focus().toggleOrderedList().run()
-				}
-				if (editor.isActive("taskList")) {
-					editor.chain().focus().toggleTaskList().run()
-				}
-				setListSelectValue("")
-				return
-			}
-
-			if (listValue !== "none") {
-				if (editor.isActive("bulletList")) {
-					editor.chain().focus().toggleBulletList().run()
-				}
-				if (editor.isActive("orderedList")) {
-					editor.chain().focus().toggleOrderedList().run()
-				}
-				if (editor.isActive("taskList")) {
-					editor.chain().focus().toggleTaskList().run()
-				}
-			}
-
-			if (value === "bullet") {
+		if (value === listValue) {
+			if (editor.isActive("bulletList")) {
 				editor.chain().focus().toggleBulletList().run()
-				setListSelectValue("bullet")
-				return
 			}
-
-			if (value === "ordered") {
+			if (editor.isActive("orderedList")) {
 				editor.chain().focus().toggleOrderedList().run()
-				setListSelectValue("ordered")
-				return
 			}
-
-			if (value === "task") {
+			if (editor.isActive("taskList")) {
 				editor.chain().focus().toggleTaskList().run()
-				setListSelectValue("task")
 			}
-		},
-		[editor, listValue],
-	)
+			setListSelectValue("")
+			return
+		}
 
-	const handleListFocus = useCallback(() => {
+		if (listValue !== "none") {
+			if (editor.isActive("bulletList")) {
+				editor.chain().focus().toggleBulletList().run()
+			}
+			if (editor.isActive("orderedList")) {
+				editor.chain().focus().toggleOrderedList().run()
+			}
+			if (editor.isActive("taskList")) {
+				editor.chain().focus().toggleTaskList().run()
+			}
+		}
+
+		if (value === "bullet") {
+			editor.chain().focus().toggleBulletList().run()
+			setListSelectValue("bullet")
+			return
+		}
+
+		if (value === "ordered") {
+			editor.chain().focus().toggleOrderedList().run()
+			setListSelectValue("ordered")
+			return
+		}
+
+		if (value === "task") {
+			editor.chain().focus().toggleTaskList().run()
+			setListSelectValue("task")
+		}
+	}
+
+	const handleListFocus = () => {
 		if (listValue === "none") return
 		suppressListSyncRef.current = true
 		setListSelectValue("")
-	}, [listValue])
+	}
 
-	const handleListBlur = useCallback(() => {
+	const handleListBlur = () => {
 		suppressListSyncRef.current = false
 		setListSelectValue(listValue === "none" ? "" : listValue)
-	}, [listValue])
+	}
 
-	const handleImageUpload = useCallback(
-		(event: React.ChangeEvent<HTMLInputElement>) => {
-			if (!editor) return
+	const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+		if (!editor) return
 
-			const file = event.target.files?.[0]
-			if (!file) return
+		const file = event.target.files?.[0]
+		if (!file) return
 
-			const reader = new FileReader()
-			reader.onload = () => {
-				if (typeof reader.result === "string") {
-					editor.chain().focus().setImage({ src: reader.result }).run()
-				}
+		const reader = new FileReader()
+		reader.onload = () => {
+			if (typeof reader.result === "string") {
+				editor.chain().focus().setImage({ src: reader.result }).run()
 			}
-			reader.readAsDataURL(file)
-			event.target.value = ""
-		},
-		[editor],
-	)
+		}
+		reader.readAsDataURL(file)
+		event.target.value = ""
+	}
 
 	// Sync list select value with editor state (must be before early return)
 	useEffect(() => {

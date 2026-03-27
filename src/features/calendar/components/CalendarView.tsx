@@ -5,7 +5,7 @@ import FullCalendar from "@fullcalendar/react"
 import timeGridPlugin from "@fullcalendar/timegrid"
 import { Spinner, toast } from "@heroui/react"
 import { useAtom, useAtomValue } from "jotai"
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 
 import TableError from "@/components/TableError"
 import { getErrorMessage } from "@/utils/error"
@@ -53,86 +53,74 @@ const CalendarView = () => {
 		},
 	}))
 
-	const handleDatesSet = useCallback(
-		(arg: DatesSetArg) => {
-			setDateRange(arg.startStr, arg.endStr)
-			setTitle(arg.view.title)
+	const handleDatesSet = (arg: DatesSetArg) => {
+		setDateRange(arg.startStr, arg.endStr)
+		setTitle(arg.view.title)
 
-			// Sync view type from FullCalendar back to store (e.g., when using browser navigation)
-			if (arg.view.type !== currentView) {
-				setCurrentView(arg.view.type as typeof currentView)
-			}
-		},
-		[currentView, setCurrentView],
-	)
+		// Sync view type from FullCalendar back to store (e.g., when using browser navigation)
+		if (arg.view.type !== currentView) {
+			setCurrentView(arg.view.type as typeof currentView)
+		}
+	}
 
-	const handleDateSelect = useCallback((selectInfo: DateSelectArg) => {
+	const handleDateSelect = (selectInfo: DateSelectArg) => {
 		openCreateEventModal({
 			start: selectInfo.startStr,
 			end: selectInfo.endStr,
 			allDay: selectInfo.allDay,
 		})
 		selectInfo.view.calendar.unselect()
-	}, [])
+	}
 
-	const handleEventClick = useCallback(
-		(clickInfo: EventClickArg) => {
-			const matchedEvent = events.find((e) => e.id === clickInfo.event.id)
-			if (matchedEvent) {
-				openEditEventModal(matchedEvent)
-			}
-		},
-		[events],
-	)
+	const handleEventClick = (clickInfo: EventClickArg) => {
+		const matchedEvent = events.find((e) => e.id === clickInfo.event.id)
+		if (matchedEvent) {
+			openEditEventModal(matchedEvent)
+		}
+	}
 
-	const handleEventDrop = useCallback(
-		(dropInfo: EventDropArg) => {
-			updateEventMutation.mutate(
-				{
-					eventId: dropInfo.event.id,
-					payload: {
-						startDate: dropInfo.event.startStr,
-						endDate: dropInfo.event.endStr,
-						allDay: dropInfo.event.allDay,
-					},
+	const handleEventDrop = (dropInfo: EventDropArg) => {
+		updateEventMutation.mutate(
+			{
+				eventId: dropInfo.event.id,
+				payload: {
+					startDate: dropInfo.event.startStr,
+					endDate: dropInfo.event.endStr,
+					allDay: dropInfo.event.allDay,
 				},
-				{
-					onError: (error) => {
-						dropInfo.revert()
-						toast("Failed to move event", {
-							description: getErrorMessage(error),
-							variant: "danger",
-						})
-					},
+			},
+			{
+				onError: (error) => {
+					dropInfo.revert()
+					toast("Failed to move event", {
+						description: getErrorMessage(error),
+						variant: "danger",
+					})
 				},
-			)
-		},
-		[updateEventMutation],
-	)
+			},
+		)
+	}
 
-	const handleEventResize = useCallback(
-		(resizeInfo: EventResizeDoneArg) => {
-			updateEventMutation.mutate(
-				{
-					eventId: resizeInfo.event.id,
-					payload: {
-						startDate: resizeInfo.event.startStr,
-						endDate: resizeInfo.event.endStr,
-					},
+	const handleEventResize = (resizeInfo: EventResizeDoneArg) => {
+		updateEventMutation.mutate(
+			{
+				eventId: resizeInfo.event.id,
+				payload: {
+					startDate: resizeInfo.event.startStr,
+					endDate: resizeInfo.event.endStr,
 				},
-				{
-					onError: (error) => {
-						resizeInfo.revert()
-						toast("Failed to resize event", {
-							description: getErrorMessage(error),
-							variant: "danger",
-						})
-					},
+			},
+			{
+				onError: (error) => {
+					resizeInfo.revert()
+					toast("Failed to resize event", {
+						description: getErrorMessage(error),
+						variant: "danger",
+					})
 				},
-			)
-		},
-		[updateEventMutation],
-	)
+			},
+		)
+	}
 
 	useEffect(() => {
 		const calendarApi = calendarRef.current?.getApi()

@@ -1,7 +1,6 @@
 import { useGoogleLogin } from "@react-oauth/google"
 import { useLocation, useNavigate } from "@tanstack/react-router"
 import { useAtom, useAtomValue } from "jotai"
-import { useCallback } from "react"
 
 import {
 	authStateAtom,
@@ -40,27 +39,21 @@ const useAuth = () => {
 		},
 	})
 
-	const handleGoogleLogin = useCallback(() => {
+	const handleGoogleLogin = () => {
 		googleLogin()
-	}, [googleLogin])
+	}
 
-	const handleEmailPasswordLogin = useCallback(
-		async (credentials: { email: string; password: string }) => {
-			return handleEmailLogin(credentials)
-		},
-		[handleEmailLogin],
-	)
+	const handleEmailPasswordLogin = async (credentials: { email: string; password: string }) => {
+		return handleEmailLogin(credentials)
+	}
 
-	const handleVerification = useCallback(
-		async (email: string, code: string) => {
-			return handleVerifyFirstLogin({ email, code })
-		},
-		[handleVerifyFirstLogin],
-	)
+	const handleVerification = async (email: string, code: string) => {
+		return handleVerifyFirstLogin({ email, code })
+	}
 
-	const handleLogout = useCallback(async () => {
+	const handleLogout = async () => {
 		await logout()
-	}, [logout])
+	}
 
 	interface LogoutOptions {
 		preserveReturnUrl?: boolean
@@ -68,24 +61,21 @@ const useAuth = () => {
 		replace?: boolean // defaults to true
 	}
 
-	const logoutAndRedirect = useCallback(
-		async (opts?: LogoutOptions) => {
-			await logout()
+	const logoutAndRedirect = async (opts?: LogoutOptions) => {
+		await logout()
 
-			const replace = opts?.replace ?? true
-			const baseTo = opts?.to ?? "/login"
+		const replace = opts?.replace ?? true
+		const baseTo = opts?.to ?? "/login"
 
-			if (opts?.preserveReturnUrl) {
-				const href = location.href
-				const next = `${baseTo}?redirect=${encodeURIComponent(href)}`
-				void navigate({ href: next, replace })
-				return
-			}
+		if (opts?.preserveReturnUrl) {
+			const href = location.href
+			const next = `${baseTo}?redirect=${encodeURIComponent(href)}`
+			void navigate({ href: next, replace })
+			return
+		}
 
-			void navigate({ to: baseTo, replace })
-		},
-		[logout, navigate, location.href],
-	)
+		void navigate({ to: baseTo, replace })
+	}
 
 	return {
 		user: authState.user,

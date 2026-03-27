@@ -1,37 +1,34 @@
-import { useCallback, useState } from "react"
+import { useState } from "react"
 
 import type { PinVisibility } from "@/types/staff"
 
 const usePinVisibility = () => {
 	const [pinVisibility, setPinVisibility] = useState<PinVisibility>({})
 
-	const togglePinVisibility = useCallback((staffId: string) => {
+	const togglePinVisibility = (staffId: string) => {
 		setPinVisibility((prev) => ({
 			...prev,
 			[staffId]: !prev[staffId],
 		}))
-	}, [])
+	}
 
-	const isPinVisible = useCallback(
-		(staffId: string): boolean => {
-			return pinVisibility[staffId] ?? false
-		},
-		[pinVisibility],
-	)
+	const isPinVisible = (staffId: string): boolean => {
+		return pinVisibility[staffId] ?? false
+	}
 
-	const hidePinForStaff = useCallback((staffId: string) => {
+	const hidePinForStaff = (staffId: string) => {
 		setPinVisibility((prev) => ({
 			...prev,
 			[staffId]: false,
 		}))
-	}, [])
+	}
 
-	const showPinForStaff = useCallback((staffId: string) => {
+	const showPinForStaff = (staffId: string) => {
 		setPinVisibility((prev) => ({
 			...prev,
 			[staffId]: true,
 		}))
-	}, [])
+	}
 
 	return {
 		isPinVisible,

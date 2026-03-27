@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react"
+import { useState } from "react"
 
 import { messageThreadItems } from "../constants"
 
@@ -9,22 +9,15 @@ export const useMessages = () => {
 	const [searchValue, setSearchValue] = useState("")
 	const [selectedThreadId, setSelectedThreadId] = useState("thread-4")
 
-	const visibleThreads = useMemo(() => {
-		const normalizedQuery = searchValue.trim().toLowerCase()
-		const filteredByTab =
-			activeTab === "favorites" ? messageThreadItems.filter((item) => item.favorite !== "idle") : messageThreadItems
+	const normalizedQuery = searchValue.trim().toLowerCase()
+	const filteredByTab =
+		activeTab === "favorites" ? messageThreadItems.filter((item) => item.favorite !== "idle") : messageThreadItems
+	const visibleThreads = !normalizedQuery
+		? filteredByTab
+		: filteredByTab.filter((item) => item.name.toLowerCase().includes(normalizedQuery))
 
-		if (!normalizedQuery) {
-			return filteredByTab
-		}
-
-		return filteredByTab.filter((item) => item.name.toLowerCase().includes(normalizedQuery))
-	}, [activeTab, searchValue])
-
-	const selectedThread = useMemo(() => {
-		const selectedFromVisible = visibleThreads.find((item) => item.id === selectedThreadId)
-		return selectedFromVisible ?? visibleThreads[0] ?? null
-	}, [selectedThreadId, visibleThreads])
+	const selectedFromVisible = visibleThreads.find((item) => item.id === selectedThreadId)
+	const selectedThread = selectedFromVisible ?? visibleThreads[0] ?? null
 
 	return {
 		activeTab,

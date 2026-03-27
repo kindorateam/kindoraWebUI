@@ -1,5 +1,5 @@
 import { Button, Card, FieldError, Input, Label, TextField } from "@heroui/react"
-import { useCallback, useMemo, useState } from "react"
+import { useState } from "react"
 import { Controller, useForm } from "react-hook-form"
 
 import TablerCheck from "~icons/tabler/check"
@@ -44,30 +44,24 @@ const ResetPasswordForm = ({ email, token, onBack, onResetSuccess }: ResetPasswo
 	const passwordValue = watch("password")
 	const confirmPasswordValue = watch("confirmPassword")
 
-	const requirementStatuses = useMemo(() => getRequirementStatuses(passwordValue), [passwordValue])
+	const requirementStatuses = getRequirementStatuses(passwordValue)
 
-	const strength = useMemo(() => calculatePasswordStrength(passwordValue), [passwordValue])
+	const strength = calculatePasswordStrength(passwordValue)
 
-	const canSubmit = useMemo(() => {
-		return (
-			areRequiredRequirementsMet(passwordValue) &&
-			confirmPasswordValue === passwordValue &&
-			confirmPasswordValue.length > 0
-		)
-	}, [passwordValue, confirmPasswordValue])
+	const canSubmit =
+		areRequiredRequirementsMet(passwordValue) &&
+		confirmPasswordValue === passwordValue &&
+		confirmPasswordValue.length > 0
 
-	const onSubmit = useCallback(
-		async (data: ResetPasswordFormData) => {
-			try {
-				setError(null)
-				await resetPassword(email, token, data.password)
-				setResetComplete(true)
-			} catch (err) {
-				setError(err instanceof Error ? err.message : "Failed to reset password. Please try again.")
-			}
-		},
-		[email, token],
-	)
+	const onSubmit = async (data: ResetPasswordFormData) => {
+		try {
+			setError(null)
+			await resetPassword(email, token, data.password)
+			setResetComplete(true)
+		} catch (err) {
+			setError(err instanceof Error ? err.message : "Failed to reset password. Please try again.")
+		}
+	}
 
 	if (resetComplete) {
 		return <ResetPasswordConfirmation onBackToSignIn={onResetSuccess} />

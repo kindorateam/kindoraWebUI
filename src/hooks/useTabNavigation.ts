@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from "react"
+import { useEffect } from "react"
 
 import type { NavigateFn } from "@tanstack/react-router"
 
@@ -11,15 +11,12 @@ import type { NavigateFn } from "@tanstack/react-router"
  * @returns handleTabChange - Function to change the tab
  */
 export function useTabNavigation<T extends string>(currentTab: T | undefined, defaultTab: T, navigate: NavigateFn) {
-	const handleTabChange = useCallback(
-		(newTab: T) => {
-			void navigate({
-				search: (prev: Record<string, unknown>) => ({ ...prev, tab: newTab }) as never,
-				replace: true,
-			})
-		},
-		[navigate],
-	)
+	const handleTabChange = (newTab: T) => {
+		void navigate({
+			search: (prev: Record<string, unknown>) => ({ ...prev, tab: newTab }) as never,
+			replace: true,
+		})
+	}
 
 	// Redirect to default tab if none specified
 	useEffect(() => {

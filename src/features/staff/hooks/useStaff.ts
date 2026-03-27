@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { useCallback, useState } from "react"
+import { useState } from "react"
 
 import {
 	deleteEmployeeDocument,
@@ -132,19 +132,16 @@ export function useDeleteEmployeeDocument() {
 export function usePinVisibility() {
 	const [pinVisibility, setPinVisibility] = useState<PinVisibility>({})
 
-	const togglePinVisibility = useCallback((employeeId: string) => {
+	const togglePinVisibility = (employeeId: string) => {
 		setPinVisibility((prev) => ({
 			...prev,
 			[employeeId]: !prev[employeeId],
 		}))
-	}, [])
+	}
 
-	const isPinVisible = useCallback(
-		(employeeId: string): boolean => {
-			return pinVisibility[employeeId] ?? false
-		},
-		[pinVisibility],
-	)
+	const isPinVisible = (employeeId: string): boolean => {
+		return pinVisibility[employeeId] ?? false
+	}
 
 	return {
 		isPinVisible,

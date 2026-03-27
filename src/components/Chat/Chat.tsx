@@ -1,5 +1,4 @@
 import { Avatar, Input } from "@heroui/react"
-import { useCallback } from "react"
 
 import Button from "@/components/Button"
 import Text from "@/components/Text"
@@ -12,13 +11,13 @@ import SocialMetrics from "./SocialMetrics"
 const Chat = () => {
 	const { openDrawer } = useAppDrawer()
 
-	const handleAddActivity = useCallback(() => {
+	const handleAddActivity = () => {
 		openDrawer({
 			initialTabKey: "photo",
 			size: "lg",
 			title: "Add activity",
 		})
-	}, [openDrawer])
+	}
 
 	return (
 		<div>

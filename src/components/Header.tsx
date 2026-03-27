@@ -1,16 +1,15 @@
 import { Avatar, Badge, Button, Dropdown, Label, Separator } from "@heroui/react"
-import { memo, useCallback } from "react"
 
 import Breadcrumbs from "@/components/Breadcrumbs"
 import useAuth from "@/features/auth/hooks/useAuth"
 import MdiBellOutline from "~icons/mdi/bell-outline"
 
-const Header = memo(() => {
+const Header = () => {
 	const { user, logoutAndRedirect } = useAuth()
 
-	const handleLogout = useCallback(async () => {
+	const handleLogout = async () => {
 		await logoutAndRedirect()
-	}, [logoutAndRedirect])
+	}
 
 	return (
 		<nav className="mb-7 flex h-20 w-full items-center bg-transparent px-7">
@@ -70,8 +69,6 @@ const Header = memo(() => {
 			</div>
 		</nav>
 	)
-})
-
-Header.displayName = "Header"
+}
 
 export default Header

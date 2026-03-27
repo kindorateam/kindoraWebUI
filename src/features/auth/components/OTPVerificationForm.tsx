@@ -1,5 +1,5 @@
 import { Button, Card, InputOTP, Link, Tooltip } from "@heroui/react"
-import { useCallback, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { Controller, useForm } from "react-hook-form"
 
 import PhClockCountdown from "~icons/ph/clock-countdown"
@@ -61,7 +61,7 @@ const OTPVerificationForm = ({ email, onBack, onSuccess, context = "login", code
 		return () => clearInterval(timer)
 	}, [timeLeft, resendTimeLeft])
 
-	const handleResendCode = useCallback(async () => {
+	const handleResendCode = async () => {
 		try {
 			setLocalError(null)
 			await requestPasswordReset(email)
@@ -70,30 +70,27 @@ const OTPVerificationForm = ({ email, onBack, onSuccess, context = "login", code
 		} catch (error) {
 			setLocalError(error instanceof Error ? error.message : "Failed to resend code. Please try again.")
 		}
-	}, [email])
+	}
 
-	const onSubmit = useCallback(
-		async (data: OTPVerificationFormData) => {
-			try {
-				setLocalError(null)
+	const onSubmit = async (data: OTPVerificationFormData) => {
+		try {
+			setLocalError(null)
 
-				if (context === "login") {
-					await handleVerifyFirstLogin(email, data.otp)
-					onSuccess?.()
-				} else {
-					await verifyPasswordResetOTP(email, data.otp)
-					onSuccess?.(data.otp)
-				}
-			} catch (error) {
-				const errorMessage = error instanceof Error ? error.message : "Verification failed. Please try again."
-				if (context === "password-reset") {
-					setLocalError(errorMessage)
-				}
-				console.error("Verification failed:", error)
+			if (context === "login") {
+				await handleVerifyFirstLogin(email, data.otp)
+				onSuccess?.()
+			} else {
+				await verifyPasswordResetOTP(email, data.otp)
+				onSuccess?.(data.otp)
 			}
-		},
-		[context, email, handleVerifyFirstLogin, onSuccess],
-	)
+		} catch (error) {
+			const errorMessage = error instanceof Error ? error.message : "Verification failed. Please try again."
+			if (context === "password-reset") {
+				setLocalError(errorMessage)
+			}
+			console.error("Verification failed:", error)
+		}
+	}
 
 	const displayError = context === "password-reset" ? localError : authError
 

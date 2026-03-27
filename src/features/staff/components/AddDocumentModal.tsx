@@ -13,7 +13,7 @@ import {
 	toast,
 } from "@heroui/react"
 import { useAtomValue } from "jotai"
-import { useCallback, useRef, useState } from "react"
+import { useRef, useState } from "react"
 
 import { getErrorMessage } from "@/utils/error"
 import TablerFileText from "~icons/tabler/file-text"
@@ -44,9 +44,9 @@ export default function AddDocumentModal({ employeeId }: Props) {
 	const [notes, setNotes] = useState("")
 	const fileInputRef = useRef<HTMLInputElement>(null)
 
-	const handleFileSelect = useCallback((file: File) => {
+	const handleFileSelect = (file: File) => {
 		setUploadedFile(file)
-	}, [])
+	}
 
 	const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const file = e.target.files?.[0]

@@ -1,6 +1,6 @@
 import { Button, Card, Spinner, Switch, Table } from "@heroui/react"
 import { useNavigate } from "@tanstack/react-router"
-import { useCallback, useMemo, useState } from "react"
+import { useState } from "react"
 
 import TableError from "@/components/TableError"
 
@@ -18,51 +18,38 @@ const StaffTable = () => {
 	const [showDeactivated, setShowDeactivated] = useState(false)
 	const rowsPerPage = 10
 
-	const handleEmployeeClick = useCallback(
-		(employeeId: string) => {
-			navigate({ to: "/staff/$staffId", params: { staffId: employeeId }, search: { tab: "profile" } })
-		},
-		[navigate],
-	)
+	const handleEmployeeClick = (employeeId: string) => {
+		navigate({ to: "/staff/$staffId", params: { staffId: employeeId }, search: { tab: "profile" } })
+	}
 
-	const filteredItems = useMemo(() => {
-		if (showDeactivated) {
-			return employees
-		}
-		return employees.filter((employee) => employee.status === "active")
-	}, [employees, showDeactivated])
+	const filteredItems = showDeactivated ? employees : employees.filter((employee) => employee.status === "active")
 
 	const pages = Math.ceil(filteredItems.length / rowsPerPage) || 1
 
-	const items = useMemo(() => {
-		const start = (page - 1) * rowsPerPage
-		const end = start + rowsPerPage
+	const start = (page - 1) * rowsPerPage
+	const end = start + rowsPerPage
+	const items = filteredItems.slice(start, end)
 
-		return filteredItems.slice(start, end)
-	}, [page, filteredItems])
-
-	const topContent = useMemo(() => {
-		return (
-			<div className="flex flex-col gap-4">
-				<div className="flex items-center justify-end gap-5">
-					<Switch
-						className="text-sm"
-						isSelected={showDeactivated}
-						onChange={(isSelected: boolean) => setShowDeactivated(isSelected)}
-						size="sm"
-					>
-						View deactivated
-					</Switch>
-					<Button variant="primary" onPress={openAddStaffModal}>
-						Add Staff
-					</Button>
-				</div>
-				<span className="text-default-400 text-sm">Total {filteredItems.length} employees</span>
+	const topContent = (
+		<div className="flex flex-col gap-4">
+			<div className="flex items-center justify-end gap-5">
+				<Switch
+					className="text-sm"
+					isSelected={showDeactivated}
+					onChange={(isSelected: boolean) => setShowDeactivated(isSelected)}
+					size="sm"
+				>
+					View deactivated
+				</Switch>
+				<Button variant="primary" onPress={openAddStaffModal}>
+					Add Staff
+				</Button>
 			</div>
-		)
-	}, [showDeactivated, filteredItems.length])
+			<span className="text-default-400 text-sm">Total {filteredItems.length} employees</span>
+		</div>
+	)
 
-	const renderCellOptions = useMemo(() => ({ onEmployeeClick: handleEmployeeClick }), [handleEmployeeClick])
+	const renderCellOptions = { onEmployeeClick: handleEmployeeClick }
 
 	return (
 		<>

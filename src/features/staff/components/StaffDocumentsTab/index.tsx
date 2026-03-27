@@ -1,5 +1,5 @@
 import { Button, Card, Spinner, Table } from "@heroui/react"
-import { useMemo, useState } from "react"
+import { useState } from "react"
 
 import TableError from "@/components/TableError"
 
@@ -23,11 +23,9 @@ const StaffDocumentsTab = ({ employeeId }: StaffDocumentsTabProps) => {
 
 	const pages = Math.ceil(documents.length / rowsPerPage) || 1
 
-	const items = useMemo(() => {
-		const start = (page - 1) * rowsPerPage
-		const end = start + rowsPerPage
-		return documents.slice(start, end)
-	}, [page, documents])
+	const start = (page - 1) * rowsPerPage
+	const end = start + rowsPerPage
+	const items = documents.slice(start, end)
 
 	return (
 		<>
