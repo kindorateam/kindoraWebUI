@@ -36,13 +36,15 @@ const RoomDetailHeader = ({ activeTab, roomId, onTabChange }: RoomDetailHeaderPr
 			label: "Ratio",
 			icon: (
 				<Tooltip delay={300}>
-					<span className="inline-flex cursor-default items-center justify-center">
-						{isGoodRatio ? (
-							<PhSmileyDuotone className="size-5 text-success" />
-						) : (
-							<PhSmileySadDuotone className="size-5 text-danger" />
-						)}
-					</span>
+					<Tooltip.Trigger aria-label={isGoodRatio ? "Ratio is met" : "Ratio is not met"}>
+						<span className="inline-flex cursor-default items-center justify-center">
+							{isGoodRatio ? (
+								<PhSmileyDuotone className="size-5 text-success" />
+							) : (
+								<PhSmileySadDuotone className="size-5 text-danger" />
+							)}
+						</span>
+					</Tooltip.Trigger>
 					<Tooltip.Content>
 						{isGoodRatio ? `Ratio is met (1:${ratioValue})` : `Ratio is not met (1:${ratioValue})`}
 					</Tooltip.Content>

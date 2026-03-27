@@ -50,7 +50,11 @@ const StudentsTable = () => {
 						>
 							<Table.Header>
 								{columns.map((column) => (
-									<Table.Column key={column.key} className={column.align === "center" ? "text-center" : ""}>
+									<Table.Column
+										key={column.key}
+										isRowHeader={column.isRowHeader}
+										className={column.align === "center" ? "text-center" : ""}
+									>
 										{column.label}
 									</Table.Column>
 								))}

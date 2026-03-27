@@ -4,6 +4,7 @@ export interface TableColumn<T> {
 	key: string
 	label: string
 	align?: "start" | "center" | "end"
+	isRowHeader?: boolean
 	sortable?: boolean
 	className?: string
 	renderCell?: (item: T, column: TableColumn<T>) => ReactNode

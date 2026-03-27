@@ -1,5 +1,5 @@
 const columns = [
-	{ key: "name", label: "Name" },
+	{ key: "name", label: "Name", isRowHeader: true },
 	{ key: "status", label: "Status", align: "center" as const },
 	{ key: "expiryDate", label: "Expiry date" },
 	{ key: "type", label: "Type" },

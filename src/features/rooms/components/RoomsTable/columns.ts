@@ -1,5 +1,5 @@
 const columns = [
-	{ key: "room", label: "Rooms" },
+	{ key: "room", label: "Rooms", isRowHeader: true },
 	{ key: "capacity", label: "Capacity", align: "center" as const },
 	{ key: "students", label: "Students", align: "center" as const },
 	{ key: "staff", label: "Staff", align: "center" as const },

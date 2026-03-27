@@ -1,4 +1,4 @@
-import { Button, Card, Spinner, Switch, Table } from "@heroui/react"
+import { Button, EmptyState, Label, Pagination, Spinner, Switch, Table } from "@heroui/react"
 import { useAtom } from "jotai"
 import { useMemo, useState } from "react"
 
@@ -18,57 +18,71 @@ const RoomsTable = () => {
 	const status = viewDeactivated ? "inactive" : "active"
 	const { rooms, total, totalPages, isLoading, error, refetch } = useRooms({ status, page })
 
+	const pageSize = 10
+	const startItem = (page - 1) * pageSize + 1
+	const endItem = Math.min(page * pageSize, total)
+
 	const topContent = useMemo(() => {
 		return (
-			<div className="flex flex-col gap-4">
-				<div className="flex items-center justify-end gap-5">
-					<Switch
-						className="text-sm"
-						isSelected={viewDeactivated}
-						onChange={(isSelected: boolean) => {
-							setViewDeactivated(isSelected)
-							setPage(1)
-						}}
-						size="sm"
-					>
-						View deactivated
-					</Switch>
-					<Button variant="primary" onPress={openAddRoomModal}>
-						Add Room
-					</Button>
-				</div>
-				<span className="text-default-400 text-sm">Total {total} rooms</span>
+			<div className="flex items-center justify-end gap-5">
+				<Switch
+					isSelected={viewDeactivated}
+					onChange={(isSelected: boolean) => {
+						setViewDeactivated(isSelected)
+						setPage(1)
+					}}
+				>
+					<Switch.Control>
+						<Switch.Thumb />
+					</Switch.Control>
+					<Switch.Content>
+						<Label className="text-sm">View deactivated</Label>
+					</Switch.Content>
+				</Switch>
+				<Button variant="primary" onPress={openAddRoomModal}>
+					Add Room
+				</Button>
 			</div>
 		)
-	}, [viewDeactivated, setViewDeactivated, total])
+	}, [viewDeactivated, setViewDeactivated])
 
 	return (
-		<Card>
-			<Card.Content className="flex flex-col gap-4 p-4">
-				{topContent}
-				<div className="flex min-h-[647.5px] flex-col justify-between">
-					<Table.ScrollContainer>
-						<Table.Content
-							aria-label="Rooms table"
-							className="[&_tbody>tr:last-child]:border-b-0 [&_tbody>tr]:h-[55px] [&_tbody>tr]:border-default-200 [&_tbody>tr]:border-b [&_td]:py-0 [&_th]:py-0"
-						>
+		<div className="flex flex-col gap-4">
+			{topContent}
+			<div className="flex flex-col justify-between">
+				<Table>
+					<Table.ScrollContainer className="min-h-[560px]">
+						<Table.Content aria-label="Rooms table">
 							<Table.Header>
 								{columns.map((column) => (
-									<Table.Column key={column.key} className={column.align === "center" ? "text-center" : undefined}>
+									<Table.Column
+										key={column.key}
+										isRowHeader={column.isRowHeader}
+										className={column.align === "center" ? "text-center" : undefined}
+									>
 										{column.label}
 									</Table.Column>
 								))}
 							</Table.Header>
-							<Table.Body
-								items={error || isLoading ? [] : rooms}
-								renderEmptyState={() =>
-									error ? <TableError onRetry={refetch} /> : <RoomsEmptyState isDeactivatedView={viewDeactivated} />
-								}
-							>
+							<Table.Body>
 								{isLoading ? (
 									<Table.Row>
-										<Table.Cell colSpan={columns.length} className="h-[550px] text-center">
-											<Spinner size="lg" />
+										<Table.Cell colSpan={columns.length}>
+											<EmptyState className="flex h-[524px] w-full items-center justify-center">
+												<Spinner />
+											</EmptyState>
+										</Table.Cell>
+									</Table.Row>
+								) : error ? (
+									<Table.Row>
+										<Table.Cell colSpan={columns.length}>
+											<TableError onRetry={refetch} />
+										</Table.Cell>
+									</Table.Row>
+								) : rooms.length === 0 ? (
+									<Table.Row>
+										<Table.Cell colSpan={columns.length}>
+											<RoomsEmptyState isDeactivatedView={viewDeactivated} />
 										</Table.Cell>
 									</Table.Row>
 								) : (
@@ -85,24 +99,37 @@ const RoomsTable = () => {
 							</Table.Body>
 						</Table.Content>
 					</Table.ScrollContainer>
-					{totalPages > 1 && (
-						<div className="flex w-full justify-center pt-4">
-							<div className="flex items-center gap-2">
-								<Button size="sm" variant="outline" isDisabled={page <= 1} onPress={() => setPage(page - 1)}>
-									Prev
-								</Button>
-								<span className="text-sm">
-									Page {page} of {totalPages}
-								</span>
-								<Button size="sm" variant="outline" isDisabled={page >= totalPages} onPress={() => setPage(page + 1)}>
-									Next
-								</Button>
-							</div>
-						</div>
-					)}
-				</div>
-			</Card.Content>
-		</Card>
+					<Table.Footer>
+						<Pagination className="w-full">
+							<Pagination.Summary>
+								{startItem} to {endItem} of {total} rooms
+							</Pagination.Summary>
+							<Pagination.Content>
+								<Pagination.Item>
+									<Pagination.Previous isDisabled={page <= 1} onPress={() => setPage((p) => p - 1)}>
+										<Pagination.PreviousIcon />
+										<span>Prev</span>
+									</Pagination.Previous>
+								</Pagination.Item>
+								{Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+									<Pagination.Item key={p}>
+										<Pagination.Link isActive={p === page} onPress={() => setPage(p)}>
+											{p}
+										</Pagination.Link>
+									</Pagination.Item>
+								))}
+								<Pagination.Item>
+									<Pagination.Next isDisabled={page >= totalPages} onPress={() => setPage((p) => p + 1)}>
+										<span>Next</span>
+										<Pagination.NextIcon />
+									</Pagination.Next>
+								</Pagination.Item>
+							</Pagination.Content>
+						</Pagination>
+					</Table.Footer>
+				</Table>
+			</div>
+		</div>
 	)
 }
 

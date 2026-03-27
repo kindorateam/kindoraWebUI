@@ -1,4 +1,4 @@
-import { Button, Label, ListBox, Select, Skeleton } from "@heroui/react"
+import { Button, FieldError, Label, ListBox, Select, Skeleton } from "@heroui/react"
 import { useEffect, useRef } from "react"
 import { Controller, useFormContext } from "react-hook-form"
 
@@ -140,13 +140,13 @@ const AddStaffStudentsStep = () => {
 									))}
 									{isFetchingNextEmployees && (
 										<ListBox.Item id="loading-employees" textValue="Loading...">
-											<span className="text-default-400 text-sm">Loading more...</span>
+											<span className="text-muted text-sm">Loading more...</span>
 										</ListBox.Item>
 									)}
 								</ListBox>
 								<div ref={employeesObserverRef} />
 							</Select.Popover>
-							{errors.staffIds?.message && <span className="text-danger text-xs">{errors.staffIds.message}</span>}
+							{errors.staffIds?.message && <FieldError>{errors.staffIds.message}</FieldError>}
 						</Select>
 					)}
 				/>
@@ -178,13 +178,13 @@ const AddStaffStudentsStep = () => {
 									))}
 									{isFetchingNextStudents && (
 										<ListBox.Item id="loading-students" textValue="Loading...">
-											<span className="text-default-400 text-sm">Loading more...</span>
+											<span className="text-muted text-sm">Loading more...</span>
 										</ListBox.Item>
 									)}
 								</ListBox>
 								<div ref={studentsObserverRef} />
 							</Select.Popover>
-							{errors.studentIds?.message && <span className="text-danger text-xs">{errors.studentIds.message}</span>}
+							{errors.studentIds?.message && <FieldError>{errors.studentIds.message}</FieldError>}
 						</Select>
 					)}
 				/>

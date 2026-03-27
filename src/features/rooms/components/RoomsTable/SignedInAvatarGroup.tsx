@@ -17,9 +17,9 @@ interface SignedInAvatarGroupProps {
 	tooltipLabel: string
 }
 
-const avatarFallbackClassName = "font-semibold text-[10px] text-default-600 leading-none"
+const avatarFallbackClassName = "font-semibold text-xs text-muted leading-none"
 const avatarImgClassName = "object-cover grayscale saturate-0"
-const countAvatarFallbackClassName = "font-semibold text-[11px] text-default-700 leading-none"
+const countAvatarFallbackClassName = "font-semibold text-xs text-muted leading-none"
 
 const MAX_VISIBLE = 2
 
@@ -34,25 +34,27 @@ const SignedInAvatarGroup = ({ items, tooltipLabel }: SignedInAvatarGroupProps) 
 	return (
 		<div className="flex justify-center">
 			<Tooltip delay={300}>
-				<div className="-space-x-2 flex">
-					{visible.map((item) => (
-						<Avatar key={item.id}>
-							<Avatar.Image
-								src={
-									item.avatar && item.avatar !== "/assets/avatars/default.jpg" ? getMediaUrl(item.avatar) : undefined
-								}
-								alt={item.name}
-								className={avatarImgClassName}
-							/>
-							<Avatar.Fallback className={avatarFallbackClassName}>{getAvatarInitials(item.name)}</Avatar.Fallback>
-						</Avatar>
-					))}
-					{overflowCount > 0 && (
-						<Avatar>
-							<Avatar.Fallback className={countAvatarFallbackClassName}>+{overflowCount}</Avatar.Fallback>
-						</Avatar>
-					)}
-				</div>
+				<Tooltip.Trigger aria-label={tooltipLabel}>
+					<div className="-space-x-2 flex">
+						{visible.map((item) => (
+							<Avatar key={item.id} size="sm">
+								<Avatar.Image
+									src={
+										item.avatar && item.avatar !== "/assets/avatars/default.jpg" ? getMediaUrl(item.avatar) : undefined
+									}
+									alt={item.name}
+									className={avatarImgClassName}
+								/>
+								<Avatar.Fallback className={avatarFallbackClassName}>{getAvatarInitials(item.name)}</Avatar.Fallback>
+							</Avatar>
+						))}
+						{overflowCount > 0 && (
+							<Avatar size="sm">
+								<Avatar.Fallback className={countAvatarFallbackClassName}>+{overflowCount}</Avatar.Fallback>
+							</Avatar>
+						)}
+					</div>
+				</Tooltip.Trigger>
 				<Tooltip.Content>
 					<SignedInTooltipContent items={items} label={tooltipLabel} />
 				</Tooltip.Content>

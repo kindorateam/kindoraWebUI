@@ -60,7 +60,7 @@ const AddRoomModal = () => {
 			<Modal.Container>
 				<Modal.Dialog>
 					<Modal.CloseTrigger />
-					<Modal.Body className="p-0">
+					<Modal.Body>
 						<AddRoomStepper isLoading={isLoading} onCancel={handleCancel} onComplete={handleComplete} />
 					</Modal.Body>
 				</Modal.Dialog>

@@ -28,26 +28,28 @@ const ParentsAvatarGroup = ({ parents }: ParentsAvatarGroupProps) => {
 
 	return (
 		<Tooltip delay={300}>
-			<div className="-space-x-2 flex">
-				{visible.map((parent) => {
-					const fullName = `${parent.firstName} ${parent.lastName}`
-					return (
-						<Avatar key={parent.id}>
-							<Avatar.Image
-								src={parent.avatar ? getMediaUrl(parent.avatar) : undefined}
-								alt={fullName}
-								className={avatarImgClassName}
-							/>
-							<Avatar.Fallback className={avatarFallbackClassName}>{getAvatarInitials(fullName)}</Avatar.Fallback>
+			<Tooltip.Trigger aria-label={`${parents.length} parent${parents.length !== 1 ? "s" : ""}`}>
+				<div className="-space-x-2 flex">
+					{visible.map((parent) => {
+						const fullName = `${parent.firstName} ${parent.lastName}`
+						return (
+							<Avatar key={parent.id}>
+								<Avatar.Image
+									src={parent.avatar ? getMediaUrl(parent.avatar) : undefined}
+									alt={fullName}
+									className={avatarImgClassName}
+								/>
+								<Avatar.Fallback className={avatarFallbackClassName}>{getAvatarInitials(fullName)}</Avatar.Fallback>
+							</Avatar>
+						)
+					})}
+					{overflowCount > 0 && (
+						<Avatar>
+							<Avatar.Fallback className={countAvatarFallbackClassName}>+{overflowCount}</Avatar.Fallback>
 						</Avatar>
-					)
-				})}
-				{overflowCount > 0 && (
-					<Avatar>
-						<Avatar.Fallback className={countAvatarFallbackClassName}>+{overflowCount}</Avatar.Fallback>
-					</Avatar>
-				)}
-			</div>
+					)}
+				</div>
+			</Tooltip.Trigger>
 			<Tooltip.Content>
 				<ParentTooltipContent parents={parents} />
 			</Tooltip.Content>

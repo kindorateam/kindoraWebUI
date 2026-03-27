@@ -39,6 +39,7 @@ const DataTable = <T extends Record<string, unknown>>({
 								<Table.Column
 									className={`bg-transparent p-0 pb-4 font-medium text-text-secondary text-xs! tracking-wider ${alignClassMap[column.align ?? "start"]} ${column.className ?? ""}`}
 									key={column.key}
+									isRowHeader={column.isRowHeader}
 								>
 									{column.label}
 								</Table.Column>

@@ -1,5 +1,5 @@
 const columns = [
-	{ key: "student", label: "Student" },
+	{ key: "student", label: "Student", isRowHeader: true },
 	{ key: "parents", label: "Parents", align: "center" as const },
 	{ key: "tags", label: "Tags", align: "center" as const },
 	{ key: "actions", label: "Actions", align: "center" as const },

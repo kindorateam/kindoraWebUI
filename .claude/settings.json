@@ -44,12 +44,20 @@
 			"Bash(wc:*)",
 			"Bash(which:*)",
 
+			"Bash(bunx biome:*)",
+
 			"mcp__figma__get_screenshot",
 			"mcp__figma__get_design_context",
 			"mcp__figma__get_metadata",
 
+			"mcp__heroui-react__list_components",
+			"mcp__heroui-react__get_component_docs",
+			"mcp__heroui-react__get_component_source_code",
+
+			"WebSearch",
 			"WebFetch(domain:localhost)",
 			"WebFetch(domain:tanstack.com)",
+			"WebFetch(domain:heroui.com)",
 			"WebFetch(domain:www.heroui.com)",
 			"WebFetch(domain:raw.githubusercontent.com)",
 			"WebFetch(domain:icon-sets.iconify.design)",

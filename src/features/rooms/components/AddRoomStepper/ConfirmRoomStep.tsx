@@ -27,17 +27,17 @@ const ConfirmRoomStep = () => {
 			<div className="flex justify-between">
 				<div className="flex flex-col gap-3">
 					<p className="text-base">
-						<span className="font-medium">Name:</span> <span className="text-neutral-700">{formData.name}</span>
+						<span className="font-medium">Name:</span> <span className="text-muted">{formData.name}</span>
 					</p>
 					<p className="text-base">
-						<span className="font-medium">Capacity:</span> <span className="text-neutral-700">{formData.capacity}</span>
+						<span className="font-medium">Capacity:</span> <span className="text-muted">{formData.capacity}</span>
 					</p>
 					<p className="text-base">
-						<span className="font-medium">Ratio:</span> <span className="text-neutral-700">{formData.ratio}:1</span>
+						<span className="font-medium">Ratio:</span> <span className="text-muted">{formData.ratio}:1</span>
 					</p>
 					<p className="text-base">
 						<span className="font-medium">Age Range:</span>{" "}
-						<span className="text-neutral-700">
+						<span className="text-muted">
 							{formatAgeLabel(formData.minAge)} - {formatAgeLabel(formData.maxAge)}
 						</span>
 					</p>
@@ -45,11 +45,11 @@ const ConfirmRoomStep = () => {
 				<div className="flex flex-col gap-3">
 					<p className="text-base">
 						<span className="font-medium">Staff:</span>{" "}
-						<span className="text-neutral-700">{formData.staffIds?.length || 0} selected</span>
+						<span className="text-muted">{formData.staffIds?.length || 0} selected</span>
 					</p>
 					<p className="text-base">
 						<span className="font-medium">Students:</span>{" "}
-						<span className="text-neutral-700">{formData.studentIds?.length || 0} selected</span>
+						<span className="text-muted">{formData.studentIds?.length || 0} selected</span>
 					</p>
 				</div>
 			</div>

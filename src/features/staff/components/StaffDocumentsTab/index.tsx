@@ -46,7 +46,11 @@ const StaffDocumentsTab = ({ employeeId }: StaffDocumentsTabProps) => {
 							<Table.Content aria-label="Employee documents table">
 								<Table.Header>
 									{columns.map((column) => (
-										<Table.Column key={column.key} className={`py-0 ${column.align === "center" ? "text-center" : ""}`}>
+										<Table.Column
+											key={column.key}
+											isRowHeader={column.isRowHeader}
+											className={`py-0 ${column.align === "center" ? "text-center" : ""}`}
+										>
 											{column.label}
 										</Table.Column>
 									))}

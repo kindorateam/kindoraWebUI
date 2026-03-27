@@ -75,7 +75,11 @@ const StaffTable = () => {
 							<Table.Content aria-label="Employees table">
 								<Table.Header className="[&>tr>th]:py-0">
 									{columns.map((column) => (
-										<Table.Column key={column.key} className={column.align === "center" ? "text-center" : ""}>
+										<Table.Column
+											key={column.key}
+											isRowHeader={column.isRowHeader}
+											className={column.align === "center" ? "text-center" : ""}
+										>
 											{column.label}
 										</Table.Column>
 									))}

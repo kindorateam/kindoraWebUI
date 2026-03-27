@@ -66,19 +66,32 @@ const RoomStudentsTable = ({ roomId }: RoomStudentsTableProps) => {
 						>
 							<Table.Header>
 								{columns.map((column) => (
-									<Table.Column key={column.key} className={column.align === "center" ? "text-center" : undefined}>
+									<Table.Column
+										key={column.key}
+										isRowHeader={column.isRowHeader}
+										className={column.align === "center" ? "text-center" : undefined}
+									>
 										{column.label}
 									</Table.Column>
 								))}
 							</Table.Header>
-							<Table.Body
-								items={error || isLoading ? [] : students}
-								renderEmptyState={() => (error ? <TableError onRetry={refetch} /> : "No students in this room")}
-							>
+							<Table.Body>
 								{isLoading ? (
 									<Table.Row>
 										<Table.Cell colSpan={columns.length} className="h-[550px] text-center">
 											<Spinner size="lg" />
+										</Table.Cell>
+									</Table.Row>
+								) : error ? (
+									<Table.Row>
+										<Table.Cell colSpan={columns.length}>
+											<TableError onRetry={refetch} />
+										</Table.Cell>
+									</Table.Row>
+								) : students.length === 0 ? (
+									<Table.Row>
+										<Table.Cell colSpan={columns.length} className="h-[550px] text-center text-default-400">
+											No students in this room
 										</Table.Cell>
 									</Table.Row>
 								) : (

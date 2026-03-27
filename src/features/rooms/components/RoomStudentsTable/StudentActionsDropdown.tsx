@@ -44,24 +44,22 @@ const StudentActionsDropdown = ({ student, roomId }: Props) => {
 	return (
 		<div className="flex justify-center">
 			<Dropdown>
-				<Dropdown.Trigger>
-					<Button isIconOnly isPending={isLoading} variant="ghost">
-						<svg
-							aria-hidden="true"
-							className="size-5 text-gray-600"
-							fill="none"
-							stroke="currentColor"
-							strokeLinecap="round"
-							strokeLinejoin="round"
-							strokeWidth={2}
-							viewBox="0 0 24 24"
-						>
-							<circle cx={12} cy={12} r={1} />
-							<circle cx={12} cy={5} r={1} />
-							<circle cx={12} cy={19} r={1} />
-						</svg>
-					</Button>
-				</Dropdown.Trigger>
+				<Button isIconOnly isPending={isLoading} variant="ghost" aria-label="Student actions">
+					<svg
+						aria-hidden="true"
+						className="size-5 text-gray-600"
+						fill="none"
+						stroke="currentColor"
+						strokeLinecap="round"
+						strokeLinejoin="round"
+						strokeWidth={2}
+						viewBox="0 0 24 24"
+					>
+						<circle cx={12} cy={12} r={1} />
+						<circle cx={12} cy={5} r={1} />
+						<circle cx={12} cy={19} r={1} />
+					</svg>
+				</Button>
 				<Dropdown.Popover>
 					<Dropdown.Menu aria-label="Student actions">
 						<Dropdown.Item id="view" textValue="View" className="text-success">

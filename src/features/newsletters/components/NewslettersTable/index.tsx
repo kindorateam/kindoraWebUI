@@ -35,7 +35,9 @@ const NewslettersTable = ({ onCreateNew }: NewslettersTableProps) => {
 						<Table.Content className="min-w-[500px]">
 							<Table.Header>
 								{columns.map((column) => (
-									<Table.Column key={column.key}>{column.label}</Table.Column>
+									<Table.Column key={column.key} isRowHeader={column.isRowHeader}>
+										{column.label}
+									</Table.Column>
 								))}
 							</Table.Header>
 							<Table.Body>

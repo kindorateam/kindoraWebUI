@@ -113,7 +113,7 @@ const RoomDetailsStep = () => {
 								<NumberField.Input placeholder="Enter capacity" />
 								<NumberField.IncrementButton />
 							</NumberField.Group>
-							{errors.capacity?.message && <span className="text-danger text-xs">{errors.capacity.message}</span>}
+							{errors.capacity?.message && <FieldError>{errors.capacity.message}</FieldError>}
 						</NumberField>
 					)}
 				/>
@@ -134,7 +134,7 @@ const RoomDetailsStep = () => {
 								<NumberField.Input placeholder="Enter ratio" />
 								<NumberField.IncrementButton />
 							</NumberField.Group>
-							{errors.ratio?.message && <span className="text-danger text-xs">{errors.ratio.message}</span>}
+							{errors.ratio?.message && <FieldError>{errors.ratio.message}</FieldError>}
 						</NumberField>
 					)}
 				/>
@@ -172,7 +172,7 @@ const RoomDetailsStep = () => {
 										))}
 									</ListBox>
 								</Select.Popover>
-								{errors.minAge?.message && <span className="text-danger text-xs">{errors.minAge.message}</span>}
+								{errors.minAge?.message && <FieldError>{errors.minAge.message}</FieldError>}
 							</Select>
 						)}
 					/>
@@ -209,7 +209,7 @@ const RoomDetailsStep = () => {
 										))}
 									</ListBox>
 								</Select.Popover>
-								{errors.maxAge?.message && <span className="text-danger text-xs">{errors.maxAge.message}</span>}
+								{errors.maxAge?.message && <FieldError>{errors.maxAge.message}</FieldError>}
 							</Select>
 						)}
 					/>

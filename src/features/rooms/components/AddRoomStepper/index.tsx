@@ -93,7 +93,7 @@ const AddRoomStepper = ({ onComplete, onCancel, isLoading = false }: AddRoomStep
 
 	return (
 		<FormProvider {...form}>
-			<div className="w-full max-w-[496px] rounded-2xl bg-white p-7">
+			<div className="w-full">
 				<Stepper
 					backLabel={currentStep === 0 ? "Close" : "Back"}
 					completeLabel="Add Room"
