@@ -33,7 +33,7 @@ const ParentsAvatarGroup = ({ parents }: ParentsAvatarGroupProps) => {
 					{visible.map((parent) => {
 						const fullName = `${parent.firstName} ${parent.lastName}`
 						return (
-							<Avatar key={parent.id}>
+							<Avatar key={parent.id} size="sm">
 								<Avatar.Image
 									src={parent.avatar ? getMediaUrl(parent.avatar) : undefined}
 									alt={fullName}
@@ -44,7 +44,7 @@ const ParentsAvatarGroup = ({ parents }: ParentsAvatarGroupProps) => {
 						)
 					})}
 					{overflowCount > 0 && (
-						<Avatar>
+						<Avatar size="sm">
 							<Avatar.Fallback className={countAvatarFallbackClassName}>+{overflowCount}</Avatar.Fallback>
 						</Avatar>
 					)}

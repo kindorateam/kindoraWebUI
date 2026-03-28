@@ -1,7 +1,9 @@
-import { Button, Card, Spinner, Table } from "@heroui/react"
+import { Button, EmptyState, Pagination, Spinner, Table } from "@heroui/react"
 import { useState } from "react"
 
 import TableError from "@/components/TableError"
+import MageExchangeA from "~icons/mage/exchange-a"
+import OcticonFeedPlus16 from "~icons/octicon/feed-plus-16"
 
 import { useRoom } from "../../hooks/useRooms"
 import { openAddStudentModal } from "../../stores/addStudentModal.store"
@@ -23,12 +25,19 @@ const RoomStudentsTable = ({ roomId }: RoomStudentsTableProps) => {
 	const { data: room, isLoading, error, refetch } = useRoom(roomId)
 	const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set([]))
 
-	const students = room?.signedInStudents ?? []
+	const [page, setPage] = useState(1)
+	const pageSize = 10
+	const allStudents = room?.signedInStudents ?? []
+	const total = allStudents.length
+	const totalPages = Math.ceil(total / pageSize) || 1
+	const students = allStudents.slice((page - 1) * pageSize, page * pageSize)
+	const startItem = (page - 1) * pageSize + 1
+	const endItem = Math.min(page * pageSize, total)
 	const hasSelection = selectedKeys === "all" || selectedKeys.size > 0
 
 	const getSelectedStudentIds = (): string[] => {
 		if (selectedKeys === "all") {
-			return students.map((s) => s.id)
+			return allStudents.map((s) => s.id)
 		}
 		return Array.from(selectedKeys) as string[]
 	}
@@ -43,9 +52,11 @@ const RoomStudentsTable = ({ roomId }: RoomStudentsTableProps) => {
 	const topContent = (
 		<div className="flex items-center justify-end gap-5">
 			<Button variant="outline" size="md" isDisabled={!hasSelection} onPress={handleTransfer}>
+				<MageExchangeA aria-hidden className="size-4" />
 				Transfer to another Room
 			</Button>
 			<Button variant="primary" onPress={() => openAddStudentModal(roomId)}>
+				<OcticonFeedPlus16 aria-hidden className="size-4" />
 				Add Student
 			</Button>
 		</div>
@@ -53,16 +64,15 @@ const RoomStudentsTable = ({ roomId }: RoomStudentsTableProps) => {
 
 	return (
 		<>
-			<Card>
-				<Card.Content className="flex flex-col gap-4 p-4">
-					{topContent}
-					<Table.ScrollContainer>
+			<div className="flex flex-col gap-4">
+				{topContent}
+				<Table className="[&_td]:py-1.5! [&_tr]:h-[50px]!">
+					<Table.ScrollContainer className="min-h-[560px]">
 						<Table.Content
 							aria-label="Students table"
 							selectionMode="multiple"
 							selectedKeys={selectedKeys}
 							onSelectionChange={setSelectedKeys}
-							className="min-h-[595.5px] [&_tbody>tr:last-child]:border-b-0 [&_tbody>tr]:h-[55px] [&_tbody>tr]:border-default-200 [&_tbody>tr]:border-b [&_td:first-child]:w-8 [&_td:first-child]:pe-0 [&_td:first-child]:text-center [&_td]:py-0 [&_th:first-child]:w-8 [&_th:first-child]:pe-0 [&_th:first-child]:text-center [&_th]:py-0"
 						>
 							<Table.Header>
 								{columns.map((column) => (
@@ -78,8 +88,10 @@ const RoomStudentsTable = ({ roomId }: RoomStudentsTableProps) => {
 							<Table.Body>
 								{isLoading ? (
 									<Table.Row>
-										<Table.Cell colSpan={columns.length} className="h-[550px] text-center">
-											<Spinner size="lg" />
+										<Table.Cell colSpan={columns.length}>
+											<EmptyState className="flex h-[524px] w-full items-center justify-center">
+												<Spinner />
+											</EmptyState>
 										</Table.Cell>
 									</Table.Row>
 								) : error ? (
@@ -90,8 +102,10 @@ const RoomStudentsTable = ({ roomId }: RoomStudentsTableProps) => {
 									</Table.Row>
 								) : students.length === 0 ? (
 									<Table.Row>
-										<Table.Cell colSpan={columns.length} className="h-[550px] text-center text-default-400">
-											No students in this room
+										<Table.Cell colSpan={columns.length}>
+											<EmptyState className="flex h-[524px] w-full items-center justify-center text-default-400">
+												No students in this room
+											</EmptyState>
 										</Table.Cell>
 									</Table.Row>
 								) : (
@@ -106,8 +120,36 @@ const RoomStudentsTable = ({ roomId }: RoomStudentsTableProps) => {
 							</Table.Body>
 						</Table.Content>
 					</Table.ScrollContainer>
-				</Card.Content>
-			</Card>
+					<Table.Footer>
+						<Pagination className="w-full">
+							<Pagination.Summary>
+								{startItem} to {endItem} of {total} students
+							</Pagination.Summary>
+							<Pagination.Content>
+								<Pagination.Item>
+									<Pagination.Previous isDisabled={page <= 1} onPress={() => setPage((p) => p - 1)}>
+										<Pagination.PreviousIcon />
+										<span>Prev</span>
+									</Pagination.Previous>
+								</Pagination.Item>
+								{Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+									<Pagination.Item key={p}>
+										<Pagination.Link isActive={p === page} onPress={() => setPage(p)}>
+											{p}
+										</Pagination.Link>
+									</Pagination.Item>
+								))}
+								<Pagination.Item>
+									<Pagination.Next isDisabled={page >= totalPages} onPress={() => setPage((p) => p + 1)}>
+										<span>Next</span>
+										<Pagination.NextIcon />
+									</Pagination.Next>
+								</Pagination.Item>
+							</Pagination.Content>
+						</Pagination>
+					</Table.Footer>
+				</Table>
+			</div>
 			<AddStudentModal />
 			<MarkAbsentModal />
 			<TransferStudentModal onSuccess={() => setSelectedKeys(new Set([]))} />

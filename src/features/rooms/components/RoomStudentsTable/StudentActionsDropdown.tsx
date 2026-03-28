@@ -1,4 +1,4 @@
-import { Button, Dropdown, Label, toast } from "@heroui/react"
+import { Button, Dropdown, toast } from "@heroui/react"
 
 import PhCheckCircleBold from "~icons/ph/check-circle-bold"
 import PhSignOutBold from "~icons/ph/sign-out-bold"
@@ -62,42 +62,33 @@ const StudentActionsDropdown = ({ student, roomId }: Props) => {
 				</Button>
 				<Dropdown.Popover>
 					<Dropdown.Menu aria-label="Student actions">
-						<Dropdown.Item id="view" textValue="View" className="text-success">
-							<Label>
-								<TablerEye aria-hidden className="size-5" />
-								View
-							</Label>
+						<Dropdown.Item id="view" textValue="View">
+							<TablerEye aria-hidden className="size-4 text-success" />
+							View
 						</Dropdown.Item>
-						<Dropdown.Item id="edit" textValue="Edit" className="text-warning">
-							<Label>
-								<TablerEdit aria-hidden className="size-5" />
-								Edit
-							</Label>
+						<Dropdown.Item id="edit" textValue="Edit">
+							<TablerEdit aria-hidden className="size-4 text-warning" />
+							Edit
 						</Dropdown.Item>
 						<Dropdown.Item
 							id="check"
 							textValue={student.checkedIn ? "Check out" : "Check in"}
-							className="text-primary"
 							onAction={handleCheckAction}
 						>
-							<Label>
-								{student.checkedIn ? (
-									<PhSignOutBold aria-hidden className="size-5" />
-								) : (
-									<PhCheckCircleBold aria-hidden className="size-5" />
-								)}
-								{student.checkedIn ? "Check out" : "Check in"}
-							</Label>
+							{student.checkedIn ? (
+								<PhSignOutBold aria-hidden className="size-4 text-accent" />
+							) : (
+								<PhCheckCircleBold aria-hidden className="size-4 text-accent" />
+							)}
+							{student.checkedIn ? "Check out" : "Check in"}
 						</Dropdown.Item>
 						<Dropdown.Item
 							id="absent"
 							textValue="Mark absent"
 							onAction={() => openMarkAbsentModal(student.id, student.name)}
 						>
-							<Label>
-								<SolarCalendarBroken aria-hidden className="size-5" />
-								Mark absent
-							</Label>
+							<SolarCalendarBroken aria-hidden className="size-4 text-foreground" />
+							Mark absent
 						</Dropdown.Item>
 					</Dropdown.Menu>
 				</Dropdown.Popover>

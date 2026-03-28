@@ -128,7 +128,7 @@ export const useCreateRoom = () => {
 	})
 }
 
-const INFINITE_PAGE_SIZE = 10
+const INFINITE_PAGE_SIZE = 20
 
 /**
  * Helper to calculate next page param for offset-based pagination

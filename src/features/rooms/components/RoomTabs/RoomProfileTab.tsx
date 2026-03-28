@@ -14,12 +14,15 @@ import {
 	toast,
 } from "@heroui/react"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useState } from "react"
 import { Controller, useForm } from "react-hook-form"
 
 import { getErrorMessage } from "@/utils/error"
 import { getMediaUrl } from "@/utils/media"
+import CiSave from "~icons/ci/save"
 import MaterialSymbolsAddAPhotoRounded from "~icons/material-symbols/add-a-photo-rounded"
+import MaterialSymbolsDeleteOutline from "~icons/material-symbols/delete-outline"
+import MaterialSymbolsUploadRounded from "~icons/material-symbols/upload-rounded"
 import OouiUserAvatar from "~icons/ooui/user-avatar"
 
 import { ROOM_AGE_OPTIONS } from "../../constants"
@@ -38,9 +41,17 @@ interface RoomProfileTabProps {
 	roomId: string
 }
 
+const SCROLL_THRESHOLD = 50
+
 const RoomProfileTab = ({ roomId }: RoomProfileTabProps) => {
 	const { data: room, isLoading } = useRoom(roomId)
-	const { employees: allEmployees, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteAllEmployees()
+	const [staffDropdownOpened, setStaffDropdownOpened] = useState(false)
+	const {
+		employees: allEmployees,
+		fetchNextPage,
+		hasNextPage,
+		isFetchingNextPage,
+	} = useInfiniteAllEmployees(staffDropdownOpened)
 	const updateRoomMutation = useUpdateRoom()
 	const updateLogoMutation = useUpdateRoomLogo()
 
@@ -105,21 +116,6 @@ const RoomProfileTab = ({ roomId }: RoomProfileTabProps) => {
 		if (!aSelected && bSelected) return 1
 		return 0
 	})
-
-	// IntersectionObserver-based infinite scroll for staff list
-	const staffObserverRef = useRef<HTMLDivElement>(null)
-	useEffect(() => {
-		if (!staffObserverRef.current || !hasNextPage || isFetchingNextPage) return
-		const observer = new IntersectionObserver(
-			(entries) => {
-				const entry = entries[0]
-				if (entry?.isIntersecting) fetchNextPage()
-			},
-			{ threshold: 0.5 },
-		)
-		observer.observe(staffObserverRef.current)
-		return () => observer.disconnect()
-	}, [hasNextPage, isFetchingNextPage, fetchNextPage])
 
 	const handleStaffSelectionChange = (keys: React.Key | React.Key[] | null) => {
 		const selectedIds = Array.isArray(keys) ? (keys as string[]) : keys ? [String(keys)] : []
@@ -245,8 +241,8 @@ const RoomProfileTab = ({ roomId }: RoomProfileTabProps) => {
 	}
 
 	return (
-		<Card>
-			<Card.Content className="gap-8 p-5 md:p-8">
+		<Card className="shadow-xl">
+			<Card.Content>
 				<form className="flex flex-col gap-8" onSubmit={handleSubmit(onSubmit)}>
 					<div className="grid grid-cols-1 gap-8 md:grid-cols-2">
 						<div className="flex flex-col gap-5">
@@ -272,6 +268,7 @@ const RoomProfileTab = ({ roomId }: RoomProfileTabProps) => {
 										<Select
 											isInvalid={!!errors.minAge}
 											isRequired
+											variant="secondary"
 											selectedKey={field.value !== undefined ? String(field.value) : null}
 											onSelectionChange={(key) => {
 												if (key !== null) {
@@ -286,7 +283,7 @@ const RoomProfileTab = ({ roomId }: RoomProfileTabProps) => {
 												<Select.Value />
 												<Select.Indicator />
 											</Select.Trigger>
-											<Select.Popover>
+											<Select.Popover className="max-h-60!">
 												<ListBox>
 													{ROOM_AGE_OPTIONS.map((option) => (
 														<ListBox.Item id={String(option.key)} key={option.key} textValue={option.label}>
@@ -307,6 +304,7 @@ const RoomProfileTab = ({ roomId }: RoomProfileTabProps) => {
 										<Select
 											isInvalid={!!errors.maxAge}
 											isRequired
+											variant="secondary"
 											selectedKey={field.value !== undefined ? String(field.value) : null}
 											onSelectionChange={(key) => {
 												if (key !== null) {
@@ -321,7 +319,7 @@ const RoomProfileTab = ({ roomId }: RoomProfileTabProps) => {
 												<Select.Value />
 												<Select.Indicator />
 											</Select.Trigger>
-											<Select.Popover>
+											<Select.Popover className="max-h-60!">
 												<ListBox>
 													{ROOM_AGE_OPTIONS.map((option) => (
 														<ListBox.Item id={String(option.key)} key={option.key} textValue={option.label}>
@@ -343,6 +341,7 @@ const RoomProfileTab = ({ roomId }: RoomProfileTabProps) => {
 											isInvalid={!!errors.capacity}
 											isRequired
 											minValue={1}
+											variant="secondary"
 											onChange={(value) => field.onChange(Number.isNaN(value) ? 1 : value)}
 											value={field.value}
 										>
@@ -366,6 +365,7 @@ const RoomProfileTab = ({ roomId }: RoomProfileTabProps) => {
 											isInvalid={!!errors.ratio}
 											isRequired
 											minValue={1}
+											variant="secondary"
 											onChange={(value) => field.onChange(Number.isNaN(value) ? 1 : value)}
 											value={field.value}
 										>
@@ -401,9 +401,11 @@ const RoomProfileTab = ({ roomId }: RoomProfileTabProps) => {
 								</div>
 								<div className="flex gap-5">
 									<Button variant="primary" onPress={() => setIsImagePickerOpen(true)} size="sm">
+										<MaterialSymbolsUploadRounded aria-hidden className="size-4" />
 										Upload Picture
 									</Button>
 									<Button variant="danger" onPress={handleDeletePicture} size="sm">
+										<MaterialSymbolsDeleteOutline aria-hidden className="size-4" />
 										Delete Picture
 									</Button>
 								</div>
@@ -419,15 +421,33 @@ const RoomProfileTab = ({ roomId }: RoomProfileTabProps) => {
 							<h3 className="font-medium text-xl">Staff</h3>
 							<Select
 								selectionMode="multiple"
+								variant="secondary"
 								value={assignedStaff.map((s) => s.id)}
 								onChange={handleStaffSelectionChange}
+								onOpenChange={(open) => {
+									if (open) setStaffDropdownOpened(true)
+								}}
 							>
 								<Label>Select Staff</Label>
 								<Select.Trigger>
-									<Select.Value />
+									<Select.Value>
+										{({ isPlaceholder, defaultChildren, state }) => {
+											if (isPlaceholder || state.selectedItems.length === 0) return defaultChildren
+											return state.selectedItems.map((item) => item.textValue).join(", ")
+										}}
+									</Select.Value>
 									<Select.Indicator />
 								</Select.Trigger>
-								<Select.Popover>
+								<Select.Popover
+									className="max-h-60!"
+									onScroll={(e) => {
+										if (!hasNextPage || isFetchingNextPage) return
+										const target = e.currentTarget
+										if (target.scrollTop === 0) return
+										const nearBottom = target.scrollHeight - target.scrollTop - target.clientHeight < SCROLL_THRESHOLD
+										if (nearBottom) void fetchNextPage()
+									}}
+								>
 									<ListBox
 										renderEmptyState={() => (
 											<div className="flex flex-wrap gap-2 p-2">
@@ -442,7 +462,7 @@ const RoomProfileTab = ({ roomId }: RoomProfileTabProps) => {
 										{staffOptions.map((staff) => (
 											<ListBox.Item id={staff.id} key={staff.id} textValue={staff.name}>
 												<div className="flex items-center gap-2">
-													<Avatar className="size-8 bg-[#1D6FE8] text-white">
+													<Avatar className="size-8">
 														<Avatar.Image
 															src={
 																"avatar" in staff && staff.avatar && staff.avatar !== "/assets/avatars/default.jpg"
@@ -451,7 +471,7 @@ const RoomProfileTab = ({ roomId }: RoomProfileTabProps) => {
 															}
 															alt={staff.name}
 														/>
-														<Avatar.Fallback>
+														<Avatar.Fallback className="bg-accent text-white">
 															<OouiUserAvatar className="size-4" />
 														</Avatar.Fallback>
 													</Avatar>
@@ -460,25 +480,15 @@ const RoomProfileTab = ({ roomId }: RoomProfileTabProps) => {
 												<ListBox.ItemIndicator />
 											</ListBox.Item>
 										))}
-										{isFetchingNextPage && (
-											<ListBox.Item id="loading-staff" textValue="Loading...">
-												<span className="text-default-400 text-sm">Loading more...</span>
-											</ListBox.Item>
-										)}
 									</ListBox>
-									<div ref={staffObserverRef} />
+									{isFetchingNextPage && (
+										<div className="flex items-center justify-center gap-2 py-2">
+											<Spinner size="sm" />
+											<span className="text-muted text-sm">Loading more...</span>
+										</div>
+									)}
 								</Select.Popover>
 							</Select>
-							{/* Selected staff chips */}
-							{assignedStaff.length > 0 && (
-								<div className="flex flex-wrap gap-2">
-									{assignedStaff.map((staff) => (
-										<Chip key={staff.id} variant="secondary">
-											{staff.name}
-										</Chip>
-									))}
-								</div>
-							)}
 						</div>
 					</div>
 
@@ -490,6 +500,7 @@ const RoomProfileTab = ({ roomId }: RoomProfileTabProps) => {
 							size="md"
 							type="button"
 						>
+							<MaterialSymbolsDeleteOutline aria-hidden className="size-4" />
 							Deactivate Room
 						</Button>
 						<div className="flex gap-5">
@@ -498,11 +509,12 @@ const RoomProfileTab = ({ roomId }: RoomProfileTabProps) => {
 							</Button>
 							<Button
 								variant="primary"
-								isDisabled={!hasChanges || !isValid}
+								isDisabled={!hasChanges || Object.keys(errors).length > 0}
 								isPending={isSaving}
 								size="md"
 								type="submit"
 							>
+								<CiSave aria-hidden className="size-4" />
 								Save Changes
 							</Button>
 						</div>

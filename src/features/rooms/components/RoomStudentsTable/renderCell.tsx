@@ -14,7 +14,7 @@ export function renderCell(student: Student, columnKey: React.Key, roomId: strin
 			return (
 				<div className="flex items-center gap-3">
 					<Badge.Anchor>
-						<Avatar>
+						<Avatar size="sm">
 							<Avatar.Image
 								src={
 									student.avatar && student.avatar !== "/assets/avatars/default.jpg"
@@ -23,11 +23,15 @@ export function renderCell(student: Student, columnKey: React.Key, roomId: strin
 								}
 								alt={student.name}
 							/>
-							<Avatar.Fallback>
+							<Avatar.Fallback className="bg-accent text-white">
 								<OouiUserAvatar className="size-5" />
 							</Avatar.Fallback>
 						</Avatar>
-						<Badge color={student.checkedIn ? "success" : "danger"} className="size-3 border-2 border-white" />
+						<Badge
+							color={student.checkedIn ? "success" : "danger"}
+							className="h-3! w-3! min-h-0! min-w-0! border-2 border-white"
+							placement="bottom-right"
+						/>
 					</Badge.Anchor>
 					<span className="font-medium text-sm">{student.name}</span>
 				</div>

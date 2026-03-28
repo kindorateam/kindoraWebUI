@@ -47,7 +47,7 @@ const RoomDetailsStep = () => {
 
 	return (
 		<div className="flex flex-col gap-6">
-			<h2 className="font-medium text-xl">Add room</h2>
+			<h2 className="font-medium text-xl text-foreground">Add room</h2>
 
 			{/* Room Avatar */}
 			<div className="flex flex-col items-center gap-2">
@@ -106,6 +106,7 @@ const RoomDetailsStep = () => {
 							minValue={1}
 							onChange={(value) => field.onChange(Number.isNaN(value) ? 1 : value)}
 							value={field.value}
+							variant="secondary"
 						>
 							<Label>Room Capacity</Label>
 							<NumberField.Group>
@@ -127,6 +128,7 @@ const RoomDetailsStep = () => {
 							minValue={1}
 							onChange={(value) => field.onChange(Number.isNaN(value) ? 1 : value)}
 							value={field.value}
+							variant="secondary"
 						>
 							<Label>Students per staff</Label>
 							<NumberField.Group>
@@ -147,6 +149,7 @@ const RoomDetailsStep = () => {
 								isInvalid={!!errors.minAge}
 								isRequired
 								selectedKey={field.value !== undefined ? String(field.value) : null}
+								variant="secondary"
 								onSelectionChange={(key) => {
 									if (key !== null) {
 										field.onChange(Number(key))
@@ -162,7 +165,7 @@ const RoomDetailsStep = () => {
 									<Select.Value />
 									<Select.Indicator />
 								</Select.Trigger>
-								<Select.Popover>
+								<Select.Popover className="max-h-60!">
 									<ListBox>
 										{ROOM_AGE_OPTIONS.map((option) => (
 											<ListBox.Item id={String(option.key)} key={option.key} textValue={option.label}>
@@ -184,6 +187,7 @@ const RoomDetailsStep = () => {
 								isInvalid={!!errors.maxAge}
 								isRequired
 								selectedKey={field.value !== undefined ? String(field.value) : null}
+								variant="secondary"
 								onSelectionChange={(key) => {
 									if (key !== null) {
 										field.onChange(Number(key))
@@ -199,7 +203,7 @@ const RoomDetailsStep = () => {
 									<Select.Value />
 									<Select.Indicator />
 								</Select.Trigger>
-								<Select.Popover>
+								<Select.Popover className="max-h-60!">
 									<ListBox>
 										{ROOM_AGE_OPTIONS.map((option) => (
 											<ListBox.Item id={String(option.key)} key={option.key} textValue={option.label}>

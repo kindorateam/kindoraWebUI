@@ -13,7 +13,7 @@ const ConfirmRoomStep = () => {
 
 	return (
 		<div className="flex flex-col gap-6">
-			<h2 className="font-medium text-xl">Confirm Room Details</h2>
+			<h2 className="font-medium text-xl text-foreground">Confirm Room Details</h2>
 			<div className="flex justify-center">
 				{isGradient ? (
 					<div className="size-14 rounded-full" style={{ background: formData.avatarPreview }} />
@@ -24,33 +24,32 @@ const ConfirmRoomStep = () => {
 					</Avatar>
 				)}
 			</div>
-			<div className="flex justify-between">
-				<div className="flex flex-col gap-3">
-					<p className="text-base">
-						<span className="font-medium">Name:</span> <span className="text-muted">{formData.name}</span>
-					</p>
-					<p className="text-base">
-						<span className="font-medium">Capacity:</span> <span className="text-muted">{formData.capacity}</span>
-					</p>
-					<p className="text-base">
-						<span className="font-medium">Ratio:</span> <span className="text-muted">{formData.ratio}:1</span>
-					</p>
-					<p className="text-base">
-						<span className="font-medium">Age Range:</span>{" "}
-						<span className="text-muted">
-							{formatAgeLabel(formData.minAge)} - {formatAgeLabel(formData.maxAge)}
-						</span>
+			<div className="grid grid-cols-2 gap-x-6 gap-y-3">
+				<div>
+					<p className="text-sm text-muted">Name</p>
+					<p className="font-medium text-foreground">{formData.name}</p>
+				</div>
+				<div>
+					<p className="text-sm text-muted">Age Range</p>
+					<p className="font-medium text-foreground">
+						{formatAgeLabel(formData.minAge)} – {formatAgeLabel(formData.maxAge)}
 					</p>
 				</div>
-				<div className="flex flex-col gap-3">
-					<p className="text-base">
-						<span className="font-medium">Staff:</span>{" "}
-						<span className="text-muted">{formData.staffIds?.length || 0} selected</span>
-					</p>
-					<p className="text-base">
-						<span className="font-medium">Students:</span>{" "}
-						<span className="text-muted">{formData.studentIds?.length || 0} selected</span>
-					</p>
+				<div>
+					<p className="text-sm text-muted">Capacity</p>
+					<p className="font-medium text-foreground">{formData.capacity}</p>
+				</div>
+				<div>
+					<p className="text-sm text-muted">Ratio</p>
+					<p className="font-medium text-foreground">{formData.ratio}:1</p>
+				</div>
+				<div>
+					<p className="text-sm text-muted">Staff</p>
+					<p className="font-medium text-foreground">{formData.staffIds?.length || 0} selected</p>
+				</div>
+				<div>
+					<p className="text-sm text-muted">Students</p>
+					<p className="font-medium text-foreground">{formData.studentIds?.length || 0} selected</p>
 				</div>
 			</div>
 		</div>

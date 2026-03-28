@@ -3,6 +3,7 @@ import { useAtom } from "jotai"
 import { useState } from "react"
 
 import TableError from "@/components/TableError"
+import OcticonFeedPlus16 from "~icons/octicon/feed-plus-16"
 
 import { useRooms } from "../../hooks/useRooms"
 import { openAddRoomModal } from "../../stores/addRoomModal.store"
@@ -39,6 +40,7 @@ const RoomsTable = () => {
 				</Switch.Content>
 			</Switch>
 			<Button variant="primary" onPress={openAddRoomModal}>
+				<OcticonFeedPlus16 aria-hidden className="size-4" />
 				Add Room
 			</Button>
 		</div>
@@ -48,7 +50,7 @@ const RoomsTable = () => {
 		<div className="flex flex-col gap-4">
 			{topContent}
 			<div className="flex flex-col justify-between">
-				<Table>
+				<Table className="[&_td]:py-1.5! [&_tr]:h-[50px]!">
 					<Table.ScrollContainer className="min-h-[560px]">
 						<Table.Content aria-label="Rooms table">
 							<Table.Header>

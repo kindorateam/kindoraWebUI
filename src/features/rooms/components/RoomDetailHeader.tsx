@@ -36,7 +36,7 @@ const RoomDetailHeader = ({ activeTab, roomId, onTabChange }: RoomDetailHeaderPr
 			label: "Ratio",
 			icon: (
 				<Tooltip delay={300}>
-					<Tooltip.Trigger aria-label={isGoodRatio ? "Ratio is met" : "Ratio is not met"}>
+					<Tooltip.Trigger className="inline-flex" aria-label={isGoodRatio ? "Ratio is met" : "Ratio is not met"}>
 						<span className="inline-flex cursor-default items-center justify-center">
 							{isGoodRatio ? (
 								<PhSmileyDuotone className="size-5 text-success" />
@@ -104,24 +104,33 @@ const RoomDetailHeader = ({ activeTab, roomId, onTabChange }: RoomDetailHeaderPr
 
 				<Tabs onSelectionChange={(key) => onTabChange(key as TabType)} selectedKey={activeTab}>
 					<Tabs.ListContainer>
-						<Tabs.List aria-label="Room details tabs" className="shadow-md">
+						<Tabs.List
+							aria-label="Room details tabs"
+							className="*:data-[selected=true]:text-accent-foreground w-fit *:h-6 *:w-fit *:px-3 *:text-sm *:font-normal"
+						>
 							<Tabs.Tab id="students">
 								Students
-								<Tabs.Indicator />
+								<Tabs.Indicator className="bg-accent" />
 							</Tabs.Tab>
 							<Tabs.Tab id="activity">
 								Activity
-								<Tabs.Indicator />
+								<Tabs.Indicator className="bg-accent" />
 							</Tabs.Tab>
 							<Tabs.Tab id="profile">
 								Profile
-								<Tabs.Indicator />
+								<Tabs.Indicator className="bg-accent" />
 							</Tabs.Tab>
 						</Tabs.List>
 					</Tabs.ListContainer>
-					<Tabs.Panel id="students">{null}</Tabs.Panel>
-					<Tabs.Panel id="activity">{null}</Tabs.Panel>
-					<Tabs.Panel id="profile">{null}</Tabs.Panel>
+					<Tabs.Panel id="students" className="hidden">
+						{null}
+					</Tabs.Panel>
+					<Tabs.Panel id="activity" className="hidden">
+						{null}
+					</Tabs.Panel>
+					<Tabs.Panel id="profile" className="hidden">
+						{null}
+					</Tabs.Panel>
 				</Tabs>
 			</div>
 		</div>

@@ -1,11 +1,11 @@
-import { Button, FieldError, Label, ListBox, Select, Skeleton } from "@heroui/react"
-import { useEffect, useRef } from "react"
+import { Button, Collection, FieldError, Label, ListBox, Select, Skeleton, Spinner } from "@heroui/react"
 import { Controller, useFormContext } from "react-hook-form"
 
 import { getErrorMessage } from "@/utils/error"
 
 import { useInfiniteAllEmployees, useInfiniteAllStudents } from "../../hooks/useRooms"
 
+import type React from "react"
 import type { AddRoomFormData } from "../../types"
 
 const AddStaffStudentsStepSkeleton = () => (
@@ -17,6 +17,22 @@ const AddStaffStudentsStepSkeleton = () => (
 		</div>
 	</div>
 )
+
+const SCROLL_THRESHOLD = 50
+
+const handleScrollEnd = (
+	e: React.UIEvent<HTMLDivElement>,
+	hasNext: boolean,
+	isFetching: boolean,
+	fetchNext: () => void,
+) => {
+	if (!hasNext || isFetching) return
+	const target = e.currentTarget
+	// Ignore scroll events when the user hasn't actually scrolled
+	if (target.scrollTop === 0) return
+	const nearBottom = target.scrollHeight - target.scrollTop - target.clientHeight < SCROLL_THRESHOLD
+	if (nearBottom) fetchNext()
+}
 
 const AddStaffStudentsStep = () => {
 	const {
@@ -47,38 +63,9 @@ const AddStaffStudentsStep = () => {
 	} = useInfiniteAllEmployees()
 
 	const isLoading = isLoadingStudents || isLoadingEmployees
+
 	const isError = isStudentsError || isEmployeesError
 	const error = studentsError || employeesError
-
-	// IntersectionObserver-based infinite scroll for employees
-	const employeesObserverRef = useRef<HTMLDivElement>(null)
-	useEffect(() => {
-		if (!employeesObserverRef.current || !hasNextEmployees || isFetchingNextEmployees) return
-		const observer = new IntersectionObserver(
-			(entries) => {
-				const entry = entries[0]
-				if (entry?.isIntersecting) fetchNextEmployees()
-			},
-			{ threshold: 0.5 },
-		)
-		observer.observe(employeesObserverRef.current)
-		return () => observer.disconnect()
-	}, [hasNextEmployees, isFetchingNextEmployees, fetchNextEmployees])
-
-	// IntersectionObserver-based infinite scroll for students
-	const studentsObserverRef = useRef<HTMLDivElement>(null)
-	useEffect(() => {
-		if (!studentsObserverRef.current || !hasNextStudents || isFetchingNextStudents) return
-		const observer = new IntersectionObserver(
-			(entries) => {
-				const entry = entries[0]
-				if (entry?.isIntersecting) fetchNextStudents()
-			},
-			{ threshold: 0.5 },
-		)
-		observer.observe(studentsObserverRef.current)
-		return () => observer.disconnect()
-	}, [hasNextStudents, isFetchingNextStudents, fetchNextStudents])
 
 	const refetchAll = () => Promise.all([refetchStudents(), refetchEmployees()])
 
@@ -89,7 +76,7 @@ const AddStaffStudentsStep = () => {
 	if (isError) {
 		return (
 			<div className="flex flex-col gap-6">
-				<h2 className="font-medium text-xl">Add Staff & Students</h2>
+				<h2 className="font-medium text-xl text-foreground">Add Staff & Students</h2>
 				<div className="rounded-lg bg-danger-50 p-4 text-danger-700 text-sm">
 					<p className="font-medium">Failed to load staff and students</p>
 					<p className="mt-1 text-danger-600">{getErrorMessage(error) ?? "Please try again."}</p>
@@ -110,7 +97,7 @@ const AddStaffStudentsStep = () => {
 
 	return (
 		<div className="flex flex-col gap-6">
-			<h2 className="font-medium text-xl">Add Staff & Students</h2>
+			<h2 className="font-medium text-xl text-foreground">Add Staff & Students</h2>
 
 			<div className="flex flex-col gap-3">
 				<Controller
@@ -120,6 +107,7 @@ const AddStaffStudentsStep = () => {
 						<Select
 							isInvalid={!!errors.staffIds}
 							selectionMode="multiple"
+							variant="secondary"
 							value={field.value || []}
 							onChange={(keys) => {
 								field.onChange(keys as string[])
@@ -130,21 +118,30 @@ const AddStaffStudentsStep = () => {
 								<Select.Value />
 								<Select.Indicator />
 							</Select.Trigger>
-							<Select.Popover>
+							<Select.Popover
+								className="max-h-60!"
+								onScroll={(e) => {
+									handleScrollEnd(e, hasNextEmployees ?? false, isFetchingNextEmployees, () => {
+										void fetchNextEmployees()
+									})
+								}}
+							>
 								<ListBox>
-									{employees.map((employee) => (
-										<ListBox.Item id={employee.id} key={employee.id} textValue={employee.name}>
-											{employee.name}
-											<ListBox.ItemIndicator />
-										</ListBox.Item>
-									))}
-									{isFetchingNextEmployees && (
-										<ListBox.Item id="loading-employees" textValue="Loading...">
-											<span className="text-muted text-sm">Loading more...</span>
-										</ListBox.Item>
-									)}
+									<Collection items={employees}>
+										{(employee) => (
+											<ListBox.Item id={employee.id} textValue={employee.name}>
+												{employee.name}
+												<ListBox.ItemIndicator />
+											</ListBox.Item>
+										)}
+									</Collection>
 								</ListBox>
-								<div ref={employeesObserverRef} />
+								{isFetchingNextEmployees && (
+									<div className="flex items-center justify-center gap-2 py-2">
+										<Spinner size="sm" />
+										<span className="text-muted text-sm">Loading more...</span>
+									</div>
+								)}
 							</Select.Popover>
 							{errors.staffIds?.message && <FieldError>{errors.staffIds.message}</FieldError>}
 						</Select>
@@ -158,6 +155,7 @@ const AddStaffStudentsStep = () => {
 						<Select
 							isInvalid={!!errors.studentIds}
 							selectionMode="multiple"
+							variant="secondary"
 							value={field.value || []}
 							onChange={(keys) => {
 								field.onChange(keys as string[])
@@ -168,21 +166,30 @@ const AddStaffStudentsStep = () => {
 								<Select.Value />
 								<Select.Indicator />
 							</Select.Trigger>
-							<Select.Popover>
+							<Select.Popover
+								className="max-h-60!"
+								onScroll={(e) => {
+									handleScrollEnd(e, hasNextStudents ?? false, isFetchingNextStudents, () => {
+										void fetchNextStudents()
+									})
+								}}
+							>
 								<ListBox>
-									{students.map((student) => (
-										<ListBox.Item id={student.id} key={student.id} textValue={student.name}>
-											{student.name}
-											<ListBox.ItemIndicator />
-										</ListBox.Item>
-									))}
-									{isFetchingNextStudents && (
-										<ListBox.Item id="loading-students" textValue="Loading...">
-											<span className="text-muted text-sm">Loading more...</span>
-										</ListBox.Item>
-									)}
+									<Collection items={students}>
+										{(student) => (
+											<ListBox.Item id={student.id} textValue={student.name}>
+												{student.name}
+												<ListBox.ItemIndicator />
+											</ListBox.Item>
+										)}
+									</Collection>
 								</ListBox>
-								<div ref={studentsObserverRef} />
+								{isFetchingNextStudents && (
+									<div className="flex items-center justify-center gap-2 py-2">
+										<Spinner size="sm" />
+										<span className="text-muted text-sm">Loading more...</span>
+									</div>
+								)}
 							</Select.Popover>
 							{errors.studentIds?.message && <FieldError>{errors.studentIds.message}</FieldError>}
 						</Select>

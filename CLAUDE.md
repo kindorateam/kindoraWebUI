@@ -52,6 +52,7 @@ Bun, React 19, TypeScript 5 (strict), Vite 7, TanStack Router (file-based routin
 - Never edit `src/routeTree.gen.ts` — it's auto-generated
 - Never use `any` — use `unknown` with type narrowing, or proper generics
 - Never wrap HeroUI components without adding significant shared logic
+- Never use inline SVGs or other icon libraries — always use Iconify via `unplugin-icons` (`~icons/` imports)
 - Feature-specific code goes in `features/`, not in `components/ui/`
 - Use `apiClient.get<T>()` generics for typed API responses
 

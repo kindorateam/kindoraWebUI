@@ -12,7 +12,7 @@ const LabeledNumberBadge = ({ badgeVariant, icon, label, value }: LabeledNumberB
 		<div className="flex items-center gap-2">
 			<span className="">{label}</span>
 			{!icon && value !== undefined && <NumberBadge value={value} variant={badgeVariant} />}
-			{icon && <span className="flex h-7 w-7 items-center justify-center text-brand">{icon}</span>}
+			{icon && <span className="flex items-center justify-center">{icon}</span>}
 		</div>
 	)
 }

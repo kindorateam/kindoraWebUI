@@ -83,6 +83,13 @@ const AddRoomStepper = ({ onComplete, onCancel, isLoading = false }: AddRoomStep
 		if (currentStep === 0) {
 			onCancel?.()
 		} else {
+			// Clear step 2 errors when going back so stale cross-field
+			// validations (e.g. studentIds vs capacity) don't persist
+			if (currentStep === 1) {
+				for (const field of STEP2_FIELDS) {
+					form.clearErrors(field)
+				}
+			}
 			setCurrentStep((prev) => prev - 1)
 		}
 	}
