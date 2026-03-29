@@ -1,12 +1,16 @@
-import { Avatar, Badge, Button, Chip, Separator } from "@heroui/react"
+import { Avatar, Badge, Button, Chip, Separator, Tabs } from "@heroui/react"
 
 import IdentityChip from "@/components/IdentityChip"
 import SolarCalendarBroken from "~icons/solar/calendar-broken"
 
 import type { Student } from "../../types"
 
+type TabType = "activity" | "profile" | "documents" | "imunization" | "billing"
+
 interface StudentDetailHeaderProps {
 	student: Student
+	activeTab: TabType
+	onTabChange: (tab: TabType) => void
 	onMoveToRoom?: () => void
 	onScheduleAbsence?: () => void
 }
@@ -21,7 +25,13 @@ const formatAbsenceDate = (student: Student) => {
 	return `${dateFormatter.format(new Date(student.absence.dateFrom))} - ${dateFormatter.format(new Date(student.absence.dateTo))}`
 }
 
-const StudentDetailHeader = ({ student, onMoveToRoom, onScheduleAbsence }: StudentDetailHeaderProps) => {
+const StudentDetailHeader = ({
+	student,
+	activeTab,
+	onTabChange,
+	onMoveToRoom,
+	onScheduleAbsence,
+}: StudentDetailHeaderProps) => {
 	const studentName = `${student.firstName} ${student.lastName}`
 
 	return (
@@ -73,6 +83,51 @@ const StudentDetailHeader = ({ student, onMoveToRoom, onScheduleAbsence }: Stude
 					</div>
 				</div>
 			</div>
+
+			<Tabs onSelectionChange={(key) => onTabChange(key as TabType)} selectedKey={activeTab}>
+				<Tabs.ListContainer>
+					<Tabs.List
+						aria-label="Student details tabs"
+						className="w-fit *:h-6 *:w-fit *:px-3 *:font-normal *:text-sm *:data-[selected=true]:text-accent-foreground"
+					>
+						<Tabs.Tab id="activity">
+							Activity
+							<Tabs.Indicator className="bg-accent" />
+						</Tabs.Tab>
+						<Tabs.Tab id="profile">
+							Profile
+							<Tabs.Indicator className="bg-accent" />
+						</Tabs.Tab>
+						<Tabs.Tab id="documents">
+							Documents
+							<Tabs.Indicator className="bg-accent" />
+						</Tabs.Tab>
+						<Tabs.Tab id="imunization">
+							Imunization
+							<Tabs.Indicator className="bg-accent" />
+						</Tabs.Tab>
+						<Tabs.Tab id="billing">
+							Billing
+							<Tabs.Indicator className="bg-accent" />
+						</Tabs.Tab>
+					</Tabs.List>
+				</Tabs.ListContainer>
+				<Tabs.Panel id="activity" className="hidden">
+					{null}
+				</Tabs.Panel>
+				<Tabs.Panel id="profile" className="hidden">
+					{null}
+				</Tabs.Panel>
+				<Tabs.Panel id="documents" className="hidden">
+					{null}
+				</Tabs.Panel>
+				<Tabs.Panel id="imunization" className="hidden">
+					{null}
+				</Tabs.Panel>
+				<Tabs.Panel id="billing" className="hidden">
+					{null}
+				</Tabs.Panel>
+			</Tabs>
 		</div>
 	)
 }

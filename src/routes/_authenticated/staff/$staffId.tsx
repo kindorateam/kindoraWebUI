@@ -1,4 +1,3 @@
-import { Spinner, Tabs } from "@heroui/react"
 import { createFileRoute, useNavigate } from "@tanstack/react-router"
 
 import { RouteErrorBoundary } from "@/components/error"
@@ -10,7 +9,6 @@ import { useEmployee } from "@/features/staff/hooks/useStaff"
 import { getEmployeeById } from "@/features/staff/services/staff.service"
 import { openRegeneratePinModal } from "@/features/staff/stores/regeneratePinModal.store"
 import { getEmployeeFullName } from "@/features/staff/types"
-import { useTabNavigation } from "@/hooks/useTabNavigation"
 import { queryClient } from "@/services/queryClient"
 
 type TabType = "profile" | "documents"
@@ -60,52 +58,30 @@ function StaffDetailLayout() {
 	const employeeId = params.staffId
 	const tab = search.tab
 
-	const { data: employeeData, isLoading } = useEmployee(employeeId)
+	const { data: employeeData } = useEmployee(employeeId)
 
-	const handleTabChange = useTabNavigation(tab, "profile", navigate)
-
-	const tabsContent = (
-		<Tabs onSelectionChange={(key) => handleTabChange(key as TabType)} selectedKey={tab}>
-			<Tabs.ListContainer>
-				<Tabs.List aria-label="Employee details tabs" className="shadow-md">
-					<Tabs.Tab id="profile">
-						Profile
-						<Tabs.Indicator />
-					</Tabs.Tab>
-					<Tabs.Tab id="documents">
-						Documents
-						<Tabs.Indicator />
-					</Tabs.Tab>
-				</Tabs.List>
-			</Tabs.ListContainer>
-		</Tabs>
-	)
-
-	if (isLoading) {
-		return (
-			<div className="flex min-h-screen items-center justify-center">
-				<Spinner size="lg" />
-			</div>
-		)
+	const handleTabChange = (newTab: TabType) => {
+		void navigate({
+			search: (prev) => ({ ...prev, tab: newTab }),
+			replace: true,
+		})
 	}
 
 	return (
 		<RouteErrorBoundary routeName="employee-detail">
-			<div className="flex min-h-screen flex-col">
+			<div>
 				<StaffDetailHeader
 					employeeData={employeeData}
+					activeTab={tab}
+					onTabChange={handleTabChange}
 					onGeneratePin={openRegeneratePinModal}
 					// TODO: Wire to send invite API when available
 					onSendInvite={() => {}}
-					tabs={tabsContent}
 				/>
 				<RegeneratePinModal employeeId={employeeId} />
-				<main className="container mx-auto max-w-4xl flex-1 py-10">
-					{tab === "profile" ? (
-						<StaffProfileTab employeeId={employeeId} />
-					) : (
-						<StaffDocumentsTab employeeId={employeeId} />
-					)}
+				<main className="container mx-auto max-w-4xl pt-6">
+					{tab === "profile" && <StaffProfileTab employeeId={employeeId} />}
+					{tab === "documents" && <StaffDocumentsTab employeeId={employeeId} />}
 				</main>
 			</div>
 		</RouteErrorBoundary>

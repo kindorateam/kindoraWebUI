@@ -9,6 +9,7 @@ import {
 	Popover,
 	Select,
 	Separator,
+	Tabs,
 	Tooltip,
 } from "@heroui/react"
 
@@ -22,15 +23,25 @@ import { getEmployeeAvatarUrl, getEmployeeFullName } from "../../types"
 
 import type { EmployeeFull } from "../../types"
 
+type TabType = "profile" | "documents"
+
 interface StaffDetailHeaderProps {
 	employeeData: EmployeeFull | undefined
-	tabs: React.ReactNode
+	activeTab: TabType
+	onTabChange: (tab: TabType) => void
 	onSignOut?: () => void
 	onGeneratePin?: () => void
 	onSendInvite?: () => void
 }
 
-const StaffDetailHeader = ({ employeeData, tabs, onSignOut, onGeneratePin, onSendInvite }: StaffDetailHeaderProps) => {
+const StaffDetailHeader = ({
+	employeeData,
+	activeTab,
+	onTabChange,
+	onSignOut,
+	onGeneratePin,
+	onSendInvite,
+}: StaffDetailHeaderProps) => {
 	const fullName = employeeData ? getEmployeeFullName(employeeData) : "Employee"
 	const avatarUrl = employeeData ? getEmployeeAvatarUrl(employeeData) : undefined
 
@@ -167,7 +178,29 @@ const StaffDetailHeader = ({ employeeData, tabs, onSignOut, onGeneratePin, onSen
 					</div>
 				</div>
 
-				{tabs}
+				<Tabs onSelectionChange={(key) => onTabChange(key as TabType)} selectedKey={activeTab}>
+					<Tabs.ListContainer>
+						<Tabs.List
+							aria-label="Employee details tabs"
+							className="w-fit *:h-6 *:w-fit *:px-3 *:font-normal *:text-sm *:data-[selected=true]:text-accent-foreground"
+						>
+							<Tabs.Tab id="profile">
+								Profile
+								<Tabs.Indicator className="bg-accent" />
+							</Tabs.Tab>
+							<Tabs.Tab id="documents">
+								Documents
+								<Tabs.Indicator className="bg-accent" />
+							</Tabs.Tab>
+						</Tabs.List>
+					</Tabs.ListContainer>
+					<Tabs.Panel id="profile" className="hidden">
+						{null}
+					</Tabs.Panel>
+					<Tabs.Panel id="documents" className="hidden">
+						{null}
+					</Tabs.Panel>
+				</Tabs>
 			</div>
 		</div>
 	)

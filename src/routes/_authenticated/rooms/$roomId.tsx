@@ -1,10 +1,12 @@
-import { Outlet, createFileRoute, useNavigate } from "@tanstack/react-router"
+import { createFileRoute, useNavigate } from "@tanstack/react-router"
 
 import { RouteErrorBoundary } from "@/components/error"
 import DeactivateRoomModal from "@/features/rooms/components/DeactivateRoomModal"
 import RoomDetailHeader from "@/features/rooms/components/RoomDetailHeader"
+import RoomStudentsTable from "@/features/rooms/components/RoomStudentsTable"
+import RoomActivityTab from "@/features/rooms/components/RoomTabs/RoomActivityTab"
+import RoomProfileTab from "@/features/rooms/components/RoomTabs/RoomProfileTab"
 import { getRoomById } from "@/features/rooms/services/room.service"
-import { useTabNavigation } from "@/hooks/useTabNavigation"
 import { queryClient } from "@/services/queryClient"
 
 type TabType = "students" | "activity" | "profile"
@@ -52,7 +54,9 @@ function RoomDetailLayout() {
 	const roomId = params.roomId
 	const tab = search.tab
 
-	const handleTabChange = useTabNavigation(tab, "students", navigate)
+	const handleTabChange = (newTab: TabType) => {
+		void navigate({ search: (prev) => ({ ...prev, tab: newTab }), replace: true })
+	}
 
 	const handleDeactivateSuccess = () => {
 		void navigate({ to: "/rooms" })
@@ -63,7 +67,9 @@ function RoomDetailLayout() {
 			<div>
 				<RoomDetailHeader activeTab={tab} onTabChange={handleTabChange} roomId={roomId} />
 				<main className="container mx-auto max-w-4xl pt-6">
-					<Outlet />
+					{tab === "students" && <RoomStudentsTable roomId={roomId} />}
+					{tab === "activity" && <RoomActivityTab roomId={roomId} />}
+					{tab === "profile" && <RoomProfileTab roomId={roomId} />}
 				</main>
 			</div>
 			<DeactivateRoomModal onSuccess={handleDeactivateSuccess} />

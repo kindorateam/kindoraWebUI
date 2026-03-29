@@ -1,7 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router"
 
 import NewslettersPage from "@/features/newsletters/components/NewslettersPage"
-import { useTabNavigation } from "@/hooks/useTabNavigation"
 
 type TabType = "sent" | "scheduled" | "drafts"
 
@@ -12,7 +11,10 @@ interface NewslettersSearch {
 function NewslettersLayout() {
 	const { tab } = Route.useSearch()
 	const navigate = useNavigate({ from: Route.fullPath })
-	const handleTabChange = useTabNavigation(tab, "sent", navigate)
+
+	const handleTabChange = (newTab: TabType) => {
+		void navigate({ search: (prev) => ({ ...prev, tab: newTab }), replace: true })
+	}
 
 	return <NewslettersPage activeTab={tab} onTabChange={handleTabChange} />
 }

@@ -1,4 +1,3 @@
-import { Spinner, Tabs } from "@heroui/react"
 import { createFileRoute, useNavigate } from "@tanstack/react-router"
 
 import { RouteErrorBoundary } from "@/components/error"
@@ -10,7 +9,6 @@ import StudentDocumentsTab from "@/features/students/components/StudentDocuments
 import StudentProfileTab from "@/features/students/components/StudentProfileTab"
 import { useStudent } from "@/features/students/hooks/useStudents"
 import { getStudentById } from "@/features/students/services/student.service"
-import { useTabNavigation } from "@/hooks/useTabNavigation"
 import { queryClient } from "@/services/queryClient"
 
 type TabType = "activity" | "profile" | "documents" | "imunization" | "billing"
@@ -58,7 +56,9 @@ function StudentDetailPage() {
 	const { data: student, isError, isLoading } = useStudent(params.studentId)
 
 	const tab = search.tab
-	const handleTabChange = useTabNavigation(tab, "activity", navigate)
+	const handleTabChange = (newTab: TabType) => {
+		void navigate({ search: (prev) => ({ ...prev, tab: newTab }), replace: true })
+	}
 
 	const handleMoveStudent = () => {
 		if (!student) return
@@ -71,15 +71,7 @@ function StudentDetailPage() {
 		openMarkAbsentModal(student.id, `${student.firstName} ${student.lastName}`)
 	}
 
-	if (isLoading) {
-		return (
-			<main className="flex min-h-screen items-center justify-center">
-				<Spinner size="lg" />
-			</main>
-		)
-	}
-
-	if (isError || !student) {
+	if (isLoading || isError || !student) {
 		return (
 			<RouteErrorBoundary routeName="student-detail">
 				<main className="container mx-auto max-w-4xl py-10">
@@ -91,47 +83,20 @@ function StudentDetailPage() {
 
 	return (
 		<RouteErrorBoundary routeName="student-detail">
-			<div className="flex min-h-screen flex-col">
+			<div>
 				<StudentDetailHeader
+					student={student}
+					activeTab={tab}
+					onTabChange={handleTabChange}
 					onMoveToRoom={student.roomId ? handleMoveStudent : undefined}
 					onScheduleAbsence={handleScheduleAbsence}
-					student={student}
 				/>
-				<main className="container mx-auto max-w-4xl flex-1">
-					<Tabs onSelectionChange={(key) => handleTabChange(key as TabType)} selectedKey={tab}>
-						<Tabs.ListContainer>
-							<Tabs.List aria-label="Student details tabs" className="shadow-md">
-								<Tabs.Tab id="activity">
-									Activity
-									<Tabs.Indicator />
-								</Tabs.Tab>
-								<Tabs.Tab id="profile">
-									Profile
-									<Tabs.Indicator />
-								</Tabs.Tab>
-								<Tabs.Tab id="documents">
-									Documents
-									<Tabs.Indicator />
-								</Tabs.Tab>
-								<Tabs.Tab id="imunization">
-									Imunization
-									<Tabs.Indicator />
-								</Tabs.Tab>
-								<Tabs.Tab id="billing">
-									Billing
-									<Tabs.Indicator />
-								</Tabs.Tab>
-							</Tabs.List>
-						</Tabs.ListContainer>
-					</Tabs>
-
-					<div className="mt-6">
-						{tab === "activity" && <p className="text-default-500">Activity content coming soon.</p>}
-						{tab === "profile" && <StudentProfileTab student={student} />}
-						{tab === "documents" && <StudentDocumentsTab studentId={student.id} />}
-						{tab === "imunization" && <p className="text-default-500">Imunization content coming soon.</p>}
-						{tab === "billing" && <p className="text-default-500">Billing content coming soon.</p>}
-					</div>
+				<main className="container mx-auto max-w-4xl flex-1 pt-6">
+					{tab === "activity" && <p className="text-default-500">Activity content coming soon.</p>}
+					{tab === "profile" && <StudentProfileTab student={student} />}
+					{tab === "documents" && <StudentDocumentsTab studentId={student.id} />}
+					{tab === "imunization" && <p className="text-default-500">Imunization content coming soon.</p>}
+					{tab === "billing" && <p className="text-default-500">Billing content coming soon.</p>}
 				</main>
 			</div>
 			<MarkAbsentModal />
