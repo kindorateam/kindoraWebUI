@@ -1,14 +1,17 @@
-import { Button, Input, Label, ListBox, Modal, Select, Switch, TextArea, TextField, toast } from "@heroui/react"
+import { Button, Input, Label, Modal, Switch, TextArea, TextField, toast } from "@heroui/react"
 import { useAtomValue } from "jotai"
 import { useEffect, useState } from "react"
 
 import { getErrorMessage } from "@/utils/error"
 
-import { DEFAULT_EVENT_COLOR, EVENT_COLOR_OPTIONS } from "../constants"
+import { DEFAULT_EVENT_COLOR } from "../constants"
 import { useCreateEvent, useUpdateEvent } from "../hooks/useCalendar"
 import { openDeleteEventModal } from "../stores/deleteEventModal.store"
 import { closeEventModal, eventModalAtom } from "../stores/eventModal.store"
 import { combineDateTime, parseDateTime, toExclusiveEndDate, toInclusiveEndDate } from "../utils/eventDate"
+
+import EventColorSelect from "./EventColorSelect"
+import EventDateTimeFields from "./EventDateTimeFields"
 
 import type { EventFormData } from "../types"
 
@@ -159,83 +162,16 @@ const EventModal = () => {
 							</Switch.Content>
 						</Switch>
 
-						<div className="grid grid-cols-2 gap-3">
-							<TextField isRequired>
-								<Label>Start date</Label>
+						<EventDateTimeFields
+							startDate={formData.startDate}
+							startTime={formData.startTime}
+							endDate={formData.endDate}
+							endTime={formData.endTime}
+							allDay={formData.allDay}
+							onFieldChange={(field, value) => updateField(field, value)}
+						/>
 
-								<Input
-									type="date"
-									value={formData.startDate}
-									onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-										((v) => updateField("startDate", v))(e.target.value)
-									}
-								/>
-							</TextField>
-							{!formData.allDay && (
-								<TextField>
-									<Label>Start time</Label>
-
-									<Input
-										type="time"
-										value={formData.startTime}
-										onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-											((v) => updateField("startTime", v))(e.target.value)
-										}
-									/>
-								</TextField>
-							)}
-						</div>
-
-						<div className="grid grid-cols-2 gap-3">
-							<TextField isRequired>
-								<Label>End date</Label>
-
-								<Input
-									type="date"
-									value={formData.endDate}
-									onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-										((v) => updateField("endDate", v))(e.target.value)
-									}
-								/>
-							</TextField>
-							{!formData.allDay && (
-								<TextField>
-									<Label>End time</Label>
-
-									<Input
-										type="time"
-										value={formData.endTime}
-										onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-											((v) => updateField("endTime", v))(e.target.value)
-										}
-									/>
-								</TextField>
-							)}
-						</div>
-
-						<Select
-							selectedKey={formData.color}
-							onSelectionChange={(key) => {
-								if (key !== null) updateField("color", String(key))
-							}}
-						>
-							<Label>Color</Label>
-							<Select.Trigger>
-								<Select.Value />
-								<Select.Indicator />
-							</Select.Trigger>
-							<Select.Popover>
-								<ListBox>
-									{EVENT_COLOR_OPTIONS.map((opt) => (
-										<ListBox.Item id={opt.key} key={opt.key} textValue={opt.label}>
-											<div className="size-3 rounded-full" style={{ backgroundColor: opt.key }} />
-											{opt.label}
-											<ListBox.ItemIndicator />
-										</ListBox.Item>
-									))}
-								</ListBox>
-							</Select.Popover>
-						</Select>
+						<EventColorSelect value={formData.color} onChange={(v) => updateField("color", v)} />
 					</Modal.Body>
 					<Modal.Footer>
 						{isEditMode && (

@@ -80,5 +80,5 @@ const Text = ({
 	)
 }
 
-export type { TextProps, TextSize, TextWeight, TextColor }
+export type { TextColor, TextProps, TextSize, TextWeight }
 export default Text

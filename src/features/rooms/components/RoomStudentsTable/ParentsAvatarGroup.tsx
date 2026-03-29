@@ -29,7 +29,7 @@ const ParentsAvatarGroup = ({ parents }: ParentsAvatarGroupProps) => {
 	return (
 		<Tooltip delay={300}>
 			<Tooltip.Trigger aria-label={`${parents.length} parent${parents.length !== 1 ? "s" : ""}`}>
-				<div className="-space-x-2 flex">
+				<div className="flex -space-x-2">
 					{visible.map((parent) => {
 						const fullName = `${parent.firstName} ${parent.lastName}`
 						return (

@@ -87,6 +87,12 @@
 						"command": "jq -r '.tool_input.command // empty' | grep -qE 'git add.*(\\.(env|pem|key)|credentials)' && echo 'BLOCK: Do not stage secrets or credentials' && exit 1 || exit 0",
 						"timeout": 5,
 						"statusMessage": "Checking for secrets..."
+					},
+					{
+						"type": "command",
+						"command": "jq -r '.tool_input.command // empty' | grep -qE '^git commit' && { cd /Users/aslanalyiev/Work/kindoraWeb && bun run fix 2>&1; bun run typecheck 2>&1; } || exit 0",
+						"timeout": 60,
+						"statusMessage": "Running fix + typecheck before commit..."
 					}
 				]
 			}

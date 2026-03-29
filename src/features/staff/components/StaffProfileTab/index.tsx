@@ -1,34 +1,12 @@
-import {
-	Avatar,
-	Button,
-	Card,
-	Chip,
-	DateField,
-	FieldError,
-	Input,
-	Label,
-	ListBox,
-	Modal,
-	Select,
-	Spinner,
-	TextField,
-	toast,
-} from "@heroui/react"
+import { Button, Card, Modal, Spinner, toast } from "@heroui/react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { parseDate } from "@internationalized/date"
 import { useEffect, useState } from "react"
-import { Controller, useForm } from "react-hook-form"
+import { useForm } from "react-hook-form"
 
 import { getErrorMessage } from "@/utils/error"
-import { formatUSPhone } from "@/utils/format"
-import EosIconsRoleBindingOutlined from "~icons/eos-icons/role-binding-outlined"
-import JamMedical from "~icons/jam/medical"
-import LucideUserRound from "~icons/lucide/user-round"
-import StreamlineUltimateEmergencyCall from "~icons/streamline-ultimate/emergency-call"
 import TablerAlertTriangle from "~icons/tabler/alert-triangle"
-import TablerCertificate from "~icons/tabler/certificate"
 
-import { DEGREE_OPTIONS, MOCK_ROOMS, SIGNUP_STATUS_OPTIONS, STAFF_ROLES, US_STATES } from "../../constants"
 import { useEmployee, useUpdateEmployee, useUpdateEmployeeAvatar } from "../../hooks/useStaff"
 import { staffProfileSchema } from "../../schemas/staffProfile.schema"
 import {
@@ -37,7 +15,11 @@ import {
 	buildPayloadFromFormData,
 } from "../../utils/staffProfile.utils"
 
-import SectionHeader from "./SectionHeader"
+import CertificationSection from "./CertificationSection"
+import EmergencyContactSection from "./EmergencyContactSection"
+import KindoraRoleSection from "./KindoraRoleSection"
+import MedicalInfoSection from "./MedicalInfoSection"
+import PersonalInfoSection from "./PersonalInfoSection"
 
 import type { DateValue } from "@internationalized/date"
 import type { StaffProfileFormData } from "../../schemas/staffProfile.schema"
@@ -52,7 +34,6 @@ const StaffProfileTab = ({ employeeId }: StaffProfileTabProps) => {
 	const updateAvatarMutation = useUpdateEmployeeAvatar()
 
 	const [avatarFileUrl, setAvatarFileUrl] = useState<string | null>(null)
-	const [allergyInput, setAllergyInput] = useState("")
 	const [isDeactivateModalOpen, setIsDeactivateModalOpen] = useState(false)
 
 	const {
@@ -136,29 +117,8 @@ const StaffProfileTab = ({ employeeId }: StaffProfileTabProps) => {
 		}
 	}
 
-	const _handleRemoveRoom = (roomKey: string) => {
-		setValue(
-			"assignedRooms",
-			assignedRooms.filter((r) => r !== roomKey),
-			{ shouldDirty: true },
-		)
-	}
-
-	const getRoomLabel = (key: string) => MOCK_ROOMS.find((r) => r.key === key)?.label ?? key
-
-	const handleAddAllergy = () => {
-		const trimmed = allergyInput.trim()
-		if (trimmed && !allergies.includes(trimmed)) {
-			setValue("allergies", [...allergies, trimmed], { shouldDirty: true })
-		}
-		setAllergyInput("")
-	}
-
-	const handleAllergyKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-		if (e.key === "Enter") {
-			e.preventDefault()
-			handleAddAllergy()
-		}
+	const handleAllergiesChange = (newAllergies: string[]) => {
+		setValue("allergies", newAllergies, { shouldDirty: true })
 	}
 
 	const onSubmit = (data: StaffProfileFormData) => {
@@ -233,515 +193,34 @@ const StaffProfileTab = ({ employeeId }: StaffProfileTabProps) => {
 		<Card className="p-5">
 			<Card.Content className="p-0">
 				<form className="flex flex-col gap-6" onSubmit={handleSubmit(onSubmit)}>
-					{/* Personal Info */}
-					<section className="flex flex-col gap-6">
-						<SectionHeader icon={<LucideUserRound className="size-5" />} title="Personal info" />
-						<div className="flex flex-col gap-6">
-							<div className="flex items-center gap-3">
-								<Avatar className="size-20 border-4 border-white shadow-md">
-									<Avatar.Image src={avatarPreview ?? undefined} alt="Employee avatar" />
-									<Avatar.Fallback />
-								</Avatar>
-								<div className="flex flex-col gap-3">
-									<Button className="cursor-pointer" variant="primary" size="sm">
-										Upload Picture
-										<input accept="image/*" className="hidden" onChange={handleAvatarUpload} type="file" />
-									</Button>
-									<Button className="shadow-sm" variant="danger" onPress={handleDeletePicture} size="sm">
-										Delete Picture
-									</Button>
-								</div>
-							</div>
-							<div className="flex flex-col gap-2">
-								<div className="flex gap-2">
-									<Controller
-										control={control}
-										name="firstName"
-										render={({ field }) => (
-											<TextField className="flex-1" isRequired isInvalid={!!errors.firstName} variant="secondary">
-												<Label>First name</Label>
+					<PersonalInfoSection
+						control={control}
+						errors={errors}
+						avatarPreview={avatarPreview}
+						onAvatarUpload={handleAvatarUpload}
+						onDeletePicture={handleDeletePicture}
+						onDateChange={handleDateChange}
+						parseDateValue={parseDateValue}
+					/>
 
-												<Input {...field} />
+					<CertificationSection control={control} errors={errors} />
 
-												<FieldError>{errors.firstName?.message}</FieldError>
-											</TextField>
-										)}
-									/>
-									<Controller
-										control={control}
-										name="lastName"
-										render={({ field }) => (
-											<TextField className="flex-1" isRequired isInvalid={!!errors.lastName} variant="secondary">
-												<Label>Last name</Label>
+					<KindoraRoleSection
+						control={control}
+						errors={errors}
+						assignedRooms={assignedRooms}
+						onDateChange={handleDateChange}
+						parseDateValue={parseDateValue}
+					/>
 
-												<Input {...field} />
+					<MedicalInfoSection
+						control={control}
+						errors={errors}
+						allergies={allergies}
+						onAllergiesChange={handleAllergiesChange}
+					/>
 
-												<FieldError>{errors.lastName?.message}</FieldError>
-											</TextField>
-										)}
-									/>
-									<Controller
-										control={control}
-										name="email"
-										render={({ field }) => (
-											<TextField className="flex-1" isRequired isInvalid={!!errors.email} variant="secondary">
-												<Label>Email</Label>
-
-												<Input {...field} />
-
-												<FieldError>{errors.email?.message}</FieldError>
-											</TextField>
-										)}
-									/>
-								</div>
-								<div className="flex gap-2">
-									<Controller
-										control={control}
-										name="phone"
-										render={({ field }) => (
-											<TextField className="flex-1" isInvalid={!!errors.phone} variant="secondary">
-												<Label>Phone</Label>
-
-												<Input
-													{...field}
-													onChange={(e) => field.onChange(formatUSPhone(e.target.value))}
-													placeholder="(555) 123-4567"
-													type="tel"
-												/>
-
-												<FieldError>{errors.phone?.message}</FieldError>
-											</TextField>
-										)}
-									/>
-									<Controller
-										control={control}
-										name="birthday"
-										render={({ field }) => (
-											<DateField
-												className="flex-1"
-												granularity="day"
-												onChange={(value) => handleDateChange(value, field.onChange)}
-												value={parseDateValue(field.value)}
-											>
-												<Label>Birthday</Label>
-												<DateField.Group>
-													<DateField.Input>{(segment) => <DateField.Segment segment={segment} />}</DateField.Input>
-												</DateField.Group>
-											</DateField>
-										)}
-									/>
-									<Controller
-										control={control}
-										name="enrollDate"
-										render={({ field }) => (
-											<DateField
-												className="flex-1"
-												granularity="day"
-												onChange={(value) => handleDateChange(value, field.onChange)}
-												value={parseDateValue(field.value)}
-											>
-												<Label>Enroll date</Label>
-												<DateField.Group>
-													<DateField.Input>{(segment) => <DateField.Segment segment={segment} />}</DateField.Input>
-												</DateField.Group>
-											</DateField>
-										)}
-									/>
-								</div>
-								<div className="flex gap-2">
-									<Controller
-										control={control}
-										name="state"
-										render={({ field }) => (
-											<Select
-												className="flex-1"
-												selectedKey={field.value ?? null}
-												onSelectionChange={(key) => {
-													if (key !== null) field.onChange(String(key))
-												}}
-											>
-												<Label>State</Label>
-												<Select.Trigger>
-													<Select.Value />
-													<Select.Indicator />
-												</Select.Trigger>
-												<Select.Popover>
-													<ListBox>
-														{US_STATES.map((s) => (
-															<ListBox.Item id={s.key} key={s.key} textValue={s.label}>
-																{s.label}
-																<ListBox.ItemIndicator />
-															</ListBox.Item>
-														))}
-													</ListBox>
-												</Select.Popover>
-											</Select>
-										)}
-									/>
-									<Controller
-										control={control}
-										name="city"
-										render={({ field }) => (
-											<TextField className="flex-1" variant="secondary">
-												<Label>City</Label>
-
-												<Input {...field} />
-											</TextField>
-										)}
-									/>
-									<Controller
-										control={control}
-										name="streetAddress"
-										render={({ field }) => (
-											<TextField className="flex-1" variant="secondary">
-												<Label>Street address</Label>
-
-												<Input {...field} />
-											</TextField>
-										)}
-									/>
-								</div>
-								<div className="flex gap-2">
-									<Controller
-										control={control}
-										name="zipCode"
-										render={({ field }) => (
-											<TextField className="flex-1" variant="secondary">
-												<Label>ZIP code</Label>
-
-												<Input {...field} />
-											</TextField>
-										)}
-									/>
-									<Controller
-										control={control}
-										name="notes"
-										render={({ field }) => (
-											<TextField className="flex-1" variant="secondary">
-												<Label>Notes</Label>
-
-												<Input {...field} />
-											</TextField>
-										)}
-									/>
-								</div>
-							</div>
-						</div>
-					</section>
-
-					{/* Certification */}
-					<section className="flex flex-col gap-6">
-						<SectionHeader icon={<TablerCertificate className="size-5" />} title="Certification" />
-						<div className="flex gap-2">
-							<Controller
-								control={control}
-								name="degree"
-								render={({ field }) => (
-									<Select
-										className="flex-1"
-										selectedKey={field.value ?? null}
-										onSelectionChange={(key) => {
-											if (key !== null) field.onChange(String(key))
-										}}
-									>
-										<Label>Role</Label>
-										<Select.Trigger>
-											<Select.Value />
-											<Select.Indicator />
-										</Select.Trigger>
-										<Select.Popover>
-											<ListBox>
-												{DEGREE_OPTIONS.map((d) => (
-													<ListBox.Item id={d.key} key={d.key} textValue={d.label}>
-														{d.label}
-														<ListBox.ItemIndicator />
-													</ListBox.Item>
-												))}
-											</ListBox>
-										</Select.Popover>
-									</Select>
-								)}
-							/>
-							<Controller
-								control={control}
-								name="certification"
-								render={({ field }) => (
-									<TextField className="flex-1" variant="secondary">
-										<Label>Certification</Label>
-
-										<Input {...field} />
-									</TextField>
-								)}
-							/>
-						</div>
-					</section>
-
-					{/* Kindora Role & Status */}
-					<section className="flex flex-col gap-6">
-						<SectionHeader icon={<EosIconsRoleBindingOutlined className="size-5" />} title="Kindora role & status" />
-						<div className="flex flex-col gap-2">
-							<div className="flex gap-2">
-								<Controller
-									control={control}
-									name="signUpStatus"
-									render={({ field }) => (
-										<Select
-											className="flex-1"
-											isDisabled
-											selectedKey={field.value ?? null}
-											onSelectionChange={(key) => {
-												if (key !== null) field.onChange(String(key))
-											}}
-										>
-											<Label>Sign up status</Label>
-											<Select.Trigger>
-												<Select.Value />
-												<Select.Indicator />
-											</Select.Trigger>
-											<Select.Popover>
-												<ListBox>
-													{SIGNUP_STATUS_OPTIONS.map((s) => (
-														<ListBox.Item id={s.key} key={s.key} textValue={s.label}>
-															{s.label}
-															<ListBox.ItemIndicator />
-														</ListBox.Item>
-													))}
-												</ListBox>
-											</Select.Popover>
-										</Select>
-									)}
-								/>
-								<Controller
-									control={control}
-									name="role"
-									render={({ field }) => (
-										<Select
-											className="flex-1"
-											isRequired
-											selectedKey={field.value ?? null}
-											onSelectionChange={(key) => {
-												if (key !== null) field.onChange(String(key))
-											}}
-										>
-											<Label>Role</Label>
-											<Select.Trigger>
-												<Select.Value />
-												<Select.Indicator />
-											</Select.Trigger>
-											<Select.Popover>
-												<ListBox>
-													{STAFF_ROLES.map((r) => (
-														<ListBox.Item id={r.key} key={r.key} textValue={r.label}>
-															{r.label}
-															<ListBox.ItemIndicator />
-														</ListBox.Item>
-													))}
-												</ListBox>
-											</Select.Popover>
-										</Select>
-									)}
-								/>
-							</div>
-							<div className="flex gap-2">
-								<Controller
-									control={control}
-									name="assignedRooms"
-									render={({ field }) => (
-										<div className="flex flex-1 flex-col gap-2">
-											<Select
-												selectionMode="multiple"
-												value={field.value || []}
-												onChange={(keys) => {
-													field.onChange(keys as string[])
-												}}
-											>
-												<Label>Assigned rooms</Label>
-												<Select.Trigger>
-													<Select.Value />
-													<Select.Indicator />
-												</Select.Trigger>
-												<Select.Popover>
-													<ListBox>
-														{MOCK_ROOMS.map((room) => (
-															<ListBox.Item id={room.key} key={room.key} textValue={room.label}>
-																{room.label}
-																<ListBox.ItemIndicator />
-															</ListBox.Item>
-														))}
-													</ListBox>
-												</Select.Popover>
-											</Select>
-											{assignedRooms.length > 0 && (
-												<div className="flex flex-wrap gap-2">
-													{assignedRooms.map((roomKey) => (
-														<Chip key={roomKey} size="sm" variant="soft">
-															{getRoomLabel(roomKey)}
-														</Chip>
-													))}
-												</div>
-											)}
-										</div>
-									)}
-								/>
-								<Controller
-									control={control}
-									name="hireDate"
-									render={({ field }) => (
-										<DateField
-											className="flex-1"
-											granularity="day"
-											onChange={(value) => handleDateChange(value, field.onChange)}
-											value={parseDateValue(field.value)}
-										>
-											<Label>Hire date</Label>
-											<DateField.Group>
-												<DateField.Input>{(segment) => <DateField.Segment segment={segment} />}</DateField.Input>
-											</DateField.Group>
-										</DateField>
-									)}
-								/>
-							</div>
-						</div>
-					</section>
-
-					{/* Medical Info */}
-					<section className="flex flex-col gap-6">
-						<SectionHeader icon={<JamMedical className="size-5" />} title="Medical info" />
-						<div className="flex flex-col gap-2">
-							<div className="flex gap-2">
-								<div className="flex flex-1 flex-col gap-2">
-									<TextField variant="secondary">
-										<Label>Allergies</Label>
-
-										<Input
-											onChange={(e) => setAllergyInput(e.target.value)}
-											onKeyDown={handleAllergyKeyDown}
-											placeholder="Type and press Enter"
-											value={allergyInput}
-										/>
-									</TextField>
-									{allergies.length > 0 && (
-										<div className="flex flex-wrap gap-2">
-											{allergies.map((allergy, i) => (
-												<Chip
-													// biome-ignore lint/suspicious/noArrayIndexKey: allergy strings may repeat
-													key={i}
-													size="sm"
-													variant="soft"
-												>
-													{allergy}
-												</Chip>
-											))}
-										</div>
-									)}
-								</div>
-								<Controller
-									control={control}
-									name="medications"
-									render={({ field }) => (
-										<TextField className="flex-1" variant="secondary">
-											<Label>Medications</Label>
-
-											<Input {...field} />
-										</TextField>
-									)}
-								/>
-							</div>
-							<div className="flex gap-2">
-								<Controller
-									control={control}
-									name="doctorName"
-									render={({ field }) => (
-										<TextField className="flex-1" variant="secondary">
-											<Label>Doctor</Label>
-
-											<Input {...field} />
-										</TextField>
-									)}
-								/>
-								<Controller
-									control={control}
-									name="doctorPhone"
-									render={({ field }) => (
-										<TextField className="flex-1" isInvalid={!!errors.doctorPhone} variant="secondary">
-											<Label>Doctor phone</Label>
-
-											<Input
-												{...field}
-												onChange={(e) => field.onChange(formatUSPhone(e.target.value))}
-												placeholder="(555) 123-4567"
-												type="tel"
-											/>
-
-											<FieldError>{errors.doctorPhone?.message}</FieldError>
-										</TextField>
-									)}
-								/>
-							</div>
-						</div>
-					</section>
-
-					{/* Emergency Contacts */}
-					<section className="flex flex-col gap-6">
-						<SectionHeader icon={<StreamlineUltimateEmergencyCall className="size-5" />} title="Emergency contact" />
-						<div className="flex flex-col gap-2">
-							{emergencyContacts.map((_, index) => (
-								// biome-ignore lint/suspicious/noArrayIndexKey: emergency contacts may not have stable ids
-								<div key={index} className="flex items-start gap-2">
-									<Controller
-										control={control}
-										name={`emergencyContacts.${index}.name`}
-										render={({ field }) => (
-											<TextField
-												className="flex-1"
-												isInvalid={!!errors.emergencyContacts?.[index]?.name}
-												variant="secondary"
-											>
-												<Label>Name</Label>
-
-												<Input {...field} />
-
-												<FieldError>{errors.emergencyContacts?.[index]?.name?.message}</FieldError>
-											</TextField>
-										)}
-									/>
-									<Controller
-										control={control}
-										name={`emergencyContacts.${index}.phone`}
-										render={({ field }) => (
-											<TextField
-												className="flex-1"
-												isInvalid={!!errors.emergencyContacts?.[index]?.phone}
-												variant="secondary"
-											>
-												<Label>Phone</Label>
-
-												<Input
-													{...field}
-													onChange={(e) => field.onChange(formatUSPhone(e.target.value))}
-													placeholder="(555) 123-4567"
-													type="tel"
-												/>
-
-												<FieldError>{errors.emergencyContacts?.[index]?.phone?.message}</FieldError>
-											</TextField>
-										)}
-									/>
-									<Controller
-										control={control}
-										name={`emergencyContacts.${index}.relationshipTo`}
-										render={({ field }) => (
-											<TextField className="flex-1" variant="secondary">
-												<Label>Relationship to staff</Label>
-
-												<Input {...field} />
-											</TextField>
-										)}
-									/>
-								</div>
-							))}
-						</div>
-					</section>
+					<EmergencyContactSection control={control} errors={errors} emergencyContacts={emergencyContacts} />
 
 					{/* Action Buttons */}
 					<div className="flex items-center gap-5">

@@ -76,7 +76,7 @@ const AddStaffStudentsStep = () => {
 	if (isError) {
 		return (
 			<div className="flex flex-col gap-6">
-				<h2 className="font-medium text-xl text-foreground">Add Staff & Students</h2>
+				<h2 className="font-medium text-foreground text-xl">Add Staff & Students</h2>
 				<div className="rounded-lg bg-danger-50 p-4 text-danger-700 text-sm">
 					<p className="font-medium">Failed to load staff and students</p>
 					<p className="mt-1 text-danger-600">{getErrorMessage(error) ?? "Please try again."}</p>
@@ -97,7 +97,7 @@ const AddStaffStudentsStep = () => {
 
 	return (
 		<div className="flex flex-col gap-6">
-			<h2 className="font-medium text-xl text-foreground">Add Staff & Students</h2>
+			<h2 className="font-medium text-foreground text-xl">Add Staff & Students</h2>
 
 			<div className="flex flex-col gap-3">
 				<Controller

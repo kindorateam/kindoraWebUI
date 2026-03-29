@@ -35,7 +35,7 @@ const SignedInAvatarGroup = ({ items, tooltipLabel }: SignedInAvatarGroupProps) 
 		<div className="flex justify-center">
 			<Tooltip delay={300}>
 				<Tooltip.Trigger aria-label={tooltipLabel}>
-					<div className="-space-x-2 flex">
+					<div className="flex -space-x-2">
 						{visible.map((item) => (
 							<Avatar key={item.id} size="sm">
 								<Avatar.Image

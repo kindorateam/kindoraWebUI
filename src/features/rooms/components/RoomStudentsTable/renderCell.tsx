@@ -29,7 +29,7 @@ export function renderCell(student: Student, columnKey: React.Key, roomId: strin
 						</Avatar>
 						<Badge
 							color={student.checkedIn ? "success" : "danger"}
-							className="h-3! w-3! min-h-0! min-w-0! border-2 border-white"
+							className="h-3! min-h-0! w-3! min-w-0! border-2 border-white"
 							placement="bottom-right"
 						/>
 					</Badge.Anchor>

@@ -59,7 +59,7 @@ const StaffDetailsStep = () => {
 						</Avatar>
 					)}
 					<button
-						className="-right-1 -top-1 absolute flex size-6 cursor-pointer items-center justify-center rounded-full bg-warning"
+						className="absolute -top-1 -right-1 flex size-6 cursor-pointer items-center justify-center rounded-full bg-warning"
 						onClick={handleAvatarClick}
 						type="button"
 					>

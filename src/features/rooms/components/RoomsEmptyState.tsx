@@ -13,7 +13,7 @@ const RoomsEmptyState = ({ isDeactivatedView = false }: Props) => {
 			<h3 className="font-semibold text-3xl leading-9">
 				{isDeactivatedView ? "No deactivated rooms" : "No rooms added yet"}
 			</h3>
-			{!isDeactivatedView && <p className="text-muted text-lg leading-7">Please add your first room to get started.</p>}
+			{!isDeactivatedView && <p className="text-lg text-muted leading-7">Please add your first room to get started.</p>}
 		</EmptyState>
 	)
 }

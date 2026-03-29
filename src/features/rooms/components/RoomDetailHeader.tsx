@@ -106,7 +106,7 @@ const RoomDetailHeader = ({ activeTab, roomId, onTabChange }: RoomDetailHeaderPr
 					<Tabs.ListContainer>
 						<Tabs.List
 							aria-label="Room details tabs"
-							className="*:data-[selected=true]:text-accent-foreground w-fit *:h-6 *:w-fit *:px-3 *:text-sm *:font-normal"
+							className="w-fit *:h-6 *:w-fit *:px-3 *:font-normal *:text-sm *:data-[selected=true]:text-accent-foreground"
 						>
 							<Tabs.Tab id="students">
 								Students
