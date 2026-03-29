@@ -9,6 +9,13 @@ import ImagePickerModal from "../ImagePickerModal"
 
 import type { AddRoomFormData } from "../../types"
 
+const ageListItems = ROOM_AGE_OPTIONS.map((option) => (
+	<ListBox.Item id={String(option.key)} key={option.key} textValue={option.label}>
+		{option.label}
+		<ListBox.ItemIndicator />
+	</ListBox.Item>
+))
+
 const RoomDetailsStep = () => {
 	const [isImagePickerOpen, setIsImagePickerOpen] = useState(false)
 	const {
@@ -47,7 +54,7 @@ const RoomDetailsStep = () => {
 
 	return (
 		<div className="flex flex-col gap-6">
-			<h2 className="font-medium text-xl text-foreground">Add room</h2>
+			<h2 className="font-medium text-foreground text-xl">Add room</h2>
 
 			{/* Room Avatar */}
 			<div className="flex flex-col items-center gap-2">
@@ -66,7 +73,7 @@ const RoomDetailsStep = () => {
 						</Avatar>
 					)}
 					<button
-						className="-right-1 -top-1 absolute flex size-6 cursor-pointer items-center justify-center rounded-full bg-warning"
+						className="absolute -top-1 -right-1 flex size-6 cursor-pointer items-center justify-center rounded-full bg-warning"
 						onClick={handleAvatarClick}
 						type="button"
 					>
@@ -166,14 +173,7 @@ const RoomDetailsStep = () => {
 									<Select.Indicator />
 								</Select.Trigger>
 								<Select.Popover className="max-h-60!">
-									<ListBox>
-										{ROOM_AGE_OPTIONS.map((option) => (
-											<ListBox.Item id={String(option.key)} key={option.key} textValue={option.label}>
-												{option.label}
-												<ListBox.ItemIndicator />
-											</ListBox.Item>
-										))}
-									</ListBox>
+									<ListBox>{ageListItems}</ListBox>
 								</Select.Popover>
 								{errors.minAge?.message && <FieldError>{errors.minAge.message}</FieldError>}
 							</Select>
@@ -204,14 +204,7 @@ const RoomDetailsStep = () => {
 									<Select.Indicator />
 								</Select.Trigger>
 								<Select.Popover className="max-h-60!">
-									<ListBox>
-										{ROOM_AGE_OPTIONS.map((option) => (
-											<ListBox.Item id={String(option.key)} key={option.key} textValue={option.label}>
-												{option.label}
-												<ListBox.ItemIndicator />
-											</ListBox.Item>
-										))}
-									</ListBox>
+									<ListBox>{ageListItems}</ListBox>
 								</Select.Popover>
 								{errors.maxAge?.message && <FieldError>{errors.maxAge.message}</FieldError>}
 							</Select>

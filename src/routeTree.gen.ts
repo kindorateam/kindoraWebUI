@@ -18,7 +18,6 @@ import { Route as AuthenticatedStaffRouteImport } from './routes/_authenticated/
 import { Route as AuthenticatedRoomsRouteImport } from './routes/_authenticated/rooms'
 import { Route as AuthenticatedReportsRouteImport } from './routes/_authenticated/reports'
 import { Route as AuthenticatedNewslettersRouteImport } from './routes/_authenticated/newsletters'
-import { Route as AuthenticatedNewsActivityRouteImport } from './routes/_authenticated/news-activity'
 import { Route as AuthenticatedMessagesRouteImport } from './routes/_authenticated/messages'
 import { Route as AuthenticatedInsightsRouteImport } from './routes/_authenticated/insights'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
@@ -77,12 +76,6 @@ const AuthenticatedNewslettersRoute =
   AuthenticatedNewslettersRouteImport.update({
     id: '/newsletters',
     path: '/newsletters',
-    getParentRoute: () => AuthenticatedRoute,
-  } as any)
-const AuthenticatedNewsActivityRoute =
-  AuthenticatedNewsActivityRouteImport.update({
-    id: '/news-activity',
-    path: '/news-activity',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
 const AuthenticatedMessagesRoute = AuthenticatedMessagesRouteImport.update({
@@ -176,7 +169,6 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/insights': typeof AuthenticatedInsightsRoute
   '/messages': typeof AuthenticatedMessagesRoute
-  '/news-activity': typeof AuthenticatedNewsActivityRoute
   '/newsletters': typeof AuthenticatedNewslettersRoute
   '/reports': typeof AuthenticatedReportsRoute
   '/rooms': typeof AuthenticatedRoomsRouteWithChildren
@@ -201,7 +193,6 @@ export interface FileRoutesByTo {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/insights': typeof AuthenticatedInsightsRoute
   '/messages': typeof AuthenticatedMessagesRoute
-  '/news-activity': typeof AuthenticatedNewsActivityRoute
   '/newsletters': typeof AuthenticatedNewslettersRoute
   '/reports': typeof AuthenticatedReportsRoute
   '/login': typeof GuestLoginRoute
@@ -224,7 +215,6 @@ export interface FileRoutesById {
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/insights': typeof AuthenticatedInsightsRoute
   '/_authenticated/messages': typeof AuthenticatedMessagesRoute
-  '/_authenticated/news-activity': typeof AuthenticatedNewsActivityRoute
   '/_authenticated/newsletters': typeof AuthenticatedNewslettersRoute
   '/_authenticated/reports': typeof AuthenticatedReportsRoute
   '/_authenticated/rooms': typeof AuthenticatedRoomsRouteWithChildren
@@ -251,7 +241,6 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/insights'
     | '/messages'
-    | '/news-activity'
     | '/newsletters'
     | '/reports'
     | '/rooms'
@@ -276,7 +265,6 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/insights'
     | '/messages'
-    | '/news-activity'
     | '/newsletters'
     | '/reports'
     | '/login'
@@ -298,7 +286,6 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard'
     | '/_authenticated/insights'
     | '/_authenticated/messages'
-    | '/_authenticated/news-activity'
     | '/_authenticated/newsletters'
     | '/_authenticated/reports'
     | '/_authenticated/rooms'
@@ -384,13 +371,6 @@ declare module '@tanstack/react-router' {
       path: '/newsletters'
       fullPath: '/newsletters'
       preLoaderRoute: typeof AuthenticatedNewslettersRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/_authenticated/news-activity': {
-      id: '/_authenticated/news-activity'
-      path: '/news-activity'
-      fullPath: '/news-activity'
-      preLoaderRoute: typeof AuthenticatedNewsActivityRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/messages': {
@@ -578,7 +558,6 @@ interface AuthenticatedRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedInsightsRoute: typeof AuthenticatedInsightsRoute
   AuthenticatedMessagesRoute: typeof AuthenticatedMessagesRoute
-  AuthenticatedNewsActivityRoute: typeof AuthenticatedNewsActivityRoute
   AuthenticatedNewslettersRoute: typeof AuthenticatedNewslettersRoute
   AuthenticatedReportsRoute: typeof AuthenticatedReportsRoute
   AuthenticatedRoomsRoute: typeof AuthenticatedRoomsRouteWithChildren
@@ -594,7 +573,6 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedInsightsRoute: AuthenticatedInsightsRoute,
   AuthenticatedMessagesRoute: AuthenticatedMessagesRoute,
-  AuthenticatedNewsActivityRoute: AuthenticatedNewsActivityRoute,
   AuthenticatedNewslettersRoute: AuthenticatedNewslettersRoute,
   AuthenticatedReportsRoute: AuthenticatedReportsRoute,
   AuthenticatedRoomsRoute: AuthenticatedRoomsRouteWithChildren,
