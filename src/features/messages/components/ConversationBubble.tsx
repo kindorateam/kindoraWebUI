@@ -15,8 +15,8 @@ const ConversationBubble = ({ bubble }: ConversationBubbleProps) => {
 					isRight ? "rounded-tr-[8px] bg-primary text-white" : "bg-[#dceafc] text-black",
 				].join(" ")}
 			>
-				{bubble.text.split("\n").map((line, index) => (
-					<p key={`${bubble.id}-${index}`}>{line}</p>
+				{bubble.text.split("\n").map((line) => (
+					<p key={line}>{line}</p>
 				))}
 			</div>
 			<p className="px-2 pt-1 text-[#a1a1aa] text-[12px] leading-4">{bubble.time}</p>

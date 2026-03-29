@@ -23,6 +23,7 @@ export function useTabNavigation<T extends string>(currentTab: T | undefined, de
 		if (!currentTab) {
 			handleTabChange(defaultTab)
 		}
+		// biome-ignore lint/correctness/useExhaustiveDependencies: React Compiler auto-memoizes handleTabChange
 	}, [currentTab, defaultTab, handleTabChange])
 
 	return handleTabChange
