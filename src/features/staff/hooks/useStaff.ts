@@ -15,10 +15,10 @@ import {
 
 import type { EmployeeDocument, EmployeeFull, GetEmployeesResult, PinVisibility, UpdateEmployeePayload } from "../types"
 
-export function useEmployees() {
+export function useEmployees(status: "active" | "inactive" | "all" = "active") {
 	const query = useQuery<GetEmployeesResult, Error>({
-		queryKey: ["employees"],
-		queryFn: getEmployees,
+		queryKey: ["employees", status],
+		queryFn: () => getEmployees(status),
 		staleTime: 5 * 60 * 1000,
 		gcTime: 10 * 60 * 1000,
 	})

@@ -67,10 +67,10 @@ const PersonalInfoStep = () => {
 							value={parseDateValue(field.value)}
 						>
 							<Label>Birthday</Label>
-							<DateField.Group>
+							<DateField.Group variant="secondary">
 								<DateField.Input>{(segment) => <DateField.Segment segment={segment} />}</DateField.Input>
 							</DateField.Group>
-							{errors.birthday?.message && <span className="text-danger text-xs">{errors.birthday.message}</span>}
+							<FieldError>{errors.birthday?.message}</FieldError>
 						</DateField>
 					)}
 				/>
@@ -85,10 +85,10 @@ const PersonalInfoStep = () => {
 							value={parseDateValue(field.value)}
 						>
 							<Label>Enroll date</Label>
-							<DateField.Group>
+							<DateField.Group variant="secondary">
 								<DateField.Input>{(segment) => <DateField.Segment segment={segment} />}</DateField.Input>
 							</DateField.Group>
-							{errors.enrollDate?.message && <span className="text-danger text-xs">{errors.enrollDate.message}</span>}
+							<FieldError>{errors.enrollDate?.message}</FieldError>
 						</DateField>
 					)}
 				/>
@@ -104,6 +104,7 @@ const PersonalInfoStep = () => {
 								}
 							}}
 							selectedKey={field.value ?? null}
+							variant="secondary"
 						>
 							<Label>State</Label>
 							<Select.Trigger>
@@ -120,7 +121,7 @@ const PersonalInfoStep = () => {
 									))}
 								</ListBox>
 							</Select.Popover>
-							{errors.state?.message && <span className="text-danger text-xs">{errors.state.message}</span>}
+							<FieldError>{errors.state?.message}</FieldError>
 						</Select>
 					)}
 				/>

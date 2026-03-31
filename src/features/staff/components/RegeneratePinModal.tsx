@@ -41,7 +41,7 @@ export default function RegeneratePinModal({ employeeId }: Props) {
 				<Modal.Dialog>
 					<Modal.CloseTrigger />
 					<Modal.Body>
-						<div className="flex flex-col items-center gap-5 px-7 py-8">
+						<div className="flex flex-col items-center gap-5">
 							<div className="flex flex-col items-center gap-3 text-center">
 								<h3 className="font-medium text-xl leading-7">Regenerate PIN</h3>
 								<p className="text-foreground text-sm leading-5">

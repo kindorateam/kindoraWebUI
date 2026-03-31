@@ -36,6 +36,7 @@ const CertificationStep = () => {
 								}
 							}}
 							selectedKey={field.value ?? null}
+							variant="secondary"
 						>
 							<Label>Degree</Label>
 							<Select.Trigger>
@@ -52,7 +53,7 @@ const CertificationStep = () => {
 									))}
 								</ListBox>
 							</Select.Popover>
-							{errors.degree?.message && <span className="text-danger text-xs">{errors.degree.message}</span>}
+							<FieldError>{errors.degree?.message}</FieldError>
 						</Select>
 					)}
 				/>

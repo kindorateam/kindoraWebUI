@@ -1,4 +1,4 @@
-import { Chip, DateField, Label, ListBox, Select } from "@heroui/react"
+import { Calendar, Chip, DateField, DatePicker, Label, ListBox, Select } from "@heroui/react"
 import { Controller } from "react-hook-form"
 
 import EosIconsRoleBindingOutlined from "~icons/eos-icons/role-binding-outlined"
@@ -33,6 +33,7 @@ const KindoraRoleSection = ({ control, assignedRooms, onDateChange, parseDateVal
 						render={({ field }) => (
 							<Select
 								className="flex-1"
+								variant="secondary"
 								isDisabled
 								selectedKey={field.value ?? null}
 								onSelectionChange={(key) => {
@@ -63,6 +64,7 @@ const KindoraRoleSection = ({ control, assignedRooms, onDateChange, parseDateVal
 						render={({ field }) => (
 							<Select
 								className="flex-1"
+								variant="secondary"
 								isRequired
 								selectedKey={field.value ?? null}
 								onSelectionChange={(key) => {
@@ -95,6 +97,7 @@ const KindoraRoleSection = ({ control, assignedRooms, onDateChange, parseDateVal
 						render={({ field }) => (
 							<div className="flex flex-1 flex-col gap-2">
 								<Select
+									variant="secondary"
 									selectionMode="multiple"
 									value={field.value || []}
 									onChange={(keys) => {
@@ -133,17 +136,45 @@ const KindoraRoleSection = ({ control, assignedRooms, onDateChange, parseDateVal
 						control={control}
 						name="hireDate"
 						render={({ field }) => (
-							<DateField
+							<DatePicker
 								className="flex-1"
 								granularity="day"
 								onChange={(value) => onDateChange(value, field.onChange)}
 								value={parseDateValue(field.value)}
 							>
 								<Label>Hire date</Label>
-								<DateField.Group>
+								<DateField.Group variant="secondary" fullWidth>
 									<DateField.Input>{(segment) => <DateField.Segment segment={segment} />}</DateField.Input>
+									<DateField.Suffix>
+										<DatePicker.Trigger>
+											<DatePicker.TriggerIndicator />
+										</DatePicker.Trigger>
+									</DateField.Suffix>
 								</DateField.Group>
-							</DateField>
+								<DatePicker.Popover>
+									<Calendar aria-label="Hire date">
+										<Calendar.Header>
+											<Calendar.YearPickerTrigger>
+												<Calendar.YearPickerTriggerHeading />
+												<Calendar.YearPickerTriggerIndicator />
+											</Calendar.YearPickerTrigger>
+											<Calendar.NavButton slot="previous" />
+											<Calendar.NavButton slot="next" />
+										</Calendar.Header>
+										<Calendar.Grid>
+											<Calendar.GridHeader>
+												{(day) => <Calendar.HeaderCell>{day}</Calendar.HeaderCell>}
+											</Calendar.GridHeader>
+											<Calendar.GridBody>{(date) => <Calendar.Cell date={date} />}</Calendar.GridBody>
+										</Calendar.Grid>
+										<Calendar.YearPickerGrid>
+											<Calendar.YearPickerGridBody>
+												{({ year }) => <Calendar.YearPickerCell year={year} />}
+											</Calendar.YearPickerGridBody>
+										</Calendar.YearPickerGrid>
+									</Calendar>
+								</DatePicker.Popover>
+							</DatePicker>
 						)}
 					/>
 				</div>

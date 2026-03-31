@@ -190,7 +190,7 @@ const StaffProfileTab = ({ employeeId }: StaffProfileTabProps) => {
 	}
 
 	return (
-		<Card className="p-5">
+		<Card className="p-5 shadow-xl">
 			<Card.Content className="p-0">
 				<form className="flex flex-col gap-6" onSubmit={handleSubmit(onSubmit)}>
 					<PersonalInfoSection

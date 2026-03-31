@@ -1,4 +1,16 @@
-import { Avatar, Button, DateField, FieldError, Input, Label, ListBox, Select, TextField } from "@heroui/react"
+import {
+	Avatar,
+	Button,
+	Calendar,
+	DateField,
+	DatePicker,
+	FieldError,
+	Input,
+	Label,
+	ListBox,
+	Select,
+	TextField,
+} from "@heroui/react"
 import { Controller } from "react-hook-form"
 
 import { formatUSPhone } from "@/utils/format"
@@ -36,7 +48,7 @@ const PersonalInfoSection = ({
 			<SectionHeader icon={<LucideUserRound className="size-5" />} title="Personal info" />
 			<div className="flex flex-col gap-6">
 				<div className="flex items-center gap-3">
-					<Avatar className="size-20 border-4 border-white shadow-md">
+					<Avatar className="size-20">
 						<Avatar.Image src={avatarPreview ?? undefined} alt="Employee avatar" />
 						<Avatar.Fallback />
 					</Avatar>
@@ -115,34 +127,90 @@ const PersonalInfoSection = ({
 							control={control}
 							name="birthday"
 							render={({ field }) => (
-								<DateField
+								<DatePicker
 									className="flex-1"
 									granularity="day"
 									onChange={(value) => onDateChange(value, field.onChange)}
 									value={parseDateValue(field.value)}
 								>
 									<Label>Birthday</Label>
-									<DateField.Group>
+									<DateField.Group variant="secondary" fullWidth>
 										<DateField.Input>{(segment) => <DateField.Segment segment={segment} />}</DateField.Input>
+										<DateField.Suffix>
+											<DatePicker.Trigger>
+												<DatePicker.TriggerIndicator />
+											</DatePicker.Trigger>
+										</DateField.Suffix>
 									</DateField.Group>
-								</DateField>
+									<DatePicker.Popover>
+										<Calendar aria-label="Birthday">
+											<Calendar.Header>
+												<Calendar.YearPickerTrigger>
+													<Calendar.YearPickerTriggerHeading />
+													<Calendar.YearPickerTriggerIndicator />
+												</Calendar.YearPickerTrigger>
+												<Calendar.NavButton slot="previous" />
+												<Calendar.NavButton slot="next" />
+											</Calendar.Header>
+											<Calendar.Grid>
+												<Calendar.GridHeader>
+													{(day) => <Calendar.HeaderCell>{day}</Calendar.HeaderCell>}
+												</Calendar.GridHeader>
+												<Calendar.GridBody>{(date) => <Calendar.Cell date={date} />}</Calendar.GridBody>
+											</Calendar.Grid>
+											<Calendar.YearPickerGrid>
+												<Calendar.YearPickerGridBody>
+													{({ year }) => <Calendar.YearPickerCell year={year} />}
+												</Calendar.YearPickerGridBody>
+											</Calendar.YearPickerGrid>
+										</Calendar>
+									</DatePicker.Popover>
+								</DatePicker>
 							)}
 						/>
 						<Controller
 							control={control}
 							name="enrollDate"
 							render={({ field }) => (
-								<DateField
+								<DatePicker
 									className="flex-1"
 									granularity="day"
 									onChange={(value) => onDateChange(value, field.onChange)}
 									value={parseDateValue(field.value)}
 								>
 									<Label>Enroll date</Label>
-									<DateField.Group>
+									<DateField.Group variant="secondary" fullWidth>
 										<DateField.Input>{(segment) => <DateField.Segment segment={segment} />}</DateField.Input>
+										<DateField.Suffix>
+											<DatePicker.Trigger>
+												<DatePicker.TriggerIndicator />
+											</DatePicker.Trigger>
+										</DateField.Suffix>
 									</DateField.Group>
-								</DateField>
+									<DatePicker.Popover>
+										<Calendar aria-label="Enroll date">
+											<Calendar.Header>
+												<Calendar.YearPickerTrigger>
+													<Calendar.YearPickerTriggerHeading />
+													<Calendar.YearPickerTriggerIndicator />
+												</Calendar.YearPickerTrigger>
+												<Calendar.NavButton slot="previous" />
+												<Calendar.NavButton slot="next" />
+											</Calendar.Header>
+											<Calendar.Grid>
+												<Calendar.GridHeader>
+													{(day) => <Calendar.HeaderCell>{day}</Calendar.HeaderCell>}
+												</Calendar.GridHeader>
+												<Calendar.GridBody>{(date) => <Calendar.Cell date={date} />}</Calendar.GridBody>
+											</Calendar.Grid>
+											<Calendar.YearPickerGrid>
+												<Calendar.YearPickerGridBody>
+													{({ year }) => <Calendar.YearPickerCell year={year} />}
+												</Calendar.YearPickerGridBody>
+											</Calendar.YearPickerGrid>
+										</Calendar>
+									</DatePicker.Popover>
+								</DatePicker>
 							)}
 						/>
 					</div>
@@ -153,6 +221,7 @@ const PersonalInfoSection = ({
 							render={({ field }) => (
 								<Select
 									className="flex-1"
+									variant="secondary"
 									selectedKey={field.value ?? null}
 									onSelectionChange={(key) => {
 										if (key !== null) field.onChange(String(key))

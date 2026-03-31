@@ -99,18 +99,21 @@ const ImagePickerModal = ({ isOpen, onClose, onSelect }: ImagePickerModalProps) 
 					<Modal.Body className="gap-4">
 						<Tabs selectedKey={selectedTab} onSelectionChange={(key) => setSelectedTab(key as string)}>
 							<Tabs.ListContainer>
-								<Tabs.List aria-label="Image picker tabs">
+								<Tabs.List
+									aria-label="Image picker tabs"
+									className="w-fit *:h-6 *:w-fit *:px-3 *:font-normal *:text-sm *:data-[selected=true]:text-accent-foreground"
+								>
 									<Tabs.Tab id="gallery">
 										Gallery
-										<Tabs.Indicator />
+										<Tabs.Indicator className="bg-accent" />
 									</Tabs.Tab>
 									<Tabs.Tab id="upload">
 										Upload
-										<Tabs.Indicator />
+										<Tabs.Indicator className="bg-accent" />
 									</Tabs.Tab>
 								</Tabs.List>
 							</Tabs.ListContainer>
-							<Tabs.Panel id="gallery">
+							<Tabs.Panel id="gallery" className="min-h-[216px]">
 								<div className="grid grid-cols-4 gap-2">
 									{gradients.map((gradient) => (
 										<button

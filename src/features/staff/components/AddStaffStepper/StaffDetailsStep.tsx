@@ -115,6 +115,7 @@ const StaffDetailsStep = () => {
 								}
 							}}
 							selectedKey={field.value ?? null}
+							variant="secondary"
 						>
 							<Label>Role</Label>
 							<Select.Trigger>
@@ -134,7 +135,7 @@ const StaffDetailsStep = () => {
 									))}
 								</ListBox>
 							</Select.Popover>
-							{errors.role?.message && <span className="text-danger text-xs">{errors.role.message}</span>}
+							<FieldError>{errors.role?.message}</FieldError>
 						</Select>
 					)}
 				/>

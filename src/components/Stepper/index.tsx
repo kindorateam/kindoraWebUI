@@ -95,7 +95,7 @@ const Stepper = ({
 				)}
 
 				{!(hideBackOnFirstStep && isFirstStep) && (
-					<Button fullWidth onPress={onBack} size="md">
+					<Button fullWidth onPress={onBack} size="md" variant="secondary">
 						{backLabel}
 					</Button>
 				)}

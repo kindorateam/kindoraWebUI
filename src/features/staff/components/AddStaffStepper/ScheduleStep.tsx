@@ -1,4 +1,4 @@
-import { Label, ListBox, Select } from "@heroui/react"
+import { FieldError, Label, ListBox, Select } from "@heroui/react"
 import { Controller, useFormContext } from "react-hook-form"
 
 import SolarCalendarBroken from "~icons/solar/calendar-broken"
@@ -38,6 +38,7 @@ const ScheduleStep = () => {
 						}}
 						value={field.value || []}
 						selectionMode="multiple"
+						variant="secondary"
 					>
 						<Label>Schedule working days</Label>
 						<Select.Trigger>
@@ -54,7 +55,7 @@ const ScheduleStep = () => {
 								))}
 							</ListBox>
 						</Select.Popover>
-						{errors.workingDays?.message && <span className="text-danger text-xs">{errors.workingDays.message}</span>}
+						<FieldError>{errors.workingDays?.message}</FieldError>
 					</Select>
 				)}
 			/>

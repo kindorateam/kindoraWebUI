@@ -16,6 +16,8 @@ import {
 import IdentityChip from "@/components/IdentityChip"
 import { ABSENCE_REASONS } from "@/features/rooms/constants"
 import GrommetIconsUpdate from "~icons/grommet-icons/update"
+import MingcuteSendFill from "~icons/mingcute/send-fill"
+import PhSignInBold from "~icons/ph/sign-in-bold"
 import SolarCalendarBroken from "~icons/solar/calendar-broken"
 
 import { MOCK_ROOMS } from "../../constants"
@@ -53,11 +55,15 @@ const StaffDetailHeader = ({
 						{/* Avatar with online/offline status badge */}
 						<div className="relative shrink-0">
 							<Badge.Anchor>
-								<Avatar className="size-25 border-4 border-white shadow-md">
+								<Avatar className="size-25 shadow-md">
 									<Avatar.Image alt={fullName} src={avatarUrl} />
 									<Avatar.Fallback>{fullName.charAt(0)}</Avatar.Fallback>
 								</Avatar>
-								<Badge color={employeeData?.checkedIn ? "success" : "danger"} />
+								<Badge
+									color={employeeData?.checkedIn ? "success" : "danger"}
+									className="h-6! min-h-0! w-6! min-w-0! border-3 border-white"
+									placement="bottom-right"
+								/>
 							</Badge.Anchor>
 						</div>
 
@@ -166,13 +172,12 @@ const StaffDetailHeader = ({
 					</div>
 
 					<div className="flex flex-col gap-3">
-						{/* Sign Out button */}
-						<Button variant="primary" onPress={onSignOut}>
+						<Button variant="primary" onPress={onSignOut} size="sm">
+							<PhSignInBold aria-hidden className="size-4" />
 							Sign Out
 						</Button>
-						{/* Send Invite */}
-						{/* TODO: Wire to send invite API when available */}
-						<Button className="text-white" variant="primary" onPress={onSendInvite} size="sm">
+						<Button className="bg-success text-white hover:bg-success/90" onPress={onSendInvite} size="sm">
+							<MingcuteSendFill aria-hidden className="size-4" />
 							Send Invite
 						</Button>
 					</div>

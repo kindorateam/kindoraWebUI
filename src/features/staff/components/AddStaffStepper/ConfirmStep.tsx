@@ -12,25 +12,21 @@ import { DEGREE_OPTIONS, MOCK_ROOMS, RELATIONSHIP_OPTIONS, STAFF_ROLES, US_STATE
 
 import type { AddStaffFormData } from "../../schemas/addStaff.schema"
 
-function SectionHeader({ icon, label }: { icon: React.ReactNode; label: string }) {
-	return (
-		<div className="flex w-full items-center gap-2.5 bg-default-100 p-1.5">
-			{icon}
-			<span className="font-semibold text-foreground text-sm">{label}</span>
-		</div>
-	)
-}
+const SectionHeader = ({ icon, label }: { icon: React.ReactNode; label: string }) => (
+	<div className="flex w-full items-center gap-2.5 bg-default-100 p-1.5">
+		{icon}
+		<span className="font-semibold text-foreground text-sm">{label}</span>
+	</div>
+)
 
-function DetailRow({ label, value }: { label: string; value?: string }) {
-	return (
-		<div className="flex items-center gap-2 text-base">
-			<span className="font-medium text-foreground">{label}:</span>
-			<span className="text-neutral-700">{value || "--"}</span>
-		</div>
-	)
-}
+const DetailRow = ({ label, value }: { label: string; value?: string }) => (
+	<div className="flex items-center gap-2 text-base">
+		<span className="font-medium text-foreground">{label}:</span>
+		<span className="text-neutral-700">{value || "--"}</span>
+	</div>
+)
 
-function resolveLabel(key: string | undefined, options: readonly { key: string; label: string }[]): string {
+const resolveLabel = (key: string | undefined, options: readonly { key: string; label: string }[]): string => {
 	if (!key) return "--"
 	return options.find((o) => o.key === key)?.label ?? key
 }

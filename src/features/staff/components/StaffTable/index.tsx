@@ -1,8 +1,9 @@
-import { Button, Card, Spinner, Switch, Table } from "@heroui/react"
+import { Button, EmptyState, Label, Pagination, Spinner, Switch, Table } from "@heroui/react"
 import { useNavigate } from "@tanstack/react-router"
 import { useState } from "react"
 
 import TableError from "@/components/TableError"
+import OcticonFeedPlus16 from "~icons/octicon/feed-plus-16"
 
 import { useEmployees } from "../../hooks/useStaff"
 import { openAddStaffModal } from "../../stores/addStaffModal.store"
@@ -13,39 +14,42 @@ import { renderCell } from "./renderCell"
 
 const StaffTable = () => {
 	const navigate = useNavigate()
-	const { data: employees = [], isLoading, error, refetch } = useEmployees()
 	const [page, setPage] = useState(1)
 	const [showDeactivated, setShowDeactivated] = useState(false)
-	const rowsPerPage = 10
+	const status = showDeactivated ? "inactive" : "active"
+	const { data: employees = [], isLoading, error, refetch } = useEmployees(status)
+	const pageSize = 10
 
 	const handleEmployeeClick = (employeeId: string) => {
 		navigate({ to: "/staff/$staffId", params: { staffId: employeeId }, search: { tab: "profile" } })
 	}
 
-	const filteredItems = showDeactivated ? employees : employees.filter((employee) => employee.status === "active")
-
-	const pages = Math.ceil(filteredItems.length / rowsPerPage) || 1
-
-	const start = (page - 1) * rowsPerPage
-	const end = start + rowsPerPage
-	const items = filteredItems.slice(start, end)
+	const total = employees.length
+	const totalPages = Math.ceil(total / pageSize) || 1
+	const startItem = (page - 1) * pageSize + 1
+	const endItem = Math.min(page * pageSize, total)
+	const items = employees.slice((page - 1) * pageSize, page * pageSize)
 
 	const topContent = (
-		<div className="flex flex-col gap-4">
-			<div className="flex items-center justify-end gap-5">
-				<Switch
-					className="text-sm"
-					isSelected={showDeactivated}
-					onChange={(isSelected: boolean) => setShowDeactivated(isSelected)}
-					size="sm"
-				>
-					View deactivated
-				</Switch>
-				<Button variant="primary" onPress={openAddStaffModal}>
-					Add Staff
-				</Button>
-			</div>
-			<span className="text-default-400 text-sm">Total {filteredItems.length} employees</span>
+		<div className="flex items-center justify-end gap-5">
+			<Switch
+				isSelected={showDeactivated}
+				onChange={(isSelected: boolean) => {
+					setShowDeactivated(isSelected)
+					setPage(1)
+				}}
+			>
+				<Switch.Control>
+					<Switch.Thumb />
+				</Switch.Control>
+				<Switch.Content>
+					<Label className="text-sm">View deactivated</Label>
+				</Switch.Content>
+			</Switch>
+			<Button variant="primary" onPress={openAddStaffModal}>
+				<OcticonFeedPlus16 aria-hidden className="size-4" />
+				Add Staff
+			</Button>
 		</div>
 	)
 
@@ -54,79 +58,87 @@ const StaffTable = () => {
 	return (
 		<>
 			<AddStaffModal />
-			<Card>
-				<Card.Content className="flex flex-col gap-4 p-4">
-					{topContent}
-					<Table className="min-h-[595.5px]">
-						<Table.ScrollContainer>
-							<Table.Content aria-label="Employees table">
-								<Table.Header className="[&>tr>th]:py-0">
-									{columns.map((column) => (
-										<Table.Column
-											key={column.key}
-											isRowHeader={column.isRowHeader}
-											className={column.align === "center" ? "text-center" : ""}
-										>
-											{column.label}
-										</Table.Column>
-									))}
-								</Table.Header>
-								<Table.Body className="[&>tr:last-child]:border-b-0 [&>tr]:h-[55px] [&>tr]:border-default-200 [&>tr]:border-b">
-									{isLoading ? (
-										<Table.Row>
-											<Table.Cell colSpan={columns.length}>
-												<div className="flex justify-center py-8">
-													<Spinner size="lg" />
-												</div>
-											</Table.Cell>
+			<div className="flex flex-col gap-4">
+				{topContent}
+				<Table className="[&_td]:py-1.5! [&_tr]:h-[50px]!">
+					<Table.ScrollContainer className="min-h-[560px]">
+						<Table.Content aria-label="Employees table">
+							<Table.Header>
+								{columns.map((column) => (
+									<Table.Column
+										key={column.key}
+										isRowHeader={column.isRowHeader}
+										className={column.align === "center" ? "text-center" : undefined}
+									>
+										{column.label}
+									</Table.Column>
+								))}
+							</Table.Header>
+							<Table.Body>
+								{isLoading ? (
+									<Table.Row>
+										<Table.Cell colSpan={columns.length}>
+											<EmptyState className="flex h-[524px] w-full items-center justify-center">
+												<Spinner />
+											</EmptyState>
+										</Table.Cell>
+									</Table.Row>
+								) : error ? (
+									<Table.Row>
+										<Table.Cell colSpan={columns.length}>
+											<TableError onRetry={refetch} />
+										</Table.Cell>
+									</Table.Row>
+								) : items.length === 0 ? (
+									<Table.Row>
+										<Table.Cell colSpan={columns.length}>
+											<EmptyState className="flex h-[524px] w-full items-center justify-center text-default-400">
+												{showDeactivated ? "No deactivated staff members" : "No staff members found"}
+											</EmptyState>
+										</Table.Cell>
+									</Table.Row>
+								) : (
+									items.map((employee) => (
+										<Table.Row key={employee.id}>
+											{columns.map((column) => (
+												<Table.Cell key={column.key}>{renderCell(employee, column.key, renderCellOptions)}</Table.Cell>
+											))}
 										</Table.Row>
-									) : error ? (
-										<Table.Row>
-											<Table.Cell colSpan={columns.length}>
-												<TableError onRetry={refetch} />
-											</Table.Cell>
-										</Table.Row>
-									) : items.length === 0 ? (
-										<Table.Row>
-											<Table.Cell colSpan={columns.length}>
-												<div className="flex h-[550px] flex-col items-center justify-center gap-3">
-													<p className="text-default-500 text-lg">No staff members yet</p>
-													<p className="text-default-400 text-sm">Add your first staff member to get started</p>
-												</div>
-											</Table.Cell>
-										</Table.Row>
-									) : (
-										items.map((employee) => (
-											<Table.Row key={employee.id}>
-												{columns.map((column) => (
-													<Table.Cell className="py-0" key={column.key}>
-														{renderCell(employee, column.key, renderCellOptions)}
-													</Table.Cell>
-												))}
-											</Table.Row>
-										))
-									)}
-								</Table.Body>
-							</Table.Content>
-						</Table.ScrollContainer>
-					</Table>
-					{pages > 1 && (
-						<div className="mt-auto flex w-full justify-center">
-							<div className="flex items-center gap-2">
-								<Button size="sm" variant="outline" isDisabled={page <= 1} onPress={() => setPage(page - 1)}>
-									Prev
-								</Button>
-								<span className="text-sm">
-									Page {page} of {pages}
-								</span>
-								<Button size="sm" variant="outline" isDisabled={page >= pages} onPress={() => setPage(page + 1)}>
-									Next
-								</Button>
-							</div>
-						</div>
-					)}
-				</Card.Content>
-			</Card>
+									))
+								)}
+							</Table.Body>
+						</Table.Content>
+					</Table.ScrollContainer>
+					<Table.Footer>
+						<Pagination className="w-full">
+							<Pagination.Summary>
+								{startItem} to {endItem} of {total} employees
+							</Pagination.Summary>
+							<Pagination.Content>
+								<Pagination.Item>
+									<Pagination.Previous isDisabled={page <= 1} onPress={() => setPage((p) => p - 1)}>
+										<Pagination.PreviousIcon />
+										<span>Prev</span>
+									</Pagination.Previous>
+								</Pagination.Item>
+								{Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+									<Pagination.Item key={p}>
+										<Pagination.Link isActive={p === page} onPress={() => setPage(p)}>
+											{p}
+										</Pagination.Link>
+									</Pagination.Item>
+								))}
+								<Pagination.Item>
+									<Pagination.Next isDisabled={page >= totalPages} onPress={() => setPage((p) => p + 1)}>
+										<span>Next</span>
+										<Pagination.NextIcon />
+									</Pagination.Next>
+								</Pagination.Item>
+							</Pagination.Content>
+						</Pagination>
+					</Table.Footer>
+				</Table>
+			</div>
 		</>
 	)
 }

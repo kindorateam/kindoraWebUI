@@ -34,7 +34,11 @@ export function renderCell(employee: EmployeeSummary, columnKey: React.Key, opti
 							<Avatar.Image alt={fullName} src={avatarUrl} />
 							<Avatar.Fallback>{fullName.charAt(0)}</Avatar.Fallback>
 						</Avatar>
-						<Badge color={employee.checkedIn ? "success" : "danger"} />
+						<Badge
+							color={employee.checkedIn ? "success" : "danger"}
+							className="h-3! min-h-0! w-3! min-w-0! border-2 border-white"
+							placement="bottom-right"
+						/>
 					</Badge.Anchor>
 					<div className="flex flex-col">
 						<span className="font-medium text-sm hover:text-brand hover:underline">{fullName}</span>

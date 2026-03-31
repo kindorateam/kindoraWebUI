@@ -203,22 +203,20 @@ const AddStaffStepper = ({ onComplete, onCancel, onStepChange, isLoading = false
 
 	return (
 		<FormProvider {...form}>
-			<div className="w-full rounded-2xl bg-white p-7">
-				<Stepper
-					backLabel={currentStep === 0 ? "Close" : "Back"}
-					completeLabel="Confirm"
-					currentStep={currentStep}
-					hideBackOnFirstStep={false}
-					isNextDisabled={!isStepValid(currentStep)}
-					isNextLoading={isLoading}
-					onBack={handleBack}
-					onComplete={handleComplete}
-					onNext={handleNext}
-					onSkipOptional={currentStep > 0 && currentStep < steps.length - 1 ? handleSkipOptionalSteps : undefined}
-					showValueLabel={false}
-					steps={steps}
-				/>
-			</div>
+			<Stepper
+				backLabel={currentStep === 0 ? "Close" : "Back"}
+				completeLabel="Confirm"
+				currentStep={currentStep}
+				hideBackOnFirstStep={false}
+				isNextDisabled={!isStepValid(currentStep)}
+				isNextLoading={isLoading}
+				onBack={handleBack}
+				onComplete={handleComplete}
+				onNext={handleNext}
+				onSkipOptional={currentStep > 0 && currentStep < steps.length - 1 ? handleSkipOptionalSteps : undefined}
+				showValueLabel={false}
+				steps={steps}
+			/>
 		</FormProvider>
 	)
 }

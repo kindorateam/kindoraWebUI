@@ -64,6 +64,7 @@ const EmergencyContactStep = () => {
 								}
 							}}
 							selectedKey={field.value ?? null}
+							variant="secondary"
 						>
 							<Label>Relationship to staff</Label>
 							<Select.Trigger>
@@ -80,9 +81,7 @@ const EmergencyContactStep = () => {
 									))}
 								</ListBox>
 							</Select.Popover>
-							{errors.emergencyContactRelationship?.message && (
-								<span className="text-danger text-xs">{errors.emergencyContactRelationship.message}</span>
-							)}
+							<FieldError>{errors.emergencyContactRelationship?.message}</FieldError>
 						</Select>
 					)}
 				/>

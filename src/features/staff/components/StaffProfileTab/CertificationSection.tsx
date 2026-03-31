@@ -26,6 +26,7 @@ const CertificationSection = ({ control }: CertificationSectionProps) => {
 					render={({ field }) => (
 						<Select
 							className="flex-1"
+							variant="secondary"
 							selectedKey={field.value ?? null}
 							onSelectionChange={(key) => {
 								if (key !== null) field.onChange(String(key))

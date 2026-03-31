@@ -1,4 +1,4 @@
-import { DateField, Label, ListBox, Select } from "@heroui/react"
+import { DateField, FieldError, Label, ListBox, Select } from "@heroui/react"
 import { parseDate } from "@internationalized/date"
 import { Controller, useFormContext } from "react-hook-form"
 
@@ -55,6 +55,7 @@ const KindoraRoleStep = () => {
 								}
 							}}
 							selectedKey={field.value ?? null}
+							variant="secondary"
 						>
 							<Label>Role</Label>
 							<Select.Trigger>
@@ -71,7 +72,7 @@ const KindoraRoleStep = () => {
 									))}
 								</ListBox>
 							</Select.Popover>
-							{errors.role?.message && <span className="text-danger text-xs">{errors.role.message}</span>}
+							<FieldError>{errors.role?.message}</FieldError>
 						</Select>
 					)}
 				/>
@@ -87,10 +88,10 @@ const KindoraRoleStep = () => {
 							value={parseDateValue(field.value)}
 						>
 							<Label>Hire date</Label>
-							<DateField.Group>
+							<DateField.Group variant="secondary">
 								<DateField.Input>{(segment) => <DateField.Segment segment={segment} />}</DateField.Input>
 							</DateField.Group>
-							{errors.hireDate?.message && <span className="text-danger text-xs">{errors.hireDate.message}</span>}
+							<FieldError>{errors.hireDate?.message}</FieldError>
 						</DateField>
 					)}
 				/>
@@ -106,6 +107,7 @@ const KindoraRoleStep = () => {
 							}}
 							value={field.value || []}
 							selectionMode="multiple"
+							variant="secondary"
 						>
 							<Label>Assigned rooms</Label>
 							<Select.Trigger>
@@ -122,9 +124,7 @@ const KindoraRoleStep = () => {
 									))}
 								</ListBox>
 							</Select.Popover>
-							{errors.assignedRooms?.message && (
-								<span className="text-danger text-xs">{errors.assignedRooms.message}</span>
-							)}
+							<FieldError>{errors.assignedRooms?.message}</FieldError>
 						</Select>
 					)}
 				/>
@@ -140,6 +140,7 @@ const KindoraRoleStep = () => {
 							}}
 							value={field.value || []}
 							selectionMode="multiple"
+							variant="secondary"
 						>
 							<Label>Permissions</Label>
 							<Select.Trigger>
@@ -156,7 +157,7 @@ const KindoraRoleStep = () => {
 									))}
 								</ListBox>
 							</Select.Popover>
-							{errors.permissions?.message && <span className="text-danger text-xs">{errors.permissions.message}</span>}
+							<FieldError>{errors.permissions?.message}</FieldError>
 						</Select>
 					)}
 				/>

@@ -2,8 +2,8 @@ import { apiClient } from "@/services/api.service"
 
 import type { EmployeeDocument, EmployeeFull, GetEmployeesResult, UpdateEmployeePayload } from "../types"
 
-export async function getEmployees(): Promise<GetEmployeesResult> {
-	return apiClient.get<GetEmployeesResult>("/employees")
+export async function getEmployees(status?: "active" | "inactive" | "all"): Promise<GetEmployeesResult> {
+	return apiClient.get<GetEmployeesResult>("/employees", { params: { status } })
 }
 
 export async function getEmployeeById(employeeId: string): Promise<EmployeeFull> {

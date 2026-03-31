@@ -103,50 +103,52 @@ const RoomDetailsStep = () => {
 						</TextField>
 					)}
 				/>
-				<Controller
-					control={control}
-					name="capacity"
-					render={({ field }) => (
-						<NumberField
-							isInvalid={!!errors.capacity}
-							isRequired
-							minValue={1}
-							onChange={(value) => field.onChange(Number.isNaN(value) ? 1 : value)}
-							value={field.value}
-							variant="secondary"
-						>
-							<Label>Room Capacity</Label>
-							<NumberField.Group>
-								<NumberField.DecrementButton />
-								<NumberField.Input placeholder="Enter capacity" />
-								<NumberField.IncrementButton />
-							</NumberField.Group>
-							{errors.capacity?.message && <FieldError>{errors.capacity.message}</FieldError>}
-						</NumberField>
-					)}
-				/>
-				<Controller
-					control={control}
-					name="ratio"
-					render={({ field }) => (
-						<NumberField
-							isInvalid={!!errors.ratio}
-							isRequired
-							minValue={1}
-							onChange={(value) => field.onChange(Number.isNaN(value) ? 1 : value)}
-							value={field.value}
-							variant="secondary"
-						>
-							<Label>Students per staff</Label>
-							<NumberField.Group>
-								<NumberField.DecrementButton />
-								<NumberField.Input placeholder="Enter ratio" />
-								<NumberField.IncrementButton />
-							</NumberField.Group>
-							{errors.ratio?.message && <FieldError>{errors.ratio.message}</FieldError>}
-						</NumberField>
-					)}
-				/>
+				<div className="grid grid-cols-2 gap-3">
+					<Controller
+						control={control}
+						name="capacity"
+						render={({ field }) => (
+							<NumberField
+								isInvalid={!!errors.capacity}
+								isRequired
+								minValue={1}
+								onChange={(value) => field.onChange(Number.isNaN(value) ? 1 : value)}
+								value={field.value}
+								variant="secondary"
+							>
+								<Label>Room Capacity</Label>
+								<NumberField.Group>
+									<NumberField.DecrementButton />
+									<NumberField.Input placeholder="Enter capacity" />
+									<NumberField.IncrementButton />
+								</NumberField.Group>
+								{errors.capacity?.message && <FieldError>{errors.capacity.message}</FieldError>}
+							</NumberField>
+						)}
+					/>
+					<Controller
+						control={control}
+						name="ratio"
+						render={({ field }) => (
+							<NumberField
+								isInvalid={!!errors.ratio}
+								isRequired
+								minValue={1}
+								onChange={(value) => field.onChange(Number.isNaN(value) ? 1 : value)}
+								value={field.value}
+								variant="secondary"
+							>
+								<Label>Students per staff</Label>
+								<NumberField.Group>
+									<NumberField.DecrementButton />
+									<NumberField.Input placeholder="Enter ratio" />
+									<NumberField.IncrementButton />
+								</NumberField.Group>
+								{errors.ratio?.message && <FieldError>{errors.ratio.message}</FieldError>}
+							</NumberField>
+						)}
+					/>
+				</div>
 				<div className="grid grid-cols-2 gap-3">
 					<Controller
 						control={control}
