@@ -5,6 +5,8 @@ import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 
 import { getErrorMessage } from "@/utils/error"
+import CiSave from "~icons/ci/save"
+import MaterialSymbolsDeleteOutline from "~icons/material-symbols/delete-outline"
 import TablerAlertTriangle from "~icons/tabler/alert-triangle"
 
 import { useEmployee, useUpdateEmployee, useUpdateEmployeeAvatar } from "../../hooks/useStaff"
@@ -231,12 +233,14 @@ const StaffProfileTab = ({ employeeId }: StaffProfileTabProps) => {
 							size="md"
 							type="button"
 						>
+							<MaterialSymbolsDeleteOutline aria-hidden className="size-4" />
 							Deactivate Account
 						</Button>
 						<Button isDisabled={isSaving} onPress={handleCancel} size="md" type="button" variant="outline">
 							Cancel
 						</Button>
 						<Button variant="primary" isDisabled={!hasChanges || !isValid} isPending={isSaving} size="md" type="submit">
+							<CiSave aria-hidden className="size-4" />
 							Save Changes
 						</Button>
 					</div>

@@ -1,4 +1,9 @@
-import { Button, Chip, Dropdown, Label } from "@heroui/react"
+import { Button, Chip, Dropdown, ListBox } from "@heroui/react"
+
+import MaterialSymbolsDeleteOutline from "~icons/material-symbols/delete-outline"
+import MaterialSymbolsDownload from "~icons/material-symbols/download"
+import TablerEdit from "~icons/tabler/edit"
+import TablerEye from "~icons/tabler/eye"
 
 import { getEmployeeDocumentDownloadUrl } from "../../services/staff.service"
 import { openDeleteDocumentModal } from "../../stores/deleteDocumentModal.store"
@@ -13,10 +18,10 @@ const statusColorMap: Record<DocumentStatus, "success" | "warning" | "danger" | 
 }
 
 const statusTextClass: Record<DocumentStatus, string> = {
-	active: "min-w-28 justify-center text-white text-xs",
-	expiring_soon: "min-w-28 justify-center text-white text-xs",
-	expired: "min-w-28 justify-center text-white text-xs",
-	uploaded: "min-w-28 justify-center text-black text-xs",
+	active: "justify-center text-white text-xs",
+	expiring_soon: "justify-center text-white text-xs",
+	expired: "justify-center text-white text-xs",
+	uploaded: "justify-center text-black text-xs",
 }
 
 const statusLabelMap: Record<DocumentStatus, string> = {
@@ -77,7 +82,7 @@ export function renderCell(document: EmployeeDocument, columnKey: React.Key) {
 			return (
 				<div className="flex flex-col">
 					<span className="text-sm">{document.type}</span>
-					{document.notes && <span className="text-default-400 text-xs">{document.notes}</span>}
+					{document.notes && <span className="text-xs text-zinc-400">{document.notes}</span>}
 				</div>
 			)
 
@@ -85,6 +90,7 @@ export function renderCell(document: EmployeeDocument, columnKey: React.Key) {
 			return (
 				<div className="flex flex-col">
 					<span className="text-sm">{formatDate(document.uploadedAt)}</span>
+					{document.uploadedBy?.name && <span className="text-xs text-zinc-400">by {document.uploadedBy.name}</span>}
 				</div>
 			)
 
@@ -109,25 +115,38 @@ export function renderCell(document: EmployeeDocument, columnKey: React.Key) {
 							</svg>
 						</Button>
 						<Dropdown.Popover className="min-w-0">
-							<Dropdown.Menu aria-label="Document actions">
-								<Dropdown.Item id="view" textValue="View" className="text-success" onPress={() => handleView(document)}>
-									<Label>View</Label>
+							<Dropdown.Menu
+								aria-label="Document actions"
+								onAction={(key) => {
+									switch (key) {
+										case "view":
+											return handleView(document)
+										case "download":
+											return handleDownload(document)
+										case "delete":
+											return openDeleteDocumentModal(document.id)
+									}
+								}}
+							>
+								<Dropdown.Item id="view" textValue="Preview" className="text-success">
+									<ListBox.ItemIndicator />
+									<TablerEye aria-hidden className="size-5" />
+									<span>Preview</span>
 								</Dropdown.Item>
-								<Dropdown.Item
-									id="download"
-									textValue="Download"
-									className="text-warning"
-									onPress={() => handleDownload(document)}
-								>
-									<Label>Download</Label>
+								<Dropdown.Item id="edit" textValue="Edit" className="text-warning">
+									<ListBox.ItemIndicator />
+									<TablerEdit aria-hidden className="size-5" />
+									<span>Edit</span>
 								</Dropdown.Item>
-								<Dropdown.Item
-									id="delete"
-									textValue="Delete"
-									className="text-danger"
-									onPress={() => openDeleteDocumentModal(document.id)}
-								>
-									<Label>Delete</Label>
+								<Dropdown.Item id="download" textValue="Download" className="text-primary">
+									<ListBox.ItemIndicator />
+									<MaterialSymbolsDownload aria-hidden className="size-5" />
+									<span>Download</span>
+								</Dropdown.Item>
+								<Dropdown.Item id="delete" textValue="Delete" className="text-danger">
+									<ListBox.ItemIndicator />
+									<MaterialSymbolsDeleteOutline aria-hidden className="size-5" />
+									<span>Delete</span>
 								</Dropdown.Item>
 							</Dropdown.Menu>
 						</Dropdown.Popover>

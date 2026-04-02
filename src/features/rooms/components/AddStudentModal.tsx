@@ -96,6 +96,7 @@ const AddStudentModal = () => {
 						) : (
 							<Select
 								selectionMode="multiple"
+								variant="secondary"
 								value={Array.from(selectedStudentIds)}
 								onChange={(keys) => {
 									setSelectedStudentIds(new Set(keys as string[]))

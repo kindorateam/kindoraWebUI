@@ -82,13 +82,7 @@ const StaffDetailHeader = ({
 									{employeeData?.role && (
 										<div className="flex items-center gap-2">
 											<span className="text-neutral-600 text-sm">Role</span>
-											<Chip
-												className="bg-secondary-50 font-medium text-secondary text-sm capitalize"
-												size="sm"
-												variant="soft"
-											>
-												{employeeData.role}
-											</Chip>
+											<span className="font-medium text-sm capitalize">{employeeData.role}</span>
 										</div>
 									)}
 
@@ -96,9 +90,7 @@ const StaffDetailHeader = ({
 									{employeeData?.pinCode != null && (
 										<div className="flex items-center gap-2">
 											<span className="text-neutral-600 text-sm">Pin</span>
-											<Chip className="bg-secondary-50 font-medium text-secondary text-sm" size="sm" variant="soft">
-												{employeeData.pinCode}
-											</Chip>
+											<span className="font-medium text-sm">{employeeData.pinCode}</span>
 											{/* TODO: Wire to generate pin API when available */}
 											<Tooltip>
 												<Button
@@ -120,10 +112,22 @@ const StaffDetailHeader = ({
 									{/* TODO: Replace MOCK_ROOMS with actual room data from API */}
 									<div className="flex items-center gap-2">
 										<span className="text-neutral-600 text-sm">Rooms</span>
-										<div className="grid grid-cols-2 gap-x-4 gap-y-2">
-											{MOCK_ROOMS.map((room) => (
+										<div className="flex gap-2">
+											{MOCK_ROOMS.slice(0, 2).map((room) => (
 												<IdentityChip fullName={room.label} key={room.key} src={room.avatar || undefined} />
 											))}
+											{MOCK_ROOMS.length > 2 && (
+												<Tooltip>
+													<Button variant="secondary" size="sm" className="h-7 min-w-0 rounded-full px-3">
+														+{MOCK_ROOMS.length - 2}
+													</Button>
+													<Tooltip.Content className="flex flex-col gap-2 p-3">
+														{MOCK_ROOMS.slice(2).map((room) => (
+															<IdentityChip fullName={room.label} key={room.key} src={room.avatar || undefined} />
+														))}
+													</Tooltip.Content>
+												</Tooltip>
+											)}
 										</div>
 									</div>
 								</div>
@@ -133,9 +137,7 @@ const StaffDetailHeader = ({
 							{/* TODO: Replace mock absence data with API data when available */}
 							<div className="flex items-center gap-3">
 								<span className="shrink-0 text-neutral-600 text-sm">Absence date</span>
-								<Chip className="bg-secondary-50 font-medium text-secondary text-sm" size="sm" variant="soft">
-									Nov 20 - Nov 26
-								</Chip>
+								<span className="font-medium text-sm">Nov 20 - Nov 26</span>
 								<Popover>
 									<Popover.Trigger>
 										<Button aria-label="Set absence dates" variant="primary" isIconOnly size="sm">
@@ -171,14 +173,14 @@ const StaffDetailHeader = ({
 						</div>
 					</div>
 
-					<div className="flex flex-col gap-3">
-						<Button variant="primary" onPress={onSignOut} size="sm">
-							<PhSignInBold aria-hidden className="size-4" />
-							Sign Out
-						</Button>
+					<div className="flex gap-3">
 						<Button className="bg-success text-white hover:bg-success/90" onPress={onSendInvite} size="sm">
 							<MingcuteSendFill aria-hidden className="size-4" />
 							Send Invite
+						</Button>
+						<Button variant="primary" onPress={onSignOut} size="sm">
+							<PhSignInBold aria-hidden className="size-4" />
+							Sign Out
 						</Button>
 					</div>
 				</div>

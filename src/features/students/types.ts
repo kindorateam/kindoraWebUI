@@ -92,7 +92,7 @@ export interface StudentDocument {
 	type: string
 	notes: string | null
 	uploadedAt: string
-	uploadedBy: { id: string } | null
+	uploadedBy: { id: string; name: string } | null
 }
 
 export interface GetStudentsResult {

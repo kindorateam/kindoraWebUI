@@ -127,45 +127,56 @@ const AddDocumentModal = ({ isOpen, onClose, documentTypes, onUpload, isPending 
 		<Modal.Backdrop isOpen={isOpen} onOpenChange={(open) => !open && handleClose()}>
 			<Modal.Container>
 				<Modal.Dialog className="max-w-sm">
+					<Modal.CloseTrigger />
 					<Modal.Header>
 						<Modal.Heading>Add File</Modal.Heading>
 					</Modal.Header>
 					<Modal.Body>
 						{step === 1 ? (
-							<div className="flex flex-col gap-6">
+							<div className="flex flex-col gap-4">
 								<input className="hidden" onChange={handleFileInputChange} ref={fileInputRef} type="file" />
-								<div className="rounded-xl bg-default-100 p-2 shadow-sm">
-									<button
-										className={`flex w-full cursor-pointer flex-col items-center gap-4 rounded-lg border border-dashed p-4 transition-colors ${
-											isDragging ? "border-primary bg-primary/10" : "border-default-400"
-										}`}
-										onClick={() => fileInputRef.current?.click()}
-										onDragLeave={handleDragLeave}
-										onDragOver={handleDragOver}
-										onDrop={handleDrop}
-										type="button"
+								<button
+									className={`flex w-full cursor-pointer flex-col items-center gap-4 rounded-lg border border-dashed p-4 transition-colors ${
+										isDragging ? "border-primary bg-primary/10" : "border-default-400"
+									}`}
+									onClick={() => fileInputRef.current?.click()}
+									onDragLeave={handleDragLeave}
+									onDragOver={handleDragOver}
+									onDrop={handleDrop}
+									type="button"
+								>
+									<div className="flex size-16 items-center justify-center rounded-full bg-default-100">
+										<TablerFileText className="size-8 text-primary" />
+									</div>
+									<div className="flex items-center">
+										<span className="text-default-600 text-xs">
+											{uploadedFile ? uploadedFile.name : "Drag a document here or\u00A0"}
+										</span>
+										{!uploadedFile && <span className="font-semibold text-default-600 text-xs">browse to upload</span>}
+									</div>
+								</button>
+								{uploadedFile && (
+									<Button
+										size="sm"
+										variant="outline"
+										fullWidth
+										onPress={() => {
+											setUploadedFile(null)
+											if (fileInputRef.current) fileInputRef.current.value = ""
+										}}
 									>
-										<div className="flex size-16 items-center justify-center rounded-full bg-white">
-											<TablerFileText className="size-8 text-primary" />
-										</div>
-										<div className="flex items-center">
-											<span className="text-default-600 text-xs">
-												{uploadedFile ? uploadedFile.name : "Drag a document here or\u00A0"}
-											</span>
-											{!uploadedFile && (
-												<span className="font-semibold text-default-600 text-xs">browse to upload</span>
-											)}
-										</div>
-									</button>
-								</div>
+										Remove file
+									</Button>
+								)}
 								<Button variant="primary" fullWidth isDisabled={!uploadedFile} onPress={handleNext}>
 									Next
 								</Button>
 							</div>
 						) : (
-							<div className="flex flex-col gap-6">
+							<div className="flex flex-col gap-4">
 								<div className="flex flex-col gap-3">
 									<Input
+										variant="secondary"
 										value={uploadedFile?.name ?? ""}
 										onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
 											const val = e.target.value
@@ -176,6 +187,7 @@ const AddDocumentModal = ({ isOpen, onClose, documentTypes, onUpload, isPending 
 										}}
 									/>
 									<Select
+										variant="secondary"
 										selectedKey={type || null}
 										onSelectionChange={(key) => {
 											if (key) setType(String(key))
@@ -199,7 +211,7 @@ const AddDocumentModal = ({ isOpen, onClose, documentTypes, onUpload, isPending 
 									</Select>
 									<DatePicker value={expiryDate} onChange={setExpiryDate}>
 										<Label>Expiration date</Label>
-										<DateField.Group fullWidth>
+										<DateField.Group fullWidth variant="secondary">
 											<DateField.Input>{(segment) => <DateField.Segment segment={segment} />}</DateField.Input>
 											<DateField.Suffix>
 												<DatePicker.Trigger>
@@ -220,7 +232,7 @@ const AddDocumentModal = ({ isOpen, onClose, documentTypes, onUpload, isPending 
 											</Calendar>
 										</DatePicker.Popover>
 									</DatePicker>
-									<TextField>
+									<TextField variant="secondary">
 										<Label>Notes</Label>
 
 										<Input
@@ -236,7 +248,7 @@ const AddDocumentModal = ({ isOpen, onClose, documentTypes, onUpload, isPending 
 									<Button fullWidth variant="outline" onPress={handleBack}>
 										Back
 									</Button>
-									<Button fullWidth variant="outline" onPress={handleClose}>
+									<Button fullWidth variant="secondary" onPress={handleClose}>
 										Cancel
 									</Button>
 								</div>

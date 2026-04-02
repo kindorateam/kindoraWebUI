@@ -2,6 +2,7 @@ import { Button, Modal, toast } from "@heroui/react"
 import { useAtomValue } from "jotai"
 
 import { getErrorMessage } from "@/utils/error"
+import MaterialSymbolsDeleteOutline from "~icons/material-symbols/delete-outline"
 
 import { useDeleteStudentDocument } from "../hooks/useStudents"
 import { closeDeleteDocumentModal, deleteDocumentIdAtom } from "../stores/deleteDocumentModal.store"
@@ -35,24 +36,31 @@ const DeleteDocumentModal = ({ studentId }: Props) => {
 		<Modal.Backdrop isOpen={isOpen} onOpenChange={(open) => !open && closeDeleteDocumentModal()}>
 			<Modal.Container>
 				<Modal.Dialog className="max-w-sm">
+					<Modal.CloseTrigger />
 					<Modal.Header>
 						<Modal.Heading>Delete File</Modal.Heading>
 					</Modal.Header>
-					<Modal.Body>
-						<div className="flex flex-col items-center gap-5 px-2 py-2">
-							<p className="text-center text-foreground text-sm leading-5">
-								This action will permanently delete the attachment and cannot be reversed.
-							</p>
-							<div className="flex w-full flex-col gap-3">
-								<Button className="w-full" variant="danger" isPending={deleteMutation.isPending} onPress={handleDelete}>
-									Yes, delete
-								</Button>
-								<Button fullWidth isDisabled={deleteMutation.isPending} onPress={closeDeleteDocumentModal} size="md">
-									Cancel
-								</Button>
-							</div>
+					<Modal.Body className="flex flex-col items-center gap-4">
+						<div className="flex size-12 items-center justify-center rounded-full bg-danger/10">
+							<MaterialSymbolsDeleteOutline className="size-6 text-danger" />
 						</div>
+						<p className="text-center text-base">
+							This action will permanently delete the attachment and cannot be reversed.
+						</p>
 					</Modal.Body>
+					<Modal.Footer className="flex flex-col gap-3">
+						<Button fullWidth variant="danger" isPending={deleteMutation.isPending} onPress={handleDelete}>
+							Yes, delete
+						</Button>
+						<Button
+							fullWidth
+							variant="secondary"
+							isDisabled={deleteMutation.isPending}
+							onPress={closeDeleteDocumentModal}
+						>
+							Cancel
+						</Button>
+					</Modal.Footer>
 				</Modal.Dialog>
 			</Modal.Container>
 		</Modal.Backdrop>

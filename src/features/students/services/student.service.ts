@@ -133,7 +133,7 @@ const MOCK_STUDENT_DOCUMENTS: Record<string, StudentDocument[]> = Object.fromEnt
 				type: "Medical Form",
 				notes: "Signed by pediatrician",
 				uploadedAt: "2026-01-15T10:00:00.000Z",
-				uploadedBy: { id: "admin-1" },
+				uploadedBy: { id: "admin-1", name: "John Jackson" },
 			},
 			{
 				id: index * 10 + 2,
@@ -147,7 +147,7 @@ const MOCK_STUDENT_DOCUMENTS: Record<string, StudentDocument[]> = Object.fromEnt
 				type: "Immunization Record",
 				notes: null,
 				uploadedAt: "2026-02-01T12:00:00.000Z",
-				uploadedBy: { id: "admin-1" },
+				uploadedBy: { id: "admin-1", name: "John Jackson" },
 			},
 		],
 	]),
@@ -208,7 +208,7 @@ export async function uploadStudentDocument(
 		type: data.type,
 		notes: data.notes ?? null,
 		uploadedAt: new Date().toISOString(),
-		uploadedBy: { id: "admin-1" },
+		uploadedBy: { id: "admin-1", name: "John Jackson" },
 	}
 
 	MOCK_STUDENT_DOCUMENTS[studentId] = [uploadedDocument, ...(MOCK_STUDENT_DOCUMENTS[studentId] ?? [])]

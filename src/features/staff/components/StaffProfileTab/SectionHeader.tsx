@@ -6,7 +6,7 @@ interface SectionHeaderProps {
 
 export default function SectionHeader({ icon, title, action }: SectionHeaderProps) {
 	return (
-		<div className="flex items-center justify-between px-4 py-1.5">
+		<div className="flex items-center justify-between">
 			<div className="flex items-center gap-2.5">
 				<span className="text-[#2e2659]">{icon}</span>
 				<span className="font-semibold text-[#2e2659] text-sm">{title}</span>
