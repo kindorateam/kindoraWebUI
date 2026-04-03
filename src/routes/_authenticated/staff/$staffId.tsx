@@ -10,6 +10,7 @@ import { getEmployeeById } from "@/features/staff/services/staff.service"
 import { openRegeneratePinModal } from "@/features/staff/stores/regeneratePinModal.store"
 import { getEmployeeFullName } from "@/features/staff/types"
 import { queryClient } from "@/services/queryClient"
+import { useBreadcrumbOverride } from "@/stores/breadcrumb.store"
 
 type TabType = "profile" | "documents"
 
@@ -30,23 +31,13 @@ export const Route = createFileRoute("/_authenticated/staff/$staffId")({
 			tab: validTabs.includes(tab as TabType) ? (tab as TabType) : "profile",
 		}
 	},
-	beforeLoad: async ({ params }: { params: { staffId: string } }) => {
-		try {
-			const employeeData = await queryClient.fetchQuery({
-				queryKey: ["employees", params.staffId],
-				queryFn: () => getEmployeeById(params.staffId),
-				staleTime: 5 * 60 * 1000,
-			})
-			const fullName = employeeData ? getEmployeeFullName(employeeData) : null
-
-			return {
-				breadcrumb: fullName ?? `Employee ${params.staffId}`,
-			}
-		} catch {
-			return {
-				breadcrumb: `Employee ${params.staffId}`,
-			}
-		}
+	beforeLoad: () => ({ breadcrumb: "Staff" }),
+	loader: ({ params }: { params: { staffId: string } }) => {
+		queryClient.ensureQueryData({
+			queryKey: ["employees", params.staffId],
+			queryFn: () => getEmployeeById(params.staffId),
+			staleTime: 5 * 60 * 1000,
+		})
 	},
 })
 
@@ -59,6 +50,7 @@ function StaffDetailLayout() {
 	const tab = search.tab
 
 	const { data: employeeData } = useEmployee(employeeId)
+	useBreadcrumbOverride(employeeData ? getEmployeeFullName(employeeData) : undefined)
 
 	const handleTabChange = (newTab: TabType) => {
 		void navigate({

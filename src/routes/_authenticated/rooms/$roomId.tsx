@@ -6,8 +6,10 @@ import RoomDetailHeader from "@/features/rooms/components/RoomDetailHeader"
 import RoomStudentsTable from "@/features/rooms/components/RoomStudentsTable"
 import RoomActivityTab from "@/features/rooms/components/RoomTabs/RoomActivityTab"
 import RoomProfileTab from "@/features/rooms/components/RoomTabs/RoomProfileTab"
+import { useRoom } from "@/features/rooms/hooks/useRooms"
 import { getRoomById } from "@/features/rooms/services/room.service"
 import { queryClient } from "@/services/queryClient"
+import { useBreadcrumbOverride } from "@/stores/breadcrumb.store"
 
 type TabType = "students" | "activity" | "profile"
 
@@ -28,21 +30,13 @@ export const Route = createFileRoute("/_authenticated/rooms/$roomId")({
 			tab: validTabs.includes(tab as TabType) ? (tab as TabType) : "students",
 		}
 	},
-	beforeLoad: async ({ params }: { params: { roomId: string } }) => {
-		try {
-			const room = await queryClient.fetchQuery({
-				queryKey: ["rooms", params.roomId],
-				queryFn: () => getRoomById(params.roomId),
-				staleTime: 5 * 60 * 1000,
-			})
-			return {
-				breadcrumb: room?.name ?? `Room ${params.roomId}`,
-			}
-		} catch {
-			return {
-				breadcrumb: `Room ${params.roomId}`,
-			}
-		}
+	beforeLoad: () => ({ breadcrumb: "Rooms" }),
+	loader: ({ params }: { params: { roomId: string } }) => {
+		queryClient.ensureQueryData({
+			queryKey: ["rooms", params.roomId],
+			queryFn: () => getRoomById(params.roomId),
+			staleTime: 5 * 60 * 1000,
+		})
 	},
 })
 
@@ -53,6 +47,8 @@ function RoomDetailLayout() {
 
 	const roomId = params.roomId
 	const tab = search.tab
+	const { data: room } = useRoom(roomId)
+	useBreadcrumbOverride(room?.name)
 
 	const handleTabChange = (newTab: TabType) => {
 		void navigate({ search: (prev) => ({ ...prev, tab: newTab }), replace: true })

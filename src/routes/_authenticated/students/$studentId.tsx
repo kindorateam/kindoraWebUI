@@ -10,6 +10,7 @@ import StudentProfileTab from "@/features/students/components/StudentProfileTab"
 import { useStudent } from "@/features/students/hooks/useStudents"
 import { getStudentById } from "@/features/students/services/student.service"
 import { queryClient } from "@/services/queryClient"
+import { useBreadcrumbOverride } from "@/stores/breadcrumb.store"
 
 type TabType = "activity" | "profile" | "documents" | "imunization" | "billing"
 
@@ -30,22 +31,13 @@ export const Route = createFileRoute("/_authenticated/students/$studentId")({
 			tab: validTabs.includes(tab as TabType) ? (tab as TabType) : "activity",
 		}
 	},
-	beforeLoad: async ({ params }: { params: { studentId: string } }) => {
-		try {
-			const student = await queryClient.fetchQuery({
-				queryKey: ["students", params.studentId],
-				queryFn: () => getStudentById(params.studentId),
-				staleTime: 5 * 60 * 1000,
-			})
-
-			return {
-				breadcrumb: `${student.firstName} ${student.lastName}`,
-			}
-		} catch {
-			return {
-				breadcrumb: `Student ${params.studentId}`,
-			}
-		}
+	beforeLoad: () => ({ breadcrumb: "Students" }),
+	loader: ({ params }: { params: { studentId: string } }) => {
+		queryClient.ensureQueryData({
+			queryKey: ["students", params.studentId],
+			queryFn: () => getStudentById(params.studentId),
+			staleTime: 5 * 60 * 1000,
+		})
 	},
 })
 
@@ -54,6 +46,7 @@ function StudentDetailPage() {
 	const search = Route.useSearch()
 	const navigate = useNavigate({ from: Route.fullPath })
 	const { data: student, isError, isLoading } = useStudent(params.studentId)
+	useBreadcrumbOverride(student ? `${student.firstName} ${student.lastName}` : undefined)
 
 	const tab = search.tab
 	const handleTabChange = (newTab: TabType) => {
