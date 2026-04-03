@@ -1,7 +1,8 @@
-import { Button, Card, Checkbox, FieldError, InputGroup, Label, Link, Separator, TextField } from "@heroui/react"
+import { Button, Card, Checkbox, FieldError, InputGroup, Label, Link, Separator, TextField, toast } from "@heroui/react"
 import { useState } from "react"
 import { Controller, useForm } from "react-hook-form"
 
+import { getErrorMessage } from "@/utils/error"
 import LogosGoogleIcon from "~icons/logos/google-icon"
 
 import { EMAIL_PATTERN } from "../constants"
@@ -18,13 +19,13 @@ interface SignInFormProps {
 }
 
 const SignInForm = ({ onForgotPassword, onVerificationRequired, defaultEmail }: SignInFormProps) => {
-	const { handleGoogleLogin, handleEmailLogin, isLoading } = useAuth()
+	const { handleGoogleLogin, emailLoginMutation, isLoading } = useAuth()
 	const [isPasswordVisible, setIsPasswordVisible] = useState(false)
 
 	const {
 		control,
 		handleSubmit,
-		formState: { errors, isSubmitting, isValid },
+		formState: { errors, isValid },
 	} = useForm<SignInFormData>({
 		defaultValues: {
 			email: defaultEmail || "",
@@ -34,20 +35,20 @@ const SignInForm = ({ onForgotPassword, onVerificationRequired, defaultEmail }: 
 		mode: "onChange",
 	})
 
-	const onSubmit = async (data: SignInFormData) => {
-		try {
-			const result = await handleEmailLogin({
-				email: data.email,
-				password: data.password,
-			})
-
-			if (result?.needsVerification) {
-				const codeSentAt = Date.now()
-				onVerificationRequired?.(result.email, result.message, codeSentAt)
-			}
-		} catch {
-			// Error is handled by auth store → toast via useEffect
-		}
+	const onSubmit = (data: SignInFormData) => {
+		emailLoginMutation.mutate(
+			{ email: data.email, password: data.password },
+			{
+				onSuccess: (result) => {
+					if (result.needsVerification) {
+						onVerificationRequired?.(result.email, result.message, Date.now())
+					}
+				},
+				onError: (error) => {
+					toast("Login failed", { description: getErrorMessage(error), variant: "danger" })
+				},
+			},
+		)
 	}
 
 	return (
@@ -129,7 +130,7 @@ const SignInForm = ({ onForgotPassword, onVerificationRequired, defaultEmail }: 
 						fullWidth
 						variant="primary"
 						isDisabled={!isValid}
-						isPending={isSubmitting}
+						isPending={emailLoginMutation.isPending}
 						size="md"
 						type="submit"
 					>
@@ -149,7 +150,7 @@ const SignInForm = ({ onForgotPassword, onVerificationRequired, defaultEmail }: 
 					isDisabled={isLoading}
 					isPending={isLoading}
 					onPress={() => {
-						void handleGoogleLogin()
+						handleGoogleLogin()
 					}}
 					variant="outline"
 				>

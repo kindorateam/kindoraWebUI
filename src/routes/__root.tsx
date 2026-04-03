@@ -11,7 +11,6 @@ export interface RouterContext {
 	auth: {
 		isAuthenticated: boolean
 		user: User | null
-		isLoading: boolean
 	}
 }
 

@@ -8,7 +8,7 @@ import { authStateAtom } from "@/features/auth/stores/auth.store"
 const HomePage = () => {
 	const authState = useAtomValue(authStateAtom)
 
-	if (authState.isLoading) {
+	if (!authState.isInitialized) {
 		return <PageLoader />
 	}
 

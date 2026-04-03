@@ -6,7 +6,7 @@ import { getErrorMessage } from "@/utils/error"
 import TablerCheck from "~icons/tabler/check"
 
 import { barColorMap } from "../constants"
-import { resetPassword } from "../services/auth.service"
+import { useResetPassword } from "../hooks/useAuthMutations"
 import { areRequiredRequirementsMet, calculatePasswordStrength, getRequirementStatuses } from "../utils/password"
 
 import PasswordVisibilityToggle from "./PasswordVisibilityToggle"
@@ -27,12 +27,13 @@ const ResetPasswordForm = ({ email, token, onBack, onResetSuccess }: ResetPasswo
 	const [isPasswordVisible, setIsPasswordVisible] = useState(false)
 	const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false)
 	const [resetComplete, setResetComplete] = useState(false)
+	const resetPasswordMutation = useResetPassword()
 
 	const {
 		control,
 		handleSubmit,
 		watch,
-		formState: { errors, isSubmitting },
+		formState: { errors },
 	} = useForm<ResetPasswordFormData>({
 		defaultValues: {
 			password: "",
@@ -53,13 +54,16 @@ const ResetPasswordForm = ({ email, token, onBack, onResetSuccess }: ResetPasswo
 		confirmPasswordValue === passwordValue &&
 		confirmPasswordValue.length > 0
 
-	const onSubmit = async (data: ResetPasswordFormData) => {
-		try {
-			await resetPassword(email, token, data.password)
-			setResetComplete(true)
-		} catch (error) {
-			toast(getErrorMessage(error), { variant: "danger" })
-		}
+	const onSubmit = (data: ResetPasswordFormData) => {
+		resetPasswordMutation.mutate(
+			{ email, code: token, newPassword: data.password },
+			{
+				onSuccess: () => setResetComplete(true),
+				onError: (error) => {
+					toast("Failed to reset password", { description: getErrorMessage(error), variant: "danger" })
+				},
+			},
+		)
 	}
 
 	if (resetComplete) {
@@ -174,7 +178,7 @@ const ResetPasswordForm = ({ email, token, onBack, onResetSuccess }: ResetPasswo
 					variant="primary"
 					form={formId}
 					isDisabled={!canSubmit}
-					isPending={isSubmitting}
+					isPending={resetPasswordMutation.isPending}
 					type="submit"
 				>
 					Reset password

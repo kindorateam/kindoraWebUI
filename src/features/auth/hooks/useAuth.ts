@@ -1,76 +1,44 @@
-import { toast } from "@heroui/react"
 import { useGoogleLogin } from "@react-oauth/google"
 import { useLocation, useNavigate } from "@tanstack/react-router"
 import { useAtom, useAtomValue } from "jotai"
-import { useEffect } from "react"
 
-import {
-	authStateAtom,
-	handleEmailLoginAtom,
-	handleGoogleLoginAtom,
-	handleVerifyFirstLoginAtom,
-	logoutAtom,
-	updateUserAtom,
-} from "../stores/auth.store"
+import { authStateAtom, updateUserAtom } from "../stores/auth.store"
+
+import { useEmailLogin, useGoogleLoginMutation, useLogoutMutation, useVerifyFirstLogin } from "./useAuthMutations"
 
 import type { CodeResponse } from "@react-oauth/google"
 
+interface LogoutOptions {
+	preserveReturnUrl?: boolean
+	to?: string
+	replace?: boolean
+}
+
 const useAuth = () => {
 	const authState = useAtomValue(authStateAtom)
-	const [, handleEmailLogin] = useAtom(handleEmailLoginAtom)
-	const [, handleGoogleLoginWithCode] = useAtom(handleGoogleLoginAtom)
-	const [, handleVerifyFirstLogin] = useAtom(handleVerifyFirstLoginAtom)
-	const [, logout] = useAtom(logoutAtom)
 	const [, updateUser] = useAtom(updateUserAtom)
 	const navigate = useNavigate()
 	const location = useLocation()
 
-	useEffect(() => {
-		if (authState.error) {
-			toast(authState.error, { variant: "danger" })
-		}
-	}, [authState.error])
+	const emailLoginMutation = useEmailLogin()
+	const googleLoginMutation = useGoogleLoginMutation()
+	const verifyMutation = useVerifyFirstLogin()
+	const logoutMutation = useLogoutMutation()
 
 	const googleLogin = useGoogleLogin({
 		flow: "auth-code",
 		ux_mode: "popup",
-		redirect_uri: "http://localhost:5173", // Explicitly set redirect_uri
-		onSuccess: async (codeResponse: CodeResponse) => {
-			try {
-				await handleGoogleLoginWithCode(codeResponse.code)
-			} catch (error) {
-				console.error("Google OAuth failed:", error)
-			}
+		redirect_uri: "http://localhost:5173",
+		onSuccess: (codeResponse: CodeResponse) => {
+			googleLoginMutation.mutate(codeResponse.code)
 		},
 		onError: (error) => {
 			console.error("Google OAuth popup failed:", error)
 		},
 	})
 
-	const handleGoogleLogin = () => {
-		googleLogin()
-	}
-
-	const handleEmailPasswordLogin = async (credentials: { email: string; password: string }) => {
-		return handleEmailLogin(credentials)
-	}
-
-	const handleVerification = async (email: string, code: string) => {
-		return handleVerifyFirstLogin({ email, code })
-	}
-
-	const handleLogout = async () => {
-		await logout()
-	}
-
-	interface LogoutOptions {
-		preserveReturnUrl?: boolean
-		to?: string // defaults to '/login'
-		replace?: boolean // defaults to true
-	}
-
 	const logoutAndRedirect = async (opts?: LogoutOptions) => {
-		await logout()
+		await logoutMutation.mutateAsync()
 
 		const replace = opts?.replace ?? true
 		const baseTo = opts?.to ?? "/login"
@@ -85,15 +53,20 @@ const useAuth = () => {
 		void navigate({ to: baseTo, replace })
 	}
 
+	const isLoading =
+		emailLoginMutation.isPending ||
+		googleLoginMutation.isPending ||
+		verifyMutation.isPending ||
+		logoutMutation.isPending
+
 	return {
 		user: authState.user,
 		isAuthenticated: authState.isAuthenticated,
-		isLoading: authState.isLoading,
-		error: authState.error,
-		handleGoogleLogin,
-		handleEmailLogin: handleEmailPasswordLogin,
-		handleVerifyFirstLogin: handleVerification,
-		logout: handleLogout,
+		isLoading,
+		emailLoginMutation,
+		verifyMutation,
+		handleGoogleLogin: googleLogin,
+		logout: logoutMutation,
 		logoutAndRedirect,
 		updateUser,
 	}

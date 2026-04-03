@@ -8,7 +8,7 @@ import TablerEdit from "~icons/tabler/edit"
 
 import { CODE_EXPIRATION_SECONDS, RESEND_COOLDOWN_SECONDS } from "../constants"
 import useAuth from "../hooks/useAuth"
-import { requestPasswordReset, verifyPasswordResetOTP } from "../services/auth.service"
+import { useRequestPasswordReset, useVerifyPasswordResetOTP } from "../hooks/useAuthMutations"
 import { calculateResendTimeLeft, calculateTimeLeft, formatTime } from "../utils/time"
 
 import type { OTPVerificationFormData } from "../types"
@@ -22,14 +22,16 @@ interface OTPVerificationFormProps {
 }
 
 const OTPVerificationForm = ({ email, onBack, onSuccess, context = "login", codeSentAt }: OTPVerificationFormProps) => {
-	const { handleVerifyFirstLogin } = useAuth()
+	const { verifyMutation } = useAuth()
+	const resendMutation = useRequestPasswordReset()
+	const verifyResetOTPMutation = useVerifyPasswordResetOTP()
 	const [timeLeft, setTimeLeft] = useState(() => calculateTimeLeft(codeSentAt))
 	const [resendTimeLeft, setResendTimeLeft] = useState(() => calculateResendTimeLeft(codeSentAt))
 
 	const {
 		control,
 		handleSubmit,
-		formState: { isSubmitting, isValid },
+		formState: { isValid },
 	} = useForm<OTPVerificationFormData>({
 		defaultValues: {
 			otp: "",
@@ -61,32 +63,43 @@ const OTPVerificationForm = ({ email, onBack, onSuccess, context = "login", code
 		return () => clearInterval(timer)
 	}, [timeLeft, resendTimeLeft])
 
-	const handleResendCode = async () => {
-		try {
-			await requestPasswordReset(email)
-			setTimeLeft(CODE_EXPIRATION_SECONDS)
-			setResendTimeLeft(RESEND_COOLDOWN_SECONDS)
-		} catch (error) {
-			toast(getErrorMessage(error), { variant: "danger" })
+	const handleResendCode = () => {
+		resendMutation.mutate(email, {
+			onSuccess: () => {
+				setTimeLeft(CODE_EXPIRATION_SECONDS)
+				setResendTimeLeft(RESEND_COOLDOWN_SECONDS)
+			},
+			onError: (error) => {
+				toast("Failed to resend code", { description: getErrorMessage(error), variant: "danger" })
+			},
+		})
+	}
+
+	const onSubmit = (data: OTPVerificationFormData) => {
+		if (context === "login") {
+			verifyMutation.mutate(
+				{ email, code: data.otp },
+				{
+					onSuccess: () => onSuccess?.(),
+					onError: (error) => {
+						toast("Verification failed", { description: getErrorMessage(error), variant: "danger" })
+					},
+				},
+			)
+		} else {
+			verifyResetOTPMutation.mutate(
+				{ email, code: data.otp },
+				{
+					onSuccess: () => onSuccess?.(data.otp),
+					onError: (error) => {
+						toast("Verification failed", { description: getErrorMessage(error), variant: "danger" })
+					},
+				},
+			)
 		}
 	}
 
-	const onSubmit = async (data: OTPVerificationFormData) => {
-		try {
-			if (context === "login") {
-				await handleVerifyFirstLogin(email, data.otp)
-				onSuccess?.()
-			} else {
-				await verifyPasswordResetOTP(email, data.otp)
-				onSuccess?.(data.otp)
-			}
-		} catch (error) {
-			// Login context errors are toasted by useAuth hook
-			if (context === "password-reset") {
-				toast(getErrorMessage(error), { variant: "danger" })
-			}
-		}
-	}
+	const isPending = context === "login" ? verifyMutation.isPending : verifyResetOTPMutation.isPending
 
 	return (
 		<>
@@ -155,7 +168,7 @@ const OTPVerificationForm = ({ email, onBack, onSuccess, context = "login", code
 
 			<Card.Footer className="flex-col gap-4">
 				<form className="w-full" onSubmit={handleSubmit(onSubmit)}>
-					<Button fullWidth variant="primary" isDisabled={!isValid} isPending={isSubmitting} size="md" type="submit">
+					<Button fullWidth variant="primary" isDisabled={!isValid} isPending={isPending} size="md" type="submit">
 						Next
 					</Button>
 				</form>

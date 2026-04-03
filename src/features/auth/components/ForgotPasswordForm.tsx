@@ -5,7 +5,7 @@ import { Controller, useForm } from "react-hook-form"
 import { getErrorMessage } from "@/utils/error"
 
 import { EMAIL_PATTERN } from "../constants"
-import { requestPasswordReset } from "../services/auth.service"
+import { useRequestPasswordReset } from "../hooks/useAuthMutations"
 
 import ForgotPasswordConfirmation from "./ForgotPasswordConfirmation"
 
@@ -21,12 +21,13 @@ const ForgotPasswordForm = ({ onBack, onNext, defaultEmail }: ForgotPasswordForm
 	const [emailSent, setEmailSent] = useState(false)
 	const [submittedEmail, setSubmittedEmail] = useState("")
 	const [codeSentAt, setCodeSentAt] = useState<number | null>(null)
+	const requestResetMutation = useRequestPasswordReset()
 
 	const {
 		control,
 		handleSubmit,
 		reset,
-		formState: { errors, isSubmitting, isValid },
+		formState: { errors, isValid },
 	} = useForm<ForgotPasswordFormData>({
 		defaultValues: {
 			email: defaultEmail || "",
@@ -40,16 +41,18 @@ const ForgotPasswordForm = ({ onBack, onNext, defaultEmail }: ForgotPasswordForm
 		}
 	}, [defaultEmail, reset])
 
-	const onSubmit = async (data: ForgotPasswordFormData) => {
-		try {
-			await requestPasswordReset(data.email)
-			const sentAt = Date.now()
-			setSubmittedEmail(data.email)
-			setCodeSentAt(sentAt)
-			setEmailSent(true)
-		} catch (error) {
-			toast(getErrorMessage(error), { variant: "danger" })
-		}
+	const onSubmit = (data: ForgotPasswordFormData) => {
+		requestResetMutation.mutate(data.email, {
+			onSuccess: () => {
+				const sentAt = Date.now()
+				setSubmittedEmail(data.email)
+				setCodeSentAt(sentAt)
+				setEmailSent(true)
+			},
+			onError: (error) => {
+				toast("Failed to send reset email", { description: getErrorMessage(error), variant: "danger" })
+			},
+		})
 	}
 
 	const handleNext = () => {
@@ -95,7 +98,14 @@ const ForgotPasswordForm = ({ onBack, onNext, defaultEmail }: ForgotPasswordForm
 
 			<Card.Footer className="flex-col gap-4">
 				<form className="w-full" onSubmit={handleSubmit(onSubmit)}>
-					<Button fullWidth variant="primary" isDisabled={!isValid} isPending={isSubmitting} size="md" type="submit">
+					<Button
+						fullWidth
+						variant="primary"
+						isDisabled={!isValid}
+						isPending={requestResetMutation.isPending}
+						size="md"
+						type="submit"
+					>
 						Next
 					</Button>
 				</form>
