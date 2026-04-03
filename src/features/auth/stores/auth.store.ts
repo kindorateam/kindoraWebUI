@@ -2,6 +2,7 @@ import { atom } from "jotai"
 import { atomWithStorage } from "jotai/utils"
 
 import { apiClient } from "@/services/api.service"
+import { getErrorMessage } from "@/utils/error"
 
 import { fetchUserProfile, login, logout, verifyFirstLogin } from "../services/auth.service"
 
@@ -80,7 +81,7 @@ export const handleGoogleLoginAtom = atom(null, async (_get, set, code: string) 
 		set(userAtom, null)
 		set(tokenAtom, null)
 		set(isLoadingAtom, false)
-		const message = error instanceof Error ? error.message : "Google login failed"
+		const message = getErrorMessage(error)
 		set(errorAtom, message)
 		throw error
 	}
@@ -142,7 +143,7 @@ export const handleEmailLoginAtom = atom(
 			set(userAtom, null)
 			set(tokenAtom, null)
 			set(isLoadingAtom, false)
-			set(errorAtom, error instanceof Error ? error.message : "Login failed")
+			set(errorAtom, getErrorMessage(error))
 			throw error
 		}
 	},
@@ -171,7 +172,7 @@ export const handleVerifyFirstLoginAtom = atom(null, async (_get, set, payload: 
 		set(userAtom, null)
 		set(tokenAtom, null)
 		set(isLoadingAtom, false)
-		set(errorAtom, error instanceof Error ? error.message : "Verification failed")
+		set(errorAtom, getErrorMessage(error))
 		throw error
 	}
 })

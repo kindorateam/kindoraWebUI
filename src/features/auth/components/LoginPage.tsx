@@ -41,7 +41,7 @@ export default function LoginPage() {
 	}, [isAuthenticated, navigate])
 
 	return (
-		<div className="grid h-screen place-items-center">
+		<div className="flex min-h-screen items-center justify-center">
 			<SignInCard
 				codeSentAt={codeSentAt}
 				resetToken={resetToken}

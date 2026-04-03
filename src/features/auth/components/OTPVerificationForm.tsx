@@ -1,7 +1,8 @@
-import { Button, Card, InputOTP, Link, Tooltip } from "@heroui/react"
+import { Button, Card, InputOTP, Link, Tooltip, toast } from "@heroui/react"
 import { useEffect, useState } from "react"
 import { Controller, useForm } from "react-hook-form"
 
+import { getErrorMessage } from "@/utils/error"
 import PhClockCountdown from "~icons/ph/clock-countdown"
 import TablerEdit from "~icons/tabler/edit"
 
@@ -21,10 +22,9 @@ interface OTPVerificationFormProps {
 }
 
 const OTPVerificationForm = ({ email, onBack, onSuccess, context = "login", codeSentAt }: OTPVerificationFormProps) => {
-	const { handleVerifyFirstLogin, error: authError } = useAuth()
+	const { handleVerifyFirstLogin } = useAuth()
 	const [timeLeft, setTimeLeft] = useState(() => calculateTimeLeft(codeSentAt))
 	const [resendTimeLeft, setResendTimeLeft] = useState(() => calculateResendTimeLeft(codeSentAt))
-	const [localError, setLocalError] = useState<string | null>(null)
 
 	const {
 		control,
@@ -63,19 +63,16 @@ const OTPVerificationForm = ({ email, onBack, onSuccess, context = "login", code
 
 	const handleResendCode = async () => {
 		try {
-			setLocalError(null)
 			await requestPasswordReset(email)
 			setTimeLeft(CODE_EXPIRATION_SECONDS)
 			setResendTimeLeft(RESEND_COOLDOWN_SECONDS)
 		} catch (error) {
-			setLocalError(error instanceof Error ? error.message : "Failed to resend code. Please try again.")
+			toast(getErrorMessage(error), { variant: "danger" })
 		}
 	}
 
 	const onSubmit = async (data: OTPVerificationFormData) => {
 		try {
-			setLocalError(null)
-
 			if (context === "login") {
 				await handleVerifyFirstLogin(email, data.otp)
 				onSuccess?.()
@@ -84,37 +81,28 @@ const OTPVerificationForm = ({ email, onBack, onSuccess, context = "login", code
 				onSuccess?.(data.otp)
 			}
 		} catch (error) {
-			const errorMessage = error instanceof Error ? error.message : "Verification failed. Please try again."
+			// Login context errors are toasted by useAuth hook
 			if (context === "password-reset") {
-				setLocalError(errorMessage)
+				toast(getErrorMessage(error), { variant: "danger" })
 			}
-			console.error("Verification failed:", error)
 		}
 	}
 
-	const displayError = context === "password-reset" ? localError : authError
-
 	return (
 		<>
-			<Card.Header className="px-7 pt-8 pb-0">
+			<Card.Header>
 				<h1 className="font-medium text-2xl">We email you a code</h1>
 			</Card.Header>
 
-			<Card.Content className="gap-4 px-7 pt-4 pb-5">
-				{displayError && (
-					<div className="rounded-md bg-red-50 p-3 text-red-600 text-sm" role="alert">
-						{displayError}
-					</div>
-				)}
-
+			<Card.Content className="gap-4">
 				<div className="flex flex-col gap-4">
 					<div className="flex flex-col gap-1">
-						<p className="text-default-600 text-sm">Enter the verification code sent to</p>
+						<p className="text-default-500 text-sm">Enter the verification code sent to</p>
 						<div className="flex items-center gap-1">
 							<p className="text-sm text-warning">{email}</p>
 							<Tooltip>
-								<Button className="size-6 min-w-6" isIconOnly onPress={onBack} variant="ghost">
-									<TablerEdit className="size-4 text-warning" />
+								<Button isIconOnly onPress={onBack} size="sm" variant="ghost">
+									<TablerEdit className="text-warning" />
 								</Button>
 								<Tooltip.Content>Change email</Tooltip.Content>
 							</Tooltip>
@@ -155,38 +143,29 @@ const OTPVerificationForm = ({ email, onBack, onSuccess, context = "login", code
 					</div>
 
 					<div className="flex items-center justify-between">
-						<p className="text-default-600 text-sm">This temporary code will expire in</p>
+						<p className="text-default-500 text-sm">This temporary code will expire in</p>
 						<div className="flex items-center gap-1">
 							<p className="text-sm text-warning">{formatTime(timeLeft)}</p>
-							<PhClockCountdown className="size-5 text-warning" />
+							<PhClockCountdown className="text-warning" />
 							<p className="text-sm text-warning">min</p>
 						</div>
 					</div>
 				</div>
 			</Card.Content>
 
-			<Card.Footer className="flex-col gap-4 px-7 pt-0 pb-8">
+			<Card.Footer className="flex-col gap-4">
 				<form className="w-full" onSubmit={handleSubmit(onSubmit)}>
-					<Button
-						className="w-full"
-						variant="primary"
-						isDisabled={!isValid}
-						isPending={isSubmitting}
-						size="md"
-						type="submit"
-					>
+					<Button fullWidth variant="primary" isDisabled={!isValid} isPending={isSubmitting} size="md" type="submit">
 						Next
 					</Button>
 				</form>
 
 				<div className="flex w-full items-center justify-between">
-					<p className="text-default-600 text-sm">Didn't get your code?</p>
+					<p className="text-default-500 text-sm">Didn't get your code?</p>
 					{resendTimeLeft > 0 ? (
 						<span className="text-default-400 text-xs">Send a new code in {resendTimeLeft}s</span>
 					) : (
-						<Link className="cursor-pointer text-primary text-xs underline" onPress={handleResendCode}>
-							Send a new code
-						</Link>
+						<Link onPress={handleResendCode}>Send a new code</Link>
 					)}
 				</div>
 			</Card.Footer>

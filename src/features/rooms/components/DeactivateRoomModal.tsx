@@ -2,7 +2,6 @@ import { Button, Modal, toast } from "@heroui/react"
 import { useAtomValue } from "jotai"
 
 import { getErrorMessage } from "@/utils/error"
-import TablerAlertTriangle from "~icons/tabler/alert-triangle"
 
 import { useInactivateRoom } from "../hooks/useRooms"
 import { closeDeactivateRoomModal, deactivateRoomModalAtom } from "../stores/deactivateRoomModal.store"
@@ -45,17 +44,13 @@ const DeactivateRoomModal = ({ onSuccess }: DeactivateRoomModalProps) => {
 				<Modal.Dialog>
 					<Modal.CloseTrigger />
 					<Modal.Header>
-						<div className="flex flex-col items-center gap-2 pb-0">
-							<div className="flex size-12 items-center justify-center rounded-full bg-danger-100">
-								<TablerAlertTriangle className="size-6 text-danger" />
-							</div>
-						</div>
+						<Modal.Heading>Deactivate Room</Modal.Heading>
 					</Modal.Header>
 					<Modal.Body className="py-4 text-center">
-						<p className="text-default-600">
+						<p className="text-base text-default-700">
 							Are you sure you want to deactivate <strong>{roomName}</strong>?
 						</p>
-						<p className="text-default-400 text-sm">You can reactivate this room later from the deactivated list.</p>
+						<p className="text-default-500 text-sm">You can reactivate this room later from the deactivated list.</p>
 					</Modal.Body>
 					<Modal.Footer className="flex-col gap-2">
 						<Button
@@ -67,7 +62,13 @@ const DeactivateRoomModal = ({ onSuccess }: DeactivateRoomModalProps) => {
 						>
 							Deactivate
 						</Button>
-						<Button fullWidth isDisabled={inactivateMutation.isPending} onPress={handleClose} size="md">
+						<Button
+							variant="secondary"
+							fullWidth
+							isDisabled={inactivateMutation.isPending}
+							onPress={handleClose}
+							size="md"
+						>
 							Cancel
 						</Button>
 					</Modal.Footer>

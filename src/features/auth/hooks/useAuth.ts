@@ -1,6 +1,8 @@
+import { toast } from "@heroui/react"
 import { useGoogleLogin } from "@react-oauth/google"
 import { useLocation, useNavigate } from "@tanstack/react-router"
 import { useAtom, useAtomValue } from "jotai"
+import { useEffect } from "react"
 
 import {
 	authStateAtom,
@@ -22,6 +24,12 @@ const useAuth = () => {
 	const [, updateUser] = useAtom(updateUserAtom)
 	const navigate = useNavigate()
 	const location = useLocation()
+
+	useEffect(() => {
+		if (authState.error) {
+			toast(authState.error, { variant: "danger" })
+		}
+	}, [authState.error])
 
 	const googleLogin = useGoogleLogin({
 		flow: "auth-code",

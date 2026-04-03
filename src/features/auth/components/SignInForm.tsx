@@ -1,6 +1,8 @@
-import { Button, Card, Checkbox, FieldError, Input, Label, Link, Separator, TextField } from "@heroui/react"
+import { Button, Card, Checkbox, FieldError, InputGroup, Label, Link, Separator, TextField } from "@heroui/react"
 import { useState } from "react"
 import { Controller, useForm } from "react-hook-form"
+
+import LogosGoogleIcon from "~icons/logos/google-icon"
 
 import { EMAIL_PATTERN } from "../constants"
 import useAuth from "../hooks/useAuth"
@@ -16,7 +18,7 @@ interface SignInFormProps {
 }
 
 const SignInForm = ({ onForgotPassword, onVerificationRequired, defaultEmail }: SignInFormProps) => {
-	const { handleGoogleLogin, handleEmailLogin, error, isLoading } = useAuth()
+	const { handleGoogleLogin, handleEmailLogin, isLoading } = useAuth()
 	const [isPasswordVisible, setIsPasswordVisible] = useState(false)
 
 	const {
@@ -43,24 +45,18 @@ const SignInForm = ({ onForgotPassword, onVerificationRequired, defaultEmail }: 
 				const codeSentAt = Date.now()
 				onVerificationRequired?.(result.email, result.message, codeSentAt)
 			}
-		} catch (error) {
-			console.error("[SignInForm] Login failed:", error)
+		} catch {
+			// Error is handled by auth store → toast via useEffect
 		}
 	}
 
 	return (
 		<>
-			<Card.Header className="px-7 pt-8 pb-4">
+			<Card.Header>
 				<h1 className="font-semibold text-xl">Sign in</h1>
 			</Card.Header>
 
-			<Card.Content className="gap-4 px-7 pt-4 pb-4">
-				{error && (
-					<div className="rounded-md bg-red-50 p-3 text-red-600 text-sm" role="alert">
-						{error}
-					</div>
-				)}
-
+			<Card.Content className="gap-4">
 				<form onSubmit={handleSubmit(onSubmit)}>
 					<div className="mb-4 flex flex-col gap-3">
 						<Controller
@@ -69,9 +65,9 @@ const SignInForm = ({ onForgotPassword, onVerificationRequired, defaultEmail }: 
 							render={({ field }) => (
 								<TextField isRequired isInvalid={!!errors.email} variant="secondary">
 									<Label>Email</Label>
-
-									<Input {...field} placeholder="Enter your email" type="email" />
-
+									<InputGroup>
+										<InputGroup.Input {...field} placeholder="Enter your email" type="email" />
+									</InputGroup>
 									<FieldError>{errors.email?.message}</FieldError>
 								</TextField>
 							)}
@@ -89,11 +85,19 @@ const SignInForm = ({ onForgotPassword, onVerificationRequired, defaultEmail }: 
 							render={({ field }) => (
 								<TextField isRequired isInvalid={!!errors.password} variant="secondary">
 									<Label>Password</Label>
-									<Input {...field} placeholder="Enter your password" type={isPasswordVisible ? "text" : "password"} />
-									<PasswordVisibilityToggle
-										isVisible={isPasswordVisible}
-										onToggle={() => setIsPasswordVisible(!isPasswordVisible)}
-									/>
+									<InputGroup>
+										<InputGroup.Input
+											{...field}
+											placeholder="Enter your password"
+											type={isPasswordVisible ? "text" : "password"}
+										/>
+										<InputGroup.Suffix>
+											<PasswordVisibilityToggle
+												isVisible={isPasswordVisible}
+												onToggle={() => setIsPasswordVisible(!isPasswordVisible)}
+											/>
+										</InputGroup.Suffix>
+									</InputGroup>
 									<FieldError>{errors.password?.message}</FieldError>
 								</TextField>
 							)}
@@ -102,7 +106,7 @@ const SignInForm = ({ onForgotPassword, onVerificationRequired, defaultEmail }: 
 							}}
 						/>
 					</div>
-					<div className="flex h-10 items-center justify-between">
+					<div className="flex items-center justify-between">
 						<Controller
 							control={control}
 							name="rememberMe"
@@ -112,21 +116,17 @@ const SignInForm = ({ onForgotPassword, onVerificationRequired, defaultEmail }: 
 										<Checkbox.Indicator />
 									</Checkbox.Control>
 									<Checkbox.Content>
-										<Label className="text-sm">Remember me</Label>
+										<Label>Remember me</Label>
 									</Checkbox.Content>
 								</Checkbox>
 							)}
 						/>
-						<Link
-							className="cursor-pointer rounded-xl px-3 py-0 font-normal text-default-400 text-xs leading-4 no-underline"
-							onPress={onForgotPassword}
-						>
-							Forgot password?
-						</Link>
+						<Link onPress={onForgotPassword}>Forgot password?</Link>
 					</div>
 
 					<Button
-						className="mt-5 w-full"
+						className="mt-5"
+						fullWidth
 						variant="primary"
 						isDisabled={!isValid}
 						isPending={isSubmitting}
@@ -137,15 +137,15 @@ const SignInForm = ({ onForgotPassword, onVerificationRequired, defaultEmail }: 
 					</Button>
 				</form>
 			</Card.Content>
-			<Card.Footer className="flex-col px-7 pt-4 pb-8">
-				<div className="flex items-center gap-4 pb-4">
+			<Card.Footer className="flex-col gap-4">
+				<div className="flex items-center gap-4">
 					<Separator className="flex-1" />
 					<span className="text-default-400 text-sm">OR</span>
 					<Separator className="flex-1" />
 				</div>
 
 				<Button
-					className="h-12 w-full"
+					fullWidth
 					isDisabled={isLoading}
 					isPending={isLoading}
 					onPress={() => {
@@ -153,7 +153,7 @@ const SignInForm = ({ onForgotPassword, onVerificationRequired, defaultEmail }: 
 					}}
 					variant="outline"
 				>
-					Sign in with Google
+					<LogosGoogleIcon /> Sign in with Google
 				</Button>
 			</Card.Footer>
 		</>

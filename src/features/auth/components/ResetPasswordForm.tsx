@@ -1,7 +1,8 @@
-import { Button, Card, FieldError, Input, Label, TextField } from "@heroui/react"
+import { Button, Card, FieldError, InputGroup, Label, TextField, toast } from "@heroui/react"
 import { useState } from "react"
 import { Controller, useForm } from "react-hook-form"
 
+import { getErrorMessage } from "@/utils/error"
 import TablerCheck from "~icons/tabler/check"
 
 import { barColorMap } from "../constants"
@@ -26,7 +27,6 @@ const ResetPasswordForm = ({ email, token, onBack, onResetSuccess }: ResetPasswo
 	const [isPasswordVisible, setIsPasswordVisible] = useState(false)
 	const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false)
 	const [resetComplete, setResetComplete] = useState(false)
-	const [error, setError] = useState<string | null>(null)
 
 	const {
 		control,
@@ -55,11 +55,10 @@ const ResetPasswordForm = ({ email, token, onBack, onResetSuccess }: ResetPasswo
 
 	const onSubmit = async (data: ResetPasswordFormData) => {
 		try {
-			setError(null)
 			await resetPassword(email, token, data.password)
 			setResetComplete(true)
-		} catch (err) {
-			setError(err instanceof Error ? err.message : "Failed to reset password. Please try again.")
+		} catch (error) {
+			toast(getErrorMessage(error), { variant: "danger" })
 		}
 	}
 
@@ -69,14 +68,12 @@ const ResetPasswordForm = ({ email, token, onBack, onResetSuccess }: ResetPasswo
 
 	return (
 		<>
-			<Card.Header className="px-7 pt-8 pb-4">
-				<h1 className="font-medium text-xl leading-7">Create a new password</h1>
+			<Card.Header>
+				<h1 className="font-medium text-xl">Create a new password</h1>
 			</Card.Header>
 
-			<Card.Content className="px-7 pt-4 pb-0">
+			<Card.Content>
 				<form className="flex flex-col gap-5" id={formId} onSubmit={handleSubmit(onSubmit)}>
-					{error && <div className="rounded-md bg-danger-50 p-3 text-danger text-sm">{error}</div>}
-
 					<div className="flex flex-col gap-3">
 						<Controller
 							control={control}
@@ -84,11 +81,19 @@ const ResetPasswordForm = ({ email, token, onBack, onResetSuccess }: ResetPasswo
 							render={({ field }) => (
 								<TextField isRequired isInvalid={!!errors.password} variant="secondary">
 									<Label>Create a password</Label>
-									<Input {...field} placeholder="Enter your password" type={isPasswordVisible ? "text" : "password"} />
-									<PasswordVisibilityToggle
-										isVisible={isPasswordVisible}
-										onToggle={() => setIsPasswordVisible((prev) => !prev)}
-									/>
+									<InputGroup>
+										<InputGroup.Input
+											{...field}
+											placeholder="Enter your password"
+											type={isPasswordVisible ? "text" : "password"}
+										/>
+										<InputGroup.Suffix>
+											<PasswordVisibilityToggle
+												isVisible={isPasswordVisible}
+												onToggle={() => setIsPasswordVisible((prev) => !prev)}
+											/>
+										</InputGroup.Suffix>
+									</InputGroup>
 									<FieldError>{errors.password?.message}</FieldError>
 								</TextField>
 							)}
@@ -103,15 +108,19 @@ const ResetPasswordForm = ({ email, token, onBack, onResetSuccess }: ResetPasswo
 							render={({ field }) => (
 								<TextField isRequired isInvalid={!!errors.confirmPassword} variant="secondary">
 									<Label>Confirm your password</Label>
-									<Input
-										{...field}
-										placeholder="Re-enter your password"
-										type={isConfirmPasswordVisible ? "text" : "password"}
-									/>
-									<PasswordVisibilityToggle
-										isVisible={isConfirmPasswordVisible}
-										onToggle={() => setIsConfirmPasswordVisible((prev) => !prev)}
-									/>
+									<InputGroup>
+										<InputGroup.Input
+											{...field}
+											placeholder="Re-enter your password"
+											type={isConfirmPasswordVisible ? "text" : "password"}
+										/>
+										<InputGroup.Suffix>
+											<PasswordVisibilityToggle
+												isVisible={isConfirmPasswordVisible}
+												onToggle={() => setIsConfirmPasswordVisible((prev) => !prev)}
+											/>
+										</InputGroup.Suffix>
+									</InputGroup>
 									<FieldError>{errors.confirmPassword?.message}</FieldError>
 								</TextField>
 							)}
@@ -124,7 +133,7 @@ const ResetPasswordForm = ({ email, token, onBack, onResetSuccess }: ResetPasswo
 					</div>
 
 					<div className="flex items-center gap-8">
-						<div className="flex min-w-44 items-center gap-1 text-sm leading-5">
+						<div className="flex min-w-44 items-center gap-1 text-sm">
 							<p className="text-foreground">Strength:</p>
 							<span className={strength.barsFilled > 0 ? strength.colorClass : "text-default-400"}>
 								{strength.barsFilled > 0 ? strength.displayLabel : "None"}
@@ -152,16 +161,16 @@ const ResetPasswordForm = ({ email, token, onBack, onResetSuccess }: ResetPasswo
 								>
 									<TablerCheck className={`size-3 ${requirement.isMet ? "text-white" : "text-black"}`} />
 								</span>
-								<p className="text-default-600 text-sm">{requirement.label}</p>
+								<p className="text-default-500 text-sm">{requirement.label}</p>
 							</div>
 						))}
 					</div>
 				</form>
 			</Card.Content>
 
-			<Card.Footer className="flex-col gap-3 px-7 pt-5 pb-8">
+			<Card.Footer className="flex-col gap-3">
 				<Button
-					className="h-10 w-full rounded-lg"
+					fullWidth
 					variant="primary"
 					form={formId}
 					isDisabled={!canSubmit}
@@ -170,7 +179,7 @@ const ResetPasswordForm = ({ email, token, onBack, onResetSuccess }: ResetPasswo
 				>
 					Reset password
 				</Button>
-				<Button className="h-10 w-full" onPress={onBack} variant="outline">
+				<Button fullWidth onPress={onBack} variant="outline">
 					Back
 				</Button>
 			</Card.Footer>

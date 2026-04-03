@@ -1,5 +1,5 @@
-import TablerEye from "~icons/tabler/eye"
-import TablerEyeClosed from "~icons/tabler/eye-closed"
+import SolarEyeClosedLinear from "~icons/solar/eye-closed-linear"
+import SolarEyeLinear from "~icons/solar/eye-linear"
 
 interface PasswordVisibilityToggleProps {
 	isVisible: boolean
@@ -18,7 +18,7 @@ const PasswordVisibilityToggle = ({ isVisible, onToggle, label = "password" }: P
 			onMouseDown={(event) => event.preventDefault()}
 			type="button"
 		>
-			{isVisible ? <TablerEye className="size-5" /> : <TablerEyeClosed className="size-5" />}
+			{isVisible ? <SolarEyeLinear className="size-5" /> : <SolarEyeClosedLinear className="size-5" />}
 		</button>
 	)
 }

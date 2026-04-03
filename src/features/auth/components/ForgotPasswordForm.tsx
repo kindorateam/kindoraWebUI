@@ -1,6 +1,8 @@
-import { Button, Card, FieldError, Input, Label, TextField } from "@heroui/react"
+import { Button, Card, FieldError, InputGroup, Label, TextField, toast } from "@heroui/react"
 import { useEffect, useState } from "react"
 import { Controller, useForm } from "react-hook-form"
+
+import { getErrorMessage } from "@/utils/error"
 
 import { EMAIL_PATTERN } from "../constants"
 import { requestPasswordReset } from "../services/auth.service"
@@ -19,7 +21,6 @@ const ForgotPasswordForm = ({ onBack, onNext, defaultEmail }: ForgotPasswordForm
 	const [emailSent, setEmailSent] = useState(false)
 	const [submittedEmail, setSubmittedEmail] = useState("")
 	const [codeSentAt, setCodeSentAt] = useState<number | null>(null)
-	const [error, setError] = useState<string | null>(null)
 
 	const {
 		control,
@@ -41,14 +42,13 @@ const ForgotPasswordForm = ({ onBack, onNext, defaultEmail }: ForgotPasswordForm
 
 	const onSubmit = async (data: ForgotPasswordFormData) => {
 		try {
-			setError(null)
 			await requestPasswordReset(data.email)
 			const sentAt = Date.now()
 			setSubmittedEmail(data.email)
 			setCodeSentAt(sentAt)
 			setEmailSent(true)
-		} catch (err) {
-			setError(err instanceof Error ? err.message : "Failed to send reset email. Please try again.")
+		} catch (error) {
+			toast(getErrorMessage(error), { variant: "danger" })
 		}
 	}
 
@@ -64,14 +64,12 @@ const ForgotPasswordForm = ({ onBack, onNext, defaultEmail }: ForgotPasswordForm
 
 	return (
 		<>
-			<Card.Header className="px-7 pt-8 pb-4">
+			<Card.Header>
 				<h1 className="font-semibold text-xl">Forgot Password?</h1>
 			</Card.Header>
 
-			<Card.Content className="gap-4 px-7 pt-4 pb-4">
-				<p className="text-gray-600 text-sm">We will email you a code to your email address</p>
-
-				{error && <div className="rounded-md bg-danger-50 p-3 text-danger text-sm">{error}</div>}
+			<Card.Content className="gap-4">
+				<p className="text-default-500 text-sm">We will email you a code to your email address</p>
 
 				<Controller
 					control={control}
@@ -79,9 +77,9 @@ const ForgotPasswordForm = ({ onBack, onNext, defaultEmail }: ForgotPasswordForm
 					render={({ field }) => (
 						<TextField isRequired isInvalid={!!errors.email} variant="secondary">
 							<Label>Email</Label>
-
-							<Input {...field} placeholder="Enter your email" type="email" />
-
+							<InputGroup>
+								<InputGroup.Input {...field} placeholder="Enter your email" type="email" />
+							</InputGroup>
 							<FieldError>{errors.email?.message}</FieldError>
 						</TextField>
 					)}
@@ -95,20 +93,13 @@ const ForgotPasswordForm = ({ onBack, onNext, defaultEmail }: ForgotPasswordForm
 				/>
 			</Card.Content>
 
-			<Card.Footer className="flex-col gap-4 px-7 pt-4 pb-8">
+			<Card.Footer className="flex-col gap-4">
 				<form className="w-full" onSubmit={handleSubmit(onSubmit)}>
-					<Button
-						className="w-full"
-						variant="primary"
-						isDisabled={!isValid}
-						isPending={isSubmitting}
-						size="md"
-						type="submit"
-					>
+					<Button fullWidth variant="primary" isDisabled={!isValid} isPending={isSubmitting} size="md" type="submit">
 						Next
 					</Button>
 				</form>
-				<Button className="w-full" onPress={onBack} size="md" variant="outline">
+				<Button fullWidth onPress={onBack} size="md" variant="outline">
 					Back
 				</Button>
 			</Card.Footer>
