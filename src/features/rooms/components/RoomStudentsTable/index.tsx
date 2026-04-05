@@ -1,4 +1,4 @@
-import { Button, EmptyState, Pagination, Spinner, Table } from "@heroui/react"
+import { Button, Checkbox, EmptyState, Pagination, Spinner, Table } from "@heroui/react"
 import { useState } from "react"
 
 import TableError from "@/components/TableError"
@@ -31,7 +31,10 @@ const RoomStudentsTable = ({ roomId }: RoomStudentsTableProps) => {
 	const total = allStudents.length
 	const totalPages = Math.ceil(total / pageSize) || 1
 	const students = allStudents.slice((page - 1) * pageSize, page * pageSize)
-	const startItem = (page - 1) * pageSize + 1
+	const hasError = Boolean(error)
+	const showLoading = isLoading
+	const isEmpty = !showLoading && !hasError && students.length === 0
+	const startItem = total === 0 ? 0 : (page - 1) * pageSize + 1
 	const endItem = Math.min(page * pageSize, total)
 	const hasSelection = selectedKeys === "all" || selectedKeys.size > 0
 
@@ -76,6 +79,13 @@ const RoomStudentsTable = ({ roomId }: RoomStudentsTableProps) => {
 								onSelectionChange={setSelectedKeys}
 							>
 								<Table.Header>
+									<Table.Column className="pr-0">
+										<Checkbox aria-label="Select all students" slot="selection">
+											<Checkbox.Control>
+												<Checkbox.Indicator />
+											</Checkbox.Control>
+										</Checkbox>
+									</Table.Column>
 									{columns.map((column) => (
 										<Table.Column
 											key={column.key}
@@ -86,36 +96,45 @@ const RoomStudentsTable = ({ roomId }: RoomStudentsTableProps) => {
 										</Table.Column>
 									))}
 								</Table.Header>
-								<Table.Body>
-									{isLoading ? null : error ? (
-										<Table.Row>
-											<Table.Cell colSpan={columns.length}>
-												<TableError onRetry={refetch} />
-											</Table.Cell>
-										</Table.Row>
-									) : students.length === 0 ? (
-										<Table.Row>
-											<Table.Cell colSpan={columns.length}>
-												<EmptyState className="flex h-131 w-full items-center justify-center text-default-400">
-													No students in this room
-												</EmptyState>
-											</Table.Cell>
-										</Table.Row>
-									) : (
-										students.map((student) => (
-											<Table.Row key={student.id}>
-												{columns.map((column) => (
-													<Table.Cell key={column.key}>{renderCell(student, column.key, roomId)}</Table.Cell>
-												))}
+								{showLoading || isEmpty || hasError ? (
+									<Table.Body />
+								) : (
+									<Table.Body items={students}>
+										{(student) => (
+											<Table.Row id={student.id}>
+												<Table.Cell className="pr-0">
+													<Checkbox aria-label={`Select ${student.name}`} slot="selection" variant="secondary">
+														<Checkbox.Control>
+															<Checkbox.Indicator />
+														</Checkbox.Control>
+													</Checkbox>
+												</Table.Cell>
+												<Table.Collection items={columns}>
+													{(column) => <Table.Cell>{renderCell(student, column.key, roomId)}</Table.Cell>}
+												</Table.Collection>
 											</Table.Row>
-										))
-									)}
-								</Table.Body>
+										)}
+									</Table.Body>
+								)}
 							</Table.Content>
 						</Table.ScrollContainer>
-						{isLoading && (
+						{showLoading && (
 							<div className="pointer-events-none absolute inset-x-0 top-12.5 bottom-0 flex items-center justify-center rounded-b-2xl bg-white">
 								<Spinner />
+							</div>
+						)}
+						{isEmpty && (
+							<div className="absolute inset-x-0 top-12.5 bottom-0 rounded-b-2xl bg-white">
+								<EmptyState className="flex h-full w-full items-center justify-center text-default-400">
+									No students in this room
+								</EmptyState>
+							</div>
+						)}
+						{hasError && (
+							<div className="absolute inset-x-0 top-12.5 bottom-0 rounded-b-2xl bg-white">
+								<div className="flex h-full items-center justify-center px-4 py-8">
+									<TableError onRetry={refetch} />
+								</div>
 							</div>
 						)}
 					</div>

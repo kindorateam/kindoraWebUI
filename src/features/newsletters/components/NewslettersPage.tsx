@@ -55,7 +55,7 @@ export default function NewslettersPage({ activeTab, onTabChange }: NewslettersP
 				}
 			/>
 
-			<div className="container mx-auto max-w-4xl px-4 pt-6">
+			<div className="container mx-auto max-w-4xl pt-6">
 				{activeTab === "sent" && <NewslettersTable onCreateNew={onOpen} />}
 				{activeTab === "scheduled" && null}
 				{activeTab === "drafts" && null}

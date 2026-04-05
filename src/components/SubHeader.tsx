@@ -35,7 +35,7 @@ const SubHeader = ({
 
 	return (
 		<div>
-			<div className="container mx-auto max-w-4xl px-4">
+			<div className="container mx-auto max-w-4xl">
 				<div className={clsx("flex items-center justify-between", topMb)}>
 					<div className={clsx("flex gap-3", underTitle ? "items-start" : "items-center")}>
 						{startSlot}

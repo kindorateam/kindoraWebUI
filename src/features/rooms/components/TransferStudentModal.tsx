@@ -102,6 +102,7 @@ const TransferStudentModal = ({ onSuccess }: TransferStudentModalProps) => {
 							</div>
 						) : (
 							<Select
+								variant="secondary"
 								selectedKey={selectedRoomId || null}
 								onSelectionChange={(key) => {
 									if (key !== null) setSelectedRoomId(String(key))
