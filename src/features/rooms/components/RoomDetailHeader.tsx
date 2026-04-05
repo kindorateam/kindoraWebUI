@@ -72,7 +72,7 @@ const RoomDetailHeader = ({ activeTab, roomId, onTabChange }: RoomDetailHeaderPr
 						</Avatar>
 					</div>
 					<div className="w-full">
-						<h1 className="mb-2 font-semibold leading-none lg:text-[36px]">{room?.name ?? "Room"}</h1>
+						<h1 className="mb-2 font-semibold leading-none lg:text-4xl">{room?.name ?? "Room"}</h1>
 						{room?.minAge != null && room?.maxAge != null && (
 							<p className="flex items-center gap-2 text-sm">
 								<span className="text-default-500">Age range:</span>

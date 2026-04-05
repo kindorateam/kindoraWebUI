@@ -1,7 +1,7 @@
 import { Link, useRouterState } from "@tanstack/react-router"
 import { useAtom } from "jotai"
 
-import Logo from "@/assets/svg/logo.svg?no-inline"
+import Logo from "@/assets/svg/kindora.svg?no-inline"
 import { navDrawerExpandedItemsAtom, toggleNavDrawerItemAtom } from "@/stores"
 
 import NavGroup from "./NavGroup"
@@ -47,10 +47,10 @@ const NavDrawer = () => {
 			<aside className="flex h-full flex-col bg-white shadow-lg">
 				<div className="px-4 py-5">
 					<Link to="/dashboard">
-						<img alt="Kindora Logo" src={Logo} />
+						<img alt="Kindora Logo" className="h-8" src={Logo} />
 					</Link>
 				</div>
-				<nav aria-label="Primary" className="flex-1 overflow-y-auto px-[14px] py-4">
+				<nav aria-label="Primary" className="flex-1 overflow-y-auto">
 					{menuItems}
 				</nav>
 			</aside>

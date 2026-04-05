@@ -1,10 +1,10 @@
 import MaterialSymbolsDashboardOutlineRounded from "~icons/material-symbols/dashboard-outline-rounded"
-import MaterialSymbolsFactCheckOutlineRounded from "~icons/material-symbols/fact-check-outline-rounded"
-import MaterialSymbolsReceiptLongOutlineRounded from "~icons/material-symbols/receipt-long-outline-rounded"
-import MaterialSymbolsSchoolOutlineRounded from "~icons/material-symbols/school-outline-rounded"
-import MdiChartLine from "~icons/mdi/chart-line"
-import MdiDomain from "~icons/mdi/domain"
-import MdiMessageOutline from "~icons/mdi/message-outline"
+import TablerDeviceAnalytics from "~icons/tabler/device-analytics"
+import TablerHome from "~icons/tabler/home"
+import TablerMessageCircle from "~icons/tabler/message-circle"
+import TablerReport from "~icons/tabler/report"
+import TablerReportAnalytics from "~icons/tabler/report-analytics"
+import TablerWallet from "~icons/tabler/wallet"
 
 import type { NavDrawerItem } from "./navDrawer.types"
 
@@ -17,7 +17,7 @@ const navDrawerData: NavDrawerItem[] = [
 	{
 		label: "My school",
 		path: "#",
-		icon: <MdiDomain />,
+		icon: <TablerHome />,
 		children: [
 			{ label: "Insights", path: "/insights" },
 			{ label: "Students", path: "/students" },
@@ -30,7 +30,7 @@ const navDrawerData: NavDrawerItem[] = [
 	{
 		label: "Connections",
 		path: "#",
-		icon: <MdiMessageOutline />,
+		icon: <TablerMessageCircle />,
 		children: [
 			{ label: "Messages", path: "/messages" },
 			{ label: "Newsletters", path: "/newsletters" },
@@ -39,22 +39,22 @@ const navDrawerData: NavDrawerItem[] = [
 	{
 		label: "Billing",
 		path: "/billing",
-		icon: <MaterialSymbolsReceiptLongOutlineRounded />,
+		icon: <TablerWallet />,
 	},
 	{
 		label: "Analytics",
 		path: "/analytics",
-		icon: <MdiChartLine />,
+		icon: <TablerDeviceAnalytics />,
 	},
 	{
 		label: "Reports",
 		path: "/reports",
-		icon: <MaterialSymbolsFactCheckOutlineRounded />,
+		icon: <TablerReportAnalytics />,
 	},
 	{
 		label: "Admissions",
 		path: "/admissions",
-		icon: <MaterialSymbolsSchoolOutlineRounded />,
+		icon: <TablerReport />,
 	},
 ]
 

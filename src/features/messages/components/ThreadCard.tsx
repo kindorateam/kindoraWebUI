@@ -26,16 +26,16 @@ const ThreadCard = ({ isSelected, item, onPress }: ThreadCardProps) => {
 					<MdiAccount className="size-[22.4px] text-white" />
 				</div>
 				<div className="relative min-w-0">
-					<p className="truncate text-[14px] text-black leading-5">{item.name}</p>
-					<p className="mt-2 max-w-[221px] text-[#a1a1aa] text-[12px] leading-4">{item.preview}</p>
-					<div className="mt-2 flex items-center gap-2 text-[#a1a1aa] text-[12px] leading-4">
+					<p className="truncate text-black text-sm leading-5">{item.name}</p>
+					<p className="mt-2 max-w-55.25 text-[#a1a1aa] text-xs leading-4">{item.preview}</p>
+					<div className="mt-2 flex items-center gap-2 text-[#a1a1aa] text-xs leading-4">
 						<MdiClockTimeFourOutline className="size-4 shrink-0" />
 						<span>{item.dateLabel}</span>
 						<span>|</span>
 						<span>{item.time}</span>
 					</div>
 					{item.unreadCount ? (
-						<div className="absolute top-[60px] right-0 flex size-6 items-center justify-center rounded-full bg-primary text-[14px] text-white leading-5">
+						<div className="absolute top-15 right-0 flex size-6 items-center justify-center rounded-full bg-primary text-sm text-white leading-5">
 							{item.unreadCount}
 						</div>
 					) : null}

@@ -18,7 +18,7 @@ interface MessagesConversationPaneProps {
 const MessagesConversationPane = ({ thread }: MessagesConversationPaneProps) => {
 	return (
 		<div className="hidden min-h-0 overflow-hidden lg:flex lg:flex-col">
-			<div className="rounded-t-[14px] rounded-b-[16px] border border-default-200 bg-white px-4 py-3 shadow-[0px_1px_3px_0px_rgba(0,0,0,0.1),0px_1px_2px_0px_rgba(0,0,0,0.1)]">
+			<div className="rounded-t-[14px] rounded-b-4xl border border-default-200 bg-white px-4 py-3 shadow-[0px_1px_3px_0px_rgba(0,0,0,0.1),0px_1px_2px_0px_rgba(0,0,0,0.1)]">
 				<div className="flex items-start justify-between gap-4">
 					<div className="flex min-w-0 items-start gap-3">
 						<Avatar className="bg-primary text-white" size="sm">
@@ -27,10 +27,10 @@ const MessagesConversationPane = ({ thread }: MessagesConversationPaneProps) => 
 							</Avatar.Fallback>
 						</Avatar>
 						<div className="min-w-0">
-							<p className="text-[14px] text-black leading-5">{thread?.name ?? "No chat selected"}</p>
+							<p className="text-black text-sm leading-5">{thread?.name ?? "No chat selected"}</p>
 							<div className="mt-3 flex flex-wrap gap-3">
 								{thread?.parents.map((parent) => (
-									<Chip key={parent} className="bg-[#bfd8f8] px-2 text-[12px] text-black leading-4">
+									<Chip key={parent} className="bg-[#bfd8f8] px-2 text-black text-xs leading-4">
 										<div className="flex items-center gap-1">
 											<span className="flex size-5 items-center justify-center rounded-full bg-white/80">
 												<MdiAccount className="size-3 text-[#8d8d93]" />

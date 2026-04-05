@@ -41,9 +41,9 @@ const SubHeader = ({
 						{startSlot}
 						<div>
 							{title !== undefined ? (
-								<h1 className="font-semibold lg:text-[36px]">{title}</h1>
+								<h1 className="font-semibold lg:text-4xl">{title}</h1>
 							) : (
-								<h1 className="font-semibold lg:text-[36px]">{fallbackTitle}</h1>
+								<h1 className="font-semibold lg:text-4xl">{fallbackTitle}</h1>
 							)}
 							{underTitle ? <div className="mt-3.5">{underTitle}</div> : null}
 						</div>
