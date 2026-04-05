@@ -1,4 +1,4 @@
-import { Button, EmptyState, Label, Pagination, Spinner, Switch, Table } from "@heroui/react"
+import { Button, Label, Pagination, Spinner, Switch, Table } from "@heroui/react"
 import { useAtom } from "jotai"
 import { useState } from "react"
 
@@ -18,10 +18,16 @@ const RoomsTable = () => {
 	const [page, setPage] = useState(1)
 	const status = viewDeactivated ? "inactive" : "active"
 	const { rooms, total, totalPages, isLoading, error, refetch } = useRooms({ status, page })
+	const hasError = Boolean(error)
+	const visibleRooms = rooms
+	const visibleTotal = total
+	const visibleTotalPages = totalPages
+	const showLoading = isLoading
+	const isEmpty = !showLoading && !hasError && visibleRooms.length === 0
 
 	const pageSize = 10
-	const startItem = (page - 1) * pageSize + 1
-	const endItem = Math.min(page * pageSize, total)
+	const startItem = visibleTotal === 0 ? 0 : (page - 1) * pageSize + 1
+	const endItem = Math.min(page * pageSize, visibleTotal)
 
 	const topContent = (
 		<div className="flex items-center justify-end gap-5">
@@ -51,58 +57,60 @@ const RoomsTable = () => {
 			{topContent}
 			<div className="flex flex-col justify-between">
 				<Table className="[&_td]:py-1.5! [&_tr]:h-12.5!">
-					<Table.ScrollContainer className="min-h-140">
-						<Table.Content aria-label="Rooms table">
-							<Table.Header>
-								{columns.map((column) => (
-									<Table.Column
-										key={column.key}
-										isRowHeader={column.isRowHeader}
-										className={column.align === "center" ? "text-center" : undefined}
-									>
-										{column.label}
-									</Table.Column>
-								))}
-							</Table.Header>
-							<Table.Body>
-								{isLoading ? (
-									<Table.Row>
-										<Table.Cell colSpan={columns.length}>
-											<EmptyState className="flex h-131 w-full items-center justify-center">
-												<Spinner />
-											</EmptyState>
-										</Table.Cell>
-									</Table.Row>
-								) : error ? (
-									<Table.Row>
-										<Table.Cell colSpan={columns.length}>
-											<TableError onRetry={refetch} />
-										</Table.Cell>
-									</Table.Row>
-								) : rooms.length === 0 ? (
-									<Table.Row>
-										<Table.Cell colSpan={columns.length}>
-											<RoomsEmptyState isDeactivatedView={viewDeactivated} />
-										</Table.Cell>
-									</Table.Row>
+					<div className="relative">
+						<Table.ScrollContainer className="min-h-140">
+							<Table.Content aria-label="Rooms table">
+								<Table.Header columns={columns}>
+									{(column) => (
+										<Table.Column
+											isRowHeader={column.isRowHeader}
+											className={column.align === "center" ? "text-center" : undefined}
+										>
+											{column.label}
+										</Table.Column>
+									)}
+								</Table.Header>
+								{showLoading || isEmpty || hasError ? (
+									<Table.Body />
 								) : (
-									rooms.map((room) => (
-										<Table.Row key={room.id}>
-											{columns.map((column) => (
-												<Table.Cell key={column.key}>
-													<RoomsTableCell columnKey={column.key} room={room} />
-												</Table.Cell>
-											))}
-										</Table.Row>
-									))
+									<Table.Body items={visibleRooms}>
+										{(room) => (
+											<Table.Row id={room.id}>
+												<Table.Collection items={columns}>
+													{(column) => (
+														<Table.Cell>
+															<RoomsTableCell columnKey={column.key} room={room} />
+														</Table.Cell>
+													)}
+												</Table.Collection>
+											</Table.Row>
+										)}
+									</Table.Body>
 								)}
-							</Table.Body>
-						</Table.Content>
-					</Table.ScrollContainer>
+							</Table.Content>
+						</Table.ScrollContainer>
+						{showLoading && (
+							<div className="pointer-events-none absolute inset-x-0 top-12.5 bottom-0 flex items-center justify-center rounded-b-2xl bg-white">
+								<Spinner />
+							</div>
+						)}
+						{isEmpty && (
+							<div className="absolute inset-x-0 top-12.5 bottom-0 rounded-b-2xl bg-white">
+								<RoomsEmptyState isDeactivatedView={viewDeactivated} />
+							</div>
+						)}
+						{hasError && (
+							<div className="absolute inset-x-0 top-12.5 bottom-0 rounded-b-2xl bg-white">
+								<div className="flex h-full items-center justify-center px-4 py-8">
+									<TableError onRetry={refetch} />
+								</div>
+							</div>
+						)}
+					</div>
 					<Table.Footer>
 						<Pagination className="w-full">
 							<Pagination.Summary>
-								{startItem} to {endItem} of {total} rooms
+								{startItem} to {endItem} of {visibleTotal} rooms
 							</Pagination.Summary>
 							<Pagination.Content>
 								<Pagination.Item>
@@ -111,7 +119,7 @@ const RoomsTable = () => {
 										<span>Prev</span>
 									</Pagination.Previous>
 								</Pagination.Item>
-								{Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+								{Array.from({ length: visibleTotalPages }, (_, i) => i + 1).map((p) => (
 									<Pagination.Item key={p}>
 										<Pagination.Link isActive={p === page} onPress={() => setPage(p)}>
 											{p}
@@ -119,7 +127,7 @@ const RoomsTable = () => {
 									</Pagination.Item>
 								))}
 								<Pagination.Item>
-									<Pagination.Next isDisabled={page >= totalPages} onPress={() => setPage((p) => p + 1)}>
+									<Pagination.Next isDisabled={page >= visibleTotalPages} onPress={() => setPage((p) => p + 1)}>
 										<span>Next</span>
 										<Pagination.NextIcon />
 									</Pagination.Next>

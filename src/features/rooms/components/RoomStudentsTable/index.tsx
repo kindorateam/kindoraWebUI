@@ -67,59 +67,58 @@ const RoomStudentsTable = ({ roomId }: RoomStudentsTableProps) => {
 			<div className="flex flex-col gap-4">
 				{topContent}
 				<Table className="[&_td]:py-1.5! [&_tr]:h-12.5!">
-					<Table.ScrollContainer className="min-h-140">
-						<Table.Content
-							aria-label="Students table"
-							selectionMode="multiple"
-							selectedKeys={selectedKeys}
-							onSelectionChange={setSelectedKeys}
-						>
-							<Table.Header>
-								{columns.map((column) => (
-									<Table.Column
-										key={column.key}
-										isRowHeader={column.isRowHeader}
-										className={column.align === "center" ? "text-center" : undefined}
-									>
-										{column.label}
-									</Table.Column>
-								))}
-							</Table.Header>
-							<Table.Body>
-								{isLoading ? (
-									<Table.Row>
-										<Table.Cell colSpan={columns.length}>
-											<EmptyState className="flex h-131 w-full items-center justify-center">
-												<Spinner />
-											</EmptyState>
-										</Table.Cell>
-									</Table.Row>
-								) : error ? (
-									<Table.Row>
-										<Table.Cell colSpan={columns.length}>
-											<TableError onRetry={refetch} />
-										</Table.Cell>
-									</Table.Row>
-								) : students.length === 0 ? (
-									<Table.Row>
-										<Table.Cell colSpan={columns.length}>
-											<EmptyState className="flex h-131 w-full items-center justify-center text-default-400">
-												No students in this room
-											</EmptyState>
-										</Table.Cell>
-									</Table.Row>
-								) : (
-									students.map((student) => (
-										<Table.Row key={student.id}>
-											{columns.map((column) => (
-												<Table.Cell key={column.key}>{renderCell(student, column.key, roomId)}</Table.Cell>
-											))}
+					<div className="relative">
+						<Table.ScrollContainer className="min-h-140">
+							<Table.Content
+								aria-label="Students table"
+								selectionMode="multiple"
+								selectedKeys={selectedKeys}
+								onSelectionChange={setSelectedKeys}
+							>
+								<Table.Header>
+									{columns.map((column) => (
+										<Table.Column
+											key={column.key}
+											isRowHeader={column.isRowHeader}
+											className={column.align === "center" ? "text-center" : undefined}
+										>
+											{column.label}
+										</Table.Column>
+									))}
+								</Table.Header>
+								<Table.Body>
+									{isLoading ? null : error ? (
+										<Table.Row>
+											<Table.Cell colSpan={columns.length}>
+												<TableError onRetry={refetch} />
+											</Table.Cell>
 										</Table.Row>
-									))
-								)}
-							</Table.Body>
-						</Table.Content>
-					</Table.ScrollContainer>
+									) : students.length === 0 ? (
+										<Table.Row>
+											<Table.Cell colSpan={columns.length}>
+												<EmptyState className="flex h-131 w-full items-center justify-center text-default-400">
+													No students in this room
+												</EmptyState>
+											</Table.Cell>
+										</Table.Row>
+									) : (
+										students.map((student) => (
+											<Table.Row key={student.id}>
+												{columns.map((column) => (
+													<Table.Cell key={column.key}>{renderCell(student, column.key, roomId)}</Table.Cell>
+												))}
+											</Table.Row>
+										))
+									)}
+								</Table.Body>
+							</Table.Content>
+						</Table.ScrollContainer>
+						{isLoading && (
+							<div className="pointer-events-none absolute inset-x-0 top-12.5 bottom-0 flex items-center justify-center rounded-b-2xl bg-white">
+								<Spinner />
+							</div>
+						)}
+					</div>
 					<Table.Footer>
 						<Pagination className="w-full">
 							<Pagination.Summary>

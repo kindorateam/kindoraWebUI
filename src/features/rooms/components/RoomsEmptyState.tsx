@@ -1,5 +1,6 @@
 import { EmptyState } from "@heroui/react"
 
+import FluentEmojiFlatDoor from "~icons/fluent-emoji-flat/door"
 import TwemojiEmptyNest from "~icons/twemoji/empty-nest"
 
 interface Props {
@@ -8,8 +9,12 @@ interface Props {
 
 const RoomsEmptyState = ({ isDeactivatedView = false }: Props) => {
 	return (
-		<EmptyState className="flex h-131 w-full flex-col items-center justify-center gap-5 py-8 text-center">
-			<TwemojiEmptyNest aria-hidden className="size-20" />
+		<EmptyState className="flex h-full w-full flex-col items-center justify-center gap-5 py-8 text-center">
+			{isDeactivatedView ? (
+				<FluentEmojiFlatDoor aria-hidden className="size-20" />
+			) : (
+				<TwemojiEmptyNest aria-hidden className="size-20" />
+			)}
 			<h3 className="font-semibold text-3xl leading-9">
 				{isDeactivatedView ? "No deactivated rooms" : "No rooms added yet"}
 			</h3>

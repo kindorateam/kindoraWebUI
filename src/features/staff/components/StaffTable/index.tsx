@@ -61,54 +61,58 @@ const StaffTable = () => {
 			<div className="flex flex-col gap-4">
 				{topContent}
 				<Table className="[&_td]:py-1.5! [&_tr]:h-12.5!">
-					<Table.ScrollContainer className="min-h-140">
-						<Table.Content aria-label="Employees table">
-							<Table.Header>
-								{columns.map((column) => (
-									<Table.Column
-										key={column.key}
-										isRowHeader={column.isRowHeader}
-										className={column.align === "center" ? "text-center" : undefined}
-									>
-										{column.label}
-									</Table.Column>
-								))}
-							</Table.Header>
-							<Table.Body>
+					<div className="relative">
+						<Table.ScrollContainer className="min-h-140">
+							<Table.Content aria-label="Employees table">
+								<Table.Header columns={columns}>
+									{(column) => (
+										<Table.Column
+											isRowHeader={column.isRowHeader}
+											className={column.align === "center" ? "text-center" : undefined}
+										>
+											{column.label}
+										</Table.Column>
+									)}
+								</Table.Header>
 								{isLoading ? (
-									<Table.Row>
-										<Table.Cell colSpan={columns.length}>
-											<EmptyState className="flex h-131 w-full items-center justify-center">
-												<Spinner />
-											</EmptyState>
-										</Table.Cell>
-									</Table.Row>
+									<Table.Body />
 								) : error ? (
-									<Table.Row>
-										<Table.Cell colSpan={columns.length}>
-											<TableError onRetry={refetch} />
-										</Table.Cell>
-									</Table.Row>
-								) : items.length === 0 ? (
-									<Table.Row>
-										<Table.Cell colSpan={columns.length}>
-											<EmptyState className="flex h-131 w-full items-center justify-center text-default-400">
-												{showDeactivated ? "No deactivated staff members" : "No staff members found"}
-											</EmptyState>
-										</Table.Cell>
-									</Table.Row>
-								) : (
-									items.map((employee) => (
-										<Table.Row key={employee.id}>
-											{columns.map((column) => (
-												<Table.Cell key={column.key}>{renderCell(employee, column.key, renderCellOptions)}</Table.Cell>
-											))}
+									<Table.Body>
+										<Table.Row>
+											<Table.Cell colSpan={columns.length}>
+												<TableError onRetry={refetch} />
+											</Table.Cell>
 										</Table.Row>
-									))
+									</Table.Body>
+								) : items.length === 0 ? (
+									<Table.Body>
+										<Table.Row>
+											<Table.Cell colSpan={columns.length}>
+												<EmptyState className="flex h-131 w-full items-center justify-center text-default-400">
+													{showDeactivated ? "No deactivated staff members" : "No staff members found"}
+												</EmptyState>
+											</Table.Cell>
+										</Table.Row>
+									</Table.Body>
+								) : (
+									<Table.Body items={items}>
+										{(employee) => (
+											<Table.Row id={employee.id}>
+												<Table.Collection items={columns}>
+													{(column) => <Table.Cell>{renderCell(employee, column.key, renderCellOptions)}</Table.Cell>}
+												</Table.Collection>
+											</Table.Row>
+										)}
+									</Table.Body>
 								)}
-							</Table.Body>
-						</Table.Content>
-					</Table.ScrollContainer>
+							</Table.Content>
+						</Table.ScrollContainer>
+						{isLoading && (
+							<div className="pointer-events-none absolute inset-x-0 top-12.5 bottom-0 flex items-center justify-center rounded-b-2xl bg-white">
+								<Spinner />
+							</div>
+						)}
+					</div>
 					<Table.Footer>
 						<Pagination className="w-full">
 							<Pagination.Summary>

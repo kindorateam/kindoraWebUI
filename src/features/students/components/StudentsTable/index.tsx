@@ -45,46 +45,53 @@ const StudentsTable = () => {
 								aria-label="Students table"
 								className="[&_tbody>tr:last-child]:border-b-0 [&_tbody>tr]:border-default-200 [&_tbody>tr]:border-b"
 							>
-								<Table.Header>
-									{columns.map((column) => (
+								<Table.Header columns={columns}>
+									{(column) => (
 										<Table.Column
-											key={column.key}
 											isRowHeader={column.isRowHeader}
 											className={column.align === "center" ? "text-center" : undefined}
 										>
 											{column.label}
 										</Table.Column>
-									))}
+									)}
 								</Table.Header>
-								<Table.Body>
-									{isLoading ? null : error ? (
+								{isLoading ? (
+									<Table.Body />
+								) : error ? (
+									<Table.Body>
 										<Table.Row>
 											<Table.Cell colSpan={columns.length}>
 												<TableError onRetry={refetch} />
 											</Table.Cell>
 										</Table.Row>
-									) : students.length === 0 ? (
+									</Table.Body>
+								) : students.length === 0 ? (
+									<Table.Body>
 										<Table.Row>
 											<Table.Cell colSpan={columns.length}>
 												<StudentsEmptyState />
 											</Table.Cell>
 										</Table.Row>
-									) : (
-										students.map((student) => (
-											<Table.Row key={student.id}>
-												{columns.map((column) => (
-													<Table.Cell key={column.key}>
-														<StudentsTableCell
-															columnKey={column.key}
-															onStudentClick={handleStudentClick}
-															student={student}
-														/>
-													</Table.Cell>
-												))}
+									</Table.Body>
+								) : (
+									<Table.Body items={students}>
+										{(student) => (
+											<Table.Row id={student.id}>
+												<Table.Collection items={columns}>
+													{(column) => (
+														<Table.Cell>
+															<StudentsTableCell
+																columnKey={column.key}
+																onStudentClick={handleStudentClick}
+																student={student}
+															/>
+														</Table.Cell>
+													)}
+												</Table.Collection>
 											</Table.Row>
-										))
-									)}
-								</Table.Body>
+										)}
+									</Table.Body>
+								)}
 							</Table.Content>
 						</Table.ScrollContainer>
 						{isLoading && (

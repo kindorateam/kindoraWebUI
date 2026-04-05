@@ -1,4 +1,5 @@
-import { Button, Card, Spinner, Table } from "@heroui/react"
+import { Button, EmptyState, Pagination, Spinner, Table } from "@heroui/react"
+import { useState } from "react"
 
 import columns from "./columns"
 import { renderCell } from "./renderCell"
@@ -19,54 +20,98 @@ const newslettersData: Newsletter[] = [
 ]
 
 const NewslettersTable = ({ onCreateNew }: NewslettersTableProps) => {
+	const [page, setPage] = useState(1)
 	const newsletters = newslettersData
 	const isLoading = false
+	const pageSize = 10
+	const total = newsletters.length
+	const totalPages = Math.ceil(total / pageSize) || 1
+	const startItem = total === 0 ? 0 : (page - 1) * pageSize + 1
+	const endItem = Math.min(page * pageSize, total)
+	const items = newsletters.slice((page - 1) * pageSize, page * pageSize)
+
+	const topContent = (
+		<div className="flex items-center justify-end">
+			<Button variant="primary" onPress={onCreateNew}>
+				Create New
+			</Button>
+		</div>
+	)
 
 	return (
-		<Card>
-			<Card.Content className="p-4">
-				<div className="mb-2 flex items-center justify-end">
-					<Button variant="primary" onPress={onCreateNew}>
-						Create New
-					</Button>
-				</div>
-				<Table aria-label="Newsletters table">
-					<Table.ScrollContainer>
+		<div className="flex flex-col gap-4">
+			{topContent}
+			<Table aria-label="Newsletters table" className="[&_td]:py-1.5! [&_tr]:h-12.5!">
+				<div className="relative">
+					<Table.ScrollContainer className="min-h-140">
 						<Table.Content className="min-w-125">
-							<Table.Header>
-								{columns.map((column) => (
-									<Table.Column key={column.key} isRowHeader={column.isRowHeader}>
-										{column.label}
-									</Table.Column>
-								))}
+							<Table.Header columns={columns}>
+								{(column) => <Table.Column isRowHeader={column.isRowHeader}>{column.label}</Table.Column>}
 							</Table.Header>
-							<Table.Body>
-								{newsletters.length === 0 ? (
+							{isLoading ? (
+								<Table.Body />
+							) : items.length === 0 ? (
+								<Table.Body>
 									<Table.Row>
 										<Table.Cell colSpan={columns.length}>
-											<div className="py-8 text-center text-default-400">No newsletters sent</div>
+											<EmptyState className="flex h-131 w-full items-center justify-center text-default-400">
+												No newsletters sent
+											</EmptyState>
 										</Table.Cell>
 									</Table.Row>
-								) : (
-									newsletters.map((newsletter) => (
-										<Table.Row key={newsletter.id}>
-											{columns.map((column) => (
-												<Table.Cell key={column.key}>{renderCell(newsletter, column.key)}</Table.Cell>
-											))}
+								</Table.Body>
+							) : (
+								<Table.Body items={items}>
+									{(newsletter) => (
+										<Table.Row id={newsletter.id}>
+											<Table.Collection items={columns}>
+												{(column) => <Table.Cell>{renderCell(newsletter, column.key)}</Table.Cell>}
+											</Table.Collection>
 										</Table.Row>
-									))
-								)}
-							</Table.Body>
+									)}
+								</Table.Body>
+							)}
 						</Table.Content>
 					</Table.ScrollContainer>
-				</Table>
-				{isLoading && (
-					<div className="flex justify-center py-8">
-						<Spinner size="lg" />
-					</div>
-				)}
-			</Card.Content>
-		</Card>
+					{isLoading && (
+						<div className="pointer-events-none absolute inset-x-0 top-12.5 bottom-0 flex items-center justify-center rounded-b-2xl bg-white">
+							<Spinner size="lg" />
+						</div>
+					)}
+				</div>
+				<Table.Footer>
+					<Pagination className="w-full">
+						<Pagination.Summary>
+							{startItem} to {endItem} of {total} newsletters
+						</Pagination.Summary>
+						<Pagination.Content>
+							<Pagination.Item>
+								<Pagination.Previous isDisabled={page <= 1} onPress={() => setPage((currentPage) => currentPage - 1)}>
+									<Pagination.PreviousIcon />
+									<span>Prev</span>
+								</Pagination.Previous>
+							</Pagination.Item>
+							{Array.from({ length: totalPages }, (_, index) => index + 1).map((paginationPage) => (
+								<Pagination.Item key={paginationPage}>
+									<Pagination.Link isActive={paginationPage === page} onPress={() => setPage(paginationPage)}>
+										{paginationPage}
+									</Pagination.Link>
+								</Pagination.Item>
+							))}
+							<Pagination.Item>
+								<Pagination.Next
+									isDisabled={page >= totalPages}
+									onPress={() => setPage((currentPage) => currentPage + 1)}
+								>
+									<span>Next</span>
+									<Pagination.NextIcon />
+								</Pagination.Next>
+							</Pagination.Item>
+						</Pagination.Content>
+					</Pagination>
+				</Table.Footer>
+			</Table>
+		</div>
 	)
 }
 
