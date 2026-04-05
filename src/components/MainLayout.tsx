@@ -5,13 +5,15 @@ import NavDrawer from "./NavDrawer"
 
 const MainLayout = () => {
 	return (
-		<div className="grid h-screen grid-cols-[200px_1fr] overflow-hidden">
+		<div className="grid h-screen grid-cols-[200px_1fr]">
 			<NavDrawer />
 
-			<div className="flex min-h-0 min-w-0 flex-col">
+			<div className="flex h-screen min-h-0 min-w-0 flex-col">
 				<Header />
-				<div className="min-h-0 overflow-y-auto">
-					<Outlet />
+				<div className="min-h-0 overflow-y-auto [scrollbar-gutter:stable]">
+					<div className="pb-15">
+						<Outlet />
+					</div>
 				</div>
 			</div>
 		</div>

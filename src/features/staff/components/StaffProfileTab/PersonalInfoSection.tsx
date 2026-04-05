@@ -14,6 +14,7 @@ import {
 import { Controller } from "react-hook-form"
 
 import { formatUSPhone } from "@/utils/format"
+import FluentPerson16Filled from "~icons/fluent/person-16-filled"
 import LucideUserRound from "~icons/lucide/user-round"
 
 import { US_STATES } from "../../constants"
@@ -50,7 +51,9 @@ const PersonalInfoSection = ({
 				<div className="flex items-center gap-3">
 					<Avatar className="size-20">
 						<Avatar.Image src={avatarPreview ?? undefined} alt="Employee avatar" />
-						<Avatar.Fallback />
+						<Avatar.Fallback className="bg-accent text-white">
+							<FluentPerson16Filled className="size-16 text-white" />
+						</Avatar.Fallback>
 					</Avatar>
 					<div className="flex flex-col gap-3">
 						<Button className="cursor-pointer" variant="primary" size="sm">

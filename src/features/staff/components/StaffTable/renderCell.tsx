@@ -1,5 +1,7 @@
 import { Avatar, Badge, Button, Dropdown, Label } from "@heroui/react"
 
+import FluentPerson16Filled from "~icons/fluent/person-16-filled"
+
 import { getEmployeeAvatarUrl, getEmployeeFullName } from "../../types"
 
 import PinCell from "./PinCell"
@@ -32,7 +34,9 @@ export function renderCell(employee: EmployeeSummary, columnKey: React.Key, opti
 					<Badge.Anchor>
 						<Avatar size="sm">
 							<Avatar.Image alt={fullName} src={avatarUrl} />
-							<Avatar.Fallback>{fullName.charAt(0)}</Avatar.Fallback>
+							<Avatar.Fallback className="bg-accent text-white">
+								<FluentPerson16Filled className="size-6 text-white" />
+							</Avatar.Fallback>
 						</Avatar>
 						<Badge
 							color={employee.checkedIn ? "success" : "danger"}

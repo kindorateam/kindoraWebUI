@@ -1,16 +1,15 @@
 import { Avatar, Chip, Label, ListBox, Select, Spinner } from "@heroui/react"
-import { useState } from "react"
+import { useRef, useState } from "react"
 
 import { getMediaUrl } from "@/utils/media"
 import OouiUserAvatar from "~icons/ooui/user-avatar"
 
 import { useInfiniteAllEmployees } from "../../hooks/useRooms"
+import { handleSelectPopoverScroll } from "../../utils/handleSelectPopoverScroll"
 
 import type { EmployeeOption, StaffMember } from "../../types"
 
 type StaffItem = StaffMember | EmployeeOption
-
-const SCROLL_THRESHOLD = 50
 
 interface StaffSelectProps {
 	assignedStaff: StaffItem[]
@@ -25,6 +24,7 @@ const StaffSelect = ({ assignedStaff, onSelectionChange }: StaffSelectProps) => 
 		hasNextPage,
 		isFetchingNextPage,
 	} = useInfiniteAllEmployees(staffDropdownOpened)
+	const loadMoreLockRef = useRef(false)
 
 	const assignedIds = new Set(assignedStaff.map((s) => s.id))
 	const staffOptions = [
@@ -69,11 +69,7 @@ const StaffSelect = ({ assignedStaff, onSelectionChange }: StaffSelectProps) => 
 				<Select.Popover
 					className="max-h-60!"
 					onScroll={(e) => {
-						if (!hasNextPage || isFetchingNextPage) return
-						const target = e.currentTarget
-						if (target.scrollTop === 0) return
-						const nearBottom = target.scrollHeight - target.scrollTop - target.clientHeight < SCROLL_THRESHOLD
-						if (nearBottom) void fetchNextPage()
+						handleSelectPopoverScroll(e, hasNextPage ?? false, isFetchingNextPage, loadMoreLockRef, fetchNextPage)
 					}}
 				>
 					<ListBox

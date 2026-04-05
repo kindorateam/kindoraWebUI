@@ -3,6 +3,7 @@ import { useNavigate } from "@tanstack/react-router"
 import { useState } from "react"
 
 import TableError from "@/components/TableError"
+import ClarityEmployeeLine from "~icons/clarity/employee-line"
 import OcticonFeedPlus16 from "~icons/octicon/feed-plus-16"
 
 import { useEmployees } from "../../hooks/useStaff"
@@ -29,6 +30,9 @@ const StaffTable = () => {
 	const startItem = (page - 1) * pageSize + 1
 	const endItem = Math.min(page * pageSize, total)
 	const items = employees.slice((page - 1) * pageSize, page * pageSize)
+	const hasError = Boolean(error)
+	const showLoading = isLoading
+	const isEmpty = !showLoading && !hasError && items.length === 0
 
 	const topContent = (
 		<div className="flex items-center justify-end gap-5">
@@ -54,6 +58,16 @@ const StaffTable = () => {
 	)
 
 	const renderCellOptions = { onEmployeeClick: handleEmployeeClick }
+	const emptyStateContent = showDeactivated ? (
+		<EmptyState className="flex h-125 w-full flex-col items-center justify-center gap-5 py-8 text-center">
+			<ClarityEmployeeLine aria-hidden className="size-20" />
+			<h3 className="font-semibold text-3xl leading-9">No deactivated staff members</h3>
+		</EmptyState>
+	) : (
+		<EmptyState className="flex h-125 w-full items-center justify-center text-default-400">
+			No staff members found
+		</EmptyState>
+	)
 
 	return (
 		<>
@@ -74,26 +88,8 @@ const StaffTable = () => {
 										</Table.Column>
 									)}
 								</Table.Header>
-								{isLoading ? (
+								{showLoading || hasError || isEmpty ? (
 									<Table.Body />
-								) : error ? (
-									<Table.Body>
-										<Table.Row>
-											<Table.Cell colSpan={columns.length}>
-												<TableError onRetry={refetch} />
-											</Table.Cell>
-										</Table.Row>
-									</Table.Body>
-								) : items.length === 0 ? (
-									<Table.Body>
-										<Table.Row>
-											<Table.Cell colSpan={columns.length}>
-												<EmptyState className="flex h-131 w-full items-center justify-center text-default-400">
-													{showDeactivated ? "No deactivated staff members" : "No staff members found"}
-												</EmptyState>
-											</Table.Cell>
-										</Table.Row>
-									</Table.Body>
 								) : (
 									<Table.Body items={items}>
 										{(employee) => (
@@ -107,9 +103,21 @@ const StaffTable = () => {
 								)}
 							</Table.Content>
 						</Table.ScrollContainer>
-						{isLoading && (
-							<div className="pointer-events-none absolute inset-x-0 top-12.5 bottom-0 flex items-center justify-center rounded-b-2xl bg-white">
+						{showLoading && (
+							<div className="pointer-events-none absolute inset-x-0 top-12.5 bottom-1 flex items-center justify-center overflow-hidden rounded-[calc(var(--radius)*2)] bg-white">
 								<Spinner />
+							</div>
+						)}
+						{hasError && (
+							<div className="absolute inset-x-0 top-12.5 h-125 overflow-hidden rounded-[calc(var(--radius)*2)] bg-white">
+								<div className="flex h-125 items-center justify-center px-4 py-8">
+									<TableError onRetry={refetch} />
+								</div>
+							</div>
+						)}
+						{isEmpty && (
+							<div className="absolute inset-x-0 top-12.5 h-125 overflow-hidden rounded-[calc(var(--radius)*2)] bg-white">
+								{emptyStateContent}
 							</div>
 						)}
 					</div>

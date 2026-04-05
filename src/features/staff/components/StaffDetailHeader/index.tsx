@@ -15,6 +15,7 @@ import {
 
 import IdentityChip from "@/components/IdentityChip"
 import { ABSENCE_REASONS } from "@/features/rooms/constants"
+import FluentPerson16Filled from "~icons/fluent/person-16-filled"
 import GrommetIconsUpdate from "~icons/grommet-icons/update"
 import MingcuteSendFill from "~icons/mingcute/send-fill"
 import PhSignInBold from "~icons/ph/sign-in-bold"
@@ -57,7 +58,9 @@ const StaffDetailHeader = ({
 							<Badge.Anchor>
 								<Avatar className="size-25 shadow-md">
 									<Avatar.Image alt={fullName} src={avatarUrl} />
-									<Avatar.Fallback>{fullName.charAt(0)}</Avatar.Fallback>
+									<Avatar.Fallback className="bg-accent text-white">
+										<FluentPerson16Filled className="size-22 text-white" />
+									</Avatar.Fallback>
 								</Avatar>
 								<Badge
 									color={employeeData?.checkedIn ? "success" : "danger"}

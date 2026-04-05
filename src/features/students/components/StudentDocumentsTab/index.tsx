@@ -1,4 +1,4 @@
-import { Button, Card, Spinner, Table } from "@heroui/react"
+import { Button, Card, EmptyState, Spinner, Table } from "@heroui/react"
 import { useState } from "react"
 
 import TableError from "@/components/TableError"
@@ -26,6 +26,9 @@ const StudentDocumentsTab = ({ studentId }: StudentDocumentsTabProps) => {
 	const start = (page - 1) * rowsPerPage
 	const end = start + rowsPerPage
 	const items = documents.slice(start, end)
+	const hasError = Boolean(error)
+	const showLoading = isLoading
+	const isEmpty = !showLoading && !hasError && items.length === 0
 
 	return (
 		<>
@@ -41,53 +44,54 @@ const StudentDocumentsTab = ({ studentId }: StudentDocumentsTabProps) => {
 					</div>
 					<div className="flex min-h-[647.5px] flex-col justify-between">
 						<div className="relative">
-							<Table.ScrollContainer>
+							<Table.ScrollContainer className="min-h-140">
 								<Table.Content
 									aria-label="Student documents table"
 									className="[&_tbody>tr:last-child]:border-b-0 [&_tbody>tr]:h-13.75 [&_tbody>tr]:border-default-200 [&_tbody>tr]:border-b [&_td]:py-0 [&_th]:py-0"
 								>
-									<Table.Header>
-										{columns.map((column) => (
+									<Table.Header columns={columns}>
+										{(column) => (
 											<Table.Column
-												key={column.key}
 												isRowHeader={column.isRowHeader}
-												className={column.align === "center" ? "text-center" : ""}
+												className={column.align === "center" ? "text-center" : undefined}
 											>
 												{column.label}
 											</Table.Column>
-										))}
-									</Table.Header>
-									<Table.Body>
-										{isLoading ? null : error ? (
-											<Table.Row>
-												<Table.Cell colSpan={columns.length}>
-													<TableError onRetry={refetch} />
-												</Table.Cell>
-											</Table.Row>
-										) : items.length === 0 ? (
-											<Table.Row>
-												<Table.Cell colSpan={columns.length}>
-													<div className="flex flex-col items-center gap-3">
-														<p className="text-default-500 text-lg">No documents yet</p>
-														<p className="text-default-400 text-sm">Upload documents to get started</p>
-													</div>
-												</Table.Cell>
-											</Table.Row>
-										) : (
-											items.map((document) => (
-												<Table.Row key={document.id}>
-													{columns.map((column) => (
-														<Table.Cell key={column.key}>{renderCell(document, column.key)}</Table.Cell>
-													))}
-												</Table.Row>
-											))
 										)}
-									</Table.Body>
+									</Table.Header>
+									{showLoading || hasError || isEmpty ? (
+										<Table.Body />
+									) : (
+										<Table.Body items={items}>
+											{(document) => (
+												<Table.Row id={document.id}>
+													<Table.Collection items={columns}>
+														{(column) => <Table.Cell>{renderCell(document, column.key)}</Table.Cell>}
+													</Table.Collection>
+												</Table.Row>
+											)}
+										</Table.Body>
+									)}
 								</Table.Content>
 							</Table.ScrollContainer>
-							{isLoading && (
-								<div className="pointer-events-none absolute inset-x-0 top-12.5 bottom-0 flex items-center justify-center rounded-b-2xl bg-white">
+							{showLoading && (
+								<div className="pointer-events-none absolute inset-x-0 top-12.5 bottom-0 flex items-center justify-center rounded-[calc(var(--radius)*2)] bg-white">
 									<Spinner />
+								</div>
+							)}
+							{hasError && (
+								<div className="absolute inset-x-0 top-12.5 bottom-0 rounded-[calc(var(--radius)*2)] bg-white">
+									<div className="flex h-full items-center justify-center px-4 py-8">
+										<TableError onRetry={refetch} />
+									</div>
+								</div>
+							)}
+							{isEmpty && (
+								<div className="absolute inset-x-0 top-12.5 bottom-0 rounded-[calc(var(--radius)*2)] bg-white">
+									<EmptyState className="flex h-full w-full flex-col items-center justify-center gap-3 text-center">
+										<p className="text-default-500 text-lg">No documents yet</p>
+										<p className="text-default-400 text-sm">Upload documents to get started</p>
+									</EmptyState>
 								</div>
 							)}
 						</div>

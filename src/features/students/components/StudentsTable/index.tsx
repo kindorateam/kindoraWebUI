@@ -19,6 +19,9 @@ const StudentsTable = () => {
 
 	const startItem = total === 0 ? 0 : (page - 1) * PAGE_SIZE + 1
 	const endItem = Math.min(page * PAGE_SIZE, total)
+	const hasError = Boolean(error)
+	const showLoading = isLoading
+	const isEmpty = !showLoading && !hasError && students.length === 0
 
 	const handleStudentClick = (studentId: string) => {
 		void navigate({
@@ -55,24 +58,8 @@ const StudentsTable = () => {
 										</Table.Column>
 									)}
 								</Table.Header>
-								{isLoading ? (
+								{showLoading || hasError || isEmpty ? (
 									<Table.Body />
-								) : error ? (
-									<Table.Body>
-										<Table.Row>
-											<Table.Cell colSpan={columns.length}>
-												<TableError onRetry={refetch} />
-											</Table.Cell>
-										</Table.Row>
-									</Table.Body>
-								) : students.length === 0 ? (
-									<Table.Body>
-										<Table.Row>
-											<Table.Cell colSpan={columns.length}>
-												<StudentsEmptyState />
-											</Table.Cell>
-										</Table.Row>
-									</Table.Body>
 								) : (
 									<Table.Body items={students}>
 										{(student) => (
@@ -94,9 +81,21 @@ const StudentsTable = () => {
 								)}
 							</Table.Content>
 						</Table.ScrollContainer>
-						{isLoading && (
-							<div className="pointer-events-none absolute inset-x-0 top-12.5 bottom-0 flex items-center justify-center rounded-b-2xl bg-white">
+						{showLoading && (
+							<div className="pointer-events-none absolute inset-x-0 top-12.5 bottom-0 flex items-center justify-center rounded-[calc(var(--radius)*2)] bg-white">
 								<Spinner />
+							</div>
+						)}
+						{hasError && (
+							<div className="absolute inset-x-0 top-12.5 bottom-0 rounded-[calc(var(--radius)*2)] bg-white">
+								<div className="flex h-full items-center justify-center px-4 py-8">
+									<TableError onRetry={refetch} />
+								</div>
+							</div>
+						)}
+						{isEmpty && (
+							<div className="absolute inset-x-0 top-12.5 bottom-0 rounded-[calc(var(--radius)*2)] bg-white">
+								<StudentsEmptyState />
 							</div>
 						)}
 					</div>

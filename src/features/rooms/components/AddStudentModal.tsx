@@ -4,7 +4,8 @@ import { useRef, useState } from "react"
 
 import { getErrorMessage } from "@/utils/error"
 
-import { useAddStudentsToRoom, useInfiniteAllStudents, useRoom } from "../hooks/useRooms"
+import { useAddStudentModalStudents } from "../hooks/useRoomSelectQueries"
+import { useAddStudentsToRoom, useRoom } from "../hooks/useRooms"
 import { addStudentModalAtom, closeAddStudentModal } from "../stores/addStudentModal.store"
 import { handleSelectPopoverScroll } from "../utils/handleSelectPopoverScroll"
 
@@ -17,7 +18,7 @@ const AddStudentModal = () => {
 		fetchNextPage,
 		hasNextPage,
 		isFetchingNextPage,
-	} = useInfiniteAllStudents(isOpen)
+	} = useAddStudentModalStudents(isOpen)
 	const addStudentsMutation = useAddStudentsToRoom()
 
 	const [selectedStudentIds, setSelectedStudentIds] = useState<Set<string>>(new Set())

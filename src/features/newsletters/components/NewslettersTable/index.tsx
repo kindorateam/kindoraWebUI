@@ -29,6 +29,7 @@ const NewslettersTable = ({ onCreateNew }: NewslettersTableProps) => {
 	const startItem = total === 0 ? 0 : (page - 1) * pageSize + 1
 	const endItem = Math.min(page * pageSize, total)
 	const items = newsletters.slice((page - 1) * pageSize, page * pageSize)
+	const isEmpty = !isLoading && items.length === 0
 
 	const topContent = (
 		<div className="flex items-center justify-end">
@@ -48,18 +49,8 @@ const NewslettersTable = ({ onCreateNew }: NewslettersTableProps) => {
 							<Table.Header columns={columns}>
 								{(column) => <Table.Column isRowHeader={column.isRowHeader}>{column.label}</Table.Column>}
 							</Table.Header>
-							{isLoading ? (
+							{isLoading || isEmpty ? (
 								<Table.Body />
-							) : items.length === 0 ? (
-								<Table.Body>
-									<Table.Row>
-										<Table.Cell colSpan={columns.length}>
-											<EmptyState className="flex h-131 w-full items-center justify-center text-default-400">
-												No newsletters sent
-											</EmptyState>
-										</Table.Cell>
-									</Table.Row>
-								</Table.Body>
 							) : (
 								<Table.Body items={items}>
 									{(newsletter) => (
@@ -74,8 +65,15 @@ const NewslettersTable = ({ onCreateNew }: NewslettersTableProps) => {
 						</Table.Content>
 					</Table.ScrollContainer>
 					{isLoading && (
-						<div className="pointer-events-none absolute inset-x-0 top-12.5 bottom-0 flex items-center justify-center rounded-b-2xl bg-white">
+						<div className="pointer-events-none absolute inset-x-0 top-12.5 bottom-0 flex items-center justify-center rounded-[calc(var(--radius)*2)] bg-white">
 							<Spinner size="lg" />
+						</div>
+					)}
+					{isEmpty && (
+						<div className="absolute inset-x-0 top-12.5 bottom-0 rounded-[calc(var(--radius)*2)] bg-white">
+							<EmptyState className="flex h-full w-full items-center justify-center text-default-400">
+								No newsletters sent
+							</EmptyState>
 						</div>
 					)}
 				</div>

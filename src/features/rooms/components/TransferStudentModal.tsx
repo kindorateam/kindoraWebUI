@@ -4,7 +4,8 @@ import { useRef, useState } from "react"
 
 import { getErrorMessage } from "@/utils/error"
 
-import { useInfiniteRooms, useMoveStudentsToRoom } from "../hooks/useRooms"
+import { useTransferStudentRooms } from "../hooks/useRoomSelectQueries"
+import { useMoveStudentsToRoom } from "../hooks/useRooms"
 import { closeTransferStudentModal, transferStudentModalAtom } from "../stores/transferStudentModal.store"
 import { handleSelectPopoverScroll } from "../utils/handleSelectPopoverScroll"
 
@@ -20,7 +21,7 @@ const TransferStudentModal = ({ onSuccess }: TransferStudentModalProps) => {
 		fetchNextPage,
 		hasNextPage,
 		isFetchingNextPage,
-	} = useInfiniteRooms("active", isOpen)
+	} = useTransferStudentRooms(isOpen)
 	const moveStudentsMutation = useMoveStudentsToRoom()
 
 	const [selectedRoomId, setSelectedRoomId] = useState<string>("")

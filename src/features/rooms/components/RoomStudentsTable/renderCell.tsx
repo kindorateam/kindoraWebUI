@@ -1,7 +1,7 @@
 import { Avatar, Badge, Chip } from "@heroui/react"
 
 import { getMediaUrl } from "@/utils/media"
-import OouiUserAvatar from "~icons/ooui/user-avatar"
+import FluentPerson16Filled from "~icons/fluent/person-16-filled"
 
 import ParentsAvatarGroup from "./ParentsAvatarGroup"
 import StudentActionsDropdown from "./StudentActionsDropdown"
@@ -24,7 +24,7 @@ export function renderCell(student: Student, columnKey: React.Key, roomId: strin
 								alt={student.name}
 							/>
 							<Avatar.Fallback className="bg-accent text-white">
-								<OouiUserAvatar className="size-5" />
+								<FluentPerson16Filled className="size-6 text-white" />
 							</Avatar.Fallback>
 						</Avatar>
 						<Badge
