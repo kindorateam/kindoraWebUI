@@ -50,7 +50,7 @@ const NavDrawer = () => {
 						<img alt="Kindora Logo" className="h-8" src={Logo} />
 					</Link>
 				</div>
-				<nav aria-label="Primary" className="flex-1 overflow-y-auto">
+				<nav aria-label="Primary" className="flex-1 overflow-y-auto px-4">
 					{menuItems}
 				</nav>
 			</aside>
