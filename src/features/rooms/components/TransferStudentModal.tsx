@@ -1,11 +1,12 @@
 import { Button, Label, ListBox, Modal, Select, Spinner, toast } from "@heroui/react"
 import { useAtomValue } from "jotai"
-import { useEffect, useRef, useState } from "react"
+import { useRef, useState } from "react"
 
 import { getErrorMessage } from "@/utils/error"
 
 import { useInfiniteRooms, useMoveStudentsToRoom } from "../hooks/useRooms"
 import { closeTransferStudentModal, transferStudentModalAtom } from "../stores/transferStudentModal.store"
+import { handleSelectPopoverScroll } from "../utils/handleSelectPopoverScroll"
 
 interface TransferStudentModalProps {
 	onSuccess?: () => void
@@ -23,24 +24,10 @@ const TransferStudentModal = ({ onSuccess }: TransferStudentModalProps) => {
 	const moveStudentsMutation = useMoveStudentsToRoom()
 
 	const [selectedRoomId, setSelectedRoomId] = useState<string>("")
+	const loadMoreLockRef = useRef(false)
 
 	// Filter out the current room from the list
 	const availableRooms = rooms.filter((room) => room.id !== sourceRoomId)
-
-	// IntersectionObserver-based infinite scroll for rooms list
-	const observerRef = useRef<HTMLDivElement>(null)
-	useEffect(() => {
-		if (!observerRef.current || !hasNextPage || isFetchingNextPage) return
-		const observer = new IntersectionObserver(
-			(entries) => {
-				const entry = entries[0]
-				if (entry?.isIntersecting) fetchNextPage()
-			},
-			{ threshold: 0.5 },
-		)
-		observer.observe(observerRef.current)
-		return () => observer.disconnect()
-	}, [hasNextPage, isFetchingNextPage, fetchNextPage])
 
 	const handleSubmit = () => {
 		if (!sourceRoomId || !selectedRoomId || studentIds.length === 0) return
@@ -113,7 +100,18 @@ const TransferStudentModal = ({ onSuccess }: TransferStudentModalProps) => {
 									<Select.Value />
 									<Select.Indicator />
 								</Select.Trigger>
-								<Select.Popover>
+								<Select.Popover
+									className="max-h-60!"
+									onScroll={(e) => {
+										handleSelectPopoverScroll(
+											e,
+											hasNextPage ?? false,
+											isFetchingNextPage,
+											loadMoreLockRef,
+											fetchNextPage,
+										)
+									}}
+								>
 									<ListBox>
 										{availableRooms.map((room) => (
 											<ListBox.Item id={room.id} key={room.id} textValue={room.name}>
@@ -127,7 +125,6 @@ const TransferStudentModal = ({ onSuccess }: TransferStudentModalProps) => {
 											</ListBox.Item>
 										)}
 									</ListBox>
-									<div ref={observerRef} />
 								</Select.Popover>
 							</Select>
 						)}

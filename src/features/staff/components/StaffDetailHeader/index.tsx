@@ -50,7 +50,7 @@ const StaffDetailHeader = ({
 	return (
 		<div>
 			<div className="container mx-auto max-w-4xl">
-				<div className="mb-7 flex items-start justify-between gap-10">
+				<div className="mb-8 flex items-start justify-between gap-10">
 					<div className="flex items-start gap-10">
 						{/* Avatar with online/offline status badge */}
 						<div className="relative shrink-0">

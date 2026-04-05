@@ -12,7 +12,7 @@ const Header = () => {
 	}
 
 	return (
-		<nav className="mb-7 flex h-20 w-full items-center bg-transparent px-7">
+		<nav className="mb-8 flex h-20 w-full items-center bg-transparent px-7">
 			<div className="flex-1">
 				<Breadcrumbs />
 			</div>

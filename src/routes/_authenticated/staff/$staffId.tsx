@@ -71,7 +71,7 @@ function StaffDetailLayout() {
 					onSendInvite={() => {}}
 				/>
 				<RegeneratePinModal employeeId={employeeId} />
-				<main className="container mx-auto max-w-4xl pt-6">
+				<main className="container mx-auto max-w-4xl pt-5">
 					{tab === "profile" && <StaffProfileTab employeeId={employeeId} />}
 					{tab === "documents" && <StaffDocumentsTab employeeId={employeeId} />}
 				</main>

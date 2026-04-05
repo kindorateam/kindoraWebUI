@@ -84,7 +84,7 @@ function StudentDetailPage() {
 					onMoveToRoom={student.roomId ? handleMoveStudent : undefined}
 					onScheduleAbsence={handleScheduleAbsence}
 				/>
-				<main className="container mx-auto max-w-4xl flex-1 pt-6">
+				<main className="container mx-auto max-w-4xl flex-1 pt-5">
 					{tab === "activity" && <p className="text-default-500">Activity content coming soon.</p>}
 					{tab === "profile" && <StudentProfileTab student={student} />}
 					{tab === "documents" && <StudentDocumentsTab studentId={student.id} />}

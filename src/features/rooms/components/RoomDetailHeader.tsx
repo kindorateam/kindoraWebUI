@@ -3,7 +3,7 @@ import { Avatar, Tabs, Tooltip } from "@heroui/react"
 import IdentityChip from "@/components/IdentityChip"
 import LabeledNumberBadge from "@/components/LabeledNumberBadge"
 import { getMediaUrl } from "@/utils/media"
-import MaterialSymbolsAddAPhotoRounded from "~icons/material-symbols/add-a-photo-rounded"
+import FluentConferenceRoom20Regular from "~icons/fluent/conference-room-20-regular"
 import PhSmileyDuotone from "~icons/ph/smiley-duotone"
 import PhSmileySadDuotone from "~icons/ph/smiley-sad-duotone"
 
@@ -58,7 +58,7 @@ const RoomDetailHeader = ({ activeTab, roomId, onTabChange }: RoomDetailHeaderPr
 	return (
 		<div>
 			<div className="container mx-auto max-w-4xl">
-				<div className="mb-13 flex">
+				<div className="mb-8 flex">
 					<div className="me-7">
 						<Avatar className="size-37.5 bg-[#1D6FE8] text-white">
 							<Avatar.Image
@@ -67,7 +67,7 @@ const RoomDetailHeader = ({ activeTab, roomId, onTabChange }: RoomDetailHeaderPr
 								className="object-cover"
 							/>
 							<Avatar.Fallback className="text-white">
-								<MaterialSymbolsAddAPhotoRounded className="size-25" />
+								<FluentConferenceRoom20Regular className="size-25 text-black" />
 							</Avatar.Fallback>
 						</Avatar>
 					</div>

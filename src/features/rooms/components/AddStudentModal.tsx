@@ -1,11 +1,12 @@
 import { Button, Label, ListBox, Modal, Select, Spinner, toast } from "@heroui/react"
 import { useAtomValue } from "jotai"
-import { useEffect, useRef, useState } from "react"
+import { useRef, useState } from "react"
 
 import { getErrorMessage } from "@/utils/error"
 
 import { useAddStudentsToRoom, useInfiniteAllStudents, useRoom } from "../hooks/useRooms"
 import { addStudentModalAtom, closeAddStudentModal } from "../stores/addStudentModal.store"
+import { handleSelectPopoverScroll } from "../utils/handleSelectPopoverScroll"
 
 const AddStudentModal = () => {
 	const { isOpen, roomId } = useAtomValue(addStudentModalAtom)
@@ -20,27 +21,13 @@ const AddStudentModal = () => {
 	const addStudentsMutation = useAddStudentsToRoom()
 
 	const [selectedStudentIds, setSelectedStudentIds] = useState<Set<string>>(new Set())
+	const loadMoreLockRef = useRef(false)
 
 	// Get current student IDs in the room
 	const currentStudentIds = room?.signedInStudents.map((s) => s.id) ?? []
 
 	// Filter out students already in the room
 	const availableStudents = allStudents.filter((student) => !currentStudentIds.includes(student.id))
-
-	// IntersectionObserver-based infinite scroll for students list
-	const observerRef = useRef<HTMLDivElement>(null)
-	useEffect(() => {
-		if (!observerRef.current || !hasNextPage || isFetchingNextPage) return
-		const observer = new IntersectionObserver(
-			(entries) => {
-				const entry = entries[0]
-				if (entry?.isIntersecting) fetchNextPage()
-			},
-			{ threshold: 0.5 },
-		)
-		observer.observe(observerRef.current)
-		return () => observer.disconnect()
-	}, [hasNextPage, isFetchingNextPage, fetchNextPage])
 
 	const handleSubmit = () => {
 		if (!roomId || selectedStudentIds.size === 0) return
@@ -107,7 +94,18 @@ const AddStudentModal = () => {
 									<Select.Value />
 									<Select.Indicator />
 								</Select.Trigger>
-								<Select.Popover>
+								<Select.Popover
+									className="max-h-60!"
+									onScroll={(e) => {
+										handleSelectPopoverScroll(
+											e,
+											hasNextPage ?? false,
+											isFetchingNextPage,
+											loadMoreLockRef,
+											fetchNextPage,
+										)
+									}}
+								>
 									<ListBox>
 										{availableStudents.map((student) => (
 											<ListBox.Item id={student.id} key={student.id} textValue={student.name}>
@@ -121,7 +119,6 @@ const AddStudentModal = () => {
 											</ListBox.Item>
 										)}
 									</ListBox>
-									<div ref={observerRef} />
 								</Select.Popover>
 							</Select>
 						)}

@@ -1,7 +1,7 @@
 import { Avatar, Button } from "@heroui/react"
 import { useState } from "react"
 
-import MaterialSymbolsAddAPhotoRounded from "~icons/material-symbols/add-a-photo-rounded"
+import FluentConferenceRoom20Regular from "~icons/fluent/conference-room-20-regular"
 import MaterialSymbolsDeleteOutline from "~icons/material-symbols/delete-outline"
 import MaterialSymbolsUploadRounded from "~icons/material-symbols/upload-rounded"
 
@@ -36,7 +36,7 @@ const ProfilePictureSection = ({
 							alt={roomName}
 						/>
 						<Avatar.Fallback>
-							<MaterialSymbolsAddAPhotoRounded className="size-12.5" />
+							<FluentConferenceRoom20Regular className="size-12.5 text-black" />
 						</Avatar.Fallback>
 					</Avatar>
 				</div>

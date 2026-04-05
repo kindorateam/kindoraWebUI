@@ -36,7 +36,7 @@ const StudentDetailHeader = ({
 
 	return (
 		<div className="container mx-auto max-w-4xl">
-			<div className="mb-7 flex items-start gap-10">
+			<div className="mb-8 flex items-start gap-10">
 				<Badge.Anchor>
 					<Avatar className="size-25 shrink-0 border-4 border-white shadow-md">
 						<Avatar.Image src={student.avatar?.path} alt={studentName} />

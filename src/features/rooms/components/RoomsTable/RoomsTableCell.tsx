@@ -2,7 +2,7 @@ import { Avatar, Button, Dropdown, Label, Tooltip } from "@heroui/react"
 import { Link, useRouter } from "@tanstack/react-router"
 
 import { getMediaUrl } from "@/utils/media"
-import MaterialSymbolsAddAPhotoRounded from "~icons/material-symbols/add-a-photo-rounded"
+import FluentConferenceRoom20Regular from "~icons/fluent/conference-room-20-regular"
 import PhDotsThreeVerticalBold from "~icons/ph/dots-three-vertical-bold"
 import PhSmileyDuotone from "~icons/ph/smiley-duotone"
 import PhSmileySadDuotone from "~icons/ph/smiley-sad-duotone"
@@ -44,7 +44,7 @@ const RoomsTableCell = ({ room, columnKey }: RoomsTableCellProps) => {
 							className="object-cover"
 						/>
 						<Avatar.Fallback>
-							<MaterialSymbolsAddAPhotoRounded className="size-4" />
+							<FluentConferenceRoom20Regular className="size-5" />
 						</Avatar.Fallback>
 					</Avatar>
 					<span className="font-medium text-sm">{room.name}</span>

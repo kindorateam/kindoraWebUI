@@ -1,11 +1,12 @@
 import { Button, Collection, FieldError, Label, ListBox, Select, Skeleton, Spinner } from "@heroui/react"
+import { useRef } from "react"
 import { Controller, useFormContext } from "react-hook-form"
 
 import { getErrorMessage } from "@/utils/error"
 
 import { useInfiniteAllEmployees, useInfiniteAllStudents } from "../../hooks/useRooms"
+import { handleSelectPopoverScroll } from "../../utils/handleSelectPopoverScroll"
 
-import type React from "react"
 import type { AddRoomFormData } from "../../types"
 
 const AddStaffStudentsStepSkeleton = () => (
@@ -17,22 +18,6 @@ const AddStaffStudentsStepSkeleton = () => (
 		</div>
 	</div>
 )
-
-const SCROLL_THRESHOLD = 50
-
-const handleScrollEnd = (
-	e: React.UIEvent<HTMLDivElement>,
-	hasNext: boolean,
-	isFetching: boolean,
-	fetchNext: () => void,
-) => {
-	if (!hasNext || isFetching) return
-	const target = e.currentTarget
-	// Ignore scroll events when the user hasn't actually scrolled
-	if (target.scrollTop === 0) return
-	const nearBottom = target.scrollHeight - target.scrollTop - target.clientHeight < SCROLL_THRESHOLD
-	if (nearBottom) fetchNext()
-}
 
 const AddStaffStudentsStep = () => {
 	const {
@@ -68,6 +53,8 @@ const AddStaffStudentsStep = () => {
 	const error = studentsError || employeesError
 
 	const refetchAll = () => Promise.all([refetchStudents(), refetchEmployees()])
+	const employeeLoadMoreLockRef = useRef(false)
+	const studentLoadMoreLockRef = useRef(false)
 
 	if (isLoading) {
 		return <AddStaffStudentsStepSkeleton />
@@ -121,9 +108,13 @@ const AddStaffStudentsStep = () => {
 							<Select.Popover
 								className="max-h-60!"
 								onScroll={(e) => {
-									handleScrollEnd(e, hasNextEmployees ?? false, isFetchingNextEmployees, () => {
-										void fetchNextEmployees()
-									})
+									handleSelectPopoverScroll(
+										e,
+										hasNextEmployees ?? false,
+										isFetchingNextEmployees,
+										employeeLoadMoreLockRef,
+										fetchNextEmployees,
+									)
 								}}
 							>
 								<ListBox>
@@ -169,9 +160,13 @@ const AddStaffStudentsStep = () => {
 							<Select.Popover
 								className="max-h-60!"
 								onScroll={(e) => {
-									handleScrollEnd(e, hasNextStudents ?? false, isFetchingNextStudents, () => {
-										void fetchNextStudents()
-									})
+									handleSelectPopoverScroll(
+										e,
+										hasNextStudents ?? false,
+										isFetchingNextStudents,
+										studentLoadMoreLockRef,
+										fetchNextStudents,
+									)
 								}}
 							>
 								<ListBox>
