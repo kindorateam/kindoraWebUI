@@ -66,8 +66,8 @@ const RoomStudentsTable = ({ roomId }: RoomStudentsTableProps) => {
 		<>
 			<div className="flex flex-col gap-4">
 				{topContent}
-				<Table className="[&_td]:py-1.5! [&_tr]:h-[50px]!">
-					<Table.ScrollContainer className="min-h-[560px]">
+				<Table className="[&_td]:py-1.5! [&_tr]:h-12.5!">
+					<Table.ScrollContainer className="min-h-140">
 						<Table.Content
 							aria-label="Students table"
 							selectionMode="multiple"
@@ -89,7 +89,7 @@ const RoomStudentsTable = ({ roomId }: RoomStudentsTableProps) => {
 								{isLoading ? (
 									<Table.Row>
 										<Table.Cell colSpan={columns.length}>
-											<EmptyState className="flex h-[524px] w-full items-center justify-center">
+											<EmptyState className="flex h-131 w-full items-center justify-center">
 												<Spinner />
 											</EmptyState>
 										</Table.Cell>
@@ -103,7 +103,7 @@ const RoomStudentsTable = ({ roomId }: RoomStudentsTableProps) => {
 								) : students.length === 0 ? (
 									<Table.Row>
 										<Table.Cell colSpan={columns.length}>
-											<EmptyState className="flex h-[524px] w-full items-center justify-center text-default-400">
+											<EmptyState className="flex h-131 w-full items-center justify-center text-default-400">
 												No students in this room
 											</EmptyState>
 										</Table.Cell>

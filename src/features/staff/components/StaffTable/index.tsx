@@ -60,8 +60,8 @@ const StaffTable = () => {
 			<AddStaffModal />
 			<div className="flex flex-col gap-4">
 				{topContent}
-				<Table className="[&_td]:py-1.5! [&_tr]:h-[50px]!">
-					<Table.ScrollContainer className="min-h-[560px]">
+				<Table className="[&_td]:py-1.5! [&_tr]:h-12.5!">
+					<Table.ScrollContainer className="min-h-140">
 						<Table.Content aria-label="Employees table">
 							<Table.Header>
 								{columns.map((column) => (
@@ -78,7 +78,7 @@ const StaffTable = () => {
 								{isLoading ? (
 									<Table.Row>
 										<Table.Cell colSpan={columns.length}>
-											<EmptyState className="flex h-[524px] w-full items-center justify-center">
+											<EmptyState className="flex h-131 w-full items-center justify-center">
 												<Spinner />
 											</EmptyState>
 										</Table.Cell>
@@ -92,7 +92,7 @@ const StaffTable = () => {
 								) : items.length === 0 ? (
 									<Table.Row>
 										<Table.Cell colSpan={columns.length}>
-											<EmptyState className="flex h-[524px] w-full items-center justify-center text-default-400">
+											<EmptyState className="flex h-131 w-full items-center justify-center text-default-400">
 												{showDeactivated ? "No deactivated staff members" : "No staff members found"}
 											</EmptyState>
 										</Table.Cell>

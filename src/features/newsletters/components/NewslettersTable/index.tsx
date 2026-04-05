@@ -32,7 +32,7 @@ const NewslettersTable = ({ onCreateNew }: NewslettersTableProps) => {
 				</div>
 				<Table aria-label="Newsletters table">
 					<Table.ScrollContainer>
-						<Table.Content className="min-w-[500px]">
+						<Table.Content className="min-w-125">
 							<Table.Header>
 								{columns.map((column) => (
 									<Table.Column key={column.key} isRowHeader={column.isRowHeader}>

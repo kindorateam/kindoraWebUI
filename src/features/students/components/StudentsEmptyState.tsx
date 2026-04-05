@@ -4,9 +4,9 @@ import TwemojiEmptyNest from "~icons/twemoji/empty-nest"
 
 const StudentsEmptyState = () => {
 	return (
-		<Card className="mx-auto w-full max-w-[351px]">
+		<Card className="mx-auto w-full max-w-87.75">
 			<Card.Content className="items-center gap-5 px-7 py-8 text-center">
-				<div className="relative h-[89px] w-20 overflow-clip">
+				<div className="relative h-22.25 w-20 overflow-clip">
 					<TwemojiEmptyNest aria-hidden className="size-full text-primary" />
 				</div>
 

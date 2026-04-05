@@ -38,7 +38,7 @@ const MessagesSidebar = ({
 					</div>
 					<Button
 						isIconOnly
-						className="h-[46px] min-w-[46px] rounded-xl bg-default-100 shadow-[0px_1px_2px_0px_rgba(0,0,0,0.05)]"
+						className="h-11.5 min-w-11.5 rounded-xl bg-default-100 shadow-[0px_1px_2px_0px_rgba(0,0,0,0.05)]"
 						variant="ghost"
 					>
 						<TablerLink className="size-7 text-[#8d8d93]" />

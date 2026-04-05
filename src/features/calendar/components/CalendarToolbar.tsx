@@ -26,10 +26,10 @@ const CalendarToolbar = ({ title, onNavigatePrev, onNavigateNext, onNavigateToda
 			<div className="flex items-center gap-2">
 				<ButtonGroup size="sm" variant="ghost">
 					<Button isIconOnly onPress={onNavigatePrev}>
-						<TablerChevronLeft className="size-[18px]" />
+						<TablerChevronLeft className="size-4.5" />
 					</Button>
 					<Button isIconOnly onPress={onNavigateNext}>
-						<TablerChevronRight className="size-[18px]" />
+						<TablerChevronRight className="size-4.5" />
 					</Button>
 				</ButtonGroup>
 				<Button size="sm" variant="ghost" onPress={onNavigateToday}>

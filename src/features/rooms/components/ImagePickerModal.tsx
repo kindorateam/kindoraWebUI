@@ -113,7 +113,7 @@ const ImagePickerModal = ({ isOpen, onClose, onSelect }: ImagePickerModalProps) 
 									</Tabs.Tab>
 								</Tabs.List>
 							</Tabs.ListContainer>
-							<Tabs.Panel id="gallery" className="min-h-[216px]">
+							<Tabs.Panel id="gallery" className="min-h-54">
 								<div className="grid grid-cols-4 gap-2">
 									{gradients.map((gradient) => (
 										<button
@@ -159,7 +159,7 @@ const ImagePickerModal = ({ isOpen, onClose, onSelect }: ImagePickerModalProps) 
 										</div>
 									) : (
 										<button
-											className={`flex min-h-[200px] w-full cursor-pointer flex-col items-center justify-center gap-3 rounded-lg border-2 border-dashed transition-colors ${
+											className={`flex min-h-50 w-full cursor-pointer flex-col items-center justify-center gap-3 rounded-lg border-2 border-dashed transition-colors ${
 												isDragging ? "border-primary bg-primary/10" : "border-gray-300 hover:border-primary"
 											}`}
 											onClick={() => fileInputRef.current?.click()}

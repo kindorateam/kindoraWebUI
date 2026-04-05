@@ -54,7 +54,7 @@ const CreateNewsletterModal = ({ isOpen, onOpenChange }: CreateNewsletterModalPr
 						</div>
 					</Modal.Header>
 
-					<Modal.Body className="min-h-[500px] overflow-y-auto p-0">
+					<Modal.Body className="min-h-125 overflow-y-auto p-0">
 						{currentStep === 1 ? (
 							<Step1Editor content={content} onChange={setContent} onLoadTemplate={setContent} />
 						) : (
