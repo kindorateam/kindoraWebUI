@@ -32,7 +32,7 @@ interface ToolbarButtonProps {
 }
 
 const ToolbarButton = ({ icon, tooltip, onPress, isActive = false, isDisabled = false }: ToolbarButtonProps) => (
-	<Tooltip delay={500}>
+	<Tooltip>
 		<Button isIconOnly isDisabled={isDisabled} onPress={onPress} size="sm" variant={isActive ? "secondary" : "ghost"}>
 			{icon}
 		</Button>
@@ -307,7 +307,7 @@ const EditorToolbar = ({ editor }: EditorToolbarProps) => {
 
 			{/* Image */}
 			<Popover isOpen={isImageOpen} onOpenChange={setIsImageOpen}>
-				<Tooltip delay={500}>
+				<Tooltip>
 					<Popover.Trigger>
 						<Button isIconOnly size="sm" variant="ghost">
 							<TablerPhoto className="size-4" />

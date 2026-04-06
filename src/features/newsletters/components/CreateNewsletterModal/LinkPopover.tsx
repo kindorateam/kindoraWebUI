@@ -32,7 +32,7 @@ const LinkPopover = ({ editor }: LinkPopoverProps) => {
 
 	return (
 		<Popover isOpen={isLinkOpen} onOpenChange={setIsLinkOpen}>
-			<Tooltip delay={500}>
+			<Tooltip>
 				<Popover.Trigger>
 					<Button
 						isIconOnly

@@ -54,7 +54,7 @@ const StudentDetailHeader = ({
 					<div className="flex items-center gap-6">
 						<div className="flex items-center gap-4">
 							<span className="text-neutral-600 text-sm">Rooms</span>
-							<IdentityChip fullName={student.room?.title ?? "Unassigned"} />
+							<IdentityChip fallbackIcon="room" fullName={student.room?.title ?? "Unassigned"} />
 						</div>
 
 						<Button

@@ -35,7 +35,7 @@ const RoomDetailHeader = ({ activeTab, roomId, onTabChange }: RoomDetailHeaderPr
 		{
 			label: "Ratio",
 			icon: (
-				<Tooltip delay={300}>
+				<Tooltip>
 					<Tooltip.Trigger className="inline-flex" aria-label={isGoodRatio ? "Ratio is met" : "Ratio is not met"}>
 						<span className="inline-flex cursor-default items-center justify-center">
 							{isGoodRatio ? (

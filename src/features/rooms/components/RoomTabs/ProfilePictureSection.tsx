@@ -21,6 +21,7 @@ const ProfilePictureSection = ({
 	onDeletePicture,
 }: ProfilePictureSectionProps) => {
 	const [isImagePickerOpen, setIsImagePickerOpen] = useState(false)
+	const hasPicture = Boolean(avatarPreview)
 
 	return (
 		<div className="flex flex-col gap-5">
@@ -45,7 +46,7 @@ const ProfilePictureSection = ({
 						<MaterialSymbolsUploadRounded aria-hidden className="size-4" />
 						Upload Picture
 					</Button>
-					<Button variant="danger" onPress={onDeletePicture} size="sm">
+					<Button variant="danger" isDisabled={!hasPicture} onPress={onDeletePicture} size="sm">
 						<MaterialSymbolsDeleteOutline aria-hidden className="size-4" />
 						Delete Picture
 					</Button>

@@ -27,7 +27,7 @@ const ParentsAvatarGroup = ({ parents }: ParentsAvatarGroupProps) => {
 	const overflowCount = parents.length - MAX_VISIBLE
 
 	return (
-		<Tooltip delay={300}>
+		<Tooltip>
 			<Tooltip.Trigger aria-label={`${parents.length} parent${parents.length !== 1 ? "s" : ""}`}>
 				<div className="flex -space-x-2">
 					{visible.map((parent) => {

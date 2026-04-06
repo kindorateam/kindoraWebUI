@@ -18,7 +18,7 @@ export const HeaderFooterButton = ({
 	isActive = false,
 	isDisabled = false,
 }: HeaderFooterButtonProps) => (
-	<Tooltip delay={500}>
+	<Tooltip>
 		<Button isIconOnly isDisabled={isDisabled} onPress={onPress} size="sm" variant={isActive ? "secondary" : "ghost"}>
 			{icon}
 		</Button>

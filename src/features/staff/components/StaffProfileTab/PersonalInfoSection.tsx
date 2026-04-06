@@ -44,6 +44,8 @@ const PersonalInfoSection = ({
 	onDateChange,
 	parseDateValue,
 }: PersonalInfoSectionProps) => {
+	const hasPicture = Boolean(avatarPreview)
+
 	return (
 		<section className="flex flex-col gap-6">
 			<SectionHeader icon={<LucideUserRound className="size-5" />} title="Personal info" />
@@ -60,7 +62,7 @@ const PersonalInfoSection = ({
 							Upload Picture
 							<input accept="image/*" className="hidden" onChange={onAvatarUpload} type="file" />
 						</Button>
-						<Button className="shadow-sm" variant="danger" onPress={onDeletePicture} size="sm">
+						<Button className="shadow-sm" variant="danger" isDisabled={!hasPicture} onPress={onDeletePicture} size="sm">
 							Delete Picture
 						</Button>
 					</div>
