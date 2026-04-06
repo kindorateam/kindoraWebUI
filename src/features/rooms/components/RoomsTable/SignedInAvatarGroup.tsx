@@ -33,7 +33,7 @@ const SignedInAvatarGroup = ({ items, tooltipLabel }: SignedInAvatarGroupProps) 
 
 	return (
 		<div className="flex justify-center">
-			<Tooltip>
+			<Tooltip delay={0}>
 				<Tooltip.Trigger aria-label={tooltipLabel}>
 					<div className="flex -space-x-2">
 						{visible.map((item) => (

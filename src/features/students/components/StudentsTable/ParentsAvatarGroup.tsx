@@ -16,7 +16,7 @@ const ParentsAvatarGroup = ({ parents }: ParentsAvatarGroupProps) => {
 	const extraCount = parents.length - 2
 
 	return (
-		<Tooltip>
+		<Tooltip delay={0}>
 			<div className="flex -space-x-2">
 				{parents.slice(0, 2).map((parent) => {
 					const fullName = `${parent.firstName} ${parent.lastName}`

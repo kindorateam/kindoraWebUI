@@ -76,7 +76,7 @@ const RoomsTableCell = ({ room, columnKey }: RoomsTableCellProps) => {
 			const isGoodRatio = actualRatio <= room.ratio
 
 			return (
-				<Tooltip>
+				<Tooltip delay={0}>
 					<Tooltip.Trigger aria-label="Ratio status">
 						<span className="flex cursor-default items-center justify-center">
 							{isGoodRatio ? (

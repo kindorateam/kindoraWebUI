@@ -113,7 +113,7 @@ const OTPVerificationForm = ({ email, onBack, onSuccess, context = "login", code
 						<p className="text-default-500 text-sm">Enter the verification code sent to</p>
 						<div className="flex items-center gap-1">
 							<p className="text-sm text-warning">{email}</p>
-							<Tooltip>
+							<Tooltip delay={0}>
 								<Button isIconOnly onPress={onBack} size="sm" variant="ghost">
 									<TablerEdit className="text-warning" />
 								</Button>

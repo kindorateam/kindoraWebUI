@@ -119,7 +119,7 @@ const StaffDetailHeader = ({
 											{employeeData.pinCode}
 										</Chip>
 										{/* TODO: Wire to generate pin API when available */}
-										<Tooltip>
+										<Tooltip delay={0}>
 											<Button
 												aria-label="Generate new pin"
 												variant="primary"
@@ -149,7 +149,7 @@ const StaffDetailHeader = ({
 											/>
 										))}
 										{MOCK_ROOMS.length > 2 && (
-											<Tooltip>
+											<Tooltip delay={0}>
 												<Button variant="secondary" size="sm" className="h-7 min-w-0 rounded-full px-3">
 													+{MOCK_ROOMS.length - 2}
 												</Button>

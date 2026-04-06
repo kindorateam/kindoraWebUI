@@ -91,7 +91,7 @@ const StudentsTableCell = ({ student, columnKey, onStudentClick }: StudentsTable
 						</Chip>
 					))}
 					{hiddenTags.length > 0 && (
-						<Tooltip>
+						<Tooltip delay={0}>
 							<Chip className="cursor-pointer bg-default-100" size="sm" variant="soft">
 								<span className="text-sm">+{hiddenTags.length}</span>
 							</Chip>
