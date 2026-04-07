@@ -41,7 +41,7 @@ const MOCK_STUDENTS: Student[] = Array.from({ length: 25 }, (_, i) => {
 	const doctor = DOCTORS[i % DOCTORS.length]!
 	// biome-ignore lint/style/noNonNullAssertion: modulo index is always in bounds
 	const lastName = LAST_NAMES[i % LAST_NAMES.length]!
-	const tagCount = (i % 4) + 1
+	const tagCount = i % 4 === 3 ? ALL_TAGS.length : (i % 4) + 1
 	const tags = ALL_TAGS.slice(0, tagCount)
 
 	return {

@@ -1,5 +1,6 @@
 import { Avatar, Chip, Input, Label, TextField } from "@heroui/react"
 
+import FluentPerson16Filled from "~icons/fluent/person-16-filled"
 import LucideUserRound from "~icons/lucide/user-round"
 
 import type { Student } from "../../types"
@@ -53,7 +54,9 @@ const PersonalInfoSection = ({ student }: PersonalInfoSectionProps) => {
 			<div className="flex flex-col gap-2">
 				<Avatar className="size-11 shadow-sm">
 					<Avatar.Image src={student.avatar?.path} alt="Student avatar" />
-					<Avatar.Fallback />
+					<Avatar.Fallback className="bg-accent text-white">
+						<FluentPerson16Filled className="size-9 text-white" />
+					</Avatar.Fallback>
 				</Avatar>
 
 				<div className="grid gap-2 lg:grid-cols-3">

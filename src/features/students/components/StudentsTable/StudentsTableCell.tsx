@@ -1,6 +1,7 @@
-import { Avatar, Button, Chip, Dropdown, ListBox, Tooltip } from "@heroui/react"
+import { Avatar, Badge, Button, Chip, Dropdown, ListBox, Tooltip } from "@heroui/react"
 
-import TablerAsterisk from "~icons/tabler/asterisk"
+import FluentPerson16Filled from "~icons/fluent/person-16-filled"
+import MageHospitalPlusFill from "~icons/mage/hospital-plus-fill"
 import TablerCalendarX from "~icons/tabler/calendar-x"
 import TablerEdit from "~icons/tabler/edit"
 import TablerEye from "~icons/tabler/eye"
@@ -24,20 +25,27 @@ const AvatarWithBadges = ({ student }: { student: Student }) => {
 		student.tags?.some((tag) => tag.toLowerCase().includes("allergy") || tag.toLowerCase().includes("medical")) ?? false
 
 	return (
-		<div className="relative">
+		<Badge.Anchor>
+			<Avatar size="sm">
+				<Avatar.Image src={student.avatar?.path} alt={`${student.firstName[0]}${student.lastName[0]}`} />
+				<Avatar.Fallback className="bg-accent text-white">
+					<FluentPerson16Filled className="size-6 text-white" />
+				</Avatar.Fallback>
+			</Avatar>
 			{student.checkedIn && (
-				<span className="absolute right-0 bottom-0 z-10 size-3 rounded-full border-2 border-white bg-success" />
+				<Badge
+					color="success"
+					placement="bottom-right"
+					size="sm"
+					className="h-3! min-h-0! w-3! min-w-0! border-2 border-white"
+				/>
 			)}
 			{hasMedicalIssue && (
-				<span className="absolute top-0 left-0 z-10 flex items-center justify-center">
-					<TablerAsterisk className="size-3.5 text-danger [&_path]:stroke-3" />
-				</span>
+				<Badge className="border-none bg-transparent shadow-none" placement="top-left" size="sm">
+					<MageHospitalPlusFill className="text-danger" />
+				</Badge>
 			)}
-			<Avatar className="shrink-0 bg-primary text-white" size="sm">
-				<Avatar.Image src={student.avatar?.path} alt={`${student.firstName[0]}${student.lastName[0]}`} />
-				<Avatar.Fallback>{`${student.firstName[0]}${student.lastName[0]}`}</Avatar.Fallback>
-			</Avatar>
-		</div>
+		</Badge.Anchor>
 	)
 }
 
@@ -82,20 +90,31 @@ const StudentsTableCell = ({ student, columnKey, onStudentClick }: StudentsTable
 			const tags = student.tags ?? []
 			const visibleTags = tags.slice(0, MAX_VISIBLE_TAGS)
 			const hiddenTags = tags.slice(MAX_VISIBLE_TAGS)
+			const hiddenTagRows = Array.from({ length: Math.ceil(hiddenTags.length / 3) }, (_, index) =>
+				hiddenTags.slice(index * 3, index * 3 + 3),
+			)
 
 			return (
 				<div className="flex items-center gap-1">
 					{visibleTags.map((tag) => (
-						<Chip className="bg-default-100" key={tag} size="sm" variant="soft">
-							<span className="text-sm">{tag}</span>
-						</Chip>
+						<Chip key={tag}>{tag}</Chip>
 					))}
 					{hiddenTags.length > 0 && (
 						<Tooltip delay={0}>
-							<Chip className="cursor-pointer bg-default-100" size="sm" variant="soft">
-								<span className="text-sm">+{hiddenTags.length}</span>
-							</Chip>
-							<Tooltip.Content>{hiddenTags.join(", ")}</Tooltip.Content>
+							<Tooltip.Trigger aria-label={`${hiddenTags.length} more tags`} className="cursor-pointer">
+								<Chip size="sm">+{hiddenTags.length}</Chip>
+							</Tooltip.Trigger>
+							<Tooltip.Content className="flex flex-col gap-1">
+								{hiddenTagRows.map((row) => (
+									<div className="flex gap-1" key={row.join("|")}>
+										{row.map((tag) => (
+											<Chip key={tag} size="sm">
+												{tag}
+											</Chip>
+										))}
+									</div>
+								))}
+							</Tooltip.Content>
 						</Tooltip>
 					)}
 				</div>

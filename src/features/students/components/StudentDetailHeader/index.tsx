@@ -1,6 +1,7 @@
 import { Avatar, Badge, Button, Chip, Separator, Tabs } from "@heroui/react"
 
 import IdentityChip from "@/components/IdentityChip"
+import FluentPerson16Filled from "~icons/fluent/person-16-filled"
 import SolarCalendarBroken from "~icons/solar/calendar-broken"
 
 import type { Student } from "../../types"
@@ -40,7 +41,9 @@ const StudentDetailHeader = ({
 				<Badge.Anchor>
 					<Avatar className="size-25 shrink-0 border-4 border-white shadow-md">
 						<Avatar.Image src={student.avatar?.path} alt={studentName} />
-						<Avatar.Fallback>{`${student.firstName[0]}${student.lastName[0]}`}</Avatar.Fallback>
+						<Avatar.Fallback className="bg-accent text-white">
+							<FluentPerson16Filled className="size-22 text-white" />
+						</Avatar.Fallback>
 					</Avatar>
 					<Badge color={student.checkedIn ? "success" : "danger"} placement="bottom-right" />
 				</Badge.Anchor>
