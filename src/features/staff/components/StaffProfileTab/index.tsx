@@ -249,27 +249,23 @@ const StaffProfileTab = ({ employeeId }: StaffProfileTabProps) => {
 					<Modal.Container>
 						<Modal.Dialog>
 							<Modal.CloseTrigger />
+							<Modal.Header>
+								<Modal.Icon className="bg-danger-soft text-danger-soft-foreground">
+									<TablerAlertTriangle className="size-5" />
+								</Modal.Icon>
+								<Modal.Heading>Deactivate Account</Modal.Heading>
+							</Modal.Header>
 							<Modal.Body>
-								<div className="flex flex-col items-center gap-5 px-7 py-8">
-									<div className="flex flex-col items-center gap-3 text-center">
-										<div className="flex size-12 items-center justify-center rounded-full bg-danger-100">
-											<TablerAlertTriangle className="size-6 text-danger" />
-										</div>
-										<h3 className="font-medium text-xl leading-7">Deactivate Account</h3>
-										<p className="text-foreground text-sm leading-5">
-											Are you sure you want to deactivate this staff account?
-										</p>
-									</div>
-									<div className="flex w-full flex-col gap-3">
-										<Button className="w-full" variant="danger" onPress={handleCloseDeactivateModal}>
-											Deactivate
-										</Button>
-										<Button fullWidth slot="close" size="md">
-											Cancel
-										</Button>
-									</div>
-								</div>
+								<p>Are you sure you want to deactivate this staff account?</p>
 							</Modal.Body>
+							<Modal.Footer>
+								<Button variant="secondary" slot="close">
+									Cancel
+								</Button>
+								<Button variant="danger" onPress={handleCloseDeactivateModal}>
+									Deactivate
+								</Button>
+							</Modal.Footer>
 						</Modal.Dialog>
 					</Modal.Container>
 				</Modal.Backdrop>

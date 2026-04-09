@@ -1,5 +1,6 @@
 import { Avatar, Badge, Button, Chip, Dropdown, ListBox, Tooltip } from "@heroui/react"
 
+import IdentityChip from "@/components/IdentityChip"
 import FluentPerson16Filled from "~icons/fluent/person-16-filled"
 import MageHospitalPlusFill from "~icons/mage/hospital-plus-fill"
 import TablerCalendarX from "~icons/tabler/calendar-x"
@@ -76,12 +77,7 @@ const StudentsTableCell = ({ student, columnKey, onStudentClick }: StudentsTable
 
 		case "room":
 			return student.room ? (
-				<Chip className="bg-primary-50 px-3" size="sm" variant="soft">
-					<Avatar className="size-5 bg-default-300 text-[10px] text-default-700">
-						<Avatar.Fallback>{student.room.title[0]}</Avatar.Fallback>
-					</Avatar>
-					<span className="px-1 font-regular text-default-foreground text-sm">{student.room.title}</span>
-				</Chip>
+				<IdentityChip fallbackIcon="room" fullName={student.room.title} />
 			) : (
 				<span className="text-default-400 text-sm">—</span>
 			)

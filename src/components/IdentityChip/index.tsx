@@ -20,14 +20,12 @@ const IdentityChip = ({ fallbackIcon = "person", fullName, src }: IdentityChipPr
 		fallbackIcon === "room" ? "bg-primary text-primary-foreground" : "bg-accent text-white"
 
 	return (
-		<Chip className="bg-accent-soft px-3 py-1.5 text-sm" variant="soft">
-			<div className="flex items-center gap-1.5">
-				<Avatar className="h-5 w-5 shrink-0">
-					{src ? <Avatar.Image alt={fullName} className="object-cover" src={src} /> : null}
-					<Avatar.Fallback className={avatarFallbackClassName}>{icon}</Avatar.Fallback>
-				</Avatar>
-				<span>{fullName}</span>
-			</div>
+		<Chip className="bg-accent-soft" variant="soft">
+			<Avatar className="size-5 shrink-0">
+				{src ? <Avatar.Image alt={fullName} className="object-cover" src={src} /> : null}
+				<Avatar.Fallback className={avatarFallbackClassName}>{icon}</Avatar.Fallback>
+			</Avatar>
+			<Chip.Label>{fullName}</Chip.Label>
 		</Chip>
 	)
 }

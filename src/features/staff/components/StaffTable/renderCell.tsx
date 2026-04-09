@@ -1,5 +1,6 @@
 import { Avatar, Badge, Button, Dropdown, Label } from "@heroui/react"
 
+import IdentityChip from "@/components/IdentityChip"
 import FluentPerson16Filled from "~icons/fluent/person-16-filled"
 
 import { getEmployeeAvatarUrl, getEmployeeFullName } from "../../types"
@@ -16,12 +17,7 @@ export function renderCell(employee: EmployeeSummary, columnKey: React.Key, opti
 	const { onEmployeeClick } = options
 	const fullName = getEmployeeFullName(employee)
 	const avatarUrl = getEmployeeAvatarUrl(employee)
-	const roomLabel = Array.isArray(employee.rooms)
-		? employee.rooms
-				.map((room) => room.title)
-				.filter(Boolean)
-				.join(", ")
-		: "No rooms"
+	const rooms = Array.isArray(employee.rooms) ? employee.rooms.filter((room) => Boolean(room.title)) : []
 
 	switch (columnKey) {
 		case "employee":
@@ -57,7 +53,15 @@ export function renderCell(employee: EmployeeSummary, columnKey: React.Key, opti
 			return <PinCell pinCode={employee.pinCode} />
 
 		case "room":
-			return <span className="text-gray-500 text-sm">{roomLabel}</span>
+			return rooms.length > 0 ? (
+				<div className="flex flex-wrap gap-1">
+					{rooms.map((room) => (
+						<IdentityChip fallbackIcon="room" fullName={room.title} key={room.id} />
+					))}
+				</div>
+			) : (
+				<span className="text-gray-500 text-sm">No rooms</span>
+			)
 
 		case "actions":
 			return (

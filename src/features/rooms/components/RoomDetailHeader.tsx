@@ -29,11 +29,11 @@ const RoomDetailHeader = ({ activeTab, roomId, onTabChange }: RoomDetailHeaderPr
 	const isGoodRatio = actualRatio <= ratioValue
 
 	const stats = [
-		{ label: "Capacity", value: room?.capacity ?? 0, badgeVariant: "circle" as const },
-		{ label: "Students", value: studentsCount, badgeVariant: "circle" as const },
-		{ label: "Sign In", value: signedInCount, badgeVariant: "circle" as const },
+		{ label: "Capacity:", value: room?.capacity ?? 0, badgeVariant: "circle" as const },
+		{ label: "Students:", value: studentsCount, badgeVariant: "circle" as const },
+		{ label: "Sign In:", value: signedInCount, badgeVariant: "circle" as const },
 		{
-			label: "Ratio",
+			label: "Ratio:",
 			icon: (
 				<Tooltip delay={0}>
 					<Tooltip.Trigger className="inline-flex" aria-label={isGoodRatio ? "Ratio is met" : "Ratio is not met"}>
@@ -92,12 +92,15 @@ const RoomDetailHeader = ({ activeTab, roomId, onTabChange }: RoomDetailHeaderPr
 								))}
 							</div>
 						</div>
-						<div className="flex gap-3.5">
-							{staffMembers.length > 0 ? (
-								staffMembers.map((staff) => <IdentityChip fullName={staff.name} key={staff.id} />)
-							) : (
-								<span className="text-default-400 text-sm">No staff assigned to this room</span>
-							)}
+						<div className="flex items-center gap-3.5">
+							<span>Staff:</span>
+							<div className="flex flex-wrap gap-3.5">
+								{staffMembers.length > 0 ? (
+									staffMembers.map((staff) => <IdentityChip fullName={staff.name} key={staff.id} />)
+								) : (
+									<span className="text-default-400 text-sm">No staff assigned to this room</span>
+								)}
+							</div>
 						</div>
 					</div>
 				</div>

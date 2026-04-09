@@ -2,11 +2,11 @@ import {
 	Avatar,
 	Badge,
 	Button,
-	Calendar,
 	Chip,
 	Label,
 	ListBox,
 	Popover,
+	RangeCalendar,
 	Select,
 	Separator,
 	Tabs,
@@ -96,7 +96,7 @@ const StaffDetailHeader = ({
 								{/* Role */}
 								{employeeData?.role && (
 									<div className="flex items-center gap-2">
-										<span className="text-neutral-600 text-sm">Role</span>
+										<span>Role:</span>
 										<Chip
 											className="bg-[#792C410D] px-3 py-1 text-sm capitalize"
 											style={{ color: "var(--colors-base-secondary, #7828C8)" }}
@@ -110,7 +110,7 @@ const StaffDetailHeader = ({
 								{/* Pin + Generate button */}
 								{employeeData?.pinCode != null && (
 									<div className="flex items-center gap-2">
-										<span className="text-neutral-600 text-sm">Pin</span>
+										<span>Pin:</span>
 										<Chip
 											className="bg-[#792C410D] px-3 py-1 font-medium text-sm"
 											style={{ color: "var(--colors-base-secondary, #7828C8)" }}
@@ -138,7 +138,7 @@ const StaffDetailHeader = ({
 								{/* Rooms */}
 								{/* TODO: Replace MOCK_ROOMS with actual room data from API */}
 								<div className="flex items-center gap-2">
-									<span className="shrink-0 text-neutral-600 text-sm">Rooms</span>
+									<span className="shrink-0">Rooms:</span>
 									<div className="flex min-w-0 items-center gap-2">
 										{MOCK_ROOMS.slice(0, 2).map((room) => (
 											<IdentityChip
@@ -174,7 +174,7 @@ const StaffDetailHeader = ({
 						{/* TODO: Replace mock absence data with API data when available */}
 						{absenceDate && (
 							<div className="flex items-center gap-3">
-								<span className="shrink-0 text-neutral-600 text-sm">Absence date</span>
+								<span className="shrink-0">Absence date:</span>
 								<Chip
 									className="bg-[#792C410D] px-3 py-1 font-medium text-sm"
 									style={{ color: "var(--colors-base-secondary, #7828C8)" }}
@@ -188,10 +188,10 @@ const StaffDetailHeader = ({
 											<SolarCalendarBroken className="size-4" />
 										</Button>
 									</Popover.Trigger>
-									<Popover.Content className="p-4">
+									<Popover.Content>
 										<Popover.Dialog>
 											<div className="flex flex-col gap-4">
-												<Select defaultValue="vacation">
+												<Select defaultValue="vacation" variant="secondary">
 													<Label>Reason</Label>
 													<Select.Trigger>
 														<Select.Value />
@@ -208,7 +208,21 @@ const StaffDetailHeader = ({
 														</ListBox>
 													</Select.Popover>
 												</Select>
-												<Calendar aria-label="Absence date" />
+												<RangeCalendar aria-label="Absence date range">
+													<RangeCalendar.Header>
+														<RangeCalendar.Heading />
+														<RangeCalendar.NavButton slot="previous" />
+														<RangeCalendar.NavButton slot="next" />
+													</RangeCalendar.Header>
+													<RangeCalendar.Grid>
+														<RangeCalendar.GridHeader>
+															{(day) => <RangeCalendar.HeaderCell>{day}</RangeCalendar.HeaderCell>}
+														</RangeCalendar.GridHeader>
+														<RangeCalendar.GridBody>
+															{(date) => <RangeCalendar.Cell date={date} />}
+														</RangeCalendar.GridBody>
+													</RangeCalendar.Grid>
+												</RangeCalendar>
 											</div>
 										</Popover.Dialog>
 									</Popover.Content>
