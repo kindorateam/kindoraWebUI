@@ -15,7 +15,7 @@ bun run build        # Production build
 
 ## Tech Stack
 
-Bun, React 19, TypeScript 5 (strict), Vite 7, TanStack Router (file-based routing), TanStack Query 5, Jotai 2 (state), Axios (HTTP), Tailwind CSS 4, HeroUI 2, Biome 2 (lint + format), React Hook Form + Zod, Iconify (icons).
+Bun, React 19, TypeScript 5 (strict), Vite 7, TanStack Router (file-based routing), TanStack Query 5, Jotai 2 (state), Axios (HTTP), Tailwind CSS 4, HeroUI 3 (beta, compound components, built on React Aria), Biome 2 (lint + format), React Hook Form + Zod, Iconify (icons).
 
 ## Architecture
 

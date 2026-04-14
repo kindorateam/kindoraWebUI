@@ -57,7 +57,8 @@ Do not skip layers. Components should consume hooks, not call service modules di
 - Use named exports for hooks, utilities, and non-component helpers
 - Prefer `React.ReactNode`, `React.useRef`, and other `React.*` references instead of separately imported React types
 - Prefer functional patterns over OOP; reserve classes for stateful abstractions such as `ApiClient`
-- Use kebab-case for file names
+- Use PascalCase for React component file names, such as `ConfirmRoomStep.tsx`
+- Use kebab-case for non-component file names unless an existing local convention requires otherwise
 - Use PascalCase for component identifiers
 - Use `use*` camelCase for hooks
 - Use `import type` for type-only imports

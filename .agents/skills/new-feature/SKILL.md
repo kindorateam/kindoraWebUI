@@ -21,7 +21,7 @@ Only create `stores/`, `utils/`, or `constants.ts` when the user describes a rea
 
 ## Conventions
 
-- Component file names use kebab-case
+- Component file names use PascalCase
 - Each `.tsx` component file has exactly one default export
 - Component identifiers use PascalCase
 - Service files should be named `<feature-name>.service.ts`
