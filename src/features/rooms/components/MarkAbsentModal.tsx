@@ -3,11 +3,11 @@ import { getLocalTimeZone, today } from "@internationalized/date"
 import { useAtomValue } from "jotai"
 import { useState } from "react"
 
+import { useCreateStudentAbsence } from "@/features/students/hooks/useStudents"
 import { getErrorMessage } from "@/utils/error"
 import SolarCalendarBroken from "~icons/solar/calendar-broken"
 
 import { ABSENCE_REASONS } from "../constants"
-import { useMarkStudentAbsent } from "../hooks/useRooms"
 import { closeMarkAbsentModal, markAbsentModalAtom } from "../stores/markAbsentModal.store"
 
 import type { CalendarDate } from "@internationalized/date"
@@ -22,7 +22,7 @@ const toRFC3339 = (date: CalendarDate): string => {
 
 const MarkAbsentModal = () => {
 	const { isOpen, studentId, studentName } = useAtomValue(markAbsentModalAtom)
-	const markAbsentMutation = useMarkStudentAbsent()
+	const markAbsentMutation = useCreateStudentAbsence()
 
 	const todayDate = today(getLocalTimeZone())
 	const [dateRange, setDateRange] = useState<RangeValue<CalendarDate>>({

@@ -14,8 +14,6 @@ import type {
 	RoomUpdatePayload,
 	StaffMember,
 	Student,
-	StudentAbsenceDTO,
-	StudentAbsenceRequest,
 	StudentOption,
 } from "../types"
 
@@ -219,16 +217,6 @@ export const checkInStudent = async (roomId: string, studentId: string): Promise
  */
 export const checkOutStudent = async (roomId: string, studentId: string): Promise<void> => {
 	await apiClient.post(`/rooms/${roomId}/students/${studentId}/check-out`)
-}
-
-/**
- * Marks a student as absent for a date range
- */
-export const markStudentAbsent = async (
-	studentId: string,
-	payload: StudentAbsenceRequest,
-): Promise<StudentAbsenceDTO> => {
-	return apiClient.post<StudentAbsenceDTO>(`/students/${studentId}/absence`, payload)
 }
 
 /**

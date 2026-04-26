@@ -46,14 +46,13 @@ function getDocumentFileName(document: StudentDocument): string {
 }
 
 function handleDownload(document: StudentDocument) {
-	const url = getStudentDocumentDownloadUrl(document.studentId, document.id)
+	const url = getStudentDocumentDownloadUrl(document)
+	if (!url) return
 	window.open(url, "_blank")
 }
 
 function handleView(document: StudentDocument) {
-	if (document.media?.path) {
-		window.open(document.media.path, "_blank")
-	}
+	handleDownload(document)
 }
 
 export function renderCell(document: StudentDocument, columnKey: React.Key) {

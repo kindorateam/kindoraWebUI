@@ -1,229 +1,425 @@
-import type { GetStudentsResult, Student, StudentDocument } from "../types"
+import { apiClient } from "@/services/api.service"
+import { getMediaUrl } from "@/utils/media"
+
+import type {
+	GetStudentsResult,
+	ShortMedia,
+	Student,
+	StudentAbsence,
+	StudentDocument,
+	StudentDocumentStatus,
+	StudentGuardian,
+	StudentMedicalInfo,
+	StudentParent,
+	StudentRoom,
+	StudentSibling,
+} from "../types"
 
 export interface GetStudentsParams {
 	status?: string
 	limit?: number
 	offset?: number
+	search?: string
 }
 
-const FIRST_NAMES = ["James", "Emma", "Liam", "Olivia", "Noah"] as const
-const LAST_NAMES = ["Whitaker", "Johnson", "Williams", "Brown", "Davis"] as const
-const ROOMS = [
-	{ id: "room-1", title: "Baby turtles" },
-	{ id: "room-2", title: "Little stars" },
-	{ id: "room-3", title: "Sunshine" },
-] as const
-const STATES = ["Florida", "Georgia", "Texas", "California", "Arizona"] as const
-const CITIES = ["Miami", "Atlanta", "Austin", "San Diego", "Phoenix"] as const
-const STREETS = [
-	"123 Peachtree Street NE",
-	"456 Ocean Drive",
-	"789 Sunset Avenue",
-	"321 Palm Street",
-	"654 Cedar Lane",
-] as const
-const DIET_RESTRICTIONS = ["Vegan", "Gluten free", "Nut free", "Dairy free", "No restrictions"] as const
-const DOCTORS = ["Alexander Johns", "Emily Carter", "Michael Reed", "Sophia Lopez", "Daniel Brooks"] as const
-const ALL_TAGS = ["Allergy", "Special needs", "Bus rider", "After care", "Lunch", "Nap", "Early pickup", "Medication"]
+export interface StudentMedicalInfoPayload {
+	allergies?: string[]
+	medications?: string
+	doctorName?: string
+	doctorPhone?: string
+}
 
-const MOCK_STUDENTS: Student[] = Array.from({ length: 25 }, (_, i) => {
-	// biome-ignore lint/style/noNonNullAssertion: modulo index is always in bounds
-	const room = ROOMS[i % ROOMS.length]!
-	// biome-ignore lint/style/noNonNullAssertion: modulo index is always in bounds
-	const state = STATES[i % STATES.length]!
-	// biome-ignore lint/style/noNonNullAssertion: modulo index is always in bounds
-	const city = CITIES[i % CITIES.length]!
-	// biome-ignore lint/style/noNonNullAssertion: modulo index is always in bounds
-	const streetAddress = STREETS[i % STREETS.length]!
-	// biome-ignore lint/style/noNonNullAssertion: modulo index is always in bounds
-	const dietRestriction = DIET_RESTRICTIONS[i % DIET_RESTRICTIONS.length]!
-	// biome-ignore lint/style/noNonNullAssertion: modulo index is always in bounds
-	const doctor = DOCTORS[i % DOCTORS.length]!
-	// biome-ignore lint/style/noNonNullAssertion: modulo index is always in bounds
-	const lastName = LAST_NAMES[i % LAST_NAMES.length]!
-	const tagCount = i % 4 === 3 ? ALL_TAGS.length : (i % 4) + 1
-	const tags = ALL_TAGS.slice(0, tagCount)
+export interface StudentParentPayload {
+	parentId?: string
+	relationship?: string
+	firstName?: string
+	lastName?: string
+	email?: string
+	phone?: string
+	isTrustedPerson?: boolean
+}
 
-	return {
-		id: `student-${i + 1}`,
-		// biome-ignore lint/style/noNonNullAssertion: modulo index is always in bounds
-		firstName: FIRST_NAMES[i % FIRST_NAMES.length]!,
-		// biome-ignore lint/style/noNonNullAssertion: modulo index is always in bounds
-		lastName: LAST_NAMES[i % LAST_NAMES.length]!,
-		avatar: undefined,
-		roomId: room.id,
-		room: { id: room.id, title: room.title },
-		checkedIn: i % 3 !== 0,
-		parents: [
-			{
-				id: `parent-${i}-1`,
-				firstName: "Sarah",
-				lastName,
-				avatar: undefined,
-				email: `sarah${i + 1}@gmail.com`,
-				phone: "(415) 448-5678",
-				pin: "4153",
-				relationshipToStudent: "Mom",
-			},
-			{
-				id: `parent-${i}-2`,
-				firstName: "John",
-				lastName,
-				avatar: undefined,
-				email: `john${i + 1}@gmail.com`,
-				phone: "(415) 448-5678",
-				pin: "4153",
-				relationshipToStudent: "Dad",
-			},
-		],
-		tags,
-		birthday: `202${i % 4}-0${(i % 9) + 1}-16`,
-		dietRestriction,
-		state,
-		city,
-		streetAddress,
-		zipCode: `${33000 + i}`,
-		enrollDate: `202${i % 5}-0${((i + 3) % 9) + 1}-12`,
-		siblings: [
-			{
-				id: `sibling-${i}-1`,
-				firstName: "Luca",
-				lastName,
-				avatar: undefined,
-				relationshipToStudent: "Brother",
-				dateOfBirth: `201${i % 7}-0${((i + 5) % 9) + 1}-10`,
-				assignedRoomTitle: room.title,
-			},
-		],
-		guardians: [
-			{
-				id: `guardian-${i}-1`,
-				firstName: "Olivia",
-				lastName,
-				avatar: undefined,
-				phone: "(415) 448-5678",
-				pin: "Reveal",
-				relationshipToStudent: "Aunt",
-			},
-		],
-		medicalInfo: {
-			allergies: tags.filter(
-				(tag) => tag.toLowerCase().includes("allergy") || tag.toLowerCase().includes("medication"),
-			),
-			medications: i % 2 === 0 ? "Children's multivitamin" : "-",
-			doctor,
-			doctorPhone: "(415) 234-5678",
-		},
-	}
+export interface CreateStudentPayload {
+	firstName: string
+	lastName: string
+	birthDate?: string
+	dietRestriction?: string
+	streetAddress?: string
+	city?: string
+	state?: string
+	zipCode?: string
+	enrollDate?: string
+	roomId: string
+	roomIds?: string[]
+	avatarId?: string
+	parents?: StudentParentPayload[]
+	tags?: string[]
+	medicalInfo?: StudentMedicalInfoPayload
+}
+
+export interface UpdateStudentPayload {
+	firstName?: string
+	lastName?: string
+	birthDate?: string
+	dietRestriction?: string
+	streetAddress?: string
+	city?: string
+	state?: string
+	zipCode?: string
+	enrollDate?: string
+	roomId?: string
+	roomIds?: string[]
+	avatar?: ShortMedia
+	parents?: StudentParentPayload[]
+	removeParentIds?: string[]
+	tags?: string[]
+	medicalInfo?: StudentMedicalInfoPayload
+}
+
+export interface StudentAbsencePayload {
+	dateFrom: string
+	dateTo: string
+	reason: string
+}
+
+export interface StudentDocumentPayload {
+	type: string
+	expiryDate?: string
+	notes?: string
+}
+
+export type UpdateStudentDocumentPayload = Partial<StudentDocumentPayload>
+
+interface ApiStudentListResponse {
+	items: ApiStudent[]
+	total: number
+	limit: number
+	offset: number
+}
+
+interface ApiStudent {
+	id: string
+	firstName: string
+	lastName: string
+	birthDate?: string
+	dietRestriction?: string
+	streetAddress?: string
+	city?: string
+	state?: string
+	zipCode?: string
+	enrollDate?: string
+	roomId?: string
+	room?: StudentRoom | null
+	rooms?: StudentRoom[] | null
+	avatar?: ShortMedia | null
+	checkedIn?: boolean
+	parents?: ApiStudentParent[] | null
+	tags?: string[] | null
+	absence?: StudentAbsence | null
+	medicalInfo?: ApiStudentMedicalInfo | null
+}
+
+interface ApiStudentProfile extends ApiStudent {
+	guardians?: ApiStudentProfileParent[] | null
+	parents?: ApiStudentProfileParent[] | null
+	siblings?: ApiStudentSibling[] | null
+}
+
+interface ApiStudentParent {
+	id: string
+	firstName: string
+	lastName: string
+	avatar?: ShortMedia | null
+	relationship?: string
+}
+
+interface ApiStudentProfileParent extends ApiStudentParent {
+	email?: string
+	phone?: string
+	pinCode?: string
+}
+
+interface ApiStudentSibling {
+	id: string
+	firstName: string
+	lastName: string
+	birthDate?: string
+	avatar?: ShortMedia | null
+	rooms?: StudentRoom[] | null
+}
+
+interface ApiStudentMedicalInfo {
+	allergies?: string[] | null
+	medications?: string
+	doctorName?: string
+	doctorPhone?: string
+}
+
+interface ApiStudentDocument {
+	id: number
+	studentId: string
+	media?: ShortMedia
+	status?: StudentDocumentStatus
+	expiryDate?: string | null
+	type?: string
+	notes?: string
+	uploadedAt?: string
+	uploadedBy?: { id?: string; name?: string }
+}
+
+const toNullable = <T>(value: T | undefined): T | null => value ?? null
+
+const toParent = (parent: ApiStudentParent): StudentParent => ({
+	id: parent.id,
+	firstName: parent.firstName,
+	lastName: parent.lastName,
+	avatar: toNullable(parent.avatar) ?? undefined,
+	relationshipToStudent: parent.relationship ?? null,
 })
 
-const MOCK_STUDENT_DOCUMENTS: Record<string, StudentDocument[]> = Object.fromEntries(
-	MOCK_STUDENTS.map((student, index) => [
-		student.id,
-		[
-			{
-				id: index * 10 + 1,
-				studentId: student.id,
-				media: {
-					id: `doc-${student.id}-1`,
-					path: `/mock/student-documents/${student.id}/medical-form.pdf`,
-				},
-				status: "active",
-				expiryDate: "2026-12-31",
-				type: "Medical Form",
-				notes: "Signed by pediatrician",
-				uploadedAt: "2026-01-15T10:00:00.000Z",
-				uploadedBy: { id: "admin-1", name: "John Jackson" },
-			},
-			{
-				id: index * 10 + 2,
-				studentId: student.id,
-				media: {
-					id: `doc-${student.id}-2`,
-					path: `/mock/student-documents/${student.id}/immunization-record.pdf`,
-				},
-				status: index % 3 === 0 ? "expiring_soon" : "uploaded",
-				expiryDate: index % 3 === 0 ? "2026-04-15" : null,
-				type: "Immunization Record",
-				notes: null,
-				uploadedAt: "2026-02-01T12:00:00.000Z",
-				uploadedBy: { id: "admin-1", name: "John Jackson" },
-			},
-		],
-	]),
-)
+const toProfileParent = (parent: ApiStudentProfileParent): StudentParent => ({
+	...toParent(parent),
+	email: parent.email ?? null,
+	phone: parent.phone ?? null,
+	pin: parent.pinCode ?? null,
+})
+
+const toGuardian = (guardian: ApiStudentProfileParent): StudentGuardian => ({
+	id: guardian.id,
+	firstName: guardian.firstName,
+	lastName: guardian.lastName,
+	avatar: toNullable(guardian.avatar) ?? undefined,
+	phone: guardian.phone ?? null,
+	pin: guardian.pinCode ?? null,
+	relationshipToStudent: guardian.relationship ?? null,
+})
+
+const toSibling = (sibling: ApiStudentSibling): StudentSibling => ({
+	id: sibling.id,
+	firstName: sibling.firstName,
+	lastName: sibling.lastName,
+	avatar: toNullable(sibling.avatar) ?? undefined,
+	dateOfBirth: sibling.birthDate ?? null,
+	assignedRoomTitle: sibling.rooms?.[0]?.title ?? null,
+})
+
+const toMedicalInfo = (medicalInfo?: ApiStudentMedicalInfo | null): StudentMedicalInfo | undefined => {
+	if (!medicalInfo) return undefined
+
+	return {
+		allergies: medicalInfo.allergies ?? [],
+		medications: medicalInfo.medications ?? null,
+		doctor: medicalInfo.doctorName ?? null,
+		doctorPhone: medicalInfo.doctorPhone ?? null,
+	}
+}
+
+const transformStudent = (student: ApiStudent | ApiStudentProfile): Student => ({
+	id: student.id,
+	firstName: student.firstName,
+	lastName: student.lastName,
+	avatar: toNullable(student.avatar) ?? undefined,
+	roomId: student.roomId ?? "",
+	room: student.room ?? student.rooms?.[0],
+	checkedIn: student.checkedIn ?? false,
+	parents:
+		"guardians" in student ? (student.parents ?? []).map(toProfileParent) : (student.parents ?? []).map(toParent),
+	tags: student.tags ?? [],
+	absence: student.absence ?? undefined,
+	birthday: student.birthDate ?? null,
+	dietRestriction: student.dietRestriction ?? null,
+	state: student.state ?? null,
+	city: student.city ?? null,
+	streetAddress: student.streetAddress ?? null,
+	zipCode: student.zipCode ?? null,
+	enrollDate: student.enrollDate ?? null,
+	siblings: "siblings" in student ? (student.siblings ?? []).map(toSibling) : [],
+	guardians: "guardians" in student ? (student.guardians ?? []).map(toGuardian) : [],
+	medicalInfo: toMedicalInfo(student.medicalInfo),
+})
+
+const transformStudentDocument = (document: ApiStudentDocument): StudentDocument => ({
+	id: document.id,
+	studentId: document.studentId,
+	media: document.media ?? { id: "", path: "" },
+	status: document.status ?? "uploaded",
+	expiryDate: document.expiryDate ?? null,
+	type: document.type ?? "other",
+	notes: document.notes ?? null,
+	uploadedAt: document.uploadedAt ?? "",
+	uploadedBy: document.uploadedBy?.id
+		? {
+				id: document.uploadedBy.id,
+				name: document.uploadedBy.name ?? "",
+			}
+		: null,
+})
+
+const toRFC3339Date = (date: string): string => {
+	if (!date) return date
+	if (date.includes("T")) return date
+	return new Date(`${date}T00:00:00`).toISOString()
+}
+
+const appendArray = (formData: FormData, key: string, values?: string[]) => {
+	if (values?.length) {
+		formData.append(key, values.join(","))
+	}
+}
+
+const appendOptional = (formData: FormData, key: string, value?: string) => {
+	if (value) {
+		formData.append(key, value)
+	}
+}
+
+const buildCreateStudentFormData = (payload: CreateStudentPayload, avatarFile: File): FormData => {
+	const formData = new FormData()
+	formData.append("avatar", avatarFile)
+	formData.append("firstName", payload.firstName)
+	formData.append("lastName", payload.lastName)
+	formData.append("roomId", payload.roomId)
+	appendOptional(formData, "birthDate", payload.birthDate)
+	appendOptional(formData, "dietRestriction", payload.dietRestriction)
+	appendOptional(formData, "streetAddress", payload.streetAddress)
+	appendOptional(formData, "city", payload.city)
+	appendOptional(formData, "state", payload.state)
+	appendOptional(formData, "zipCode", payload.zipCode)
+	appendOptional(formData, "enrollDate", payload.enrollDate)
+	appendOptional(formData, "avatarId", payload.avatarId)
+	appendArray(formData, "roomIds", payload.roomIds)
+	appendArray(formData, "tags", payload.tags)
+	return formData
+}
+
+const buildStudentDocumentFormData = (file: File, data: StudentDocumentPayload): FormData => {
+	const formData = new FormData()
+	formData.append("file", file)
+	formData.append("type", data.type)
+	if (data.expiryDate) formData.append("expiryDate", toRFC3339Date(data.expiryDate))
+	if (data.notes) formData.append("notes", data.notes)
+	return formData
+}
+
+const normalizeStudentDocumentPayload = (payload: UpdateStudentDocumentPayload): UpdateStudentDocumentPayload => ({
+	...payload,
+	expiryDate: payload.expiryDate ? toRFC3339Date(payload.expiryDate) : payload.expiryDate,
+})
 
 export async function getStudents(params: GetStudentsParams = {}): Promise<GetStudentsResult> {
-	const { limit = 10, offset = 0 } = params
+	const { limit = 10, offset = 0, search } = params
+	const response = await apiClient.get<ApiStudentListResponse>("/students", {
+		params: { limit, offset, search },
+	})
 
-	// TODO: Replace with real API call
-	// return apiClient.get<GetStudentsResult>("/rooms/all-students-list", { params: { limit, offset } })
-
-	await new Promise((resolve) => setTimeout(resolve, 500))
-
-	const paged = MOCK_STUDENTS.slice(offset, offset + limit)
 	return {
-		items: paged,
-		total: MOCK_STUDENTS.length,
-		limit,
-		offset,
+		items: response.items.map(transformStudent),
+		total: response.total,
+		limit: response.limit,
+		offset: response.offset,
 	}
+}
+
+export async function createStudent(payload: CreateStudentPayload, avatarFile?: File): Promise<Student> {
+	const response = avatarFile
+		? await apiClient.post<ApiStudent>("/students", buildCreateStudentFormData(payload, avatarFile), {
+				headers: { "Content-Type": "multipart/form-data" },
+			})
+		: await apiClient.post<ApiStudent>("/students", payload)
+
+	return transformStudent(response)
 }
 
 export async function getStudentById(studentId: string): Promise<Student> {
-	// TODO: Replace with real API call
-	// return apiClient.get<Student>(`/students/${studentId}`)
+	const response = await apiClient.get<ApiStudentProfile>(`/students/${studentId}`)
+	return transformStudent(response)
+}
 
-	await new Promise((resolve) => setTimeout(resolve, 300))
+export async function updateStudent(studentId: string, payload: UpdateStudentPayload): Promise<Student> {
+	const response = await apiClient.put<ApiStudent>(`/students/${studentId}`, payload)
+	return transformStudent(response)
+}
 
-	const student = MOCK_STUDENTS.find((item) => item.id === studentId)
-	if (!student) {
-		throw new Error(`Student with id ${studentId} not found`)
-	}
+export async function deleteStudent(studentId: string): Promise<void> {
+	await apiClient.delete(`/students/${studentId}`)
+}
 
-	return student
+export async function activateStudent(studentId: string): Promise<Student> {
+	const response = await apiClient.post<ApiStudent>(`/students/${studentId}/activate`)
+	return transformStudent(response)
+}
+
+export async function deactivateStudent(studentId: string): Promise<Student> {
+	const response = await apiClient.post<ApiStudent>(`/students/${studentId}/deactivate`)
+	return transformStudent(response)
+}
+
+export async function updateStudentAvatar(studentId: string, avatarFile: File): Promise<Student> {
+	const formData = new FormData()
+	formData.append("avatar", avatarFile)
+
+	const response = await apiClient.put<ApiStudent>(`/students/${studentId}/avatar`, formData, {
+		headers: { "Content-Type": "multipart/form-data" },
+	})
+
+	return transformStudent(response)
+}
+
+export async function getStudentAbsences(studentId: string): Promise<StudentAbsence[]> {
+	return apiClient.get<StudentAbsence[]>(`/students/${studentId}/absence`)
+}
+
+export async function createStudentAbsence(studentId: string, payload: StudentAbsencePayload): Promise<StudentAbsence> {
+	return apiClient.post<StudentAbsence>(`/students/${studentId}/absence`, payload)
+}
+
+export async function deleteStudentAbsence(studentId: string, absenceId: number): Promise<void> {
+	await apiClient.delete(`/students/${studentId}/absence/${absenceId}`)
 }
 
 export async function getStudentDocuments(studentId: string): Promise<StudentDocument[]> {
-	await new Promise((resolve) => setTimeout(resolve, 300))
-	return [...(MOCK_STUDENT_DOCUMENTS[studentId] ?? [])]
+	const response = await apiClient.get<ApiStudentDocument[]>(`/students/${studentId}/documents`)
+	return response.map(transformStudentDocument)
+}
+
+export async function getStudentDocument(studentId: string, documentId: number): Promise<StudentDocument> {
+	const response = await apiClient.get<ApiStudentDocument>(`/students/${studentId}/documents/${documentId}`)
+	return transformStudentDocument(response)
 }
 
 export async function uploadStudentDocument(
 	studentId: string,
 	file: File,
-	data: { type: string; expiryDate?: string; notes?: string },
+	data: StudentDocumentPayload,
 ): Promise<StudentDocument> {
-	await new Promise((resolve) => setTimeout(resolve, 300))
-
-	const uploadedDocument: StudentDocument = {
-		id: Date.now(),
-		studentId,
-		media: {
-			id: crypto.randomUUID(),
-			path: URL.createObjectURL(file),
+	const response = await apiClient.post<ApiStudentDocument>(
+		`/students/${studentId}/documents`,
+		buildStudentDocumentFormData(file, data),
+		{
+			headers: { "Content-Type": "multipart/form-data" },
 		},
-		status: "uploaded",
-		expiryDate: data.expiryDate ?? null,
-		type: data.type,
-		notes: data.notes ?? null,
-		uploadedAt: new Date().toISOString(),
-		uploadedBy: { id: "admin-1", name: "John Jackson" },
-	}
+	)
 
-	MOCK_STUDENT_DOCUMENTS[studentId] = [uploadedDocument, ...(MOCK_STUDENT_DOCUMENTS[studentId] ?? [])]
+	return transformStudentDocument(response)
+}
 
-	return uploadedDocument
+export async function updateStudentDocument(
+	studentId: string,
+	documentId: number,
+	payload: UpdateStudentDocumentPayload,
+): Promise<StudentDocument> {
+	const response = await apiClient.put<ApiStudentDocument>(
+		`/students/${studentId}/documents/${documentId}`,
+		normalizeStudentDocumentPayload(payload),
+	)
+
+	return transformStudentDocument(response)
 }
 
 export async function deleteStudentDocument(studentId: string, documentId: number): Promise<void> {
-	await new Promise((resolve) => setTimeout(resolve, 300))
-
-	const existingDocuments = MOCK_STUDENT_DOCUMENTS[studentId] ?? []
-	MOCK_STUDENT_DOCUMENTS[studentId] = existingDocuments.filter((document) => document.id !== documentId)
+	await apiClient.delete(`/students/${studentId}/documents/${documentId}`)
 }
 
-export function getStudentDocumentDownloadUrl(studentId: string, documentId: number): string {
-	const document = (MOCK_STUDENT_DOCUMENTS[studentId] ?? []).find((item) => item.id === documentId)
-	return document?.media.path ?? ""
+export function getStudentDocumentDownloadUrl(document: StudentDocument): string {
+	return document.media.path ? getMediaUrl(document.media.path) : ""
 }

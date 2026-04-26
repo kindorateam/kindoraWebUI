@@ -6,11 +6,12 @@ import { useUploadStudentDocument } from "../hooks/useStudents"
 import { closeAddDocumentModal, isAddDocumentModalOpenAtom } from "../stores/addDocumentModal.store"
 
 const DOCUMENT_TYPES = [
-	{ key: "birth_certificate", label: "Birth Certificate" },
-	{ key: "emergency_authorization", label: "Emergency Authorization" },
-	{ key: "immunization_record", label: "Immunization Record" },
-	{ key: "medical_form", label: "Medical Form" },
-	{ key: "pickup_authorization", label: "Pickup Authorization" },
+	{ key: "cpr-certification", label: "CPR Certification" },
+	{ key: "background-check", label: "Background Check" },
+	{ key: "covid-19-vaccination", label: "COVID-19 Vaccination" },
+	{ key: "employment-contract", label: "Contract" },
+	{ key: "tuberculosis-test", label: "Tuberculosis Test" },
+	{ key: "other", label: "Other" },
 ]
 
 interface Props {

@@ -11,14 +11,13 @@ import {
 	getRooms,
 	getStudentsPaginated,
 	inactivateRoom,
-	markStudentAbsent,
 	moveStudentsToRoom,
 	updateRoom,
 	updateRoomLogo,
 } from "../services/room.service"
 
 import type { GetRoomsResult, PaginatedResult, RoomStatus } from "../services/room.service"
-import type { AddRoomFormData, Room, RoomUpdatePayload, StudentAbsenceRequest } from "../types"
+import type { AddRoomFormData, Room, RoomUpdatePayload } from "../types"
 
 const DEFAULT_PAGE_SIZE = 10
 
@@ -320,20 +319,6 @@ export const useCheckOutStudent = () => {
 		onSuccess: (_data, { roomId }) => {
 			invalidateRoomQueries(queryClient, roomId)
 		},
-	})
-}
-
-export interface MarkStudentAbsentParams {
-	studentId: string
-	payload: StudentAbsenceRequest
-}
-
-/**
- * Hook to mark a student as absent for a date range
- */
-export const useMarkStudentAbsent = () => {
-	return useMutation({
-		mutationFn: ({ studentId, payload }: MarkStudentAbsentParams) => markStudentAbsent(studentId, payload),
 	})
 }
 
