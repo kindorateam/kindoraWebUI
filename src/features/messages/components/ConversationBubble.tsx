@@ -1,3 +1,5 @@
+import clsx from "clsx"
+
 import type { BubbleItem } from "../types"
 
 interface ConversationBubbleProps {
@@ -8,18 +10,16 @@ const ConversationBubble = ({ bubble }: ConversationBubbleProps) => {
 	const isRight = bubble.align === "right"
 
 	return (
-		<div className={["flex w-full flex-col", isRight ? "items-end" : "items-start"].join(" ")}>
+		<div className={clsx("flex w-full flex-col gap-1", isRight ? "items-end" : "items-start")}>
 			<div
-				className={[
-					"max-w-62 rounded-[30px] px-6 py-4 text-sm leading-5 shadow-sm",
-					isRight ? "rounded-tr-2xl bg-primary text-white" : "bg-[#dceafc] text-black",
-				].join(" ")}
+				className={clsx(
+					"max-w-[85%] rounded-2xl px-4 py-3 text-sm shadow-sm sm:max-w-xl",
+					isRight ? "bg-primary text-primary-foreground" : "bg-default-100 text-foreground",
+				)}
 			>
-				{bubble.text.split("\n").map((line) => (
-					<p key={line}>{line}</p>
-				))}
+				<p className="whitespace-pre-line leading-6">{bubble.text}</p>
 			</div>
-			<p className="px-2 pt-1 text-[#a1a1aa] text-xs leading-4">{bubble.time}</p>
+			<p className="px-1 text-default-400 text-xs leading-4">{bubble.time}</p>
 		</div>
 	)
 }

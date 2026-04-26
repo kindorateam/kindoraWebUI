@@ -9,31 +9,28 @@ interface MessagesTabsProps {
 
 const MessagesTabs = ({ activeTab, onSelectionChange }: MessagesTabsProps) => {
 	return (
-		<Tabs
-			className="w-full max-w-79"
-			selectedKey={activeTab}
-			onSelectionChange={(key) => onSelectionChange(key as MessageTab)}
-		>
-			<Tabs.ListContainer>
+		<Tabs className="w-full" selectedKey={activeTab} onSelectionChange={(key) => onSelectionChange(key as MessageTab)}>
+			<Tabs.ListContainer className="w-full">
 				<Tabs.List
 					aria-label="Messages tabs"
-					className="h-8 gap-2 rounded-xl bg-white p-1 shadow-[0px_1px_3px_0px_rgba(0,0,0,0.1),0px_1px_2px_0px_rgba(0,0,0,0.1)]"
+					className="w-full *:h-6 *:flex-1 *:px-3 *:font-normal *:text-sm *:data-[selected=true]:text-accent-foreground"
 				>
-					<Tabs.Tab id="all" className="h-6 rounded-lg px-3 text-[#71717a] text-xs leading-4 data-selected:text-white">
+					<Tabs.Tab id="all">
 						All messages
-						<Tabs.Indicator className="rounded-lg bg-primary shadow-[0px_1px_2px_0px_rgba(0,0,0,0.05)]" />
+						<Tabs.Indicator className="bg-accent" />
 					</Tabs.Tab>
-					<Tabs.Tab
-						id="favorites"
-						className="h-6 rounded-lg px-3 text-[#71717a] text-xs leading-4 data-selected:text-white"
-					>
+					<Tabs.Tab id="favorites">
 						Favorites
-						<Tabs.Indicator className="rounded-lg bg-primary shadow-[0px_1px_2px_0px_rgba(0,0,0,0.05)]" />
+						<Tabs.Indicator className="bg-accent" />
 					</Tabs.Tab>
 				</Tabs.List>
 			</Tabs.ListContainer>
-			<Tabs.Panel id="all">{null}</Tabs.Panel>
-			<Tabs.Panel id="favorites">{null}</Tabs.Panel>
+			<Tabs.Panel id="all" className="hidden">
+				{null}
+			</Tabs.Panel>
+			<Tabs.Panel id="favorites" className="hidden">
+				{null}
+			</Tabs.Panel>
 		</Tabs>
 	)
 }

@@ -8,9 +8,9 @@ const MainLayout = () => {
 		<div className="grid h-screen grid-cols-[200px_1fr]">
 			<NavDrawer />
 
-			<div className="flex h-screen min-h-0 min-w-0 flex-col">
-				<Header />
+			<div className="relative flex h-screen min-h-0 min-w-0 flex-col">
 				<div className="min-h-0 overflow-y-auto">
+					<Header />
 					<div className="pb-15">
 						<Outlet />
 					</div>

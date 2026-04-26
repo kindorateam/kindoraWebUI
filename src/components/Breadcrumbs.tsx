@@ -6,7 +6,11 @@ import usePageMetadata from "@/hooks/usePageMetadata"
 
 import Text from "./Text"
 
-const Breadcrumbs = memo(() => {
+interface BreadcrumbsProps {
+	inverse?: boolean
+}
+
+const Breadcrumbs = memo(({ inverse = false }: BreadcrumbsProps) => {
 	const { breadcrumbs, pageTitle } = usePageMetadata()
 
 	const filteredBreadcrumbs = breadcrumbs.filter((crumb) => crumb.title !== "Home")
@@ -14,18 +18,23 @@ const Breadcrumbs = memo(() => {
 	if (breadcrumbs.length === 0) return null
 
 	if (filteredBreadcrumbs.length === 1) {
-		return <div className="font-medium text-secondary-strong">{pageTitle}</div>
+		return <div className={`font-medium ${inverse ? "text-white" : "text-secondary-strong"}`}>{pageTitle}</div>
 	}
 
 	return (
 		<HeroUIBreadcrumbs>
 			{filteredBreadcrumbs.map((crumb, index) => (
-				<HeroUIBreadcrumbs.Item className="text-base text-neutral-500" key={crumb.path}>
+				<HeroUIBreadcrumbs.Item
+					className={`text-base ${inverse ? "text-white/80" : "text-neutral-500"}`}
+					key={crumb.path}
+				>
 					{index === filteredBreadcrumbs.length - 1 ? (
-						<Text color="neutral-600">{crumb.title}</Text>
+						<Text className={inverse ? "text-white" : ""} color="neutral-600">
+							{crumb.title}
+						</Text>
 					) : (
 						<Link to={crumb.path}>
-							<Text color="neutral-500" weight="medium">
+							<Text className={inverse ? "text-white" : ""} color="neutral-500" weight="medium">
 								{crumb.title}
 							</Text>
 						</Link>

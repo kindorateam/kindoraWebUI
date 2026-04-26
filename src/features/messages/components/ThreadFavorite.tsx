@@ -5,18 +5,26 @@ import type { ThreadItem } from "../types"
 
 interface ThreadFavoriteProps {
 	favorite: ThreadItem["favorite"]
+	onToggle: () => void
 }
 
-const ThreadFavorite = ({ favorite }: ThreadFavoriteProps) => {
-	if (favorite === "pinned") {
-		return <TablerPinned className="size-6 shrink-0 text-[#8d8d93]" />
-	}
-
-	if (favorite === "highlighted") {
-		return <MdiStarOutline className="size-6 shrink-0 text-[#f59e0b]" />
-	}
-
-	return <MdiStarOutline className="size-6 shrink-0 text-[#a1a1aa]" />
+const ThreadFavorite = ({ favorite, onToggle }: ThreadFavoriteProps) => {
+	return (
+		<button
+			aria-label={favorite === "idle" ? "Add to favorites" : "Remove from favorites"}
+			className="shrink-0 rounded-full p-1 text-default-500 transition-colors hover:bg-default-100"
+			type="button"
+			onClick={onToggle}
+		>
+			{favorite === "pinned" ? (
+				<TablerPinned className="size-5 shrink-0 text-default-500" />
+			) : favorite === "highlighted" ? (
+				<MdiStarOutline className="size-5 shrink-0 text-warning" />
+			) : (
+				<MdiStarOutline className="size-5 shrink-0 text-default-300" />
+			)}
+		</button>
+	)
 }
 
 export default ThreadFavorite

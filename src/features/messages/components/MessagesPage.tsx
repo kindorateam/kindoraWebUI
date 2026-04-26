@@ -1,3 +1,5 @@
+import clsx from "clsx"
+
 import { useMessages } from "../hooks/useMessages"
 
 import MessagesConversationPane from "./MessagesConversationPane"
@@ -7,28 +9,38 @@ import MessagesTabs from "./MessagesTabs"
 const MessagesPage = () => {
 	const {
 		activeTab,
+		handleBackToList,
+		handleThreadSelect,
+		handleToggleFavorite,
+		isMobileConversationOpen,
 		searchValue,
 		selectedThread,
 		selectedThreadId,
 		setActiveTab,
 		setSearchValue,
-		setSelectedThreadId,
 		visibleThreads,
 	} = useMessages()
 
 	return (
-		<div className="flex h-[calc(100vh-112px)] flex-col gap-5 px-4 pt-5 pb-4 lg:px-6" data-node-id="2862:22196">
-			<MessagesTabs activeTab={activeTab} onSelectionChange={setActiveTab} />
-
-			<div className="grid min-h-0 flex-1 gap-0 overflow-hidden lg:grid-cols-[318px_minmax(0,1fr)]">
+		<div className="flex h-[calc(100vh-112px)] min-h-0 flex-col gap-4 bg-default-50/40 px-4 py-4 lg:px-6">
+			<div className="grid min-h-0 flex-1 gap-4 overflow-hidden lg:grid-cols-[320px_minmax(0,1fr)]">
 				<MessagesSidebar
+					className={clsx(isMobileConversationOpen && "hidden lg:flex")}
 					searchValue={searchValue}
 					selectedThreadId={selectedThreadId}
 					threads={visibleThreads}
 					onSearchChange={setSearchValue}
-					onThreadSelect={setSelectedThreadId}
+					onToggleFavorite={handleToggleFavorite}
+					onThreadSelect={handleThreadSelect}
+				>
+					<MessagesTabs activeTab={activeTab} onSelectionChange={setActiveTab} />
+				</MessagesSidebar>
+				<MessagesConversationPane
+					className={clsx(!isMobileConversationOpen && "hidden lg:flex")}
+					showBackButton={isMobileConversationOpen}
+					thread={selectedThread}
+					onBack={handleBackToList}
 				/>
-				<MessagesConversationPane thread={selectedThread} />
 			</div>
 		</div>
 	)
