@@ -12,6 +12,14 @@ body {
 		"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", sans-serif;
 }
 
+html,
+body,
+#root {
+	min-height: 100%;
+	background: #fff;
+	color: #18181b;
+}
+
 .messages-thread-scroll {
 	scrollbar-width: thin;
 	-webkit-overflow-scrolling: touch;

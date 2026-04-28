@@ -3,6 +3,7 @@ import { useAtomValue } from "jotai"
 import { useEffect, useState } from "react"
 
 import { getErrorMessage } from "@/utils/error"
+import TablerTrash from "~icons/tabler/trash"
 
 import { DEFAULT_EVENT_COLOR } from "../constants"
 import { useCreateEvent, useUpdateEvent } from "../hooks/useCalendar"
@@ -12,6 +13,7 @@ import { combineDateTime, parseDateTime, toExclusiveEndDate, toInclusiveEndDate 
 
 import EventColorSelect from "./EventColorSelect"
 import EventDateTimeFields from "./EventDateTimeFields"
+import EventRepeatFields from "./EventRepeatFields"
 
 import type { EventFormData } from "../types"
 
@@ -31,6 +33,8 @@ const EventModal = () => {
 		endDate: "",
 		endTime: "10:00",
 		allDay: false,
+		endsSameDay: true,
+		repeatFrequency: "none",
 		color: DEFAULT_EVENT_COLOR,
 	})
 
@@ -48,6 +52,8 @@ const EventModal = () => {
 				endDate: end.date,
 				endTime: end.time,
 				allDay: event.allDay,
+				endsSameDay: start.date === end.date,
+				repeatFrequency: event.repeatFrequency ?? "none",
 				color: event.color ?? DEFAULT_EVENT_COLOR,
 			})
 		} else {
@@ -61,6 +67,8 @@ const EventModal = () => {
 				endDate: end.date,
 				endTime: end.time,
 				allDay: defaultAllDay,
+				endsSameDay: start.date === end.date,
+				repeatFrequency: "none",
 				color: DEFAULT_EVENT_COLOR,
 			})
 		}
@@ -81,6 +89,11 @@ const EventModal = () => {
 			endDate,
 			allDay: formData.allDay,
 			color: formData.color,
+			...(!isEditMode
+				? {
+						repeatFrequency: formData.repeatFrequency,
+					}
+				: {}),
 		}
 
 		const onSuccess = () => {
@@ -104,7 +117,12 @@ const EventModal = () => {
 
 	const handleDelete = () => {
 		if (event) {
-			openDeleteEventModal(event.id, event.title)
+			openDeleteEventModal(
+				event.id,
+				event.title,
+				event.start,
+				!!event.repeatFrequency && event.repeatFrequency !== "none",
+			)
 		}
 	}
 
@@ -117,7 +135,21 @@ const EventModal = () => {
 	}
 
 	const updateField = <K extends keyof EventFormData>(field: K, value: EventFormData[K]) => {
-		setFormData((prev) => ({ ...prev, [field]: value }))
+		setFormData((prev) => {
+			if (field === "startDate" && prev.endsSameDay && typeof value === "string") {
+				return { ...prev, startDate: value, endDate: value }
+			}
+
+			if (field === "endsSameDay" && value === true) {
+				return { ...prev, endsSameDay: true, endDate: prev.startDate }
+			}
+
+			if (field === "repeatFrequency") {
+				return { ...prev, repeatFrequency: value as EventFormData["repeatFrequency"] }
+			}
+
+			return { ...prev, [field]: value }
+		})
 	}
 
 	return (
@@ -126,10 +158,10 @@ const EventModal = () => {
 				<Modal.Dialog>
 					<Modal.CloseTrigger />
 					<Modal.Header>
-						<Modal.Heading>{isEditMode ? "Edit Event" : "New Event"}</Modal.Heading>
+						<Modal.Heading>{isEditMode ? "Edit event" : "New event"}</Modal.Heading>
 					</Modal.Header>
-					<Modal.Body className="gap-4">
-						<TextField isRequired>
+					<Modal.Body className="flex flex-col gap-4">
+						<TextField isRequired variant="secondary">
 							<Label>Title</Label>
 
 							<Input
@@ -140,7 +172,7 @@ const EventModal = () => {
 							/>
 						</TextField>
 
-						<TextField>
+						<TextField variant="secondary">
 							<Label>Description</Label>
 							<TextArea
 								placeholder="Optional description"
@@ -162,25 +194,46 @@ const EventModal = () => {
 							</Switch.Content>
 						</Switch>
 
+						<Switch
+							size="sm"
+							isSelected={formData.endsSameDay}
+							onChange={(isSelected: boolean) => updateField("endsSameDay", isSelected)}
+						>
+							<Switch.Control>
+								<Switch.Thumb />
+							</Switch.Control>
+							<Switch.Content>
+								<Label>Ends same day</Label>
+							</Switch.Content>
+						</Switch>
+
 						<EventDateTimeFields
 							startDate={formData.startDate}
 							startTime={formData.startTime}
 							endDate={formData.endDate}
 							endTime={formData.endTime}
 							allDay={formData.allDay}
+							endsSameDay={formData.endsSameDay}
 							onFieldChange={(field, value) => updateField(field, value)}
 						/>
+
+						{!isEditMode && (
+							<EventRepeatFields
+								frequency={formData.repeatFrequency}
+								onFrequencyChange={(value) => updateField("repeatFrequency", value)}
+							/>
+						)}
 
 						<EventColorSelect value={formData.color} onChange={(v) => updateField("color", v)} />
 					</Modal.Body>
 					<Modal.Footer>
 						{isEditMode && (
-							<Button variant="ghost" onPress={handleDelete} isDisabled={isLoading}>
+							<Button variant="danger" onPress={handleDelete} isDisabled={isLoading}>
+								<TablerTrash />
 								Delete
 							</Button>
 						)}
-						<div className="flex-1" />
-						<Button variant="ghost" onPress={handleClose} isDisabled={isLoading}>
+						<Button variant="secondary" onPress={handleClose} isDisabled={isLoading}>
 							Cancel
 						</Button>
 						<Button variant="primary" onPress={handleSubmit} isPending={isLoading} isDisabled={!formData.title.trim()}>

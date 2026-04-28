@@ -8,26 +8,35 @@ import { useDeleteEvent } from "../hooks/useCalendar"
 import { closeDeleteEventModal, deleteEventModalAtom } from "../stores/deleteEventModal.store"
 import { closeEventModal } from "../stores/eventModal.store"
 
+import type { DeleteEventScope } from "../types"
+
 const DeleteEventModal = () => {
-	const { isOpen, eventId, eventTitle } = useAtomValue(deleteEventModalAtom)
+	const { isOpen, eventId, eventTitle, eventStart, isRepeating } = useAtomValue(deleteEventModalAtom)
 	const deleteMutation = useDeleteEvent()
 
-	const handleDelete = () => {
-		if (!eventId) return
+	const handleDelete = (scope: DeleteEventScope = "series") => {
+		if (!eventId || (scope === "occurrence" && !eventStart)) return
 
-		deleteMutation.mutate(eventId, {
-			onSuccess: () => {
-				toast("Event deleted", { variant: "success" })
-				closeDeleteEventModal()
-				closeEventModal()
+		deleteMutation.mutate(
+			{
+				eventId,
+				scope,
+				occurrenceStart: scope === "occurrence" ? (eventStart ?? undefined) : undefined,
 			},
-			onError: (error) => {
-				toast("Failed to delete event", {
-					description: getErrorMessage(error),
-					variant: "danger",
-				})
+			{
+				onSuccess: () => {
+					toast("Event deleted", { variant: "success" })
+					closeDeleteEventModal()
+					closeEventModal()
+				},
+				onError: (error) => {
+					toast("Failed to delete event", {
+						description: getErrorMessage(error),
+						variant: "danger",
+					})
+				},
 			},
-		})
+		)
 	}
 
 	const handleClose = () => {
@@ -51,12 +60,45 @@ const DeleteEventModal = () => {
 						<p className="text-default-600">
 							Are you sure you want to delete <strong>{eventTitle}</strong>?
 						</p>
-						<p className="text-default-400 text-sm">This action cannot be undone.</p>
+						<p className="text-default-400 text-sm">
+							{isRepeating
+								? "Choose whether to remove this event only or the full repeat series."
+								: "This action cannot be undone."}
+						</p>
 					</Modal.Body>
 					<Modal.Footer className="flex-col gap-2">
-						<Button variant="danger" fullWidth isPending={deleteMutation.isPending} onPress={handleDelete} size="md">
-							Delete
-						</Button>
+						{isRepeating ? (
+							<>
+								<Button
+									variant="danger"
+									fullWidth
+									isPending={deleteMutation.isPending}
+									onPress={() => handleDelete("occurrence")}
+									size="md"
+								>
+									Delete this event
+								</Button>
+								<Button
+									variant="danger"
+									fullWidth
+									isDisabled={deleteMutation.isPending}
+									onPress={() => handleDelete("series")}
+									size="md"
+								>
+									Delete all repeated events
+								</Button>
+							</>
+						) : (
+							<Button
+								variant="danger"
+								fullWidth
+								isPending={deleteMutation.isPending}
+								onPress={() => handleDelete("series")}
+								size="md"
+							>
+								Delete
+							</Button>
+						)}
 						<Button fullWidth isDisabled={deleteMutation.isPending} onPress={handleClose} size="md">
 							Cancel
 						</Button>

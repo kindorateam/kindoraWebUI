@@ -6,7 +6,11 @@ export interface CalendarEvent {
 	end: string
 	allDay: boolean
 	color?: string
+	repeatFrequency?: EventRepeatFrequency
+	excludedDates?: string[]
 }
+
+export type EventRepeatFrequency = "none" | "daily" | "weekly" | "monthly" | "yearly"
 
 export interface ApiCalendarEvent {
 	id: string
@@ -25,6 +29,7 @@ export interface CreateEventPayload {
 	endDate: string
 	allDay: boolean
 	color?: string
+	repeatFrequency?: EventRepeatFrequency
 }
 
 export interface UpdateEventPayload {
@@ -36,6 +41,14 @@ export interface UpdateEventPayload {
 	color?: string
 }
 
+export type DeleteEventScope = "occurrence" | "series"
+
+export interface DeleteEventPayload {
+	eventId: string
+	scope?: DeleteEventScope
+	occurrenceStart?: string
+}
+
 export interface EventFormData {
 	title: string
 	description: string
@@ -44,6 +57,8 @@ export interface EventFormData {
 	endDate: string
 	endTime: string
 	allDay: boolean
+	endsSameDay: boolean
+	repeatFrequency: EventRepeatFrequency
 	color: string
 }
 

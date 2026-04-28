@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
 import { createEvent, deleteEvent, getEvents, updateEvent } from "../services/calendar.service"
 
-import type { CreateEventPayload, GetEventsParams, UpdateEventPayload } from "../types"
+import type { CreateEventPayload, DeleteEventPayload, GetEventsParams, UpdateEventPayload } from "../types"
 
 export const useCalendarEvents = (params: GetEventsParams) => {
 	return useQuery({
@@ -41,7 +41,7 @@ export const useDeleteEvent = () => {
 	const queryClient = useQueryClient()
 
 	return useMutation({
-		mutationFn: (eventId: string) => deleteEvent(eventId),
+		mutationFn: (payload: DeleteEventPayload) => deleteEvent(payload),
 		onSuccess: () => {
 			void queryClient.invalidateQueries({ queryKey: ["calendar-events"] })
 		},

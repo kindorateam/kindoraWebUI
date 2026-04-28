@@ -1,33 +1,42 @@
-import dayGridPlugin from "@fullcalendar/daygrid"
-import interactionPlugin from "@fullcalendar/interaction"
-import multiMonthPlugin from "@fullcalendar/multimonth"
-import FullCalendar from "@fullcalendar/react"
-import timeGridPlugin from "@fullcalendar/timegrid"
 import { Spinner, toast } from "@heroui/react"
 import { useAtom, useAtomValue } from "jotai"
-import { useEffect, useRef, useState } from "react"
+import { useRef } from "react"
 
 import TableError from "@/components/TableError"
 import { getErrorMessage } from "@/utils/error"
 
-import { BUSINESS_HOURS, SLOT_DURATION, SNAP_DURATION } from "../constants"
 import { useCalendarEvents, useUpdateEvent } from "../hooks/useCalendar"
-import { calendarViewAtom, dateRangeAtom, hideWeekendsAtom, setDateRange } from "../stores/calendarSettings.store"
+import { useCalendarNavigation } from "../hooks/useCalendarNavigation"
+import { calendarViewAtom, dateRangeAtom, hideWeekendsAtom } from "../stores/calendarSettings.store"
 import { openCreateEventModal, openEditEventModal } from "../stores/eventModal.store"
 
+import CalendarFullView from "./CalendarFullView"
 import CalendarToolbar from "./CalendarToolbar"
+import CalendarYearView from "./CalendarYearView"
 
-import type { DateSelectArg, DatesSetArg, EventClickArg, EventDropArg } from "@fullcalendar/core"
+import type { DateSelectArg, EventClickArg, EventDropArg } from "@fullcalendar/core"
 import type { EventResizeDoneArg } from "@fullcalendar/interaction"
+import type FullCalendar from "@fullcalendar/react"
+import type { CalendarViewType } from "../types"
 
 import "./calendar.css"
+
+const closeMorePopover = () => {
+	document.querySelector<HTMLElement>(".fc-more-popover .fc-popover-close")?.click()
+}
 
 const CalendarView = () => {
 	const calendarRef = useRef<FullCalendar>(null)
 	const [currentView, setCurrentView] = useAtom(calendarViewAtom)
 	const hideWeekends = useAtomValue(hideWeekendsAtom)
 	const dateRange = useAtomValue(dateRangeAtom)
-	const [title, setTitle] = useState("")
+	const updateEventMutation = useUpdateEvent()
+	const { handleDatesSet, handleNext, handlePrev, handleToday, handleYearMonthSelect, isYearView, title, visibleYear } =
+		useCalendarNavigation({
+			calendarRef,
+			currentView,
+			setCurrentView: (view: CalendarViewType) => setCurrentView(view),
+		})
 
 	const {
 		data: events = [],
@@ -38,30 +47,6 @@ const CalendarView = () => {
 		start: dateRange.start,
 		end: dateRange.end,
 	})
-	const updateEventMutation = useUpdateEvent()
-
-	const fullCalendarEvents = events.map((event) => ({
-		id: event.id,
-		title: event.title,
-		start: event.start,
-		end: event.end,
-		allDay: event.allDay,
-		backgroundColor: event.color,
-		borderColor: event.color,
-		extendedProps: {
-			description: event.description,
-		},
-	}))
-
-	const handleDatesSet = (arg: DatesSetArg) => {
-		setDateRange(arg.startStr, arg.endStr)
-		setTitle(arg.view.title)
-
-		// Sync view type from FullCalendar back to store (e.g., when using browser navigation)
-		if (arg.view.type !== currentView) {
-			setCurrentView(arg.view.type as typeof currentView)
-		}
-	}
 
 	const handleDateSelect = (selectInfo: DateSelectArg) => {
 		openCreateEventModal({
@@ -73,8 +58,9 @@ const CalendarView = () => {
 	}
 
 	const handleEventClick = (clickInfo: EventClickArg) => {
-		const matchedEvent = events.find((e) => e.id === clickInfo.event.id)
+		const matchedEvent = events.find((event) => event.id === clickInfo.event.id)
 		if (matchedEvent) {
+			closeMorePopover()
 			openEditEventModal(matchedEvent)
 		}
 	}
@@ -122,56 +108,38 @@ const CalendarView = () => {
 		)
 	}
 
-	useEffect(() => {
-		const calendarApi = calendarRef.current?.getApi()
-		if (calendarApi && calendarApi.view.type !== currentView) {
-			calendarApi.changeView(currentView)
-		}
-	}, [currentView])
-
-	const handlePrev = () => calendarRef.current?.getApi().prev()
-	const handleNext = () => calendarRef.current?.getApi().next()
-	const handleToday = () => calendarRef.current?.getApi().today()
 	const showInitialError = !!error && events.length === 0
 	const showInitialLoading = isLoading && events.length === 0
 
 	return (
-		<div>
+		<div className="rounded-lg bg-white shadow-sm">
 			<CalendarToolbar
 				title={title}
 				onNavigatePrev={handlePrev}
 				onNavigateNext={handleNext}
 				onNavigateToday={handleToday}
 			/>
-			<div className="relative">
-				<FullCalendar
-					ref={calendarRef}
-					plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin, multiMonthPlugin]}
-					initialView={currentView}
-					headerToolbar={false}
-					weekends={!hideWeekends}
-					editable
-					selectable
-					selectMirror
-					dayMaxEvents
-					events={fullCalendarEvents}
-					datesSet={handleDatesSet}
-					select={handleDateSelect}
-					eventClick={handleEventClick}
-					eventDrop={handleEventDrop}
-					eventResize={handleEventResize}
-					slotDuration={SLOT_DURATION}
-					snapDuration={SNAP_DURATION}
-					businessHours={{
-						daysOfWeek: [1, 2, 3, 4, 5],
-						startTime: BUSINESS_HOURS.startTime,
-						endTime: BUSINESS_HOURS.endTime,
-					}}
-					height="auto"
-					nowIndicator
-					eventDisplay="block"
-					multiMonthMaxColumns={3}
-				/>
+			<div className="calendar-surface relative">
+				{isYearView ? (
+					<CalendarYearView
+						events={events}
+						hideWeekends={hideWeekends}
+						onMonthSelect={handleYearMonthSelect}
+						year={visibleYear}
+					/>
+				) : (
+					<CalendarFullView
+						calendarRef={calendarRef}
+						currentView={currentView}
+						events={events}
+						hideWeekends={hideWeekends}
+						onDateSelect={handleDateSelect}
+						onDatesSet={handleDatesSet}
+						onEventClick={handleEventClick}
+						onEventDrop={handleEventDrop}
+						onEventResize={handleEventResize}
+					/>
+				)}
 				{showInitialLoading && (
 					<div className="absolute inset-0 z-10 flex items-center justify-center bg-white/80 backdrop-blur-sm">
 						<Spinner />
