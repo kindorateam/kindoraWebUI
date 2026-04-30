@@ -316,8 +316,8 @@ const EditorToolbar = ({ editor }: EditorToolbarProps) => {
 					<Tooltip.Content>Insert image</Tooltip.Content>
 				</Tooltip>
 				<Popover.Content>
-					<Popover.Dialog className="p-2">
-						<div className="flex gap-2">
+					<Popover.Dialog>
+						<div className="flex gap-2 p-2">
 							<Input
 								placeholder="Image URL"
 								value={imageUrl}

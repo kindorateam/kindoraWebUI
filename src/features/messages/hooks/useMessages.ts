@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
 
 import { messageThreadItems } from "../constants"
 
@@ -21,19 +21,6 @@ export const useMessages = () => {
 		activeTab === "favorites"
 			? (visibleThreads.find((item) => item.id === selectedThreadId) ?? null)
 			: (threads.find((item) => item.id === selectedThreadId) ?? null)
-
-	useEffect(() => {
-		if (activeTab !== "favorites") {
-			return
-		}
-
-		const isSelectedThreadStillFavorite = filteredByTab.some((item) => item.id === selectedThreadId)
-
-		if (!isSelectedThreadStillFavorite) {
-			setSelectedThreadId("")
-			setIsMobileConversationOpen(false)
-		}
-	}, [activeTab, filteredByTab, selectedThreadId])
 
 	const handleThreadSelect = (threadId: string) => {
 		setSelectedThreadId(threadId)

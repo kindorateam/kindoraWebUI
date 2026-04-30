@@ -46,8 +46,8 @@ const LinkPopover = ({ editor }: LinkPopoverProps) => {
 				<Tooltip.Content>Insert link</Tooltip.Content>
 			</Tooltip>
 			<Popover.Content>
-				<Popover.Dialog className="p-2">
-					<div className="flex gap-2">
+				<Popover.Dialog>
+					<div className="flex gap-2 p-2">
 						<Input
 							placeholder="https://example.com"
 							value={linkUrl}

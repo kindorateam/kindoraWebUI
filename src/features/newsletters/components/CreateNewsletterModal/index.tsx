@@ -44,33 +44,37 @@ const CreateNewsletterModal = ({ isOpen, onOpenChange }: CreateNewsletterModalPr
 
 	return (
 		<Modal.Backdrop isOpen={isOpen} onOpenChange={onOpenChange}>
-			<Modal.Container>
-				<Modal.Dialog className="max-h-[90vh] w-full max-w-5xl">
+			<Modal.Container size="cover">
+				<Modal.Dialog>
 					<Modal.CloseTrigger />
 					<Modal.Header>
-						<div className="flex w-full justify-between">
-							<Modal.Heading className="font-semibold text-xl">Create newsletter</Modal.Heading>
-							<span className="text-default-500 text-sm">Step {currentStep}/2</span>
+						<div className="flex w-full items-center justify-between gap-4 pr-9">
+							<Modal.Heading>Create newsletter</Modal.Heading>
+							<span className="shrink-0 text-default-500 text-sm">
+								Step <span className="font-semibold text-foreground">{currentStep}/2</span>
+							</span>
 						</div>
 					</Modal.Header>
 
-					<Modal.Body className="min-h-125 overflow-y-auto p-0">
-						{currentStep === 1 ? (
-							<Step1Editor content={content} onChange={setContent} onLoadTemplate={setContent} />
-						) : (
-							<Step2Preview content={content} />
-						)}
+					<Modal.Body>
+						<div className="h-full min-h-125">
+							{currentStep === 1 ? (
+								<Step1Editor content={content} onChange={setContent} onLoadTemplate={setContent} />
+							) : (
+								<Step2Preview content={content} />
+							)}
+						</div>
 					</Modal.Body>
 
 					<Modal.Footer>
 						<div className="flex w-full justify-between">
 							{currentStep === 1 ? (
 								<>
-									<Button onPress={handleAddToTemplates} variant="ghost">
+									<Button onPress={handleAddToTemplates} variant="secondary">
 										Add to templates
 									</Button>
 									<div className="flex gap-3">
-										<Button onPress={handleSaveDraft} variant="ghost">
+										<Button onPress={handleSaveDraft} variant="secondary">
 											Save draft
 										</Button>
 										<Button variant="primary" isDisabled={!hasContent} onPress={nextStep}>

@@ -22,8 +22,8 @@ interface MessagesConversationPaneProps {
 const MessagesConversationPane = ({ className, onBack, showBackButton, thread }: MessagesConversationPaneProps) => {
 	if (!thread) {
 		return (
-			<section className={clsx("min-h-0", className)}>
-				<div className="flex h-full min-h-0 flex-col rounded-2xl border border-default-200 bg-content1">
+			<section className={clsx("min-h-0 w-full", className)}>
+				<div className="flex h-full min-h-0 w-full flex-col rounded-2xl border border-default-200 bg-content1">
 					<div className="flex flex-1 flex-col items-center justify-center px-6 text-center">
 						<p className="font-medium text-foreground text-lg">No conversation selected</p>
 						<p className="mt-2 max-w-sm text-default-500 text-sm">
@@ -36,8 +36,8 @@ const MessagesConversationPane = ({ className, onBack, showBackButton, thread }:
 	}
 
 	return (
-		<section className={clsx("min-h-0", className)}>
-			<div className="flex h-full min-h-0 flex-col overflow-hidden rounded-2xl border border-default-200 bg-content1">
+		<section className={clsx("min-h-0 w-full", className)}>
+			<div className="flex h-full min-h-0 w-full flex-col overflow-hidden rounded-2xl border border-default-200 bg-content1">
 				<div className="flex items-start justify-between gap-4 border-default-200 border-b px-4 py-3">
 					<div className="flex min-w-0 flex-1 items-start gap-3">
 						{showBackButton ? (
@@ -93,7 +93,12 @@ const MessagesConversationPane = ({ className, onBack, showBackButton, thread }:
 							<Button aria-label="Attach file" isIconOnly variant="ghost">
 								<SolarPaperclipLinear className="size-5" />
 							</Button>
-							<Input aria-label="Type your message" className="flex-1" placeholder="Type your message" />
+							<Input
+								aria-label="Type your message"
+								className="flex-1"
+								placeholder="Type your message"
+								variant="secondary"
+							/>
 							<Button aria-label="Send message" isIconOnly variant="primary">
 								<MingcuteSendFill className="size-5" />
 							</Button>

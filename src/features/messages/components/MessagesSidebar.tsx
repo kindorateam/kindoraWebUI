@@ -1,7 +1,5 @@
-import { Button, Input, Label, TextField } from "@heroui/react"
+import { Input, Label, TextField } from "@heroui/react"
 import clsx from "clsx"
-
-import TablerLink from "~icons/tabler/link"
 
 import ThreadCard from "./ThreadCard"
 
@@ -33,8 +31,8 @@ const MessagesSidebar = ({
 			<div className="flex h-full min-h-0 flex-col gap-3 rounded-2xl border border-default-200 bg-content1 p-3">
 				{children}
 
-				<div className="flex items-end gap-2">
-					<TextField className="flex-1">
+				<div className="flex items-end">
+					<TextField className="flex-1" variant="secondary">
 						<Label>Search chat</Label>
 
 						<Input
@@ -44,9 +42,6 @@ const MessagesSidebar = ({
 							onChange={(e: React.ChangeEvent<HTMLInputElement>) => onSearchChange(e.target.value)}
 						/>
 					</TextField>
-					<Button aria-label="Conversation link" isIconOnly variant="ghost">
-						<TablerLink className="size-5" />
-					</Button>
 				</div>
 
 				<div className="messages-thread-scroll min-h-0 flex-1 overflow-y-auto">

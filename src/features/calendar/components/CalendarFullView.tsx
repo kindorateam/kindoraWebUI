@@ -61,6 +61,7 @@ const CalendarFullView = ({
 			headerToolbar={false}
 			weekends={!hideWeekends}
 			editable
+			eventResizableFromStart
 			selectable
 			selectMirror
 			dayHeaderFormat={isMonthView ? { weekday: "short" } : undefined}

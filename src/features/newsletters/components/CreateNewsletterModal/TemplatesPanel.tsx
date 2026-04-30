@@ -1,13 +1,14 @@
 import { Card } from "@heroui/react"
 
-interface Template {
+export interface Template {
 	id: string
 	name: string
 	html: string
 }
 
 interface TemplatesPanelProps {
-	onSelectTemplate: (html: string) => void
+	selectedTemplateId?: string
+	onSelectTemplate: (template: Template) => void
 }
 
 // Mock templates - will be replaced with API data
@@ -29,7 +30,7 @@ const mockTemplates: Template[] = [
 	},
 ]
 
-const TemplatesPanel = ({ onSelectTemplate }: TemplatesPanelProps) => {
+const TemplatesPanel = ({ selectedTemplateId, onSelectTemplate }: TemplatesPanelProps) => {
 	if (mockTemplates.length === 0) {
 		return (
 			<div className="py-8 text-center">
@@ -44,10 +45,10 @@ const TemplatesPanel = ({ onSelectTemplate }: TemplatesPanelProps) => {
 			{mockTemplates.map((template) => (
 				<Card
 					key={template.id}
-					className="cursor-pointer border border-default-200 shadow-none"
-					onClick={() => onSelectTemplate(template.html)}
+					variant={selectedTemplateId === template.id ? "tertiary" : "secondary"}
+					onClick={() => onSelectTemplate(template)}
 				>
-					<Card.Content className="p-3">
+					<Card.Content>
 						<p className="font-medium text-sm">{template.name}</p>
 					</Card.Content>
 				</Card>

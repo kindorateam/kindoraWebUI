@@ -4,6 +4,8 @@ import { useState } from "react"
 import NewsletterEditor from "./NewsletterEditor"
 import TemplatesPanel from "./TemplatesPanel"
 
+import type { Template } from "./TemplatesPanel"
+
 interface Step1EditorProps {
 	content: string
 	onChange: (html: string) => void
@@ -12,37 +14,46 @@ interface Step1EditorProps {
 
 const Step1Editor = ({ content, onChange, onLoadTemplate }: Step1EditorProps) => {
 	const [activeTab, setActiveTab] = useState<"editor" | "templates">("editor")
+	const [selectedTemplateId, setSelectedTemplateId] = useState<string>()
+
+	const handleSelectTemplate = (template: Template) => {
+		setSelectedTemplateId(template.id)
+		onLoadTemplate(template.html)
+	}
 
 	return (
-		<div className="flex h-full">
-			{/* Left Panel - Tabs */}
-			<div className="w-48 shrink-0 border-r">
-				<div className="p-3">
-					<Tabs selectedKey={activeTab} onSelectionChange={(key) => setActiveTab(key as "editor" | "templates")}>
-						<Tabs.ListContainer>
-							<Tabs.List aria-label="Editor panels" className="w-full">
-								<Tabs.Tab id="editor">
-									Editor
-									<Tabs.Indicator />
-								</Tabs.Tab>
-								<Tabs.Tab id="templates">
-									Templates
-									<Tabs.Indicator />
-								</Tabs.Tab>
-							</Tabs.List>
-						</Tabs.ListContainer>
-					</Tabs>
-				</div>
+		<div className="flex h-full min-h-0">
+			<div className="w-72 shrink-0 border-r pr-4">
+				<Tabs
+					className="w-full"
+					selectedKey={activeTab}
+					onSelectionChange={(key) => setActiveTab(key as "editor" | "templates")}
+				>
+					<Tabs.ListContainer className="w-full">
+						<Tabs.List
+							aria-label="Editor panels"
+							className="w-full *:h-6 *:flex-1 *:px-3 *:font-normal *:text-sm *:data-[selected=true]:text-accent-foreground"
+						>
+							<Tabs.Tab id="editor">
+								Editor
+								<Tabs.Indicator className="bg-accent" />
+							</Tabs.Tab>
+							<Tabs.Tab id="templates">
+								Templates
+								<Tabs.Indicator className="bg-accent" />
+							</Tabs.Tab>
+						</Tabs.List>
+					</Tabs.ListContainer>
+				</Tabs>
 
 				{activeTab === "templates" && (
-					<div className="p-3 pt-0">
-						<TemplatesPanel onSelectTemplate={onLoadTemplate} />
+					<div className="mt-4">
+						<TemplatesPanel selectedTemplateId={selectedTemplateId} onSelectTemplate={handleSelectTemplate} />
 					</div>
 				)}
 			</div>
 
-			{/* Right Panel - Editor */}
-			<div className="flex-1 bg-default-50">
+			<div className="min-h-0 flex-1 bg-default-50">
 				<NewsletterEditor content={content} onChange={onChange} />
 			</div>
 		</div>
