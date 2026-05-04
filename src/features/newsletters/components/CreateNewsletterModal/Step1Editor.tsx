@@ -8,11 +8,17 @@ import type { Template } from "./TemplatesPanel"
 
 interface Step1EditorProps {
 	content: string
-	onChange: (html: string) => void
+	onContentPresenceChange: (hasContent: boolean) => void
+	onEditorContentGetterChange: (getter: (() => string) | null) => void
 	onLoadTemplate: (html: string) => void
 }
 
-const Step1Editor = ({ content, onChange, onLoadTemplate }: Step1EditorProps) => {
+const Step1Editor = ({
+	content,
+	onContentPresenceChange,
+	onEditorContentGetterChange,
+	onLoadTemplate,
+}: Step1EditorProps) => {
 	const [activeTab, setActiveTab] = useState<"editor" | "templates">("editor")
 	const [selectedTemplateId, setSelectedTemplateId] = useState<string>()
 
@@ -54,7 +60,11 @@ const Step1Editor = ({ content, onChange, onLoadTemplate }: Step1EditorProps) =>
 			</div>
 
 			<div className="min-h-0 flex-1 bg-default-50">
-				<NewsletterEditor content={content} onChange={onChange} />
+				<NewsletterEditor
+					content={content}
+					onContentPresenceChange={onContentPresenceChange}
+					onEditorContentGetterChange={onEditorContentGetterChange}
+				/>
 			</div>
 		</div>
 	)

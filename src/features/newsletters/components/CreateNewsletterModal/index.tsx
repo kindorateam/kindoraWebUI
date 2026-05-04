@@ -1,7 +1,8 @@
 import { Button, Modal } from "@heroui/react"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 
 import { hasNewsletterContent } from "../../utils/newsletter-content"
+import { sanitizeNewsletterHtml } from "../../utils/newsletter-html"
 
 import Step1Editor from "./Step1Editor"
 import Step2Preview from "./Step2Preview"
@@ -14,32 +15,56 @@ interface CreateNewsletterModalProps {
 const CreateNewsletterModal = ({ isOpen, onOpenChange }: CreateNewsletterModalProps) => {
 	const [currentStep, setCurrentStep] = useState<1 | 2>(1)
 	const [content, setContent] = useState("")
-	const hasContent = hasNewsletterContent(content)
+	const [hasContent, setHasContent] = useState(false)
+	const contentGetterRef = useRef<(() => string) | null>(null)
 
 	useEffect(() => {
 		if (!isOpen) {
 			setCurrentStep(1)
 			setContent("")
+			setHasContent(false)
+			contentGetterRef.current = null
 		}
 	}, [isOpen])
 
+	const setContentGetter = (getter: (() => string) | null) => {
+		contentGetterRef.current = getter
+	}
+
+	const captureCurrentContent = () => {
+		const nextContent = sanitizeNewsletterHtml(contentGetterRef.current?.() ?? content)
+		setContent(nextContent)
+		setHasContent(hasNewsletterContent(nextContent))
+		return nextContent
+	}
+
+	const handleLoadTemplate = (html: string) => {
+		const nextContent = sanitizeNewsletterHtml(html)
+		setContent(nextContent)
+		setHasContent(hasNewsletterContent(nextContent))
+	}
+
 	const handleSaveDraft = () => {
 		// TODO: Implement save draft API
-		console.log("Saving draft:", content)
+		captureCurrentContent()
 	}
 
 	const handleAddToTemplates = () => {
 		// TODO: Implement add to templates
-		console.log("Adding to templates:", content)
+		captureCurrentContent()
 	}
 
 	const handleSend = () => {
 		// TODO: Implement send API
-		console.log("Sending newsletter:", content)
+		const nextContent = captureCurrentContent()
+		if (!hasNewsletterContent(nextContent)) return
 		onOpenChange(false)
 	}
 
-	const nextStep = () => setCurrentStep(2)
+	const nextStep = () => {
+		captureCurrentContent()
+		setCurrentStep(2)
+	}
 	const prevStep = () => setCurrentStep(1)
 
 	return (
@@ -59,7 +84,12 @@ const CreateNewsletterModal = ({ isOpen, onOpenChange }: CreateNewsletterModalPr
 					<Modal.Body>
 						<div className="h-full min-h-125">
 							{currentStep === 1 ? (
-								<Step1Editor content={content} onChange={setContent} onLoadTemplate={setContent} />
+								<Step1Editor
+									content={content}
+									onContentPresenceChange={setHasContent}
+									onEditorContentGetterChange={setContentGetter}
+									onLoadTemplate={handleLoadTemplate}
+								/>
 							) : (
 								<Step2Preview content={content} />
 							)}

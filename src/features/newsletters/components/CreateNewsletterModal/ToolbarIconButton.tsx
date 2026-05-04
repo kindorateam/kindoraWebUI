@@ -1,23 +1,22 @@
 import { Button, Tooltip } from "@heroui/react"
 
-import TablerLayoutFooter from "~icons/tabler/layout-footer"
-import TablerLayoutHeader from "~icons/tabler/layout-header"
+import type React from "react"
 
-interface HeaderFooterButtonProps {
+interface ToolbarIconButtonProps {
 	icon: React.ReactNode
-	tooltip: string
 	onPress: () => void
+	tooltip: string
 	isActive?: boolean
 	isDisabled?: boolean
 }
 
-export const HeaderFooterButton = ({
+const ToolbarIconButton = ({
 	icon,
-	tooltip,
 	onPress,
+	tooltip,
 	isActive = false,
 	isDisabled = false,
-}: HeaderFooterButtonProps) => (
+}: ToolbarIconButtonProps) => (
 	<Tooltip delay={0}>
 		<Button isIconOnly isDisabled={isDisabled} onPress={onPress} size="sm" variant={isActive ? "secondary" : "ghost"}>
 			{icon}
@@ -26,4 +25,4 @@ export const HeaderFooterButton = ({
 	</Tooltip>
 )
 
-export { TablerLayoutFooter, TablerLayoutHeader }
+export default ToolbarIconButton

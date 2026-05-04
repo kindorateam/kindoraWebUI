@@ -1,6 +1,7 @@
 import { Card } from "@heroui/react"
 
 import { hasNewsletterContent } from "../../utils/newsletter-content"
+import { sanitizeNewsletterHtml } from "../../utils/newsletter-html"
 
 import "./newsletter-editor.css"
 
@@ -9,7 +10,9 @@ interface Step2PreviewProps {
 }
 
 const Step2Preview = ({ content }: Step2PreviewProps) => {
-	if (!hasNewsletterContent(content)) {
+	const previewContent = sanitizeNewsletterHtml(content)
+
+	if (!hasNewsletterContent(previewContent)) {
 		return (
 			<div className="flex h-full items-center justify-center">
 				<p className="text-default-400">No content to preview</p>
@@ -23,8 +26,8 @@ const Step2Preview = ({ content }: Step2PreviewProps) => {
 
 			<Card>
 				<Card.Content>
-					{/* biome-ignore lint/security/noDangerouslySetInnerHtml: Content comes from local editor state. */}
-					<div className="newsletter-editor newsletter-preview" dangerouslySetInnerHTML={{ __html: content }} />
+					{/* biome-ignore lint/security/noDangerouslySetInnerHtml: Newsletter HTML is sanitized before rendering. */}
+					<div className="newsletter-editor newsletter-preview" dangerouslySetInnerHTML={{ __html: previewContent }} />
 				</Card.Content>
 			</Card>
 		</div>

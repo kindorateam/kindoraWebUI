@@ -31,10 +31,13 @@ export const HeaderExtension = Node.create({
 			insertEmailHeader:
 				() =>
 				({ commands }) => {
-					return commands.insertContent({
-						type: this.name,
-						content: [{ type: "paragraph", content: [{ type: "text", text: "Your Logo Here" }] }],
-					})
+					return commands.insertContent([
+						{
+							type: this.name,
+							content: [{ type: "paragraph", content: [{ type: "text", text: "Your Logo Here" }] }],
+						},
+						{ type: "paragraph" },
+					])
 				},
 		}
 	},
@@ -60,10 +63,13 @@ export const FooterExtension = Node.create({
 			insertEmailFooter:
 				() =>
 				({ commands }) => {
-					return commands.insertContent({
-						type: this.name,
-						content: [{ type: "paragraph", content: [{ type: "text", text: "© 2025 Your Company" }] }],
-					})
+					return commands.insertContent([
+						{
+							type: this.name,
+							content: [{ type: "paragraph", content: [{ type: "text", text: "© 2026 Your Company" }] }],
+						},
+						{ type: "paragraph" },
+					])
 				},
 		}
 	},

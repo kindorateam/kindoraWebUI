@@ -1,4 +1,4 @@
-import NewsIcon from "../icons/NewsIcon"
+import TablerNews from "~icons/tabler/news"
 
 import type { Newsletter } from "../../types"
 
@@ -8,7 +8,7 @@ export function renderCell(newsletter: Newsletter, columnKey: React.Key) {
 			return (
 				<div className="flex items-center gap-3">
 					<div className="flex h-9 w-9 items-center justify-center rounded-full bg-gray-200">
-						<NewsIcon />
+						<TablerNews className="size-4 text-default-700" />
 					</div>
 					<span className="font-medium text-sm">{newsletter.title}</span>
 				</div>
