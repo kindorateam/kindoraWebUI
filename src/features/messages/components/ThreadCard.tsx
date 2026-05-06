@@ -1,7 +1,7 @@
 import { Avatar } from "@heroui/react"
 import clsx from "clsx"
 
-import MdiAccount from "~icons/mdi/account"
+import FluentPerson16Filled from "~icons/fluent/person-16-filled"
 import MdiClockTimeFourOutline from "~icons/mdi/clock-time-four-outline"
 
 import ThreadFavorite from "./ThreadFavorite"
@@ -21,8 +21,8 @@ const ThreadCard = ({ isSelected, item, onPress, onToggleFavorite }: ThreadCardP
 			className={clsx(
 				"flex w-full items-start gap-3 rounded-xl border px-3 py-3 transition-colors",
 				isSelected
-					? "border-primary/30 bg-primary/10"
-					: item.favorite === "highlighted"
+					? "border-accent/20 bg-accent/[0.06]"
+					: item.favorite === "favorite"
 						? "border-transparent bg-default-100"
 						: "border-transparent hover:bg-default-100",
 			)}
@@ -32,9 +32,10 @@ const ThreadCard = ({ isSelected, item, onPress, onToggleFavorite }: ThreadCardP
 				type="button"
 				onClick={() => onPress(item.id)}
 			>
-				<Avatar className="shrink-0 bg-primary text-primary-foreground" size="sm">
-					<Avatar.Fallback>
-						<MdiAccount className="size-4" />
+				<Avatar className="shrink-0" size="sm">
+					<Avatar.Image alt={item.name} src={item.avatarUrl} />
+					<Avatar.Fallback className="bg-accent text-white">
+						<FluentPerson16Filled className="size-6 text-white" />
 					</Avatar.Fallback>
 				</Avatar>
 
@@ -55,7 +56,7 @@ const ThreadCard = ({ isSelected, item, onPress, onToggleFavorite }: ThreadCardP
 							<span>{item.dateLabel}</span>
 						</div>
 						{item.unreadCount ? (
-							<span className="inline-flex items-center rounded-full bg-primary px-2 py-0.5 font-medium text-[11px] text-white">
+							<span className="inline-flex items-center rounded-full bg-success px-2 py-0.5 font-medium text-[11px] text-white shadow-sm">
 								{item.unreadCount} new
 							</span>
 						) : null}

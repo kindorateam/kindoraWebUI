@@ -1,6 +1,13 @@
 export type MessageTab = "all" | "favorites"
 
-export type FavoriteState = "pinned" | "highlighted" | "idle"
+export type FavoriteState = "favorite" | "idle"
+
+export type MessageConnectionStatus = "connecting" | "connected" | "reconnecting" | "disconnected" | "error"
+
+export interface MessageConnectionState {
+	status: MessageConnectionStatus
+	errorMessage?: string
+}
 
 export interface BubbleItem {
 	id: string
@@ -12,6 +19,7 @@ export interface BubbleItem {
 export interface ThreadItem {
 	id: string
 	name: string
+	avatarUrl?: string
 	preview: string
 	time: string
 	dateLabel: string

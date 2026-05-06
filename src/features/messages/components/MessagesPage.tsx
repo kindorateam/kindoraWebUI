@@ -9,9 +9,12 @@ import MessagesTabs from "./MessagesTabs"
 const MessagesPage = () => {
 	const {
 		activeTab,
+		connection,
 		handleBackToList,
+		handleReconnect,
 		handleThreadSelect,
 		handleToggleFavorite,
+		hasThreads,
 		isMobileConversationOpen,
 		searchValue,
 		selectedThread,
@@ -26,6 +29,7 @@ const MessagesPage = () => {
 			<div className="grid min-h-0 flex-1 gap-4 overflow-hidden lg:grid-cols-[320px_minmax(0,1fr)]">
 				<MessagesSidebar
 					className={clsx(isMobileConversationOpen && "hidden lg:flex")}
+					hasThreads={hasThreads}
 					searchValue={searchValue}
 					selectedThreadId={selectedThreadId}
 					threads={visibleThreads}
@@ -37,9 +41,12 @@ const MessagesPage = () => {
 				</MessagesSidebar>
 				<MessagesConversationPane
 					className={clsx(!isMobileConversationOpen && "hidden lg:flex")}
+					connection={connection}
+					hasThreads={hasThreads}
 					showBackButton={isMobileConversationOpen}
 					thread={selectedThread}
 					onBack={handleBackToList}
+					onReconnect={handleReconnect}
 				/>
 			</div>
 		</div>

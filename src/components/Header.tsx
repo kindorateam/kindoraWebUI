@@ -1,5 +1,6 @@
 import { Avatar, Badge, Button, Description, Dropdown, Header as HeroHeader, Label, Separator } from "@heroui/react"
 import { useLocation } from "@tanstack/react-router"
+import { useTranslation } from "react-i18next"
 
 import Breadcrumbs from "@/components/Breadcrumbs"
 import useAuth from "@/features/auth/hooks/useAuth"
@@ -13,6 +14,7 @@ const INVERSE_THRESHOLD = 0.5
 const interpolateChannel = (from: number, to: number, progress: number) => Math.round(from + (to - from) * progress)
 
 const Header = () => {
+	const { t } = useTranslation()
 	const { user, logoutAndRedirect } = useAuth()
 	const { pathname } = useLocation()
 	const isDashboard = pathname === "/dashboard"
@@ -38,7 +40,12 @@ const Header = () => {
 
 				<div className="flex items-center gap-5">
 					<Badge.Anchor>
-						<Button aria-label="more than 99 notifications" className="bg-white shadow-md" isIconOnly variant="ghost">
+						<Button
+							aria-label={t("header.notificationsAria")}
+							className="bg-white shadow-md"
+							isIconOnly
+							variant="ghost"
+						>
 							<MdiBellOutline />
 						</Button>
 						<Badge color="danger">3</Badge>
@@ -46,12 +53,15 @@ const Header = () => {
 					<Dropdown>
 						<Dropdown.Trigger>
 							<Avatar className="cursor-pointer transition-transform lg:h-10 lg:w-10" size="sm">
-								<Avatar.Image alt="Jason Hughes" src="https://i.pravatar.cc/150?u=a042581f4e29026704d" />
+								<Avatar.Image
+									alt={user?.name ?? t("header.profileAvatarAlt")}
+									src="https://i.pravatar.cc/150?u=a042581f4e29026704d"
+								/>
 								<Avatar.Fallback>JH</Avatar.Fallback>
 							</Avatar>
 						</Dropdown.Trigger>
 						<Dropdown.Popover>
-							<Dropdown.Menu aria-label="Profile Actions">
+							<Dropdown.Menu aria-label={t("header.profileActionsAria")}>
 								<Dropdown.Section>
 									<HeroHeader>
 										<Label>{user?.name}</Label>
@@ -62,22 +72,22 @@ const Header = () => {
 								<Separator />
 
 								<Dropdown.Section>
-									<Dropdown.Item id="settings" textValue="My profile">
-										<Label>My profile</Label>
+									<Dropdown.Item id="settings" textValue={t("header.myProfile")}>
+										<Label>{t("header.myProfile")}</Label>
 									</Dropdown.Item>
-									<Dropdown.Item id="team_settings" textValue="School settings">
-										<Label>School settings</Label>
+									<Dropdown.Item id="team_settings" textValue={t("header.schoolSettings")}>
+										<Label>{t("header.schoolSettings")}</Label>
 									</Dropdown.Item>
-									<Dropdown.Item id="analytics" textValue="Subscription">
-										<Label>Subscription</Label>
+									<Dropdown.Item id="analytics" textValue={t("header.subscription")}>
+										<Label>{t("header.subscription")}</Label>
 									</Dropdown.Item>
 								</Dropdown.Section>
 
 								<Separator />
 
 								<Dropdown.Section>
-									<Dropdown.Item id="logout" onPress={handleLogout} textValue="Log Out" variant="danger">
-										<Label>Log Out</Label>
+									<Dropdown.Item id="logout" onPress={handleLogout} textValue={t("header.logOut")} variant="danger">
+										<Label>{t("header.logOut")}</Label>
 									</Dropdown.Item>
 								</Dropdown.Section>
 							</Dropdown.Menu>

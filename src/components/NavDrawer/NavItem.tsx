@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router"
-import { memo } from "react"
+import { useTranslation } from "react-i18next"
 
 import type { NavDrawerItem } from "./navDrawer.types"
 
@@ -7,7 +7,10 @@ interface NavItemProps {
 	item: NavDrawerItem
 }
 
-const NavItem = memo(({ item }: NavItemProps) => {
+const NavItem = ({ item }: NavItemProps) => {
+	const { t } = useTranslation()
+	const label = t(item.labelKey)
+
 	return (
 		<Link
 			activeOptions={{ exact: false }}
@@ -15,7 +18,7 @@ const NavItem = memo(({ item }: NavItemProps) => {
 			to={item.path}
 		>
 			{item.icon}
-			<span>{item.label}</span>
+			<span>{label}</span>
 			{item.badge && (
 				<span className="ml-auto flex size-5 items-center justify-center rounded-full bg-red-500 text-white text-xs">
 					{item.badge}
@@ -23,8 +26,6 @@ const NavItem = memo(({ item }: NavItemProps) => {
 			)}
 		</Link>
 	)
-})
-
-NavItem.displayName = "NavItem"
+}
 
 export default NavItem

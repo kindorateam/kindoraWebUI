@@ -7,7 +7,7 @@ export const messageThreadItems: ThreadItem[] = [
 		preview: "Oh, hello! All perfectly. I will check it and get back to you soon",
 		time: "05:30 PM",
 		dateLabel: "Today",
-		favorite: "pinned",
+		favorite: "favorite",
 		parents: ["Monica Whitaker", "Aaron Whitaker"],
 		messages: [
 			{
@@ -42,7 +42,7 @@ export const messageThreadItems: ThreadItem[] = [
 		preview: "Oh, hello! All perfectly. I will check it and get back to you soon",
 		time: "05:30 PM",
 		dateLabel: "Today",
-		favorite: "highlighted",
+		favorite: "favorite",
 		parents: ["Monica Whitaker", "Aaron Whitaker"],
 		messages: [
 			{
@@ -102,7 +102,7 @@ export const messageThreadItems: ThreadItem[] = [
 		time: "05:30 PM",
 		dateLabel: "Today",
 		favorite: "idle",
-		parents: ["Parent Name", "Parent Name"],
+		parents: ["Monica Whitaker", "Aaron Whitaker", "Diane Whitaker", "Robert Whitaker"],
 		messages: [
 			{
 				id: "bubble-1",

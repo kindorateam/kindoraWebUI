@@ -1,5 +1,6 @@
 import { Link, useRouterState } from "@tanstack/react-router"
 import { useAtom } from "jotai"
+import { useTranslation } from "react-i18next"
 
 import Logo from "@/assets/svg/kindora.svg?no-inline"
 import { navDrawerExpandedItemsAtom, toggleNavDrawerItemAtom } from "@/stores"
@@ -11,6 +12,7 @@ import navDrawerData from "./navDrawer.data.tsx"
 import type { NavDrawerItem } from "./navDrawer.types"
 
 const NavDrawer = () => {
+	const { t } = useTranslation()
 	const matches = useRouterState({ select: (s) => s.matches })
 	const [manuallyExpandedItems] = useAtom(navDrawerExpandedItemsAtom)
 	const [, toggleExpanded] = useAtom(toggleNavDrawerItemAtom)
@@ -22,7 +24,7 @@ const NavDrawer = () => {
 		return item.children.some((child) => isPathActive(child.path))
 	}
 
-	const autoExpandedItems = navDrawerData.filter(hasActiveChild).map((i) => i.label)
+	const autoExpandedItems = navDrawerData.filter(hasActiveChild).map((i) => i.labelKey)
 
 	const combined = new Set([...autoExpandedItems, ...manuallyExpandedItems])
 	const expandedItems = Array.from(combined)
@@ -33,13 +35,13 @@ const NavDrawer = () => {
 
 	const menuItems = navDrawerData.map((item) => {
 		const hasChildren = item.children && item.children.length > 0
-		const isExpanded = expandedItems.includes(item.label)
+		const isExpanded = expandedItems.includes(item.labelKey)
 
 		if (hasChildren) {
-			return <NavGroup isExpanded={isExpanded} item={item} key={item.label} onToggle={handleToggleExpanded} />
+			return <NavGroup isExpanded={isExpanded} item={item} key={item.labelKey} onToggle={handleToggleExpanded} />
 		}
 
-		return <NavItem item={item} key={item.label} />
+		return <NavItem item={item} key={item.labelKey} />
 	})
 
 	return (
@@ -50,7 +52,7 @@ const NavDrawer = () => {
 						<img alt="Kindora Logo" className="h-8" src={Logo} />
 					</Link>
 				</div>
-				<nav aria-label="Primary" className="flex-1 overflow-y-auto px-4">
+				<nav aria-label={t("nav.primaryAria")} className="flex-1 overflow-y-auto px-4">
 					{menuItems}
 				</nav>
 			</aside>

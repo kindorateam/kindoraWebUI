@@ -8,6 +8,7 @@ import type { ThreadItem } from "../types"
 interface MessagesSidebarProps {
 	children?: React.ReactNode
 	className?: string
+	hasThreads: boolean
 	searchValue: string
 	selectedThreadId?: string
 	threads: ThreadItem[]
@@ -19,6 +20,7 @@ interface MessagesSidebarProps {
 const MessagesSidebar = ({
 	children,
 	className,
+	hasThreads,
 	searchValue,
 	selectedThreadId,
 	threads,
@@ -58,8 +60,14 @@ const MessagesSidebar = ({
 							))
 						) : (
 							<div className="flex flex-1 flex-col items-center justify-center px-6 text-center">
-								<p className="font-medium text-foreground">No conversations found</p>
-								<p className="mt-1 text-default-500 text-sm">Try a different name or switch tabs.</p>
+								<p className="font-medium text-foreground">
+									{hasThreads ? "No conversations found" : "No messages yet"}
+								</p>
+								<p className="mt-1 text-default-500 text-sm">
+									{hasThreads
+										? "Try a different name or switch tabs."
+										: "Family conversations will appear here once messages are available."}
+								</p>
 							</div>
 						)}
 					</div>

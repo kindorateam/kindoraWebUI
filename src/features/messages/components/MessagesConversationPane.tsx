@@ -1,7 +1,7 @@
-import { Avatar, Button, Chip, Input, ScrollShadow } from "@heroui/react"
+import { Avatar, Button, Chip, Input, ScrollShadow, Tooltip } from "@heroui/react"
 import clsx from "clsx"
 
-import MdiAccount from "~icons/mdi/account"
+import FluentPerson16Filled from "~icons/fluent/person-16-filled"
 import MdiArrowLeft from "~icons/mdi/arrow-left"
 import MdiDotsVertical from "~icons/mdi/dots-vertical"
 import MdiMagnify from "~icons/mdi/magnify"
@@ -9,31 +9,58 @@ import MingcuteSendFill from "~icons/mingcute/send-fill"
 import SolarPaperclipLinear from "~icons/solar/paperclip-linear"
 
 import ConversationBubble from "./ConversationBubble"
+import MessageConnectionBanner from "./MessageConnectionBanner"
 
-import type { ThreadItem } from "../types"
+import type { MessageConnectionState, ThreadItem } from "../types"
+
+const VISIBLE_PARENT_LIMIT = 2
 
 interface MessagesConversationPaneProps {
 	className?: string
+	connection: MessageConnectionState
+	hasThreads: boolean
 	onBack: () => void
+	onReconnect: () => void
 	showBackButton: boolean
 	thread: ThreadItem | null
 }
 
-const MessagesConversationPane = ({ className, onBack, showBackButton, thread }: MessagesConversationPaneProps) => {
+const MessagesConversationPane = ({
+	className,
+	connection,
+	hasThreads,
+	onBack,
+	onReconnect,
+	showBackButton,
+	thread,
+}: MessagesConversationPaneProps) => {
+	const isConnected = connection.status === "connected"
+
 	if (!thread) {
 		return (
 			<section className={clsx("min-h-0 w-full", className)}>
 				<div className="flex h-full min-h-0 w-full flex-col rounded-2xl border border-default-200 bg-content1">
 					<div className="flex flex-1 flex-col items-center justify-center px-6 text-center">
-						<p className="font-medium text-foreground text-lg">No conversation selected</p>
+						<p className="font-medium text-foreground text-lg">
+							{hasThreads ? "No conversation selected" : "No messages yet"}
+						</p>
 						<p className="mt-2 max-w-sm text-default-500 text-sm">
-							Choose a conversation from the list to review messages and continue the chat.
+							{hasThreads
+								? "Choose a conversation from the list to review messages and continue the chat."
+								: "When families send messages, the selected conversation will open here."}
 						</p>
 					</div>
 				</div>
 			</section>
 		)
 	}
+
+	const parentItems = thread.parents.map((parent, position) => ({
+		id: `${thread.id}-parent-${position}`,
+		name: parent,
+	}))
+	const visibleParents = parentItems.slice(0, VISIBLE_PARENT_LIMIT)
+	const hiddenParents = parentItems.slice(VISIBLE_PARENT_LIMIT)
 
 	return (
 		<section className={clsx("min-h-0 w-full", className)}>
@@ -52,19 +79,42 @@ const MessagesConversationPane = ({ className, onBack, showBackButton, thread }:
 							</Button>
 						) : null}
 
-						<Avatar className="bg-primary text-primary-foreground" size="sm">
-							<Avatar.Fallback>
-								<MdiAccount className="size-4" />
+						<Avatar size="sm">
+							<Avatar.Image alt={thread.name} src={thread.avatarUrl} />
+							<Avatar.Fallback className="bg-accent text-white">
+								<FluentPerson16Filled className="size-6 text-white" />
 							</Avatar.Fallback>
 						</Avatar>
 						<div className="min-w-0 flex-1">
 							<p className="truncate font-medium text-foreground text-sm leading-5">{thread.name}</p>
 							<div className="mt-2 flex flex-wrap gap-2">
-								{thread.parents.map((parent) => (
-									<Chip key={parent} size="sm" variant="soft">
-										{parent}
-									</Chip>
-								))}
+								{parentItems.length > 0 ? (
+									<>
+										{visibleParents.map((parent) => (
+											<Chip key={parent.id} size="sm" variant="soft">
+												{parent.name}
+											</Chip>
+										))}
+										{hiddenParents.length > 0 ? (
+											<Tooltip delay={0}>
+												<Tooltip.Trigger aria-label={`${hiddenParents.length} more parents`} className="cursor-pointer">
+													<Chip size="sm" variant="soft">
+														+{hiddenParents.length}
+													</Chip>
+												</Tooltip.Trigger>
+												<Tooltip.Content className="flex max-w-64 flex-wrap gap-1 p-1">
+													{hiddenParents.map((parent) => (
+														<Chip key={parent.id} size="sm" variant="soft">
+															{parent.name}
+														</Chip>
+													))}
+												</Tooltip.Content>
+											</Tooltip>
+										) : null}
+									</>
+								) : (
+									<p className="text-default-500 text-xs leading-5">No parents linked</p>
+								)}
 							</div>
 						</div>
 					</div>
@@ -80,6 +130,8 @@ const MessagesConversationPane = ({ className, onBack, showBackButton, thread }:
 				</div>
 
 				<div className="flex min-h-0 flex-1 flex-col overflow-hidden">
+					<MessageConnectionBanner connection={connection} onReconnect={onReconnect} />
+
 					<ScrollShadow className="messages-chat-scroll flex-1 px-4 py-4 sm:px-6" hideScrollBar>
 						<div className="flex flex-col gap-4">
 							{thread.messages.map((bubble) => (
@@ -96,10 +148,11 @@ const MessagesConversationPane = ({ className, onBack, showBackButton, thread }:
 							<Input
 								aria-label="Type your message"
 								className="flex-1"
+								disabled={!isConnected}
 								placeholder="Type your message"
 								variant="secondary"
 							/>
-							<Button aria-label="Send message" isIconOnly variant="primary">
+							<Button aria-label="Send message" isDisabled={!isConnected} isIconOnly variant="primary">
 								<MingcuteSendFill className="size-5" />
 							</Button>
 						</div>

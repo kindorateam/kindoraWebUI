@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router"
 import clsx from "clsx"
+import { useTranslation } from "react-i18next"
 
 import TablerChevronUp from "~icons/tabler/chevron-up"
 
@@ -12,7 +13,9 @@ interface NavGroupProps {
 }
 
 const NavGroup = ({ item, isExpanded, onToggle }: NavGroupProps) => {
-	const controlsId = `group-${item.label.replace(/\s+/g, "-")}`
+	const { t } = useTranslation()
+	const label = t(item.labelKey)
+	const controlsId = `group-${item.labelKey.replace(/\W+/g, "-")}`
 	const children = item.children?.map((child) => (
 		<Link
 			activeOptions={{ exact: false }}
@@ -20,12 +23,12 @@ const NavGroup = ({ item, isExpanded, onToggle }: NavGroupProps) => {
 			key={child.path}
 			to={child.path}
 		>
-			{child.label}
+			{t(child.labelKey)}
 		</Link>
 	))
 
 	const handleToggle = () => {
-		onToggle(item.label)
+		onToggle(item.labelKey)
 	}
 
 	return (
@@ -39,7 +42,7 @@ const NavGroup = ({ item, isExpanded, onToggle }: NavGroupProps) => {
 			>
 				<div className="flex items-center gap-2">
 					{item.icon}
-					<span>{item.label}</span>
+					<span>{label}</span>
 					<TablerChevronUp
 						aria-hidden="true"
 						className={clsx("size-4 transition-transform", {

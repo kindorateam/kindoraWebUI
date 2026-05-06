@@ -5,6 +5,7 @@ import { createRoot } from "react-dom/client"
 import "jotai-devtools/styles.css"
 
 import "./index.css"
+import "@/i18n"
 
 import { queryClient } from "@/services/queryClient"
 import { appStore } from "@/stores/jotaiStore"

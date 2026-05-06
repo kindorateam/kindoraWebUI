@@ -1,6 +1,7 @@
 import { RouterProvider } from "@tanstack/react-router"
 import { useAtom, useAtomValue } from "jotai"
 import { useEffect } from "react"
+import { useTranslation } from "react-i18next"
 
 import { authInitializedAtom, authStateAtom, checkAuthAtom } from "@/stores"
 
@@ -13,6 +14,7 @@ function InnerApp() {
 }
 
 const App = () => {
+	const { t } = useTranslation()
 	const [, checkAuth] = useAtom(checkAuthAtom)
 	const isAuthInitialized = useAtomValue(authInitializedAtom)
 
@@ -24,7 +26,7 @@ const App = () => {
 	if (!isAuthInitialized) {
 		return (
 			<div className="flex min-h-screen items-center justify-center">
-				<div>Loading...</div>
+				<div>{t("common.loading")}</div>
 			</div>
 		)
 	}
