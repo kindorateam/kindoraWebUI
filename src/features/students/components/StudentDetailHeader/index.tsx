@@ -1,4 +1,5 @@
 import { Avatar, Badge, Button, Chip, Separator, Tabs } from "@heroui/react"
+import { useTranslation } from "react-i18next"
 
 import IdentityChip from "@/components/IdentityChip"
 import FluentPerson16Filled from "~icons/fluent/person-16-filled"
@@ -16,9 +17,9 @@ interface StudentDetailHeaderProps {
 	onScheduleAbsence?: () => void
 }
 
-const formatAbsenceDate = (student: Student) => {
-	if (!student.absence) return "Not scheduled"
-	const dateFormatter = new Intl.DateTimeFormat("en-US", {
+const formatAbsenceDate = (student: Student, locale: string) => {
+	if (!student.absence) return null
+	const dateFormatter = new Intl.DateTimeFormat(locale, {
 		month: "short",
 		day: "numeric",
 	})
@@ -33,7 +34,9 @@ const StudentDetailHeader = ({
 	onMoveToRoom,
 	onScheduleAbsence,
 }: StudentDetailHeaderProps) => {
+	const { i18n, t } = useTranslation()
 	const studentName = `${student.firstName} ${student.lastName}`
+	const absenceDate = formatAbsenceDate(student, i18n.language)
 
 	return (
 		<div className="container mx-auto max-w-4xl">
@@ -56,8 +59,11 @@ const StudentDetailHeader = ({
 
 					<div className="flex items-center gap-6">
 						<div className="flex items-center gap-4">
-							<span className="text-neutral-600 text-sm">Rooms</span>
-							<IdentityChip fallbackIcon="room" fullName={student.room?.title ?? "Unassigned"} />
+							<span className="text-neutral-600 text-sm">{t("students.detail.header.rooms")}</span>
+							<IdentityChip
+								fallbackIcon="room"
+								fullName={student.room?.title ?? t("students.detail.header.unassigned")}
+							/>
 						</div>
 
 						<Button
@@ -67,20 +73,22 @@ const StudentDetailHeader = ({
 							size="md"
 							variant="outline"
 						>
-							Move to another room
+							{t("students.detail.header.moveToRoom")}
 						</Button>
 					</div>
 
 					<div className="flex items-center gap-4">
-						<span className="text-neutral-600 text-sm">Schedule absence</span>
+						<span className="text-neutral-600 text-sm">{t("students.detail.header.scheduleAbsence")}</span>
 						<Button variant="primary" isDisabled={!onScheduleAbsence} isIconOnly onPress={onScheduleAbsence} size="sm">
 							<SolarCalendarBroken className="size-4 text-white" />
 						</Button>
 
 						<div className="flex items-center gap-3">
-							<span className="text-neutral-600 text-sm">Absence date</span>
+							<span className="text-neutral-600 text-sm">{t("students.detail.header.absenceDate")}</span>
 							<Chip className="bg-secondary-100/80" size="sm">
-								<span className="text-secondary-600 text-sm">{formatAbsenceDate(student)}</span>
+								<span className="text-secondary-600 text-sm">
+									{absenceDate ?? t("students.detail.header.notScheduled")}
+								</span>
 							</Chip>
 						</div>
 					</div>
@@ -90,27 +98,27 @@ const StudentDetailHeader = ({
 			<Tabs onSelectionChange={(key) => onTabChange(key as TabType)} selectedKey={activeTab}>
 				<Tabs.ListContainer>
 					<Tabs.List
-						aria-label="Student details tabs"
+						aria-label={t("students.detail.header.tabsAriaLabel")}
 						className="w-fit *:h-6 *:w-fit *:px-3 *:font-normal *:text-sm *:data-[selected=true]:text-accent-foreground"
 					>
 						<Tabs.Tab id="activity">
-							Activity
+							{t("students.detail.header.tabs.activity")}
 							<Tabs.Indicator className="bg-accent" />
 						</Tabs.Tab>
 						<Tabs.Tab id="profile">
-							Profile
+							{t("students.detail.header.tabs.profile")}
 							<Tabs.Indicator className="bg-accent" />
 						</Tabs.Tab>
 						<Tabs.Tab id="documents">
-							Documents
+							{t("students.detail.header.tabs.documents")}
 							<Tabs.Indicator className="bg-accent" />
 						</Tabs.Tab>
 						<Tabs.Tab id="imunization">
-							Imunization
+							{t("students.detail.header.tabs.immunization")}
 							<Tabs.Indicator className="bg-accent" />
 						</Tabs.Tab>
 						<Tabs.Tab id="billing">
-							Billing
+							{t("students.detail.header.tabs.billing")}
 							<Tabs.Indicator className="bg-accent" />
 						</Tabs.Tab>
 					</Tabs.List>

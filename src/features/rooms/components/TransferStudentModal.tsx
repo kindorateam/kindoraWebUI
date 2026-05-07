@@ -1,6 +1,7 @@
 import { Button, Label, ListBox, Modal, Select, Spinner, toast } from "@heroui/react"
 import { useAtomValue } from "jotai"
 import { useRef, useState } from "react"
+import { useTranslation } from "react-i18next"
 
 import { getErrorMessage } from "@/utils/error"
 
@@ -14,6 +15,7 @@ interface TransferStudentModalProps {
 }
 
 const TransferStudentModal = ({ onSuccess }: TransferStudentModalProps) => {
+	const { t } = useTranslation()
 	const { isOpen, sourceRoomId, studentIds } = useAtomValue(transferStudentModalAtom)
 	const {
 		rooms,
@@ -42,18 +44,15 @@ const TransferStudentModal = ({ onSuccess }: TransferStudentModalProps) => {
 			{
 				onSuccess: () => {
 					const count = studentIds.length
-					toast(count === 1 ? "Student transferred" : "Students transferred", {
-						description:
-							count === 1
-								? "Student has been transferred to the new room."
-								: `${count} students have been transferred to the new room.`,
+					toast(t("rooms.transferStudent.success", { count }), {
+						description: t("rooms.transferStudent.successDescription", { count }),
 						variant: "success",
 					})
 					onSuccess?.()
 					handleClose()
 				},
 				onError: (error) => {
-					toast("Failed to transfer students", {
+					toast(t("rooms.transferStudent.error"), {
 						description: getErrorMessage(error),
 						variant: "danger",
 					})
@@ -78,9 +77,9 @@ const TransferStudentModal = ({ onSuccess }: TransferStudentModalProps) => {
 				<Modal.Dialog>
 					<Modal.CloseTrigger />
 					<Modal.Header>
-						<Modal.Heading>Transfer to another Room</Modal.Heading>
+						<Modal.Heading>{t("rooms.transferStudent.title")}</Modal.Heading>
 						<span className="font-normal text-default-500 text-sm">
-							{studentIds.length} {studentIds.length === 1 ? "student" : "students"} selected
+							{t("rooms.transferStudent.selectedStudents", { count: studentIds.length })}
 						</span>
 					</Modal.Header>
 					<Modal.Body className="gap-5">
@@ -96,7 +95,7 @@ const TransferStudentModal = ({ onSuccess }: TransferStudentModalProps) => {
 									if (key !== null) setSelectedRoomId(String(key))
 								}}
 							>
-								<Label>Target Room</Label>
+								<Label>{t("rooms.transferStudent.targetRoom")}</Label>
 								<Select.Trigger>
 									<Select.Value />
 									<Select.Indicator />
@@ -121,8 +120,8 @@ const TransferStudentModal = ({ onSuccess }: TransferStudentModalProps) => {
 											</ListBox.Item>
 										))}
 										{isFetchingNextPage && (
-											<ListBox.Item id="loading-rooms" textValue="Loading...">
-												<span className="text-default-400 text-sm">Loading more...</span>
+											<ListBox.Item id="loading-rooms" textValue={t("common.loading")}>
+												<span className="text-default-400 text-sm">{t("common.loadingMore")}</span>
 											</ListBox.Item>
 										)}
 									</ListBox>
@@ -138,7 +137,7 @@ const TransferStudentModal = ({ onSuccess }: TransferStudentModalProps) => {
 							isPending={moveStudentsMutation.isPending}
 							onPress={handleSubmit}
 						>
-							Transfer
+							{t("rooms.transferStudent.transfer")}
 						</Button>
 					</Modal.Footer>
 				</Modal.Dialog>

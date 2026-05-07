@@ -1,6 +1,7 @@
 import { useRouterState } from "@tanstack/react-router"
 import { useAtomValue } from "jotai"
 import { useEffect } from "react"
+import { useTranslation } from "react-i18next"
 
 import { breadcrumbOverridesAtom } from "@/stores/breadcrumb.store"
 
@@ -9,6 +10,7 @@ import type { Breadcrumb, PageMetadata, RouteMatch } from "@/types/URL"
 const APP_NAME = "Kindora"
 
 const usePageMetadata = (): PageMetadata => {
+	const { t } = useTranslation()
 	const matches = useRouterState({
 		// matches is a union from TanStack Router; cast to the shape we read
 		select: (s) => s.matches as unknown as RouteMatch[],
@@ -16,7 +18,8 @@ const usePageMetadata = (): PageMetadata => {
 	const overrides = useAtomValue(breadcrumbOverridesAtom)
 
 	const breadcrumbs: Breadcrumb[] = matches.reduce<Breadcrumb[]>((acc, match, index) => {
-		const title = overrides.get(match.pathname) ?? match.context?.breadcrumb
+		const contextTitle = match.context?.breadcrumbKey ? t(match.context.breadcrumbKey) : match.context?.breadcrumb
+		const title = overrides.get(match.pathname) ?? contextTitle
 		if (typeof title === "string") {
 			// Deduplicate breadcrumbs with same title
 			const existingCrumb = acc.find((crumb) => crumb.title === title)

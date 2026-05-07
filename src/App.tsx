@@ -3,6 +3,7 @@ import { useAtom, useAtomValue } from "jotai"
 import { useEffect } from "react"
 import { useTranslation } from "react-i18next"
 
+import { useLanguage } from "@/i18n/useLanguage"
 import { authInitializedAtom, authStateAtom, checkAuthAtom } from "@/stores"
 
 import { router } from "./router"
@@ -15,6 +16,7 @@ function InnerApp() {
 
 const App = () => {
 	const { t } = useTranslation()
+	useLanguage()
 	const [, checkAuth] = useAtom(checkAuthAtom)
 	const isAuthInitialized = useAtomValue(authInitializedAtom)
 

@@ -1,4 +1,5 @@
 import { Avatar, Input, Label, TextField } from "@heroui/react"
+import { useTranslation } from "react-i18next"
 
 import LucideUsers from "~icons/lucide/users"
 
@@ -9,11 +10,13 @@ interface GuardiansSectionProps {
 }
 
 const GuardiansSection = ({ guardians }: GuardiansSectionProps) => {
+	const { t } = useTranslation()
+
 	return (
 		<section className="flex flex-col gap-6">
 			<div className="flex items-center gap-2 px-4 py-1.5">
 				<LucideUsers className="size-5 text-foreground" />
-				<span className="font-semibold text-foreground text-sm">Guardians</span>
+				<span className="font-semibold text-foreground text-sm">{t("students.detail.profile.sections.guardians")}</span>
 			</div>
 
 			<div className="flex flex-col gap-6">
@@ -26,29 +29,29 @@ const GuardiansSection = ({ guardians }: GuardiansSectionProps) => {
 
 						<div className="grid gap-2 lg:grid-cols-3">
 							<TextField variant="secondary" isReadOnly>
-								<Label>First Name</Label>
+								<Label>{t("students.detail.profile.fields.firstName")}</Label>
 
 								<Input value={guardian.firstName} />
 							</TextField>
 							<TextField variant="secondary" isReadOnly>
-								<Label>Last Name</Label>
+								<Label>{t("students.detail.profile.fields.lastName")}</Label>
 
 								<Input value={guardian.lastName} />
 							</TextField>
 							<TextField variant="secondary" isReadOnly>
-								<Label>Relationship to student</Label>
+								<Label>{t("students.detail.profile.fields.relationshipToStudent")}</Label>
 
-								<Input value={guardian.relationshipToStudent ?? "N/A"} />
+								<Input value={guardian.relationshipToStudent ?? t("common.notAvailable")} />
 							</TextField>
 							<TextField className="lg:col-span-2" variant="secondary" isReadOnly>
-								<Label>Phone</Label>
+								<Label>{t("students.detail.profile.fields.phone")}</Label>
 
-								<Input value={guardian.phone ?? "N/A"} />
+								<Input value={guardian.phone ?? t("common.notAvailable")} />
 							</TextField>
 							<TextField variant="secondary" isReadOnly>
-								<Label>Pin</Label>
+								<Label>{t("students.detail.profile.fields.pin")}</Label>
 
-								<Input value={guardian.pin ?? "N/A"} />
+								<Input value={guardian.pin ?? t("common.notAvailable")} />
 							</TextField>
 						</div>
 					</div>

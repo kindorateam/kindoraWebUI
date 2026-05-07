@@ -28,9 +28,9 @@ export const ROOM_AGE_OPTIONS = Array.from({ length: MAX_ROOM_AGE_MONTHS - MIN_R
 })
 
 export const ABSENCE_REASONS = [
-	{ key: "sick", label: "Sick" },
-	{ key: "family_emergency", label: "Family emergency" },
-	{ key: "vacation", label: "Vacation" },
-	{ key: "medical_appointment", label: "Medical appointment" },
-	{ key: "other", label: "Other" },
+	{ key: "sick", label: "Sick", labelKey: "rooms.absenceReasons.sick" },
+	{ key: "family_emergency", label: "Family emergency", labelKey: "rooms.absenceReasons.familyEmergency" },
+	{ key: "vacation", label: "Vacation", labelKey: "rooms.absenceReasons.vacation" },
+	{ key: "medical_appointment", label: "Medical appointment", labelKey: "rooms.absenceReasons.medicalAppointment" },
+	{ key: "other", label: "Other", labelKey: "rooms.absenceReasons.other" },
 ]

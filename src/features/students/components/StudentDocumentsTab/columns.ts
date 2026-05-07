@@ -1,10 +1,10 @@
 const columns = [
-	{ key: "name", label: "Name", isRowHeader: true },
-	{ key: "status", label: "Status", align: "center" as const },
-	{ key: "expiryDate", label: "Expiry date" },
-	{ key: "type", label: "Type" },
-	{ key: "uploaded", label: "Uploaded" },
-	{ key: "actions", label: "Actions", align: "center" as const },
+	{ key: "name", labelKey: "students.detail.documents.columns.name", isRowHeader: true },
+	{ key: "status", labelKey: "students.detail.documents.columns.status", align: "center" as const },
+	{ key: "expiryDate", labelKey: "students.detail.documents.columns.expiryDate" },
+	{ key: "type", labelKey: "students.detail.documents.columns.type" },
+	{ key: "uploaded", labelKey: "students.detail.documents.columns.uploaded" },
+	{ key: "actions", labelKey: "students.detail.documents.columns.actions", align: "center" as const },
 ]
 
 export default columns

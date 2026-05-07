@@ -12,6 +12,7 @@ export interface PageMetadata {
 
 interface RouteContext {
 	breadcrumb?: string
+	breadcrumbKey?: string
 	[key: string]: unknown
 }
 

@@ -1,4 +1,5 @@
 import { Avatar, Input, Label, TextField } from "@heroui/react"
+import { useTranslation } from "react-i18next"
 
 import LucideUsers from "~icons/lucide/users"
 
@@ -10,11 +11,13 @@ interface SiblingsSectionProps {
 }
 
 const SiblingsSection = ({ siblings, fallbackRoomTitle }: SiblingsSectionProps) => {
+	const { i18n, t } = useTranslation()
+
 	return (
 		<section className="flex flex-col gap-6">
 			<div className="flex items-center gap-2 px-4 py-1.5">
 				<LucideUsers className="size-5 text-foreground" />
-				<span className="font-semibold text-foreground text-sm">Sibling</span>
+				<span className="font-semibold text-foreground text-sm">{t("students.detail.profile.sections.siblings")}</span>
 			</div>
 
 			<div className="flex flex-col gap-6">
@@ -27,39 +30,41 @@ const SiblingsSection = ({ siblings, fallbackRoomTitle }: SiblingsSectionProps) 
 
 						<div className="grid gap-2 lg:grid-cols-3">
 							<TextField variant="secondary" isReadOnly>
-								<Label>First Name</Label>
+								<Label>{t("students.detail.profile.fields.firstName")}</Label>
 
 								<Input value={sibling.firstName} />
 							</TextField>
 							<TextField variant="secondary" isReadOnly>
-								<Label>Last Name</Label>
+								<Label>{t("students.detail.profile.fields.lastName")}</Label>
 
 								<Input value={sibling.lastName} />
 							</TextField>
 							<TextField variant="secondary" isReadOnly>
-								<Label>Relationship to student</Label>
+								<Label>{t("students.detail.profile.fields.relationshipToStudent")}</Label>
 
-								<Input value={sibling.relationshipToStudent ?? "N/A"} />
+								<Input value={sibling.relationshipToStudent ?? t("common.notAvailable")} />
 							</TextField>
 							<TextField className="lg:col-span-2" variant="secondary" isReadOnly>
-								<Label>Date of Birth</Label>
+								<Label>{t("students.detail.profile.fields.dateOfBirth")}</Label>
 
 								<Input
 									value={
 										sibling.dateOfBirth
-											? new Date(sibling.dateOfBirth).toLocaleDateString("en-US", {
+											? new Date(sibling.dateOfBirth).toLocaleDateString(i18n.language, {
 													month: "short",
 													day: "numeric",
 													year: "numeric",
 												})
-											: "N/A"
+											: t("common.notAvailable")
 									}
 								/>
 							</TextField>
 							<TextField variant="secondary" isReadOnly>
-								<Label>Assigned rooms</Label>
+								<Label>{t("students.detail.profile.fields.assignedRooms")}</Label>
 
-								<Input value={sibling.assignedRoomTitle ?? fallbackRoomTitle ?? "No room assigned"} />
+								<Input
+									value={sibling.assignedRoomTitle ?? fallbackRoomTitle ?? t("students.detail.profile.noRoomAssigned")}
+								/>
 							</TextField>
 						</div>
 					</div>

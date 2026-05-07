@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router"
+import { useTranslation } from "react-i18next"
 
 import { RouteErrorBoundary } from "@/components/error"
 import MarkAbsentModal from "@/features/rooms/components/MarkAbsentModal"
@@ -31,7 +32,7 @@ export const Route = createFileRoute("/_authenticated/students/$studentId")({
 			tab: validTabs.includes(tab as TabType) ? (tab as TabType) : "activity",
 		}
 	},
-	beforeLoad: () => ({ breadcrumb: "Students" }),
+	beforeLoad: () => ({ breadcrumbKey: "students.title" }),
 	loader: ({ params }: { params: { studentId: string } }) => {
 		queryClient.ensureQueryData({
 			queryKey: ["students", params.studentId],
@@ -42,6 +43,7 @@ export const Route = createFileRoute("/_authenticated/students/$studentId")({
 })
 
 function StudentDetailPage() {
+	const { t } = useTranslation()
 	const params = Route.useParams()
 	const search = Route.useSearch()
 	const navigate = useNavigate({ from: Route.fullPath })
@@ -68,7 +70,7 @@ function StudentDetailPage() {
 		return (
 			<RouteErrorBoundary routeName="student-detail">
 				<main className="container mx-auto max-w-4xl py-10">
-					<p className="text-danger">Student not found.</p>
+					<p className="text-danger">{t("students.detail.notFound")}</p>
 				</main>
 			</RouteErrorBoundary>
 		)
@@ -85,11 +87,11 @@ function StudentDetailPage() {
 					onScheduleAbsence={handleScheduleAbsence}
 				/>
 				<main className="container mx-auto max-w-4xl flex-1 pt-5">
-					{tab === "activity" && <p className="text-default-500">Activity content coming soon.</p>}
+					{tab === "activity" && <p className="text-default-500">{t("students.detail.activityComingSoon")}</p>}
 					{tab === "profile" && <StudentProfileTab student={student} />}
 					{tab === "documents" && <StudentDocumentsTab studentId={student.id} />}
-					{tab === "imunization" && <p className="text-default-500">Imunization content coming soon.</p>}
-					{tab === "billing" && <p className="text-default-500">Billing content coming soon.</p>}
+					{tab === "imunization" && <p className="text-default-500">{t("students.detail.immunizationComingSoon")}</p>}
+					{tab === "billing" && <p className="text-default-500">{t("students.detail.billingComingSoon")}</p>}
 				</main>
 			</div>
 			<MarkAbsentModal />

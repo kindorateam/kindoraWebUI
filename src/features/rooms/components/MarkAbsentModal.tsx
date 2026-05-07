@@ -2,6 +2,7 @@ import { Button, Label, ListBox, Modal, RangeCalendar, Select, toast } from "@he
 import { getLocalTimeZone, today } from "@internationalized/date"
 import { useAtomValue } from "jotai"
 import { useState } from "react"
+import { useTranslation } from "react-i18next"
 
 import { useCreateStudentAbsence } from "@/features/students/hooks/useStudents"
 import { getErrorMessage } from "@/utils/error"
@@ -21,6 +22,7 @@ const toRFC3339 = (date: CalendarDate): string => {
 }
 
 const MarkAbsentModal = () => {
+	const { t } = useTranslation()
 	const { isOpen, studentId, studentName } = useAtomValue(markAbsentModalAtom)
 	const markAbsentMutation = useCreateStudentAbsence()
 
@@ -45,11 +47,11 @@ const MarkAbsentModal = () => {
 			},
 			{
 				onSuccess: () => {
-					toast(`${studentName} marked as absent`, { variant: "success" })
+					toast(t("rooms.markAbsent.success", { studentName }), { variant: "success" })
 					handleClose()
 				},
 				onError: (error) => {
-					toast("Failed to mark absent", {
+					toast(t("rooms.markAbsent.error"), {
 						description: getErrorMessage(error),
 						variant: "danger",
 					})
@@ -79,7 +81,7 @@ const MarkAbsentModal = () => {
 							<div className="flex size-12 items-center justify-center rounded-full bg-primary-100">
 								<SolarCalendarBroken className="size-6 text-primary" />
 							</div>
-							<Modal.Heading>Mark Absent</Modal.Heading>
+							<Modal.Heading>{t("rooms.markAbsent.title")}</Modal.Heading>
 							<span className="font-normal text-default-500 text-sm">{studentName}</span>
 						</div>
 					</Modal.Header>
@@ -91,7 +93,7 @@ const MarkAbsentModal = () => {
 								if (key !== null) setReason(String(key))
 							}}
 						>
-							<Label>Reason</Label>
+							<Label>{t("rooms.markAbsent.reason")}</Label>
 							<Select.Trigger>
 								<Select.Value />
 								<Select.Indicator />
@@ -99,8 +101,8 @@ const MarkAbsentModal = () => {
 							<Select.Popover>
 								<ListBox>
 									{ABSENCE_REASONS.map((item) => (
-										<ListBox.Item id={item.key} key={item.key} textValue={item.label}>
-											{item.label}
+										<ListBox.Item id={item.key} key={item.key} textValue={t(item.labelKey)}>
+											{t(item.labelKey)}
 											<ListBox.ItemIndicator />
 										</ListBox.Item>
 									))}
@@ -108,9 +110,9 @@ const MarkAbsentModal = () => {
 							</Select.Popover>
 						</Select>
 						<div className="flex flex-col gap-2">
-							<span className="text-default-700 text-sm">Date Range</span>
+							<span className="text-default-700 text-sm">{t("rooms.markAbsent.dateRange")}</span>
 							<RangeCalendar
-								aria-label="Absence date range"
+								aria-label={t("rooms.markAbsent.dateRangeAria")}
 								className="w-full"
 								minValue={todayDate}
 								onChange={setDateRange}
@@ -127,10 +129,10 @@ const MarkAbsentModal = () => {
 							onPress={handleSubmit}
 							size="md"
 						>
-							Confirm
+							{t("common.confirm")}
 						</Button>
 						<Button fullWidth isDisabled={markAbsentMutation.isPending} onPress={handleClose} size="md">
-							Cancel
+							{t("common.cancel")}
 						</Button>
 					</Modal.Footer>
 				</Modal.Dialog>

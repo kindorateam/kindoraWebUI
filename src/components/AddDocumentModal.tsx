@@ -13,6 +13,7 @@ import {
 	toast,
 } from "@heroui/react"
 import { useRef, useState } from "react"
+import { useTranslation } from "react-i18next"
 
 import { getErrorMessage } from "@/utils/error"
 import TablerFileText from "~icons/tabler/file-text"
@@ -20,6 +21,7 @@ import TablerFileText from "~icons/tabler/file-text"
 interface DocumentType {
 	key: string
 	label: string
+	labelKey?: string
 }
 
 type DocumentData = { type: string; expiryDate?: string; notes?: string }
@@ -37,6 +39,7 @@ interface Props {
 }
 
 const AddDocumentModal = ({ isOpen, onClose, documentTypes, onUpload, isPending }: Props) => {
+	const { t } = useTranslation()
 	const [step, setStep] = useState<1 | 2>(1)
 	const [uploadedFile, setUploadedFile] = useState<File | null>(null)
 	const [isDragging, setIsDragging] = useState(false)
@@ -94,14 +97,14 @@ const AddDocumentModal = ({ isOpen, onClose, documentTypes, onUpload, isPending 
 
 		onUpload(uploadedFile, data, {
 			onSuccess: () => {
-				toast("Document uploaded", {
-					description: "Document has been uploaded successfully.",
+				toast(t("addDocumentModal.successTitle"), {
+					description: t("addDocumentModal.successDescription"),
 					variant: "success",
 				})
 				handleClose()
 			},
 			onError: (error) => {
-				toast("Failed to upload document", { description: getErrorMessage(error), variant: "danger" })
+				toast(t("addDocumentModal.errorTitle"), { description: getErrorMessage(error), variant: "danger" })
 			},
 		})
 	}
@@ -129,7 +132,7 @@ const AddDocumentModal = ({ isOpen, onClose, documentTypes, onUpload, isPending 
 				<Modal.Dialog className="max-w-sm">
 					<Modal.CloseTrigger />
 					<Modal.Header>
-						<Modal.Heading>Add File</Modal.Heading>
+						<Modal.Heading>{t("addDocumentModal.title")}</Modal.Heading>
 					</Modal.Header>
 					<Modal.Body>
 						{step === 1 ? (
@@ -150,9 +153,13 @@ const AddDocumentModal = ({ isOpen, onClose, documentTypes, onUpload, isPending 
 									</div>
 									<div className="flex items-center">
 										<span className="text-default-600 text-xs">
-											{uploadedFile ? uploadedFile.name : "Drag a document here or\u00A0"}
+											{uploadedFile ? uploadedFile.name : t("addDocumentModal.dragPrompt")}
 										</span>
-										{!uploadedFile && <span className="font-semibold text-default-600 text-xs">browse to upload</span>}
+										{!uploadedFile && (
+											<span className="font-semibold text-default-600 text-xs">
+												{t("addDocumentModal.browseToUpload")}
+											</span>
+										)}
 									</div>
 								</button>
 								{uploadedFile && (
@@ -165,11 +172,11 @@ const AddDocumentModal = ({ isOpen, onClose, documentTypes, onUpload, isPending 
 											if (fileInputRef.current) fileInputRef.current.value = ""
 										}}
 									>
-										Remove file
+										{t("addDocumentModal.removeFile")}
 									</Button>
 								)}
 								<Button variant="primary" fullWidth isDisabled={!uploadedFile} onPress={handleNext}>
-									Next
+									{t("common.next")}
 								</Button>
 							</div>
 						) : (
@@ -193,24 +200,28 @@ const AddDocumentModal = ({ isOpen, onClose, documentTypes, onUpload, isPending 
 											if (key) setType(String(key))
 										}}
 									>
-										<Label>Type</Label>
+										<Label>{t("addDocumentModal.type")}</Label>
 										<Select.Trigger>
 											<Select.Value />
 											<Select.Indicator />
 										</Select.Trigger>
 										<Select.Popover>
 											<ListBox>
-												{documentTypes.map((dt) => (
-													<ListBox.Item id={dt.key} key={dt.key} textValue={dt.label}>
-														{dt.label}
-														<ListBox.ItemIndicator />
-													</ListBox.Item>
-												))}
+												{documentTypes.map((documentType) => {
+													const label = documentType.labelKey ? t(documentType.labelKey) : documentType.label
+
+													return (
+														<ListBox.Item id={documentType.key} key={documentType.key} textValue={label}>
+															{label}
+															<ListBox.ItemIndicator />
+														</ListBox.Item>
+													)
+												})}
 											</ListBox>
 										</Select.Popover>
 									</Select>
 									<DatePicker value={expiryDate} onChange={setExpiryDate}>
-										<Label>Expiration date</Label>
+										<Label>{t("addDocumentModal.expirationDate")}</Label>
 										<DateField.Group fullWidth variant="secondary">
 											<DateField.Input>{(segment) => <DateField.Segment segment={segment} />}</DateField.Input>
 											<DateField.Suffix>
@@ -220,7 +231,7 @@ const AddDocumentModal = ({ isOpen, onClose, documentTypes, onUpload, isPending 
 											</DateField.Suffix>
 										</DateField.Group>
 										<DatePicker.Popover>
-											<Calendar aria-label="Expiration date">
+											<Calendar aria-label={t("addDocumentModal.expirationDate")}>
 												<Calendar.Header>
 													<Calendar.NavButton slot="previous" />
 													<Calendar.Heading />
@@ -233,7 +244,7 @@ const AddDocumentModal = ({ isOpen, onClose, documentTypes, onUpload, isPending 
 										</DatePicker.Popover>
 									</DatePicker>
 									<TextField variant="secondary">
-										<Label>Notes</Label>
+										<Label>{t("addDocumentModal.notes")}</Label>
 
 										<Input
 											value={notes}
@@ -243,13 +254,13 @@ const AddDocumentModal = ({ isOpen, onClose, documentTypes, onUpload, isPending 
 								</div>
 								<div className="flex flex-col gap-3">
 									<Button variant="primary" fullWidth isDisabled={!type} isPending={isPending} onPress={handleSave}>
-										Save
+										{t("common.save")}
 									</Button>
 									<Button fullWidth variant="outline" onPress={handleBack}>
-										Back
+										{t("common.back")}
 									</Button>
 									<Button fullWidth variant="secondary" onPress={handleClose}>
-										Cancel
+										{t("common.cancel")}
 									</Button>
 								</div>
 							</div>

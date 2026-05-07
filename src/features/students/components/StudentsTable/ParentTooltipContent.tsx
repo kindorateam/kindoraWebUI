@@ -1,4 +1,5 @@
 import { Avatar, Button, Separator } from "@heroui/react"
+import { useTranslation } from "react-i18next"
 
 import type { StudentParent } from "../../types"
 
@@ -7,6 +8,8 @@ interface ParentTooltipContentProps {
 }
 
 const ParentTooltipContent = ({ parents }: ParentTooltipContentProps) => {
+	const { t } = useTranslation()
+
 	return (
 		<div className="flex flex-col gap-3 p-2">
 			{parents.map((parent, index) => {
@@ -26,7 +29,7 @@ const ParentTooltipContent = ({ parents }: ParentTooltipContentProps) => {
 			})}
 			<Separator />
 			<Button variant="ghost" size="sm">
-				New message
+				{t("students.parentTooltip.newMessage")}
 			</Button>
 		</div>
 	)

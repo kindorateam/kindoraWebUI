@@ -1,6 +1,7 @@
 import { Button, Pagination, Spinner, Table } from "@heroui/react"
 import { useNavigate } from "@tanstack/react-router"
 import { useState } from "react"
+import { useTranslation } from "react-i18next"
 
 import TableError from "@/components/TableError"
 
@@ -13,6 +14,7 @@ import StudentsTableCell from "./StudentsTableCell"
 const PAGE_SIZE = 10
 
 const StudentsTable = () => {
+	const { t } = useTranslation()
 	const navigate = useNavigate()
 	const [page, setPage] = useState(1)
 	const { students, total, totalPages, isLoading, error, refetch } = useStudents({ page, limit: PAGE_SIZE })
@@ -33,7 +35,7 @@ const StudentsTable = () => {
 
 	const topContent = (
 		<div className="flex items-center justify-end">
-			<Button variant="primary">Add Student</Button>
+			<Button variant="primary">{t("students.addStudent")}</Button>
 		</div>
 	)
 
@@ -45,7 +47,7 @@ const StudentsTable = () => {
 					<div className="relative">
 						<Table.ScrollContainer className="min-h-140">
 							<Table.Content
-								aria-label="Students table"
+								aria-label={t("students.table.ariaLabel")}
 								className="[&_tbody>tr:last-child]:border-b-0 [&_tbody>tr]:border-default-200 [&_tbody>tr]:border-b"
 							>
 								<Table.Header columns={columns}>
@@ -54,7 +56,7 @@ const StudentsTable = () => {
 											isRowHeader={column.isRowHeader}
 											className={column.align === "center" ? "text-center" : undefined}
 										>
-											{column.label}
+											{t(column.labelKey)}
 										</Table.Column>
 									)}
 								</Table.Header>
@@ -102,13 +104,13 @@ const StudentsTable = () => {
 					<Table.Footer>
 						<Pagination className="w-full">
 							<Pagination.Summary>
-								{startItem} to {endItem} of {total} students
+								{t("students.table.paginationSummary", { count: total, endItem, startItem, total })}
 							</Pagination.Summary>
 							<Pagination.Content>
 								<Pagination.Item>
 									<Pagination.Previous isDisabled={page <= 1} onPress={() => setPage((currentPage) => currentPage - 1)}>
 										<Pagination.PreviousIcon />
-										<span>Prev</span>
+										<span>{t("common.previous")}</span>
 									</Pagination.Previous>
 								</Pagination.Item>
 								{Array.from({ length: totalPages }, (_, index) => index + 1).map((paginationPage) => (
@@ -123,7 +125,7 @@ const StudentsTable = () => {
 										isDisabled={page >= totalPages}
 										onPress={() => setPage((currentPage) => currentPage + 1)}
 									>
-										<span>Next</span>
+										<span>{t("common.next")}</span>
 										<Pagination.NextIcon />
 									</Pagination.Next>
 								</Pagination.Item>

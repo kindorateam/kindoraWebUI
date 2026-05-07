@@ -3,6 +3,7 @@ import { useLocation } from "@tanstack/react-router"
 import { useTranslation } from "react-i18next"
 
 import Breadcrumbs from "@/components/Breadcrumbs"
+import LanguageSwitcher from "@/components/LanguageSwitcher"
 import useAuth from "@/features/auth/hooks/useAuth"
 import useDashboardHeaderTransition from "@/hooks/useDashboardHeaderTransition"
 import MdiBellOutline from "~icons/mdi/bell-outline"
@@ -39,6 +40,7 @@ const Header = () => {
 				</div>
 
 				<div className="flex items-center gap-5">
+					<LanguageSwitcher />
 					<Badge.Anchor>
 						<Button
 							aria-label={t("header.notificationsAria")}

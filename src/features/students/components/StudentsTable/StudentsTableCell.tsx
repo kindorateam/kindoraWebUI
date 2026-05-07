@@ -1,9 +1,11 @@
 import { Avatar, Badge, Button, Chip, Dropdown, ListBox, Tooltip } from "@heroui/react"
+import { useTranslation } from "react-i18next"
 
 import IdentityChip from "@/components/IdentityChip"
 import FluentPerson16Filled from "~icons/fluent/person-16-filled"
 import MageHospitalPlusFill from "~icons/mage/hospital-plus-fill"
 import TablerCalendarX from "~icons/tabler/calendar-x"
+import TablerDotsVertical from "~icons/tabler/dots-vertical"
 import TablerEdit from "~icons/tabler/edit"
 import TablerEye from "~icons/tabler/eye"
 import TablerLogin from "~icons/tabler/login"
@@ -51,6 +53,7 @@ const AvatarWithBadges = ({ student }: { student: Student }) => {
 }
 
 const StudentsTableCell = ({ student, columnKey, onStudentClick }: StudentsTableCellProps) => {
+	const { t } = useTranslation()
 	const fullName = `${student.firstName} ${student.lastName}`
 
 	switch (columnKey) {
@@ -97,7 +100,10 @@ const StudentsTableCell = ({ student, columnKey, onStudentClick }: StudentsTable
 					))}
 					{hiddenTags.length > 0 && (
 						<Tooltip delay={0}>
-							<Tooltip.Trigger aria-label={`${hiddenTags.length} more tags`} className="cursor-pointer">
+							<Tooltip.Trigger
+								aria-label={t("students.table.moreTags", { count: hiddenTags.length })}
+								className="cursor-pointer"
+							>
 								<Chip size="sm">+{hiddenTags.length}</Chip>
 							</Tooltip.Trigger>
 							<Tooltip.Content className="flex flex-col gap-1">
@@ -121,48 +127,35 @@ const StudentsTableCell = ({ student, columnKey, onStudentClick }: StudentsTable
 			return (
 				<div className="flex justify-center">
 					<Dropdown>
-						<Button isIconOnly size="sm" variant="ghost" aria-label="Student actions">
-							<svg
-								aria-hidden="true"
-								className="size-5 text-default-400"
-								fill="none"
-								stroke="currentColor"
-								strokeLinecap="round"
-								strokeLinejoin="round"
-								strokeWidth={2}
-								viewBox="0 0 24 24"
-							>
-								<circle cx={12} cy={12} r={1} />
-								<circle cx={12} cy={5} r={1} />
-								<circle cx={12} cy={19} r={1} />
-							</svg>
+						<Button isIconOnly size="sm" variant="ghost" aria-label={t("students.table.actions.ariaLabel")}>
+							<TablerDotsVertical aria-hidden className="size-5 text-default-400" />
 						</Button>
 						<Dropdown.Popover className="min-w-0">
-							<Dropdown.Menu aria-label="Student actions">
-								<Dropdown.Item id="view" textValue="View" className="text-success">
+							<Dropdown.Menu aria-label={t("students.table.actions.ariaLabel")}>
+								<Dropdown.Item id="view" textValue={t("students.table.actions.view")} className="text-success">
 									<ListBox.ItemIndicator />
 									<TablerEye aria-hidden className="size-5" />
-									<span>View</span>
+									<span>{t("students.table.actions.view")}</span>
 								</Dropdown.Item>
-								<Dropdown.Item id="edit" textValue="Edit" className="text-warning">
+								<Dropdown.Item id="edit" textValue={t("students.table.actions.edit")} className="text-warning">
 									<ListBox.ItemIndicator />
 									<TablerEdit aria-hidden className="size-5" />
-									<span>Edit</span>
+									<span>{t("students.table.actions.edit")}</span>
 								</Dropdown.Item>
-								<Dropdown.Item id="sign-in-out" textValue="Sign In/Out">
+								<Dropdown.Item id="sign-in-out" textValue={t("students.table.actions.signInOut")}>
 									<ListBox.ItemIndicator />
 									<TablerLogin aria-hidden className="size-5" />
-									<span>Sign In/Out</span>
+									<span>{t("students.table.actions.signInOut")}</span>
 								</Dropdown.Item>
-								<Dropdown.Item id="mark-absent" textValue="Mark absent">
+								<Dropdown.Item id="mark-absent" textValue={t("students.table.actions.markAbsent")}>
 									<ListBox.ItemIndicator />
 									<TablerCalendarX aria-hidden className="size-5" />
-									<span>Mark absent</span>
+									<span>{t("students.table.actions.markAbsent")}</span>
 								</Dropdown.Item>
-								<Dropdown.Item id="delete" textValue="Delete" className="text-danger">
+								<Dropdown.Item id="delete" textValue={t("students.table.actions.delete")} className="text-danger">
 									<ListBox.ItemIndicator />
 									<TablerTrash aria-hidden className="size-5" />
-									<span>Delete</span>
+									<span>{t("students.table.actions.delete")}</span>
 								</Dropdown.Item>
 							</Dropdown.Menu>
 						</Dropdown.Popover>
