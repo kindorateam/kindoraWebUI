@@ -1,8 +1,8 @@
 const columns = [
-	{ key: "student", label: "Student", isRowHeader: true },
-	{ key: "parents", label: "Parents", align: "center" as const },
-	{ key: "tags", label: "Tags", align: "center" as const },
-	{ key: "actions", label: "Actions", align: "center" as const },
+	{ key: "student", labelKey: "rooms.studentsTable.columns.student", isRowHeader: true },
+	{ key: "parents", labelKey: "rooms.studentsTable.columns.parents", align: "center" as const },
+	{ key: "tags", labelKey: "rooms.studentsTable.columns.tags", align: "center" as const },
+	{ key: "actions", labelKey: "rooms.studentsTable.columns.actions", align: "center" as const },
 ]
 
 export default columns

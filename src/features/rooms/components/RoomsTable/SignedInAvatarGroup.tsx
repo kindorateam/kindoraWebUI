@@ -1,4 +1,5 @@
 import { Avatar, Tooltip } from "@heroui/react"
+import { useTranslation } from "react-i18next"
 
 import { getMediaUrl } from "@/utils/media"
 
@@ -24,8 +25,10 @@ const countAvatarFallbackClassName = "font-semibold text-xs text-muted leading-n
 const MAX_VISIBLE = 2
 
 const SignedInAvatarGroup = ({ items, tooltipLabel }: SignedInAvatarGroupProps) => {
+	const { t } = useTranslation()
+
 	if (items.length === 0) {
-		return <span className="text-default-400 text-sm">No one</span>
+		return <span className="text-default-400 text-sm">{t("rooms.table.noOneSignedIn")}</span>
 	}
 
 	const visible = items.slice(0, MAX_VISIBLE)

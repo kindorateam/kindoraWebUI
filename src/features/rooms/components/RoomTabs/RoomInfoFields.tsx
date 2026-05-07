@@ -1,17 +1,11 @@
 import { FieldError, Input, Label, ListBox, NumberField, Select, TextField } from "@heroui/react"
 import { Controller } from "react-hook-form"
+import { useTranslation } from "react-i18next"
 
 import { ROOM_AGE_OPTIONS } from "../../constants"
 
 import type { Control, FieldErrors, UseFormTrigger } from "react-hook-form"
 import type { RoomProfileFormData } from "../../schemas/roomProfile.schema"
-
-const ageListItems = ROOM_AGE_OPTIONS.map((option) => (
-	<ListBox.Item id={String(option.key)} key={option.key} textValue={option.label}>
-		{option.label}
-		<ListBox.ItemIndicator />
-	</ListBox.Item>
-))
 
 interface RoomInfoFieldsProps {
 	control: Control<RoomProfileFormData>
@@ -20,16 +14,41 @@ interface RoomInfoFieldsProps {
 }
 
 const RoomInfoFields = ({ control, errors, trigger }: RoomInfoFieldsProps) => {
+	const { t } = useTranslation()
+	const formatAgeOptionLabel = (months: number) => {
+		const years = Math.floor(months / 12)
+		const remainingMonths = months % 12
+
+		if (years === 0) return t("rooms.age.months", { count: months })
+		if (remainingMonths === 0) return t("rooms.age.years", { count: years })
+
+		return t("rooms.age.yearsAndMonths", {
+			months: t("rooms.age.months", { count: remainingMonths }),
+			years: t("rooms.age.years", { count: years }),
+		})
+	}
+
+	const ageListItems = ROOM_AGE_OPTIONS.map((option) => {
+		const label = formatAgeOptionLabel(Number(option.key))
+
+		return (
+			<ListBox.Item id={String(option.key)} key={option.key} textValue={label}>
+				{label}
+				<ListBox.ItemIndicator />
+			</ListBox.Item>
+		)
+	})
+
 	return (
 		<div className="flex flex-col gap-5">
-			<h3 className="font-medium text-xl">Room Info</h3>
+			<h3 className="font-medium text-xl">{t("rooms.profile.roomInfo.title")}</h3>
 			<div className="grid grid-cols-2 gap-2">
 				<Controller
 					control={control}
 					name="name"
 					render={({ field }) => (
 						<TextField className="col-span-2" isRequired isInvalid={!!errors.name} variant="secondary">
-							<Label>Room Name</Label>
+							<Label>{t("rooms.profile.roomInfo.roomName")}</Label>
 							<Input {...field} />
 							<FieldError>{errors.name?.message}</FieldError>
 						</TextField>
@@ -51,7 +70,7 @@ const RoomInfoFields = ({ control, errors, trigger }: RoomInfoFieldsProps) => {
 								}
 							}}
 						>
-							<Label>Min age</Label>
+							<Label>{t("rooms.profile.roomInfo.minAge")}</Label>
 							<Select.Trigger>
 								<Select.Value />
 								<Select.Indicator />
@@ -79,7 +98,7 @@ const RoomInfoFields = ({ control, errors, trigger }: RoomInfoFieldsProps) => {
 								}
 							}}
 						>
-							<Label>Max age</Label>
+							<Label>{t("rooms.profile.roomInfo.maxAge")}</Label>
 							<Select.Trigger>
 								<Select.Value />
 								<Select.Indicator />
@@ -103,7 +122,7 @@ const RoomInfoFields = ({ control, errors, trigger }: RoomInfoFieldsProps) => {
 							onChange={(value) => field.onChange(Number.isNaN(value) ? 1 : value)}
 							value={field.value}
 						>
-							<Label>Max capacity</Label>
+							<Label>{t("rooms.profile.roomInfo.maxCapacity")}</Label>
 							<NumberField.Group>
 								<NumberField.DecrementButton />
 								<NumberField.Input />
@@ -125,7 +144,7 @@ const RoomInfoFields = ({ control, errors, trigger }: RoomInfoFieldsProps) => {
 							onChange={(value) => field.onChange(Number.isNaN(value) ? 0 : value)}
 							value={field.value}
 						>
-							<Label>Students per 1 staff</Label>
+							<Label>{t("rooms.profile.roomInfo.studentsPerStaff")}</Label>
 							<NumberField.Group>
 								<NumberField.DecrementButton />
 								<NumberField.Input />

@@ -1,7 +1,10 @@
+import { useTranslation } from "react-i18next"
+
 import { useInfiniteSelectQueryErrorToast } from "./useInfiniteSelectQueryErrorToast"
 import { useInfiniteAllStudents, useInfiniteRooms } from "./useRooms"
 
 export const useAddStudentModalStudents = (isOpen: boolean) => {
+	const { t } = useTranslation()
 	const query = useInfiniteAllStudents(isOpen)
 
 	useInfiniteSelectQueryErrorToast({
@@ -9,13 +12,14 @@ export const useAddStudentModalStudents = (isOpen: boolean) => {
 		isEnabled: isOpen,
 		isError: query.isError,
 		isFetchNextPageError: query.isFetchNextPageError,
-		title: "Failed to load students",
+		title: t("rooms.addStudent.loadError"),
 	})
 
 	return query
 }
 
 export const useTransferStudentRooms = (isOpen: boolean) => {
+	const { t } = useTranslation()
 	const query = useInfiniteRooms("active", isOpen)
 
 	useInfiniteSelectQueryErrorToast({
@@ -23,7 +27,7 @@ export const useTransferStudentRooms = (isOpen: boolean) => {
 		isEnabled: isOpen,
 		isError: query.isError,
 		isFetchNextPageError: query.isFetchNextPageError,
-		title: "Failed to load rooms",
+		title: t("rooms.transferStudent.loadError"),
 	})
 
 	return query

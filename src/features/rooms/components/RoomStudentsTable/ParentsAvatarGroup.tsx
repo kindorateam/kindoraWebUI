@@ -1,4 +1,5 @@
 import { Avatar, Tooltip } from "@heroui/react"
+import { useTranslation } from "react-i18next"
 
 import { getMediaUrl } from "@/utils/media"
 
@@ -19,8 +20,10 @@ const countAvatarFallbackClassName = "font-semibold text-[11px] text-default-700
 const MAX_VISIBLE = 2
 
 const ParentsAvatarGroup = ({ parents }: ParentsAvatarGroupProps) => {
+	const { t } = useTranslation()
+
 	if (parents.length === 0) {
-		return <span className="text-default-400 text-sm">No parents</span>
+		return <span className="text-default-400 text-sm">{t("rooms.studentsTable.noParents")}</span>
 	}
 
 	const visible = parents.slice(0, MAX_VISIBLE)
@@ -28,7 +31,7 @@ const ParentsAvatarGroup = ({ parents }: ParentsAvatarGroupProps) => {
 
 	return (
 		<Tooltip delay={0}>
-			<Tooltip.Trigger aria-label={`${parents.length} parent${parents.length !== 1 ? "s" : ""}`}>
+			<Tooltip.Trigger aria-label={t("rooms.studentsTable.parentCount", { count: parents.length })}>
 				<div className="flex -space-x-2">
 					{visible.map((parent) => {
 						const fullName = `${parent.firstName} ${parent.lastName}`

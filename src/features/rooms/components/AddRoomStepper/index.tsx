@@ -1,10 +1,11 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useState } from "react"
 import { FormProvider, useForm } from "react-hook-form"
+import { useTranslation } from "react-i18next"
 
 import Stepper from "@/components/Stepper"
 
-import { addRoomSchema } from "../../schemas/addRoom.schema"
+import { createAddRoomSchema } from "../../schemas/addRoom.schema"
 
 import AddStaffStudentsStep from "./AddStaffStudentsStep"
 import ConfirmRoomStep from "./ConfirmRoomStep"
@@ -21,29 +22,29 @@ interface AddRoomStepperProps {
 	isLoading?: boolean
 }
 
-const steps = [
-	{
-		key: "details",
-		label: "Step 1/3",
-		content: <RoomDetailsStep />,
-	},
-	{
-		key: "staff-students",
-		label: "Step 2/3",
-		content: <AddStaffStudentsStep />,
-	},
-	{
-		key: "confirm",
-		label: "Step 3/3",
-		content: <ConfirmRoomStep />,
-	},
-]
-
 const AddRoomStepper = ({ onComplete, onCancel, isLoading = false }: AddRoomStepperProps) => {
+	const { t } = useTranslation()
 	const [currentStep, setCurrentStep] = useState(0)
+	const steps = [
+		{
+			key: "details",
+			label: t("rooms.addRoom.stepLabel", { current: 1, total: 3 }),
+			content: <RoomDetailsStep />,
+		},
+		{
+			key: "staff-students",
+			label: t("rooms.addRoom.stepLabel", { current: 2, total: 3 }),
+			content: <AddStaffStudentsStep />,
+		},
+		{
+			key: "confirm",
+			label: t("rooms.addRoom.stepLabel", { current: 3, total: 3 }),
+			content: <ConfirmRoomStep />,
+		},
+	]
 
 	const form = useForm<AddRoomFormData>({
-		resolver: zodResolver(addRoomSchema),
+		resolver: zodResolver(createAddRoomSchema(t)),
 		defaultValues: {
 			name: "",
 			capacity: 1,
@@ -102,12 +103,13 @@ const AddRoomStepper = ({ onComplete, onCancel, isLoading = false }: AddRoomStep
 		<FormProvider {...form}>
 			<div className="w-full">
 				<Stepper
-					backLabel={currentStep === 0 ? "Close" : "Back"}
-					completeLabel="Add Room"
+					backLabel={currentStep === 0 ? t("common.close") : t("common.back")}
+					completeLabel={t("rooms.addRoom.title")}
 					currentStep={currentStep}
 					hideBackOnFirstStep={false}
 					isNextDisabled={(currentStep === 0 && !isStep1Valid) || (currentStep === 1 && !isStep2Valid)}
 					isNextLoading={isLoading}
+					nextLabel={t("common.next")}
 					onBack={handleBack}
 					onComplete={handleComplete}
 					onNext={handleNext}

@@ -1,4 +1,5 @@
 import { Avatar, Tabs, Tooltip } from "@heroui/react"
+import { useTranslation } from "react-i18next"
 
 import IdentityChip from "@/components/IdentityChip"
 import LabeledNumberBadge from "@/components/LabeledNumberBadge"
@@ -8,7 +9,6 @@ import PhSmileyDuotone from "~icons/ph/smiley-duotone"
 import PhSmileySadDuotone from "~icons/ph/smiley-sad-duotone"
 
 import { useRoom } from "../hooks/useRooms"
-import { formatAgeRange } from "../utils/ageFormat"
 
 type TabType = "students" | "activity" | "profile"
 
@@ -19,6 +19,7 @@ interface RoomDetailHeaderProps {
 }
 
 const RoomDetailHeader = ({ activeTab, roomId, onTabChange }: RoomDetailHeaderProps) => {
+	const { t } = useTranslation()
 	const { data: room } = useRoom(roomId)
 
 	const signedInCount = room?.signedInStudents.filter((s) => s.checkedIn).length ?? 0
@@ -27,16 +28,31 @@ const RoomDetailHeader = ({ activeTab, roomId, onTabChange }: RoomDetailHeaderPr
 	const ratioValue = room?.ratio ?? 0
 	const actualRatio = staffCount > 0 ? studentsCount / staffCount : studentsCount
 	const isGoodRatio = actualRatio <= ratioValue
+	const formatAgeLabel = (months: number) => {
+		const years = Math.floor(months / 12)
+		const remainingMonths = months % 12
+
+		if (years === 0) return t("rooms.age.months", { count: months })
+		if (remainingMonths === 0) return t("rooms.age.years", { count: years })
+
+		return t("rooms.age.yearsAndMonths", {
+			months: t("rooms.age.months", { count: remainingMonths }),
+			years: t("rooms.age.years", { count: years }),
+		})
+	}
 
 	const stats = [
-		{ label: "Capacity:", value: room?.capacity ?? 0, badgeVariant: "circle" as const },
-		{ label: "Students:", value: studentsCount, badgeVariant: "circle" as const },
-		{ label: "Sign In:", value: signedInCount, badgeVariant: "circle" as const },
+		{ label: t("rooms.detail.stats.capacity"), value: room?.capacity ?? 0, badgeVariant: "circle" as const },
+		{ label: t("rooms.detail.stats.students"), value: studentsCount, badgeVariant: "circle" as const },
+		{ label: t("rooms.detail.stats.signIn"), value: signedInCount, badgeVariant: "circle" as const },
 		{
-			label: "Ratio:",
+			label: t("rooms.detail.stats.ratio"),
 			icon: (
 				<Tooltip delay={0}>
-					<Tooltip.Trigger className="inline-flex" aria-label={isGoodRatio ? "Ratio is met" : "Ratio is not met"}>
+					<Tooltip.Trigger
+						className="inline-flex"
+						aria-label={t(isGoodRatio ? "rooms.detail.ratioMetAria" : "rooms.detail.ratioNotMetAria")}
+					>
 						<span className="inline-flex cursor-default items-center justify-center">
 							{isGoodRatio ? (
 								<PhSmileyDuotone className="size-5 text-success" />
@@ -46,7 +62,7 @@ const RoomDetailHeader = ({ activeTab, roomId, onTabChange }: RoomDetailHeaderPr
 						</span>
 					</Tooltip.Trigger>
 					<Tooltip.Content>
-						{isGoodRatio ? `Ratio is met (1:${ratioValue})` : `Ratio is not met (1:${ratioValue})`}
+						{t(isGoodRatio ? "rooms.detail.ratioMet" : "rooms.detail.ratioNotMet", { ratio: ratioValue })}
 					</Tooltip.Content>
 				</Tooltip>
 			),
@@ -54,6 +70,13 @@ const RoomDetailHeader = ({ activeTab, roomId, onTabChange }: RoomDetailHeaderPr
 	]
 
 	const staffMembers = room?.signedInStaff ?? []
+	const ageRange =
+		room?.minAge != null && room?.maxAge != null
+			? t("rooms.age.range", {
+					max: formatAgeLabel(room.maxAge),
+					min: formatAgeLabel(room.minAge),
+				})
+			: null
 
 	return (
 		<div>
@@ -63,7 +86,7 @@ const RoomDetailHeader = ({ activeTab, roomId, onTabChange }: RoomDetailHeaderPr
 						<Avatar className="size-37.5 bg-[#1D6FE8] text-white">
 							<Avatar.Image
 								src={room?.logo ? getMediaUrl(room.logo) : undefined}
-								alt={room?.name ?? "Room"}
+								alt={room?.name ?? t("rooms.detail.fallbackRoom")}
 								className="object-cover"
 							/>
 							<Avatar.Fallback className="text-white">
@@ -72,11 +95,13 @@ const RoomDetailHeader = ({ activeTab, roomId, onTabChange }: RoomDetailHeaderPr
 						</Avatar>
 					</div>
 					<div className="w-full">
-						<h1 className="mb-2 font-semibold leading-none lg:text-4xl">{room?.name ?? "Room"}</h1>
-						{room?.minAge != null && room?.maxAge != null && (
+						<h1 className="mb-2 font-semibold leading-none lg:text-4xl">
+							{room?.name ?? t("rooms.detail.fallbackRoom")}
+						</h1>
+						{ageRange && (
 							<p className="flex items-center gap-2 text-sm">
-								<span className="text-default-500">Age range:</span>
-								<span className="font-medium text-neutral-800">{formatAgeRange(room.minAge, room.maxAge)}</span>
+								<span className="text-default-500">{t("rooms.detail.ageRange")}</span>
+								<span className="font-medium text-neutral-800">{ageRange}</span>
 							</p>
 						)}
 						<div className="mt-3.5 mb-4 flex items-center">
@@ -93,12 +118,12 @@ const RoomDetailHeader = ({ activeTab, roomId, onTabChange }: RoomDetailHeaderPr
 							</div>
 						</div>
 						<div className="flex items-center gap-3.5">
-							<span>Staff:</span>
+							<span>{t("rooms.detail.staff")}</span>
 							<div className="flex flex-wrap gap-3.5">
 								{staffMembers.length > 0 ? (
 									staffMembers.map((staff) => <IdentityChip fullName={staff.name} key={staff.id} />)
 								) : (
-									<span className="text-default-400 text-sm">No staff assigned to this room</span>
+									<span className="text-default-400 text-sm">{t("rooms.detail.noStaffAssigned")}</span>
 								)}
 							</div>
 						</div>
@@ -108,19 +133,19 @@ const RoomDetailHeader = ({ activeTab, roomId, onTabChange }: RoomDetailHeaderPr
 				<Tabs onSelectionChange={(key) => onTabChange(key as TabType)} selectedKey={activeTab}>
 					<Tabs.ListContainer>
 						<Tabs.List
-							aria-label="Room details tabs"
+							aria-label={t("rooms.detail.tabsAriaLabel")}
 							className="w-fit *:h-6 *:w-fit *:px-3 *:font-normal *:text-sm *:data-[selected=true]:text-accent-foreground"
 						>
 							<Tabs.Tab id="students">
-								Students
+								{t("rooms.detail.tabs.students")}
 								<Tabs.Indicator className="bg-accent" />
 							</Tabs.Tab>
 							<Tabs.Tab id="activity">
-								Activity
+								{t("rooms.detail.tabs.activity")}
 								<Tabs.Indicator className="bg-accent" />
 							</Tabs.Tab>
 							<Tabs.Tab id="profile">
-								Profile
+								{t("rooms.detail.tabs.profile")}
 								<Tabs.Indicator className="bg-accent" />
 							</Tabs.Tab>
 						</Tabs.List>

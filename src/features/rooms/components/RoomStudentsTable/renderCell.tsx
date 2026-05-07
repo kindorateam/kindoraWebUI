@@ -6,9 +6,10 @@ import FluentPerson16Filled from "~icons/fluent/person-16-filled"
 import ParentsAvatarGroup from "./ParentsAvatarGroup"
 import StudentActionsDropdown from "./StudentActionsDropdown"
 
+import type { TFunction } from "i18next"
 import type { Student } from "../../types"
 
-export function renderCell(student: Student, columnKey: React.Key, roomId: string) {
+export function renderCell(student: Student, columnKey: React.Key, roomId: string, t: TFunction) {
 	switch (columnKey) {
 		case "student":
 			return (
@@ -54,7 +55,7 @@ export function renderCell(student: Student, columnKey: React.Key, roomId: strin
 							</Chip>
 						))
 					) : (
-						<span className="text-gray-400 text-sm">No tags</span>
+						<span className="text-gray-400 text-sm">{t("rooms.studentsTable.noTags")}</span>
 					)}
 				</div>
 			)

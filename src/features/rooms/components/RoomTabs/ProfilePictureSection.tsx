@@ -1,5 +1,6 @@
 import { Avatar, Button } from "@heroui/react"
 import { useState } from "react"
+import { useTranslation } from "react-i18next"
 
 import FluentConferenceRoom20Regular from "~icons/fluent/conference-room-20-regular"
 import MaterialSymbolsDeleteOutline from "~icons/material-symbols/delete-outline"
@@ -20,12 +21,13 @@ const ProfilePictureSection = ({
 	onImageSelect,
 	onDeletePicture,
 }: ProfilePictureSectionProps) => {
+	const { t } = useTranslation()
 	const [isImagePickerOpen, setIsImagePickerOpen] = useState(false)
 	const hasPicture = Boolean(avatarPreview)
 
 	return (
 		<div className="flex flex-col gap-5">
-			<h3 className="font-medium text-xl">Profile Picture</h3>
+			<h3 className="font-medium text-xl">{t("rooms.profile.picture.title")}</h3>
 			<div className="flex items-center gap-5">
 				<div>
 					<Avatar
@@ -44,11 +46,11 @@ const ProfilePictureSection = ({
 				<div className="flex gap-5">
 					<Button variant="primary" onPress={() => setIsImagePickerOpen(true)} size="sm">
 						<MaterialSymbolsUploadRounded aria-hidden className="size-4" />
-						Upload Picture
+						{t("rooms.profile.picture.upload")}
 					</Button>
 					<Button variant="danger" isDisabled={!hasPicture} onPress={onDeletePicture} size="sm">
 						<MaterialSymbolsDeleteOutline aria-hidden className="size-4" />
-						Delete Picture
+						{t("rooms.profile.picture.delete")}
 					</Button>
 				</div>
 			</div>

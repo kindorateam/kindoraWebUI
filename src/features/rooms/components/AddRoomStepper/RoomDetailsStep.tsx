@@ -1,6 +1,7 @@
 import { Avatar, FieldError, Input, Label, ListBox, NumberField, Select, TextField } from "@heroui/react"
 import { useState } from "react"
 import { Controller, useFormContext } from "react-hook-form"
+import { useTranslation } from "react-i18next"
 
 import TablerPencil from "~icons/tabler/pencil"
 
@@ -9,14 +10,8 @@ import ImagePickerModal from "../ImagePickerModal"
 
 import type { AddRoomFormData } from "../../types"
 
-const ageListItems = ROOM_AGE_OPTIONS.map((option) => (
-	<ListBox.Item id={String(option.key)} key={option.key} textValue={option.label}>
-		{option.label}
-		<ListBox.ItemIndicator />
-	</ListBox.Item>
-))
-
 const RoomDetailsStep = () => {
+	const { t } = useTranslation()
 	const [isImagePickerOpen, setIsImagePickerOpen] = useState(false)
 	const {
 		control,
@@ -30,6 +25,18 @@ const RoomDetailsStep = () => {
 	const avatarPreview = watch("avatarPreview")
 	const minAge = watch("minAge")
 	const maxAge = watch("maxAge")
+	const formatAgeOptionLabel = (months: number) => {
+		const years = Math.floor(months / 12)
+		const remainingMonths = months % 12
+
+		if (years === 0) return t("rooms.age.months", { count: months })
+		if (remainingMonths === 0) return t("rooms.age.years", { count: years })
+
+		return t("rooms.age.yearsAndMonths", {
+			months: t("rooms.age.months", { count: remainingMonths }),
+			years: t("rooms.age.years", { count: years }),
+		})
+	}
 
 	const handleAvatarClick = () => {
 		setIsImagePickerOpen(true)
@@ -51,10 +58,20 @@ const RoomDetailsStep = () => {
 	}
 
 	const isGradient = avatarPreview?.startsWith("linear-gradient")
+	const ageListItems = ROOM_AGE_OPTIONS.map((option) => {
+		const label = formatAgeOptionLabel(Number(option.key))
+
+		return (
+			<ListBox.Item id={String(option.key)} key={option.key} textValue={label}>
+				{label}
+				<ListBox.ItemIndicator />
+			</ListBox.Item>
+		)
+	})
 
 	return (
 		<div className="flex flex-col gap-6">
-			<h2 className="font-medium text-foreground text-xl">Add room</h2>
+			<h2 className="font-medium text-foreground text-xl">{t("rooms.addRoom.title")}</h2>
 
 			{/* Room Avatar */}
 			<div className="flex flex-col items-center gap-2">
@@ -80,7 +97,7 @@ const RoomDetailsStep = () => {
 						<TablerPencil className="size-4 text-white" />
 					</button>
 				</div>
-				<span className="text-foreground text-sm">Room Avatar</span>
+				<span className="text-foreground text-sm">{t("rooms.addRoom.details.roomAvatar")}</span>
 				<ImagePickerModal
 					isOpen={isImagePickerOpen}
 					onClose={() => setIsImagePickerOpen(false)}
@@ -95,9 +112,9 @@ const RoomDetailsStep = () => {
 					name="name"
 					render={({ field }) => (
 						<TextField isRequired isInvalid={!!errors.name} variant="secondary">
-							<Label>Room Name</Label>
+							<Label>{t("rooms.addRoom.details.roomName")}</Label>
 
-							<Input {...field} placeholder="Enter room name" />
+							<Input {...field} placeholder={t("rooms.addRoom.details.roomNamePlaceholder")} />
 
 							<FieldError>{errors.name?.message}</FieldError>
 						</TextField>
@@ -116,10 +133,10 @@ const RoomDetailsStep = () => {
 								value={field.value}
 								variant="secondary"
 							>
-								<Label>Room Capacity</Label>
+								<Label>{t("rooms.addRoom.details.roomCapacity")}</Label>
 								<NumberField.Group>
 									<NumberField.DecrementButton />
-									<NumberField.Input placeholder="Enter capacity" />
+									<NumberField.Input placeholder={t("rooms.addRoom.details.capacityPlaceholder")} />
 									<NumberField.IncrementButton />
 								</NumberField.Group>
 								{errors.capacity?.message && <FieldError>{errors.capacity.message}</FieldError>}
@@ -138,10 +155,10 @@ const RoomDetailsStep = () => {
 								value={field.value}
 								variant="secondary"
 							>
-								<Label>Students per staff</Label>
+								<Label>{t("rooms.addRoom.details.studentsPerStaff")}</Label>
 								<NumberField.Group>
 									<NumberField.DecrementButton />
-									<NumberField.Input placeholder="Enter ratio" />
+									<NumberField.Input placeholder={t("rooms.addRoom.details.ratioPlaceholder")} />
 									<NumberField.IncrementButton />
 								</NumberField.Group>
 								{errors.ratio?.message && <FieldError>{errors.ratio.message}</FieldError>}
@@ -169,7 +186,7 @@ const RoomDetailsStep = () => {
 									}
 								}}
 							>
-								<Label>Min Age</Label>
+								<Label>{t("rooms.addRoom.details.minAge")}</Label>
 								<Select.Trigger>
 									<Select.Value />
 									<Select.Indicator />
@@ -200,7 +217,7 @@ const RoomDetailsStep = () => {
 									}
 								}}
 							>
-								<Label>Max Age</Label>
+								<Label>{t("rooms.addRoom.details.maxAge")}</Label>
 								<Select.Trigger>
 									<Select.Value />
 									<Select.Indicator />

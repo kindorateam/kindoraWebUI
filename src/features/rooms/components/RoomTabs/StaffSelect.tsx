@@ -1,5 +1,6 @@
 import { Avatar, Chip, Label, ListBox, Select, Spinner } from "@heroui/react"
 import { useRef, useState } from "react"
+import { useTranslation } from "react-i18next"
 
 import { getMediaUrl } from "@/utils/media"
 import OouiUserAvatar from "~icons/ooui/user-avatar"
@@ -17,6 +18,7 @@ interface StaffSelectProps {
 }
 
 const StaffSelect = ({ assignedStaff, onSelectionChange }: StaffSelectProps) => {
+	const { t } = useTranslation()
 	const [staffDropdownOpened, setStaffDropdownOpened] = useState(false)
 	const {
 		employees: allEmployees,
@@ -46,7 +48,7 @@ const StaffSelect = ({ assignedStaff, onSelectionChange }: StaffSelectProps) => 
 
 	return (
 		<div className="flex flex-col gap-5">
-			<h3 className="font-medium text-xl">Staff</h3>
+			<h3 className="font-medium text-xl">{t("rooms.profile.staff.title")}</h3>
 			<Select
 				selectionMode="multiple"
 				variant="secondary"
@@ -56,7 +58,7 @@ const StaffSelect = ({ assignedStaff, onSelectionChange }: StaffSelectProps) => 
 					if (open) setStaffDropdownOpened(true)
 				}}
 			>
-				<Label>Select Staff</Label>
+				<Label>{t("rooms.profile.staff.selectStaff")}</Label>
 				<Select.Trigger>
 					<Select.Value>
 						{({ isPlaceholder, defaultChildren, state }) => {
@@ -108,7 +110,7 @@ const StaffSelect = ({ assignedStaff, onSelectionChange }: StaffSelectProps) => 
 					{isFetchingNextPage && (
 						<div className="flex items-center justify-center gap-2 py-2">
 							<Spinner size="sm" />
-							<span className="text-muted text-sm">Loading more...</span>
+							<span className="text-muted text-sm">{t("common.loadingMore")}</span>
 						</div>
 					)}
 				</Select.Popover>

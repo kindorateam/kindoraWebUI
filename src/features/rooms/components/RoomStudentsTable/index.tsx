@@ -1,5 +1,6 @@
 import { Button, Checkbox, EmptyState, Pagination, Spinner, Table } from "@heroui/react"
 import { useState } from "react"
+import { useTranslation } from "react-i18next"
 
 import TableError from "@/components/TableError"
 import MageExchangeA from "~icons/mage/exchange-a"
@@ -22,6 +23,7 @@ interface RoomStudentsTableProps {
 }
 
 const RoomStudentsTable = ({ roomId }: RoomStudentsTableProps) => {
+	const { t } = useTranslation()
 	const { data: room, isLoading, error, refetch } = useRoom(roomId)
 	const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set([]))
 
@@ -56,11 +58,11 @@ const RoomStudentsTable = ({ roomId }: RoomStudentsTableProps) => {
 		<div className="flex items-center justify-end gap-5">
 			<Button variant="outline" size="md" isDisabled={!hasSelection} onPress={handleTransfer}>
 				<MageExchangeA aria-hidden className="size-4" />
-				Transfer to another Room
+				{t("rooms.studentsTable.transferToRoom")}
 			</Button>
 			<Button variant="primary" onPress={() => openAddStudentModal(roomId)}>
 				<OcticonFeedPlus16 aria-hidden className="size-4" />
-				Add Student
+				{t("rooms.studentsTable.addStudent")}
 			</Button>
 		</div>
 	)
@@ -73,14 +75,14 @@ const RoomStudentsTable = ({ roomId }: RoomStudentsTableProps) => {
 					<div className="relative">
 						<Table.ScrollContainer className="min-h-140">
 							<Table.Content
-								aria-label="Students table"
+								aria-label={t("rooms.studentsTable.ariaLabel")}
 								selectionMode="multiple"
 								selectedKeys={selectedKeys}
 								onSelectionChange={setSelectedKeys}
 							>
 								<Table.Header>
 									<Table.Column className="pr-0">
-										<Checkbox aria-label="Select all students" slot="selection">
+										<Checkbox aria-label={t("rooms.studentsTable.selectAll")} slot="selection">
 											<Checkbox.Control>
 												<Checkbox.Indicator />
 											</Checkbox.Control>
@@ -92,7 +94,7 @@ const RoomStudentsTable = ({ roomId }: RoomStudentsTableProps) => {
 											isRowHeader={column.isRowHeader}
 											className={column.align === "center" ? "text-center" : undefined}
 										>
-											{column.label}
+											{t(column.labelKey)}
 										</Table.Column>
 									))}
 								</Table.Header>
@@ -103,14 +105,18 @@ const RoomStudentsTable = ({ roomId }: RoomStudentsTableProps) => {
 										{(student) => (
 											<Table.Row id={student.id}>
 												<Table.Cell className="pr-0">
-													<Checkbox aria-label={`Select ${student.name}`} slot="selection" variant="secondary">
+													<Checkbox
+														aria-label={t("rooms.studentsTable.selectStudent", { name: student.name })}
+														slot="selection"
+														variant="secondary"
+													>
 														<Checkbox.Control>
 															<Checkbox.Indicator />
 														</Checkbox.Control>
 													</Checkbox>
 												</Table.Cell>
 												<Table.Collection items={columns}>
-													{(column) => <Table.Cell>{renderCell(student, column.key, roomId)}</Table.Cell>}
+													{(column) => <Table.Cell>{renderCell(student, column.key, roomId, t)}</Table.Cell>}
 												</Table.Collection>
 											</Table.Row>
 										)}
@@ -126,7 +132,7 @@ const RoomStudentsTable = ({ roomId }: RoomStudentsTableProps) => {
 						{isEmpty && (
 							<div className="absolute inset-x-0 top-12.5 bottom-0 rounded-[calc(var(--radius)*2)] bg-white">
 								<EmptyState className="flex h-full w-full items-center justify-center text-default-400">
-									No students in this room
+									{t("rooms.studentsTable.empty")}
 								</EmptyState>
 							</div>
 						)}
@@ -141,13 +147,13 @@ const RoomStudentsTable = ({ roomId }: RoomStudentsTableProps) => {
 					<Table.Footer>
 						<Pagination className="w-full">
 							<Pagination.Summary>
-								{startItem} to {endItem} of {total} students
+								{t("rooms.studentsTable.paginationSummary", { count: total, endItem, startItem, total })}
 							</Pagination.Summary>
 							<Pagination.Content>
 								<Pagination.Item>
 									<Pagination.Previous isDisabled={page <= 1} onPress={() => setPage((p) => p - 1)}>
 										<Pagination.PreviousIcon />
-										<span>Prev</span>
+										<span>{t("common.previous")}</span>
 									</Pagination.Previous>
 								</Pagination.Item>
 								{Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
@@ -159,7 +165,7 @@ const RoomStudentsTable = ({ roomId }: RoomStudentsTableProps) => {
 								))}
 								<Pagination.Item>
 									<Pagination.Next isDisabled={page >= totalPages} onPress={() => setPage((p) => p + 1)}>
-										<span>Next</span>
+										<span>{t("common.next")}</span>
 										<Pagination.NextIcon />
 									</Pagination.Next>
 								</Pagination.Item>

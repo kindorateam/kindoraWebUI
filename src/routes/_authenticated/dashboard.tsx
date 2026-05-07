@@ -11,7 +11,7 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
 	),
 	beforeLoad: () => {
 		return {
-			breadcrumb: "Dashboard",
+			breadcrumbKey: "nav.dashboard",
 		}
 	},
 })

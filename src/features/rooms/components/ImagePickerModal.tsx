@@ -1,5 +1,6 @@
 import { Button, Modal, Tabs } from "@heroui/react"
 import { useRef, useState } from "react"
+import { useTranslation } from "react-i18next"
 
 import TablerCloudUpload from "~icons/tabler/cloud-upload"
 
@@ -21,6 +22,7 @@ const gradients = [
 ]
 
 const ImagePickerModal = ({ isOpen, onClose, onSelect }: ImagePickerModalProps) => {
+	const { t } = useTranslation()
 	const [selectedTab, setSelectedTab] = useState<string>("gallery")
 	const [selectedGradient, setSelectedGradient] = useState<string | null>(null)
 	const [uploadedFile, setUploadedFile] = useState<File | null>(null)
@@ -94,21 +96,21 @@ const ImagePickerModal = ({ isOpen, onClose, onSelect }: ImagePickerModalProps) 
 				<Modal.Dialog>
 					<Modal.CloseTrigger />
 					<Modal.Header>
-						<Modal.Heading>Select Image</Modal.Heading>
+						<Modal.Heading>{t("rooms.imagePicker.title")}</Modal.Heading>
 					</Modal.Header>
 					<Modal.Body className="gap-4">
 						<Tabs selectedKey={selectedTab} onSelectionChange={(key) => setSelectedTab(key as string)}>
 							<Tabs.ListContainer>
 								<Tabs.List
-									aria-label="Image picker tabs"
+									aria-label={t("rooms.imagePicker.tabsAriaLabel")}
 									className="w-fit *:h-6 *:w-fit *:px-3 *:font-normal *:text-sm *:data-[selected=true]:text-accent-foreground"
 								>
 									<Tabs.Tab id="gallery">
-										Gallery
+										{t("rooms.imagePicker.gallery")}
 										<Tabs.Indicator className="bg-accent" />
 									</Tabs.Tab>
 									<Tabs.Tab id="upload">
-										Upload
+										{t("rooms.imagePicker.upload")}
 										<Tabs.Indicator className="bg-accent" />
 									</Tabs.Tab>
 								</Tabs.List>
@@ -154,7 +156,7 @@ const ImagePickerModal = ({ isOpen, onClose, onSelect }: ImagePickerModalProps) 
 												}}
 												size="sm"
 											>
-												Remove
+												{t("rooms.imagePicker.remove")}
 											</Button>
 										</div>
 									) : (
@@ -170,8 +172,8 @@ const ImagePickerModal = ({ isOpen, onClose, onSelect }: ImagePickerModalProps) 
 										>
 											<TablerCloudUpload className="size-12 text-gray-400" />
 											<div className="text-center">
-												<p className="font-medium text-gray-600">Drag & drop your image here</p>
-												<p className="text-gray-400 text-sm">or click to browse</p>
+												<p className="font-medium text-gray-600">{t("rooms.imagePicker.dragPrompt")}</p>
+												<p className="text-gray-400 text-sm">{t("rooms.imagePicker.browsePrompt")}</p>
 											</div>
 										</button>
 									)}
@@ -181,7 +183,7 @@ const ImagePickerModal = ({ isOpen, onClose, onSelect }: ImagePickerModalProps) 
 					</Modal.Body>
 					<Modal.Footer>
 						<Button variant="primary" fullWidth isDisabled={isUploadDisabled} onPress={handleUpload}>
-							Select
+							{t("rooms.imagePicker.select")}
 						</Button>
 					</Modal.Footer>
 				</Modal.Dialog>

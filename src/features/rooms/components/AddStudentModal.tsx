@@ -1,6 +1,7 @@
 import { Button, Label, ListBox, Modal, Select, Spinner, toast } from "@heroui/react"
 import { useAtomValue } from "jotai"
 import { useRef, useState } from "react"
+import { useTranslation } from "react-i18next"
 
 import { getErrorMessage } from "@/utils/error"
 
@@ -10,6 +11,7 @@ import { addStudentModalAtom, closeAddStudentModal } from "../stores/addStudentM
 import { handleSelectPopoverScroll } from "../utils/handleSelectPopoverScroll"
 
 const AddStudentModal = () => {
+	const { t } = useTranslation()
 	const { isOpen, roomId } = useAtomValue(addStudentModalAtom)
 	const { data: room } = useRoom(roomId ?? "")
 	const {
@@ -41,15 +43,14 @@ const AddStudentModal = () => {
 			{
 				onSuccess: () => {
 					const count = selectedStudentIds.size
-					toast(count === 1 ? "Student added" : "Students added", {
-						description:
-							count === 1 ? "Student has been added to the room." : `${count} students have been added to the room.`,
+					toast(t("rooms.addStudent.success", { count }), {
+						description: t("rooms.addStudent.successDescription", { count }),
 						variant: "success",
 					})
 					handleClose()
 				},
 				onError: (error) => {
-					toast("Failed to add students", {
+					toast(t("rooms.addStudent.error"), {
 						description: getErrorMessage(error),
 						variant: "danger",
 					})
@@ -74,7 +75,7 @@ const AddStudentModal = () => {
 				<Modal.Dialog>
 					<Modal.CloseTrigger />
 					<Modal.Header>
-						<Modal.Heading>Choose & Add Students</Modal.Heading>
+						<Modal.Heading>{t("rooms.addStudent.title")}</Modal.Heading>
 					</Modal.Header>
 					<Modal.Body className="gap-5">
 						{isLoadingStudents ? (
@@ -90,7 +91,7 @@ const AddStudentModal = () => {
 									setSelectedStudentIds(new Set(keys as string[]))
 								}}
 							>
-								<Label>Student's Name</Label>
+								<Label>{t("rooms.addStudent.studentName")}</Label>
 								<Select.Trigger>
 									<Select.Value />
 									<Select.Indicator />
@@ -115,8 +116,8 @@ const AddStudentModal = () => {
 											</ListBox.Item>
 										))}
 										{isFetchingNextPage && (
-											<ListBox.Item id="loading-students" textValue="Loading...">
-												<span className="text-default-400 text-sm">Loading more...</span>
+											<ListBox.Item id="loading-students" textValue={t("common.loading")}>
+												<span className="text-default-400 text-sm">{t("common.loadingMore")}</span>
 											</ListBox.Item>
 										)}
 									</ListBox>
@@ -132,7 +133,7 @@ const AddStudentModal = () => {
 							isPending={addStudentsMutation.isPending}
 							onPress={handleSubmit}
 						>
-							Add Students
+							{t("rooms.addStudent.add")}
 						</Button>
 					</Modal.Footer>
 				</Modal.Dialog>

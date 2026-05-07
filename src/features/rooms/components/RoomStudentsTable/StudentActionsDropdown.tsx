@@ -1,4 +1,5 @@
 import { Button, Dropdown, toast } from "@heroui/react"
+import { useTranslation } from "react-i18next"
 
 import PhCheckCircleBold from "~icons/ph/check-circle-bold"
 import PhSignOutBold from "~icons/ph/sign-out-bold"
@@ -17,6 +18,7 @@ interface Props {
 }
 
 const StudentActionsDropdown = ({ student, roomId }: Props) => {
+	const { t } = useTranslation()
 	const checkInMutation = useCheckInStudent()
 	const checkOutMutation = useCheckOutStudent()
 
@@ -24,7 +26,6 @@ const StudentActionsDropdown = ({ student, roomId }: Props) => {
 
 	const handleCheckAction = () => {
 		const isCheckingOut = student.checkedIn
-		const action = isCheckingOut ? "checked out" : "checked in"
 
 		const mutation = isCheckingOut ? checkOutMutation : checkInMutation
 
@@ -32,10 +33,26 @@ const StudentActionsDropdown = ({ student, roomId }: Props) => {
 			{ roomId, studentId: student.id },
 			{
 				onSuccess: () => {
-					toast.success(`${student.name} ${action}`)
+					toast.success(
+						t(
+							isCheckingOut
+								? "rooms.studentsTable.actions.checkedOutSuccess"
+								: "rooms.studentsTable.actions.checkedInSuccess",
+							{
+								name: student.name,
+							},
+						),
+					)
 				},
 				onError: () => {
-					toast.danger(`Failed to ${isCheckingOut ? "check out" : "check in"} ${student.name}. Please try again.`)
+					toast.danger(
+						t(
+							isCheckingOut ? "rooms.studentsTable.actions.checkOutError" : "rooms.studentsTable.actions.checkInError",
+							{
+								name: student.name,
+							},
+						),
+					)
 				},
 			},
 		)
@@ -44,7 +61,12 @@ const StudentActionsDropdown = ({ student, roomId }: Props) => {
 	return (
 		<div className="flex justify-center">
 			<Dropdown>
-				<Button isIconOnly isPending={isLoading} variant="ghost" aria-label="Student actions">
+				<Button
+					isIconOnly
+					isPending={isLoading}
+					variant="ghost"
+					aria-label={t("rooms.studentsTable.actions.ariaLabel")}
+				>
 					<svg
 						aria-hidden="true"
 						className="size-5 text-gray-600"
@@ -61,18 +83,20 @@ const StudentActionsDropdown = ({ student, roomId }: Props) => {
 					</svg>
 				</Button>
 				<Dropdown.Popover>
-					<Dropdown.Menu aria-label="Student actions">
-						<Dropdown.Item id="view" textValue="View">
+					<Dropdown.Menu aria-label={t("rooms.studentsTable.actions.ariaLabel")}>
+						<Dropdown.Item id="view" textValue={t("rooms.studentsTable.actions.view")}>
 							<TablerEye aria-hidden className="size-4 text-success" />
-							View
+							{t("rooms.studentsTable.actions.view")}
 						</Dropdown.Item>
-						<Dropdown.Item id="edit" textValue="Edit">
+						<Dropdown.Item id="edit" textValue={t("rooms.studentsTable.actions.edit")}>
 							<TablerEdit aria-hidden className="size-4 text-warning" />
-							Edit
+							{t("rooms.studentsTable.actions.edit")}
 						</Dropdown.Item>
 						<Dropdown.Item
 							id="check"
-							textValue={student.checkedIn ? "Check out" : "Check in"}
+							textValue={t(
+								student.checkedIn ? "rooms.studentsTable.actions.checkOut" : "rooms.studentsTable.actions.checkIn",
+							)}
 							onAction={handleCheckAction}
 						>
 							{student.checkedIn ? (
@@ -80,15 +104,15 @@ const StudentActionsDropdown = ({ student, roomId }: Props) => {
 							) : (
 								<PhCheckCircleBold aria-hidden className="size-4 text-accent" />
 							)}
-							{student.checkedIn ? "Check out" : "Check in"}
+							{t(student.checkedIn ? "rooms.studentsTable.actions.checkOut" : "rooms.studentsTable.actions.checkIn")}
 						</Dropdown.Item>
 						<Dropdown.Item
 							id="absent"
-							textValue="Mark absent"
+							textValue={t("rooms.studentsTable.actions.markAbsent")}
 							onAction={() => openMarkAbsentModal(student.id, student.name)}
 						>
 							<SolarCalendarBroken aria-hidden className="size-4 text-foreground" />
-							Mark absent
+							{t("rooms.studentsTable.actions.markAbsent")}
 						</Dropdown.Item>
 					</Dropdown.Menu>
 				</Dropdown.Popover>

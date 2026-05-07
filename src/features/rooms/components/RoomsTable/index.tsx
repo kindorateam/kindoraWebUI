@@ -1,6 +1,7 @@
 import { Button, Label, Pagination, Spinner, Switch, Table } from "@heroui/react"
 import { useAtom } from "jotai"
 import { useState } from "react"
+import { useTranslation } from "react-i18next"
 
 import TableError from "@/components/TableError"
 import OcticonFeedPlus16 from "~icons/octicon/feed-plus-16"
@@ -14,6 +15,7 @@ import columns from "./columns"
 import RoomsTableCell from "./RoomsTableCell"
 
 const RoomsTable = () => {
+	const { t } = useTranslation()
 	const [viewDeactivated, setViewDeactivated] = useAtom(viewDeactivatedRoomsAtom)
 	const [page, setPage] = useState(1)
 	const status = viewDeactivated ? "inactive" : "active"
@@ -42,12 +44,12 @@ const RoomsTable = () => {
 					<Switch.Thumb />
 				</Switch.Control>
 				<Switch.Content>
-					<Label className="text-sm">View deactivated</Label>
+					<Label className="text-sm">{t("rooms.table.viewDeactivated")}</Label>
 				</Switch.Content>
 			</Switch>
 			<Button variant="primary" onPress={openAddRoomModal}>
 				<OcticonFeedPlus16 aria-hidden className="size-4" />
-				Add Room
+				{t("rooms.addRoom.title")}
 			</Button>
 		</div>
 	)
@@ -59,14 +61,14 @@ const RoomsTable = () => {
 				<Table className="[&_td]:py-1.5! [&_tr]:h-12.5!">
 					<div className="relative">
 						<Table.ScrollContainer className="min-h-140">
-							<Table.Content aria-label="Rooms table">
+							<Table.Content aria-label={t("rooms.table.ariaLabel")}>
 								<Table.Header columns={columns}>
 									{(column) => (
 										<Table.Column
 											isRowHeader={column.isRowHeader}
 											className={column.align === "center" ? "text-center" : undefined}
 										>
-											{column.label}
+											{t(column.labelKey)}
 										</Table.Column>
 									)}
 								</Table.Header>
@@ -110,13 +112,13 @@ const RoomsTable = () => {
 					<Table.Footer>
 						<Pagination className="w-full">
 							<Pagination.Summary>
-								{startItem} to {endItem} of {visibleTotal} rooms
+								{t("rooms.table.paginationSummary", { count: visibleTotal, endItem, startItem, total: visibleTotal })}
 							</Pagination.Summary>
 							<Pagination.Content>
 								<Pagination.Item>
 									<Pagination.Previous isDisabled={page <= 1} onPress={() => setPage((p) => p - 1)}>
 										<Pagination.PreviousIcon />
-										<span>Prev</span>
+										<span>{t("common.previous")}</span>
 									</Pagination.Previous>
 								</Pagination.Item>
 								{Array.from({ length: visibleTotalPages }, (_, i) => i + 1).map((p) => (
@@ -128,7 +130,7 @@ const RoomsTable = () => {
 								))}
 								<Pagination.Item>
 									<Pagination.Next isDisabled={page >= visibleTotalPages} onPress={() => setPage((p) => p + 1)}>
-										<span>Next</span>
+										<span>{t("common.next")}</span>
 										<Pagination.NextIcon />
 									</Pagination.Next>
 								</Pagination.Item>

@@ -2,6 +2,7 @@ import { Button, Card, Spinner, toast } from "@heroui/react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
+import { useTranslation } from "react-i18next"
 
 import { getErrorMessage } from "@/utils/error"
 import { getMediaUrl } from "@/utils/media"
@@ -9,7 +10,7 @@ import CiSave from "~icons/ci/save"
 import MaterialSymbolsDeleteOutline from "~icons/material-symbols/delete-outline"
 
 import { useRoom, useUpdateRoom, useUpdateRoomLogo } from "../../hooks/useRooms"
-import { roomProfileSchema } from "../../schemas/roomProfile.schema"
+import { createRoomProfileSchema } from "../../schemas/roomProfile.schema"
 import { openDeactivateRoomModal } from "../../stores/deactivateRoomModal.store"
 
 import ProfilePictureSection from "./ProfilePictureSection"
@@ -26,6 +27,7 @@ interface RoomProfileTabProps {
 }
 
 const RoomProfileTab = ({ roomId }: RoomProfileTabProps) => {
+	const { t } = useTranslation()
 	const { data: room, isLoading } = useRoom(roomId)
 	const updateRoomMutation = useUpdateRoom()
 	const updateLogoMutation = useUpdateRoomLogo()
@@ -41,7 +43,7 @@ const RoomProfileTab = ({ roomId }: RoomProfileTabProps) => {
 		trigger,
 		formState: { errors, isDirty },
 	} = useForm<RoomProfileFormData>({
-		resolver: zodResolver(roomProfileSchema),
+		resolver: zodResolver(createRoomProfileSchema(t)),
 		mode: "onChange",
 		defaultValues: {
 			name: "",
@@ -138,13 +140,13 @@ const RoomProfileTab = ({ roomId }: RoomProfileTabProps) => {
 							{
 								onSuccess: () => {
 									setValue("avatarFile", null)
-									toast("Room updated", {
-										description: "Room details have been saved successfully.",
+									toast(t("rooms.profile.updateSuccess"), {
+										description: t("rooms.profile.updateSuccessDescription"),
 										variant: "success",
 									})
 								},
 								onError: (error) => {
-									toast("Room updated but logo upload failed", {
+									toast(t("rooms.profile.logoUploadFailed"), {
 										description: getErrorMessage(error),
 										variant: "warning",
 									})
@@ -152,14 +154,14 @@ const RoomProfileTab = ({ roomId }: RoomProfileTabProps) => {
 							},
 						)
 					} else {
-						toast("Room updated", {
-							description: "Room details have been saved successfully.",
+						toast(t("rooms.profile.updateSuccess"), {
+							description: t("rooms.profile.updateSuccessDescription"),
 							variant: "success",
 						})
 					}
 				},
 				onError: (error) => {
-					toast("Failed to update room", {
+					toast(t("rooms.profile.updateError"), {
 						description: getErrorMessage(error),
 						variant: "danger",
 					})
@@ -185,7 +187,7 @@ const RoomProfileTab = ({ roomId }: RoomProfileTabProps) => {
 		return (
 			<Card>
 				<Card.Content className="flex h-96 items-center justify-center">
-					<p className="text-default-500">Room not found</p>
+					<p className="text-default-500">{t("rooms.detail.notFound")}</p>
 				</Card.Content>
 			</Card>
 		)
@@ -215,11 +217,11 @@ const RoomProfileTab = ({ roomId }: RoomProfileTabProps) => {
 							type="button"
 						>
 							<MaterialSymbolsDeleteOutline aria-hidden className="size-4" />
-							Deactivate Room
+							{t("rooms.deactivate.title")}
 						</Button>
 						<div className="flex gap-5">
 							<Button isDisabled={isSaving} onPress={handleCancel} size="md" type="button" variant="outline">
-								Cancel
+								{t("common.cancel")}
 							</Button>
 							<Button
 								variant="primary"
@@ -229,7 +231,7 @@ const RoomProfileTab = ({ roomId }: RoomProfileTabProps) => {
 								type="submit"
 							>
 								<CiSave aria-hidden className="size-4" />
-								Save Changes
+								{t("rooms.profile.saveChanges")}
 							</Button>
 						</div>
 					</div>

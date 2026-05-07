@@ -1,5 +1,6 @@
 import { Avatar, Button, Dropdown, Label, Tooltip } from "@heroui/react"
 import { Link, useRouter } from "@tanstack/react-router"
+import { useTranslation } from "react-i18next"
 
 import { getMediaUrl } from "@/utils/media"
 import FluentConferenceRoom20Regular from "~icons/fluent/conference-room-20-regular"
@@ -24,6 +25,7 @@ interface RoomsTableCellProps {
 }
 
 const RoomsTableCell = ({ room, columnKey }: RoomsTableCellProps) => {
+	const { t } = useTranslation()
 	const router = useRouter()
 	const activateMutation = useActivateRoom()
 	const isInactive = room.status === "inactive"
@@ -63,12 +65,12 @@ const RoomsTableCell = ({ room, columnKey }: RoomsTableCellProps) => {
 
 		case "signInStudents": {
 			const checkedInStudents = room.signedInStudents.filter((student) => student.checkedIn)
-			return <SignedInAvatarGroup items={checkedInStudents} tooltipLabel="Signed-in students" />
+			return <SignedInAvatarGroup items={checkedInStudents} tooltipLabel={t("rooms.table.signedInStudents")} />
 		}
 
 		case "signInStaff": {
 			const checkedInStaff = room.signedInStaff.filter((staff) => staff.checkedIn)
-			return <SignedInAvatarGroup items={checkedInStaff} tooltipLabel="Signed-in staff" />
+			return <SignedInAvatarGroup items={checkedInStaff} tooltipLabel={t("rooms.table.signedInStaff")} />
 		}
 
 		case "ratio": {
@@ -77,7 +79,7 @@ const RoomsTableCell = ({ room, columnKey }: RoomsTableCellProps) => {
 
 			return (
 				<Tooltip delay={0}>
-					<Tooltip.Trigger aria-label="Ratio status">
+					<Tooltip.Trigger aria-label={t("rooms.table.ratioStatus")}>
 						<span className="flex cursor-default items-center justify-center">
 							{isGoodRatio ? (
 								<PhSmileyDuotone className="size-5 text-success" />
@@ -87,7 +89,7 @@ const RoomsTableCell = ({ room, columnKey }: RoomsTableCellProps) => {
 						</span>
 					</Tooltip.Trigger>
 					<Tooltip.Content>
-						{isGoodRatio ? `Ratio is met (1:${room.ratio})` : `Ratio is not met (1:${room.ratio})`}
+						{t(isGoodRatio ? "rooms.detail.ratioMet" : "rooms.detail.ratioNotMet", { ratio: room.ratio })}
 					</Tooltip.Content>
 				</Tooltip>
 			)
@@ -97,14 +99,14 @@ const RoomsTableCell = ({ room, columnKey }: RoomsTableCellProps) => {
 			return (
 				<div className="flex justify-center">
 					<Dropdown>
-						<Button isIconOnly variant="ghost" aria-label="Room actions">
+						<Button isIconOnly variant="ghost" aria-label={t("rooms.table.actions.ariaLabel")}>
 							<PhDotsThreeVerticalBold aria-hidden className="size-5 text-muted" />
 						</Button>
 						<Dropdown.Popover>
-							<Dropdown.Menu aria-label="Room actions">
+							<Dropdown.Menu aria-label={t("rooms.table.actions.ariaLabel")}>
 								<Dropdown.Item
 									id="view"
-									textValue="View"
+									textValue={t("rooms.table.actions.view")}
 									onAction={() => {
 										void router.navigate({
 											to: "/rooms/$roomId",
@@ -114,11 +116,11 @@ const RoomsTableCell = ({ room, columnKey }: RoomsTableCellProps) => {
 									}}
 								>
 									<TablerEye aria-hidden className="size-4 shrink-0 text-success" />
-									<Label>View</Label>
+									<Label>{t("rooms.table.actions.view")}</Label>
 								</Dropdown.Item>
 								<Dropdown.Item
 									id="edit"
-									textValue="Edit"
+									textValue={t("rooms.table.actions.edit")}
 									onAction={() => {
 										void router.navigate({
 											to: "/rooms/$roomId",
@@ -128,22 +130,26 @@ const RoomsTableCell = ({ room, columnKey }: RoomsTableCellProps) => {
 									}}
 								>
 									<TablerEdit aria-hidden className="size-4 shrink-0 text-warning" />
-									<Label>Edit</Label>
+									<Label>{t("rooms.table.actions.edit")}</Label>
 								</Dropdown.Item>
 								{isInactive ? (
-									<Dropdown.Item id="activate" textValue="Activate" onAction={() => activateMutation.mutate(room.id)}>
+									<Dropdown.Item
+										id="activate"
+										textValue={t("rooms.table.actions.activate")}
+										onAction={() => activateMutation.mutate(room.id)}
+									>
 										<TablerPlayerPlay aria-hidden className="size-4 shrink-0 text-muted" />
-										<Label>Activate</Label>
+										<Label>{t("rooms.table.actions.activate")}</Label>
 									</Dropdown.Item>
 								) : (
 									<Dropdown.Item
 										id="deactivate"
-										textValue="Deactivate"
+										textValue={t("rooms.table.actions.deactivate")}
 										variant="danger"
 										onAction={() => openDeactivateRoomModal(room.id, room.name)}
 									>
 										<TablerTrash aria-hidden className="size-4 shrink-0 text-danger" />
-										<Label>Deactivate</Label>
+										<Label>{t("rooms.table.actions.deactivate")}</Label>
 									</Dropdown.Item>
 								)}
 							</Dropdown.Menu>

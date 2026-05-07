@@ -1,5 +1,6 @@
 import { Button, Modal, toast } from "@heroui/react"
 import { useAtomValue } from "jotai"
+import { useTranslation } from "react-i18next"
 
 import { getErrorMessage } from "@/utils/error"
 
@@ -11,6 +12,7 @@ interface DeactivateRoomModalProps {
 }
 
 const DeactivateRoomModal = ({ onSuccess }: DeactivateRoomModalProps) => {
+	const { t } = useTranslation()
 	const { isOpen, roomId, roomName } = useAtomValue(deactivateRoomModalAtom)
 	const inactivateMutation = useInactivateRoom()
 
@@ -23,7 +25,7 @@ const DeactivateRoomModal = ({ onSuccess }: DeactivateRoomModalProps) => {
 				onSuccess?.()
 			},
 			onError: (error) => {
-				toast("Failed to deactivate room", {
+				toast(t("rooms.deactivate.error"), {
 					description: getErrorMessage(error),
 					variant: "danger",
 				})
@@ -44,13 +46,11 @@ const DeactivateRoomModal = ({ onSuccess }: DeactivateRoomModalProps) => {
 				<Modal.Dialog>
 					<Modal.CloseTrigger />
 					<Modal.Header>
-						<Modal.Heading>Deactivate Room</Modal.Heading>
+						<Modal.Heading>{t("rooms.deactivate.title")}</Modal.Heading>
 					</Modal.Header>
 					<Modal.Body className="py-4 text-center">
-						<p className="text-base text-default-700">
-							Are you sure you want to deactivate <strong>{roomName}</strong>?
-						</p>
-						<p className="text-default-500 text-sm">You can reactivate this room later from the deactivated list.</p>
+						<p className="text-base text-default-700">{t("rooms.deactivate.description", { roomName })}</p>
+						<p className="text-default-500 text-sm">{t("rooms.deactivate.reactivateHint")}</p>
 					</Modal.Body>
 					<Modal.Footer className="flex-col gap-2">
 						<Button
@@ -60,7 +60,7 @@ const DeactivateRoomModal = ({ onSuccess }: DeactivateRoomModalProps) => {
 							onPress={handleDeactivate}
 							size="md"
 						>
-							Deactivate
+							{t("rooms.deactivate.confirm")}
 						</Button>
 						<Button
 							variant="secondary"
@@ -69,7 +69,7 @@ const DeactivateRoomModal = ({ onSuccess }: DeactivateRoomModalProps) => {
 							onPress={handleClose}
 							size="md"
 						>
-							Cancel
+							{t("common.cancel")}
 						</Button>
 					</Modal.Footer>
 				</Modal.Dialog>

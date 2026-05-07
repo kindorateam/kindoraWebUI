@@ -12,6 +12,7 @@ import {
 	Tabs,
 	Tooltip,
 } from "@heroui/react"
+import { useTranslation } from "react-i18next"
 
 import IdentityChip from "@/components/IdentityChip"
 import { ABSENCE_REASONS } from "@/features/rooms/constants"
@@ -45,6 +46,7 @@ const StaffDetailHeader = ({
 	onGeneratePin,
 	onSendInvite,
 }: StaffDetailHeaderProps) => {
+	const { t } = useTranslation()
 	const fullName = employeeData ? getEmployeeFullName(employeeData) : "Employee"
 	const avatarUrl = employeeData ? getEmployeeAvatarUrl(employeeData) : undefined
 	const absenceDate = "Nov 20 - Nov 26"
@@ -200,8 +202,8 @@ const StaffDetailHeader = ({
 													<Select.Popover>
 														<ListBox>
 															{ABSENCE_REASONS.map((item) => (
-																<ListBox.Item id={item.key} key={item.key} textValue={item.label}>
-																	{item.label}
+																<ListBox.Item id={item.key} key={item.key} textValue={t(item.labelKey)}>
+																	{t(item.labelKey)}
 																	<ListBox.ItemIndicator />
 																</ListBox.Item>
 															))}

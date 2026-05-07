@@ -6,14 +6,14 @@ export interface Person {
 }
 
 export interface SignedInMetric {
-	label: string
+	labelKey: string
 	total: number
 	value: number
 }
 
 export interface SummaryMetric {
 	icon: React.ComponentType<{ className?: string }>
-	label: string
+	labelKey: string
 	value: number
 }
 
@@ -41,8 +41,9 @@ export interface AttentionItem extends Person {
 
 export interface FinanceCard {
 	accentClassName: string
-	actionLabel: string
-	label: string
+	actionLabelKey: string
+	labelKey: string
+	supportingTextKey: string
 	value: string
 }
 

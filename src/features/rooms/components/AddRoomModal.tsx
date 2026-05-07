@@ -1,5 +1,6 @@
 import { Modal, toast } from "@heroui/react"
 import { useAtomValue } from "jotai"
+import { useTranslation } from "react-i18next"
 
 import { getErrorMessage } from "@/utils/error"
 
@@ -11,6 +12,7 @@ import AddRoomStepper from "./AddRoomStepper"
 import type { AddRoomFormData } from "../types"
 
 const AddRoomModal = () => {
+	const { t } = useTranslation()
 	const isOpen = useAtomValue(isAddRoomModalOpenAtom)
 	const createRoomMutation = useCreateRoom()
 	const updateLogoMutation = useUpdateRoomLogo()
@@ -28,7 +30,7 @@ const AddRoomModal = () => {
 							},
 							onError: (error) => {
 								// Room created but logo upload failed
-								toast("Room created but logo upload failed", {
+								toast(t("rooms.addRoom.logoUploadFailed"), {
 									description: getErrorMessage(error),
 									variant: "warning",
 								})
@@ -41,7 +43,7 @@ const AddRoomModal = () => {
 				}
 			},
 			onError: (error) => {
-				toast("Failed to create room", {
+				toast(t("rooms.addRoom.createError"), {
 					description: getErrorMessage(error),
 					variant: "danger",
 				})

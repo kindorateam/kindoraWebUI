@@ -1,9 +1,12 @@
+import { useTranslation } from "react-i18next"
+
 import useAuth from "@/features/auth/hooks/useAuth"
 import DashboardPanelsGrid from "@/features/dashboard/components/DashboardPanelsGrid"
 import SummaryCardsRow from "@/features/dashboard/components/SummaryCardsRow"
 import { getFirstName } from "@/features/dashboard/utils"
 
 const DashboardPage = () => {
+	const { t } = useTranslation()
 	const { user } = useAuth()
 	const firstName = user?.givenName ?? getFirstName(user?.name)
 
@@ -15,7 +18,7 @@ const DashboardPage = () => {
 				<div className="relative mx-auto max-w-[1230px] px-4 pb-12 sm:px-6">
 					<div className="pt-10" data-dashboard-header-trigger>
 						<h1 className="font-medium text-[34px] text-white leading-none tracking-[-0.02em] sm:mt-4 sm:text-[42px]">
-							Welcome back, <span className="font-semibold">{firstName}!</span>
+							{t("dashboard.welcomePrefix")} <span className="font-semibold">{firstName}!</span>
 						</h1>
 					</div>
 

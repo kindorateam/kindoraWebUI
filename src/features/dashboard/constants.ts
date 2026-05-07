@@ -24,13 +24,13 @@ export const panelCardClassName =
 	"rounded-[24px] border-0 bg-white shadow-[0px_2px_4px_rgba(0,0,0,0.04),0px_1px_2px_rgba(0,0,0,0.06),0px_0px_1px_rgba(0,0,0,0.06)]"
 
 export const signedInMetrics: SignedInMetric[] = [
-	{ label: "Students", value: 48, total: 74 },
-	{ label: "Staff", value: 16, total: 24 },
+	{ labelKey: "dashboard.common.students", value: 48, total: 74 },
+	{ labelKey: "dashboard.common.staff", value: 16, total: 24 },
 ]
 
-export const absenteeGroups: Array<{ label: string; people: Person[] }> = [
+export const absenteeGroups: Array<{ labelKey: string; people: Person[] }> = [
 	{
-		label: "Students",
+		labelKey: "dashboard.common.students",
 		people: [
 			{ name: "Emma Stone", seed: "emma-stone" },
 			{ name: "Liam Carter", seed: "liam-carter" },
@@ -40,7 +40,7 @@ export const absenteeGroups: Array<{ label: string; people: Person[] }> = [
 		],
 	},
 	{
-		label: "Staff",
+		labelKey: "dashboard.common.staff",
 		people: [
 			{ name: "Nora Blake", seed: "nora-blake" },
 			{ name: "James Ford", seed: "james-ford" },
@@ -50,9 +50,9 @@ export const absenteeGroups: Array<{ label: string; people: Person[] }> = [
 ]
 
 export const summaryMetrics: SummaryMetric[] = [
-	{ label: "Students", value: 74, icon: MdiSchool },
-	{ label: "Rooms", value: 5, icon: MdiDoorOpen },
-	{ label: "Staff", value: 24, icon: MdiAccountTie },
+	{ labelKey: "dashboard.common.students", value: 74, icon: MdiSchool },
+	{ labelKey: "dashboard.common.rooms", value: 5, icon: MdiDoorOpen },
+	{ labelKey: "dashboard.common.staff", value: 24, icon: MdiAccountTie },
 ]
 
 export const roomsStatus: RoomStatus[] = [
@@ -157,9 +157,24 @@ export const roomsStatus: RoomStatus[] = [
 ]
 
 export const upcomingEvents: UpcomingEvent[] = [
-	{ day: "FRI", date: "24", label: "Artist visitor", time: "10am – 12pm" },
-	{ day: "MON", date: "27", label: "Sophie birthday", time: "All day" },
-	{ day: "TUE", date: "28", label: "Petting zoo visit", time: "9am – 1pm" },
+	{
+		day: "FRI",
+		date: "24",
+		label: "Artist visitor",
+		time: "10am - 12pm",
+	},
+	{
+		day: "MON",
+		date: "27",
+		label: "Sophie birthday",
+		time: "All day",
+	},
+	{
+		day: "TUE",
+		date: "28",
+		label: "Petting zoo visit",
+		time: "9am - 1pm",
+	},
 ]
 
 export const attentionItems: AttentionItem[] = [
@@ -170,16 +185,18 @@ export const attentionItems: AttentionItem[] = [
 
 export const financeCards: FinanceCard[] = [
 	{
-		label: "Payments",
+		labelKey: "dashboard.finance.payments",
 		value: "$11,740.00",
 		accentClassName: "text-[#17c964]",
-		actionLabel: "See payments",
+		actionLabelKey: "dashboard.finance.seePayments",
+		supportingTextKey: "dashboard.finance.received",
 	},
 	{
-		label: "Total outstanding debt",
+		labelKey: "dashboard.finance.totalOutstandingDebt",
 		value: "-$7,740.00",
 		accentClassName: "text-[#ff383c]",
-		actionLabel: "See debt collection",
+		actionLabelKey: "dashboard.finance.seeDebtCollection",
+		supportingTextKey: "dashboard.finance.totalOutstanding",
 	},
 ]
 
