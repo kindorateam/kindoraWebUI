@@ -9,7 +9,7 @@ import type { NavDrawerItem } from "./navDrawer.types"
 interface NavGroupProps {
 	item: NavDrawerItem
 	isExpanded: boolean
-	onToggle: (itemLabel: string) => void
+	onToggle: (itemKey: string) => void
 }
 
 const NavGroup = ({ item, isExpanded, onToggle }: NavGroupProps) => {
