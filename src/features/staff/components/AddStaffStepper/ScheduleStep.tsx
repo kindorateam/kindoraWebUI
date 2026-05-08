@@ -1,5 +1,6 @@
 import { FieldError, Label, ListBox, Select } from "@heroui/react"
 import { Controller, useFormContext } from "react-hook-form"
+import { useTranslation } from "react-i18next"
 
 import SolarCalendarBroken from "~icons/solar/calendar-broken"
 
@@ -8,6 +9,7 @@ import { WORKING_DAYS } from "../../constants"
 import type { AddStaffFormData } from "../../schemas/addStaff.schema"
 
 const ScheduleStep = () => {
+	const { t } = useTranslation()
 	const {
 		control,
 		formState: { errors },
@@ -16,10 +18,10 @@ const ScheduleStep = () => {
 	return (
 		<div className="flex flex-col gap-6">
 			<div className="flex items-center justify-between">
-				<h2 className="font-medium text-xl">Add staff</h2>
+				<h2 className="font-medium text-xl">{t("staff.addStaff.title")}</h2>
 				<div className="flex items-center gap-2.5 py-1.5">
 					<SolarCalendarBroken className="size-5 text-foreground" />
-					<span className="font-semibold text-foreground text-sm">Schedule</span>
+					<span className="font-semibold text-foreground text-sm">{t("staff.profile.sections.schedule")}</span>
 				</div>
 			</div>
 
@@ -40,7 +42,7 @@ const ScheduleStep = () => {
 						selectionMode="multiple"
 						variant="secondary"
 					>
-						<Label>Schedule working days</Label>
+						<Label>{t("staff.profile.fields.workingDays")}</Label>
 						<Select.Trigger>
 							<Select.Value />
 							<Select.Indicator />
@@ -48,8 +50,8 @@ const ScheduleStep = () => {
 						<Select.Popover>
 							<ListBox>
 								{WORKING_DAYS.map((day) => (
-									<ListBox.Item id={day.key} key={day.key} textValue={day.label}>
-										{day.label}
+									<ListBox.Item id={day.key} key={day.key} textValue={t(day.labelKey)}>
+										{t(day.labelKey)}
 										<ListBox.ItemIndicator />
 									</ListBox.Item>
 								))}

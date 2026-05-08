@@ -1,5 +1,6 @@
 import { FieldError, Input, Label, ListBox, Select, TextField } from "@heroui/react"
 import { Controller, useFormContext } from "react-hook-form"
+import { useTranslation } from "react-i18next"
 
 import TablerCertificate from "~icons/tabler/certificate"
 
@@ -8,6 +9,7 @@ import { DEGREE_OPTIONS } from "../../constants"
 import type { AddStaffFormData } from "../../schemas/addStaff.schema"
 
 const CertificationStep = () => {
+	const { t } = useTranslation()
 	const {
 		control,
 		formState: { errors },
@@ -16,10 +18,10 @@ const CertificationStep = () => {
 	return (
 		<div className="flex flex-col gap-6">
 			<div className="flex items-center justify-between">
-				<h2 className="font-medium text-xl">Add staff</h2>
+				<h2 className="font-medium text-xl">{t("staff.addStaff.title")}</h2>
 				<div className="flex items-center gap-2.5 py-1.5">
 					<TablerCertificate className="size-5 text-foreground" />
-					<span className="font-semibold text-foreground text-sm">Certification</span>
+					<span className="font-semibold text-foreground text-sm">{t("staff.profile.sections.certification")}</span>
 				</div>
 			</div>
 
@@ -38,7 +40,7 @@ const CertificationStep = () => {
 							selectedKey={field.value ?? null}
 							variant="secondary"
 						>
-							<Label>Degree</Label>
+							<Label>{t("staff.profile.fields.degree")}</Label>
 							<Select.Trigger>
 								<Select.Value />
 								<Select.Indicator />
@@ -46,8 +48,8 @@ const CertificationStep = () => {
 							<Select.Popover>
 								<ListBox>
 									{DEGREE_OPTIONS.map((degree) => (
-										<ListBox.Item id={degree.key} key={degree.key} textValue={degree.label}>
-											{degree.label}
+										<ListBox.Item id={degree.key} key={degree.key} textValue={t(degree.labelKey)}>
+											{t(degree.labelKey)}
 											<ListBox.ItemIndicator />
 										</ListBox.Item>
 									))}
@@ -62,9 +64,9 @@ const CertificationStep = () => {
 					name="certification"
 					render={({ field }) => (
 						<TextField isInvalid={!!errors.certification} variant="secondary">
-							<Label>Certification</Label>
+							<Label>{t("staff.profile.fields.certification")}</Label>
 
-							<Input {...field} placeholder="Enter certification number" />
+							<Input {...field} placeholder={t("staff.addStaff.placeholders.certification")} />
 
 							<FieldError>{errors.certification?.message}</FieldError>
 						</TextField>

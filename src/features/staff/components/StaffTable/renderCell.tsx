@@ -7,13 +7,14 @@ import { getEmployeeAvatarUrl, getEmployeeFullName } from "../../types"
 
 import PinCell from "./PinCell"
 
+import type { TFunction } from "i18next"
 import type { EmployeeSummary } from "../../types"
 
 interface RenderCellOptions {
 	onEmployeeClick: (id: string) => void
 }
 
-export function renderCell(employee: EmployeeSummary, columnKey: React.Key, options: RenderCellOptions) {
+export function renderCell(employee: EmployeeSummary, columnKey: React.Key, options: RenderCellOptions, t: TFunction) {
 	const { onEmployeeClick } = options
 	const fullName = getEmployeeFullName(employee)
 	const avatarUrl = getEmployeeAvatarUrl(employee)
@@ -60,14 +61,14 @@ export function renderCell(employee: EmployeeSummary, columnKey: React.Key, opti
 					))}
 				</div>
 			) : (
-				<span className="text-gray-500 text-sm">No rooms</span>
+				<span className="text-gray-500 text-sm">{t("staff.table.noRooms")}</span>
 			)
 
 		case "actions":
 			return (
 				<div className="flex justify-center">
 					<Dropdown className="min-w-0">
-						<Button isIconOnly variant="ghost" aria-label="Staff actions">
+						<Button isIconOnly variant="ghost" aria-label={t("staff.table.actions.ariaLabel")}>
 							<svg
 								aria-hidden="true"
 								className="size-5 text-gray-600"
@@ -84,15 +85,15 @@ export function renderCell(employee: EmployeeSummary, columnKey: React.Key, opti
 							</svg>
 						</Button>
 						<Dropdown.Popover>
-							<Dropdown.Menu aria-label="Employee actions">
-								<Dropdown.Item id="view" textValue="View" className="text-success">
-									<Label>View</Label>
+							<Dropdown.Menu aria-label={t("staff.table.actions.ariaLabel")}>
+								<Dropdown.Item id="view" textValue={t("staff.table.actions.view")} className="text-success">
+									<Label>{t("staff.table.actions.view")}</Label>
 								</Dropdown.Item>
-								<Dropdown.Item id="edit" textValue="Edit" className="text-warning">
-									<Label>Edit</Label>
+								<Dropdown.Item id="edit" textValue={t("staff.table.actions.edit")} className="text-warning">
+									<Label>{t("staff.table.actions.edit")}</Label>
 								</Dropdown.Item>
-								<Dropdown.Item id="deactivate" textValue="Deactivate" className="text-danger">
-									<Label>Deactivate</Label>
+								<Dropdown.Item id="deactivate" textValue={t("staff.table.actions.deactivate")} className="text-danger">
+									<Label>{t("staff.table.actions.deactivate")}</Label>
 								</Dropdown.Item>
 							</Dropdown.Menu>
 						</Dropdown.Popover>

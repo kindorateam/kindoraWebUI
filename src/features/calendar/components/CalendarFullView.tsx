@@ -1,7 +1,9 @@
+import esLocale from "@fullcalendar/core/locales/es"
 import dayGridPlugin from "@fullcalendar/daygrid"
 import interactionPlugin from "@fullcalendar/interaction"
 import FullCalendar from "@fullcalendar/react"
 import timeGridPlugin from "@fullcalendar/timegrid"
+import { useTranslation } from "react-i18next"
 
 import { BUSINESS_HOURS, DEFAULT_EVENT_COLOR, SLOT_DURATION, SNAP_DURATION } from "../constants"
 
@@ -36,7 +38,9 @@ const CalendarFullView = ({
 	onEventDrop,
 	onEventResize,
 }: CalendarFullViewProps) => {
+	const { i18n, t } = useTranslation()
 	const isMonthView = currentView === "dayGridMonth"
+	const fullCalendarLocale = i18n.language.startsWith("es") ? esLocale : undefined
 	const monthColumnCount = hideWeekends ? 5 : 7
 	const monthAspectRatio = monthColumnCount / MONTH_ROW_COUNT_WITH_HEADER
 	const fullCalendarEvents = events.map((event) => ({
@@ -59,6 +63,9 @@ const CalendarFullView = ({
 			plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
 			initialView={currentView}
 			headerToolbar={false}
+			locale={fullCalendarLocale}
+			allDayText={t("calendar.fullCalendar.allDay")}
+			moreLinkText={(count) => t("calendar.fullCalendar.more", { count })}
 			weekends={!hideWeekends}
 			editable
 			eventResizableFromStart

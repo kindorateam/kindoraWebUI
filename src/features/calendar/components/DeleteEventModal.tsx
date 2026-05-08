@@ -1,5 +1,6 @@
 import { Button, Modal, toast } from "@heroui/react"
 import { useAtomValue } from "jotai"
+import { useTranslation } from "react-i18next"
 
 import { getErrorMessage } from "@/utils/error"
 import TablerAlertTriangle from "~icons/tabler/alert-triangle"
@@ -11,6 +12,7 @@ import { closeEventModal } from "../stores/eventModal.store"
 import type { DeleteEventScope } from "../types"
 
 const DeleteEventModal = () => {
+	const { t } = useTranslation()
 	const { isOpen, eventId, eventTitle, eventStart, isRepeating } = useAtomValue(deleteEventModalAtom)
 	const deleteMutation = useDeleteEvent()
 
@@ -25,12 +27,12 @@ const DeleteEventModal = () => {
 			},
 			{
 				onSuccess: () => {
-					toast("Event deleted", { variant: "success" })
+					toast(t("calendar.toast.deleted"), { variant: "success" })
 					closeDeleteEventModal()
 					closeEventModal()
 				},
 				onError: (error) => {
-					toast("Failed to delete event", {
+					toast(t("calendar.toast.deleteFailed"), {
 						description: getErrorMessage(error),
 						variant: "danger",
 					})
@@ -58,12 +60,11 @@ const DeleteEventModal = () => {
 					</Modal.Header>
 					<Modal.Body className="py-4 text-center">
 						<p className="text-default-600">
-							Are you sure you want to delete <strong>{eventTitle}</strong>?
+							{t("calendar.delete.confirmPrefix")} <strong>{eventTitle}</strong>
+							{t("calendar.delete.confirmSuffix")}
 						</p>
 						<p className="text-default-400 text-sm">
-							{isRepeating
-								? "Choose whether to remove this event only or the full repeat series."
-								: "This action cannot be undone."}
+							{isRepeating ? t("calendar.delete.repeatingDescription") : t("calendar.delete.description")}
 						</p>
 					</Modal.Body>
 					<Modal.Footer className="flex-col gap-2">
@@ -76,7 +77,7 @@ const DeleteEventModal = () => {
 									onPress={() => handleDelete("occurrence")}
 									size="md"
 								>
-									Delete this event
+									{t("calendar.delete.deleteOccurrence")}
 								</Button>
 								<Button
 									variant="danger"
@@ -85,7 +86,7 @@ const DeleteEventModal = () => {
 									onPress={() => handleDelete("series")}
 									size="md"
 								>
-									Delete all repeated events
+									{t("calendar.delete.deleteSeries")}
 								</Button>
 							</>
 						) : (
@@ -96,11 +97,11 @@ const DeleteEventModal = () => {
 								onPress={() => handleDelete("series")}
 								size="md"
 							>
-								Delete
+								{t("common.delete")}
 							</Button>
 						)}
 						<Button fullWidth isDisabled={deleteMutation.isPending} onPress={handleClose} size="md">
-							Cancel
+							{t("common.cancel")}
 						</Button>
 					</Modal.Footer>
 				</Modal.Dialog>

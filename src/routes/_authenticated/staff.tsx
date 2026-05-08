@@ -4,7 +4,7 @@ export const Route = createFileRoute("/_authenticated/staff")({
 	component: Outlet,
 	beforeLoad: () => {
 		return {
-			breadcrumb: "Staff",
+			breadcrumbKey: "staff.title",
 		}
 	},
 })

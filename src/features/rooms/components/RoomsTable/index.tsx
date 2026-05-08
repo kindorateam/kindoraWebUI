@@ -15,7 +15,7 @@ import columns from "./columns"
 import RoomsTableCell from "./RoomsTableCell"
 
 const RoomsTable = () => {
-	const { t } = useTranslation()
+	const { i18n, t } = useTranslation()
 	const [viewDeactivated, setViewDeactivated] = useAtom(viewDeactivatedRoomsAtom)
 	const [page, setPage] = useState(1)
 	const status = viewDeactivated ? "inactive" : "active"
@@ -61,7 +61,7 @@ const RoomsTable = () => {
 				<Table className="[&_td]:py-1.5! [&_tr]:h-12.5!">
 					<div className="relative">
 						<Table.ScrollContainer className="min-h-140">
-							<Table.Content aria-label={t("rooms.table.ariaLabel")}>
+							<Table.Content key={i18n.language} aria-label={t("rooms.table.ariaLabel")}>
 								<Table.Header columns={columns}>
 									{(column) => (
 										<Table.Column

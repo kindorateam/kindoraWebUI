@@ -1,4 +1,5 @@
 import { Input, Label, TextField } from "@heroui/react"
+import { useTranslation } from "react-i18next"
 
 interface EventDateTimeFieldsProps {
 	startDate: string
@@ -19,10 +20,12 @@ const EventDateTimeFields = ({
 	endsSameDay,
 	onFieldChange,
 }: EventDateTimeFieldsProps) => {
+	const { t } = useTranslation()
+
 	return (
 		<>
 			<TextField isRequired variant="secondary">
-				<Label>Start date</Label>
+				<Label>{t("calendar.fields.startDate")}</Label>
 				<Input
 					type="date"
 					value={startDate}
@@ -31,7 +34,7 @@ const EventDateTimeFields = ({
 			</TextField>
 			{!allDay && (
 				<TextField variant="secondary">
-					<Label>Start time</Label>
+					<Label>{t("calendar.fields.startTime")}</Label>
 					<Input
 						type="time"
 						value={startTime}
@@ -41,7 +44,7 @@ const EventDateTimeFields = ({
 			)}
 			{!endsSameDay && (
 				<TextField isRequired variant="secondary">
-					<Label>End date</Label>
+					<Label>{t("calendar.fields.endDate")}</Label>
 					<Input
 						type="date"
 						value={endDate}
@@ -51,7 +54,7 @@ const EventDateTimeFields = ({
 			)}
 			{!allDay && (
 				<TextField variant="secondary">
-					<Label>End time</Label>
+					<Label>{t("calendar.fields.endTime")}</Label>
 					<Input
 						type="time"
 						value={endTime}

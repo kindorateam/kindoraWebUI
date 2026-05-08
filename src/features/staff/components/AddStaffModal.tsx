@@ -1,6 +1,7 @@
 import { Modal, toast } from "@heroui/react"
 import { useAtomValue } from "jotai"
 import { useState } from "react"
+import { useTranslation } from "react-i18next"
 
 import { closeAddStaffModal, isAddStaffModalOpenAtom } from "../stores/addStaffModal.store"
 
@@ -9,14 +10,15 @@ import AddStaffStepper from "./AddStaffStepper"
 import type { AddStaffFormData } from "../schemas/addStaff.schema"
 
 const AddStaffModal = () => {
+	const { t } = useTranslation()
 	const isOpen = useAtomValue(isAddStaffModalOpenAtom)
 	const [isLastStep, setIsLastStep] = useState(false)
 
 	const handleComplete = (data: AddStaffFormData) => {
 		// TODO: Implement API call to create staff
 		console.log("Staff data:", data)
-		toast("Staff creation not implemented yet", {
-			description: "This feature is coming soon",
+		toast(t("staff.addStaff.notImplementedTitle"), {
+			description: t("staff.addStaff.notImplementedDescription"),
 			variant: "warning",
 		})
 		closeAddStaffModal()

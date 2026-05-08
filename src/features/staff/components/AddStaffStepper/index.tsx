@@ -1,10 +1,11 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useState } from "react"
 import { FormProvider, useForm } from "react-hook-form"
+import { useTranslation } from "react-i18next"
 
 import Stepper from "@/components/Stepper"
 
-import { addStaffSchema } from "../../schemas/addStaff.schema"
+import { createAddStaffSchema } from "../../schemas/addStaff.schema"
 
 import CertificationStep from "./CertificationStep"
 import ConfirmStep from "./ConfirmStep"
@@ -32,54 +33,54 @@ interface AddStaffStepperProps {
 	isLoading?: boolean
 }
 
-const steps = [
-	{
-		key: "details",
-		label: "Step 1/8",
-		content: <StaffDetailsStep />,
-	},
-	{
-		key: "personal-info",
-		label: "Step 2/8",
-		content: <PersonalInfoStep />,
-	},
-	{
-		key: "certification",
-		label: "Step 3/8",
-		content: <CertificationStep />,
-	},
-	{
-		key: "kindora-role",
-		label: "Step 4/8",
-		content: <KindoraRoleStep />,
-	},
-	{
-		key: "schedule",
-		label: "Step 5/8",
-		content: <ScheduleStep />,
-	},
-	{
-		key: "medical-info",
-		label: "Step 6/8",
-		content: <MedicalInfoStep />,
-	},
-	{
-		key: "emergency-contact",
-		label: "Step 7/8",
-		content: <EmergencyContactStep />,
-	},
-	{
-		key: "confirm",
-		label: "Step 8/8",
-		content: <ConfirmStep />,
-	},
-]
-
 const AddStaffStepper = ({ onComplete, onCancel, onStepChange, isLoading = false }: AddStaffStepperProps) => {
+	const { t } = useTranslation()
 	const [currentStep, setCurrentStep] = useState(0)
+	const steps = [
+		{
+			key: "details",
+			label: t("staff.addStaff.stepLabel", { current: 1, total: 8 }),
+			content: <StaffDetailsStep />,
+		},
+		{
+			key: "personal-info",
+			label: t("staff.addStaff.stepLabel", { current: 2, total: 8 }),
+			content: <PersonalInfoStep />,
+		},
+		{
+			key: "certification",
+			label: t("staff.addStaff.stepLabel", { current: 3, total: 8 }),
+			content: <CertificationStep />,
+		},
+		{
+			key: "kindora-role",
+			label: t("staff.addStaff.stepLabel", { current: 4, total: 8 }),
+			content: <KindoraRoleStep />,
+		},
+		{
+			key: "schedule",
+			label: t("staff.addStaff.stepLabel", { current: 5, total: 8 }),
+			content: <ScheduleStep />,
+		},
+		{
+			key: "medical-info",
+			label: t("staff.addStaff.stepLabel", { current: 6, total: 8 }),
+			content: <MedicalInfoStep />,
+		},
+		{
+			key: "emergency-contact",
+			label: t("staff.addStaff.stepLabel", { current: 7, total: 8 }),
+			content: <EmergencyContactStep />,
+		},
+		{
+			key: "confirm",
+			label: t("staff.addStaff.stepLabel", { current: 8, total: 8 }),
+			content: <ConfirmStep />,
+		},
+	]
 
 	const form = useForm<AddStaffFormData>({
-		resolver: zodResolver(addStaffSchema),
+		resolver: zodResolver(createAddStaffSchema(t)),
 		defaultValues: {
 			// Step 1: Basic Info (mock data)
 			firstName: "Sarah",
@@ -204,12 +205,13 @@ const AddStaffStepper = ({ onComplete, onCancel, onStepChange, isLoading = false
 	return (
 		<FormProvider {...form}>
 			<Stepper
-				backLabel={currentStep === 0 ? "Close" : "Back"}
-				completeLabel="Confirm"
+				backLabel={currentStep === 0 ? t("common.close") : t("common.back")}
+				completeLabel={t("staff.addStaff.confirm.confirm")}
 				currentStep={currentStep}
 				hideBackOnFirstStep={false}
 				isNextDisabled={!isStepValid(currentStep)}
 				isNextLoading={isLoading}
+				nextLabel={t("common.next")}
 				onBack={handleBack}
 				onComplete={handleComplete}
 				onNext={handleNext}

@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next"
+
 import { DEFAULT_EVENT_COLOR } from "../constants"
 
 import type React from "react"
@@ -10,30 +12,9 @@ interface CalendarYearViewProps {
 	year: number
 }
 
-const MONTH_NAMES = [
-	"January",
-	"February",
-	"March",
-	"April",
-	"May",
-	"June",
-	"July",
-	"August",
-	"September",
-	"October",
-	"November",
-	"December",
-]
+const WEEKDAY_VALUES = [0, 1, 2, 3, 4, 5, 6]
 
-const WEEKDAY_LABELS = [
-	{ label: "S", value: 0 },
-	{ label: "M", value: 1 },
-	{ label: "T", value: 2 },
-	{ label: "W", value: 3 },
-	{ label: "T", value: 4 },
-	{ label: "F", value: 5 },
-	{ label: "S", value: 6 },
-]
+const MONTH_VALUES = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
 
 const BLANK_CELL_KEYS = ["blank-0", "blank-1", "blank-2", "blank-3", "blank-4", "blank-5"]
 
@@ -109,11 +90,19 @@ const getColumnIndex = (date: Date, hideWeekends: boolean): number => {
 }
 
 const CalendarYearView = ({ events, hideWeekends, onMonthSelect, year }: CalendarYearViewProps) => {
-	const weekdays = hideWeekends ? WEEKDAY_LABELS.filter((day) => day.value !== 0 && day.value !== 6) : WEEKDAY_LABELS
+	const { i18n, t } = useTranslation()
+	const locale = i18n.language
+	const monthFormatter = new Intl.DateTimeFormat(locale, { month: "long" })
+	const weekdayFormatter = new Intl.DateTimeFormat(locale, { weekday: "narrow" })
+	const weekdays = WEEKDAY_VALUES.filter((day) => !hideWeekends || (day !== 0 && day !== 6)).map((day) => ({
+		label: weekdayFormatter.format(new Date(2024, 0, 7 + day)),
+		value: day,
+	}))
 
 	return (
 		<div className="calendar-year-grid">
-			{MONTH_NAMES.map((monthName, monthIndex) => {
+			{MONTH_VALUES.map((monthIndex) => {
+				const monthName = monthFormatter.format(new Date(year, monthIndex, 1))
 				const visibleDays = getDaysInMonth(year, monthIndex).filter((date) => {
 					const day = date.getDay()
 
@@ -125,9 +114,9 @@ const CalendarYearView = ({ events, hideWeekends, onMonthSelect, year }: Calenda
 
 				return (
 					<button
-						aria-label={`Open ${monthName} ${year} in month view`}
+						aria-label={t("calendar.year.openMonth", { month: monthName, year })}
 						className="calendar-year-month"
-						key={monthName}
+						key={monthDateKey}
 						onClick={() => onMonthSelect(monthDateKey)}
 						type="button"
 					>
@@ -144,7 +133,7 @@ const CalendarYearView = ({ events, hideWeekends, onMonthSelect, year }: Calenda
 						</div>
 						<div className={`calendar-year-month__days ${hideWeekends ? "grid-cols-5" : "grid-cols-7"}`}>
 							{BLANK_CELL_KEYS.slice(0, leadingBlanks).map((blankKey) => (
-								<div className="calendar-year-day calendar-year-day--blank" key={`${monthName}-${blankKey}`} />
+								<div className="calendar-year-day calendar-year-day--blank" key={`${monthDateKey}-${blankKey}`} />
 							))}
 							{visibleDays.map((date) => {
 								const dateKey = formatDateKey(date)

@@ -1,4 +1,5 @@
 import { Button } from "@heroui/react"
+import { useTranslation } from "react-i18next"
 
 interface StaffDetailFooterProps {
 	onDeactivate?: () => void
@@ -15,18 +16,20 @@ const StaffDetailFooter = ({
 	isLoading = false,
 	isDirty = false,
 }: StaffDetailFooterProps) => {
+	const { t } = useTranslation()
+
 	return (
 		<div className="sticky bottom-0 border-default-200 border-t bg-white py-4">
 			<div className="container flex max-w-4xl items-center justify-between">
 				<Button onPress={onDeactivate} variant="ghost">
-					Deactivate Account
+					{t("staff.profile.deactivate.title")}
 				</Button>
 				<div className="flex gap-3">
 					<Button onPress={onCancel} variant="outline">
-						Cancel
+						{t("common.cancel")}
 					</Button>
 					<Button variant="primary" isDisabled={!isDirty} isPending={isLoading} onPress={onSave} type="submit">
-						Save Changes
+						{t("staff.profile.saveChanges")}
 					</Button>
 				</div>
 			</div>

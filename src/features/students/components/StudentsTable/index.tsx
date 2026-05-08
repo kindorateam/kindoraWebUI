@@ -14,7 +14,7 @@ import StudentsTableCell from "./StudentsTableCell"
 const PAGE_SIZE = 10
 
 const StudentsTable = () => {
-	const { t } = useTranslation()
+	const { i18n, t } = useTranslation()
 	const navigate = useNavigate()
 	const [page, setPage] = useState(1)
 	const { students, total, totalPages, isLoading, error, refetch } = useStudents({ page, limit: PAGE_SIZE })
@@ -47,6 +47,7 @@ const StudentsTable = () => {
 					<div className="relative">
 						<Table.ScrollContainer className="min-h-140">
 							<Table.Content
+								key={i18n.language}
 								aria-label={t("students.table.ariaLabel")}
 								className="[&_tbody>tr:last-child]:border-b-0 [&_tbody>tr]:border-default-200 [&_tbody>tr]:border-b"
 							>

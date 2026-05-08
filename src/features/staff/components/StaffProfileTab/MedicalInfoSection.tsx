@@ -1,6 +1,7 @@
 import { Chip, FieldError, Input, Label, TextField } from "@heroui/react"
 import { useState } from "react"
 import { Controller } from "react-hook-form"
+import { useTranslation } from "react-i18next"
 
 import { formatUSPhone } from "@/utils/format"
 import JamMedical from "~icons/jam/medical"
@@ -18,6 +19,7 @@ interface MedicalInfoSectionProps {
 }
 
 const MedicalInfoSection = ({ control, errors, allergies, onAllergiesChange }: MedicalInfoSectionProps) => {
+	const { t } = useTranslation()
 	const [allergyInput, setAllergyInput] = useState("")
 
 	const handleAddAllergy = () => {
@@ -37,17 +39,17 @@ const MedicalInfoSection = ({ control, errors, allergies, onAllergiesChange }: M
 
 	return (
 		<section className="flex flex-col gap-6">
-			<SectionHeader icon={<JamMedical className="size-5" />} title="Medical info" />
+			<SectionHeader icon={<JamMedical className="size-5" />} title={t("staff.profile.sections.medicalInfo")} />
 			<div className="flex flex-col gap-2">
 				<div className="flex gap-2">
 					<div className="flex flex-1 flex-col gap-2">
 						<TextField variant="secondary">
-							<Label>Allergies</Label>
+							<Label>{t("staff.profile.fields.allergies")}</Label>
 
 							<Input
 								onChange={(e) => setAllergyInput(e.target.value)}
 								onKeyDown={handleAllergyKeyDown}
-								placeholder="Type and press Enter"
+								placeholder={t("staff.profile.placeholders.typeAndPressEnter")}
 								value={allergyInput}
 							/>
 						</TextField>
@@ -71,9 +73,9 @@ const MedicalInfoSection = ({ control, errors, allergies, onAllergiesChange }: M
 						name="medications"
 						render={({ field }) => (
 							<TextField className="flex-1" variant="secondary">
-								<Label>Medications</Label>
+								<Label>{t("staff.profile.fields.medications")}</Label>
 
-								<Input {...field} />
+								<Input {...field} placeholder={t("staff.profile.placeholders.medications")} />
 							</TextField>
 						)}
 					/>
@@ -84,9 +86,9 @@ const MedicalInfoSection = ({ control, errors, allergies, onAllergiesChange }: M
 						name="doctorName"
 						render={({ field }) => (
 							<TextField className="flex-1" variant="secondary">
-								<Label>Doctor</Label>
+								<Label>{t("staff.profile.fields.doctor")}</Label>
 
-								<Input {...field} />
+								<Input {...field} placeholder={t("staff.profile.placeholders.doctor")} />
 							</TextField>
 						)}
 					/>
@@ -95,12 +97,12 @@ const MedicalInfoSection = ({ control, errors, allergies, onAllergiesChange }: M
 						name="doctorPhone"
 						render={({ field }) => (
 							<TextField className="flex-1" isInvalid={!!errors.doctorPhone} variant="secondary">
-								<Label>Doctor phone</Label>
+								<Label>{t("staff.profile.fields.doctorPhone")}</Label>
 
 								<Input
 									{...field}
 									onChange={(e) => field.onChange(formatUSPhone(e.target.value))}
-									placeholder="(555) 123-4567"
+									placeholder={t("staff.profile.placeholders.phone")}
 									type="tel"
 								/>
 

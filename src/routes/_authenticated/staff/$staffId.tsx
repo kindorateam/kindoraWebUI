@@ -31,7 +31,7 @@ export const Route = createFileRoute("/_authenticated/staff/$staffId")({
 			tab: validTabs.includes(tab as TabType) ? (tab as TabType) : "profile",
 		}
 	},
-	beforeLoad: () => ({ breadcrumb: "Staff" }),
+	beforeLoad: () => ({ breadcrumbKey: "staff.title" }),
 	loader: ({ params }: { params: { staffId: string } }) => {
 		queryClient.ensureQueryData({
 			queryKey: ["employees", params.staffId],

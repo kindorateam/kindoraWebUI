@@ -1,14 +1,9 @@
 import { Label, ListBox, Select } from "@heroui/react"
+import { useTranslation } from "react-i18next"
+
+import { EVENT_REPEAT_OPTIONS } from "../constants"
 
 import type { EventRepeatFrequency } from "../types"
-
-const REPEAT_OPTIONS: { key: EventRepeatFrequency; label: string }[] = [
-	{ key: "none", label: "Does not repeat" },
-	{ key: "daily", label: "Daily" },
-	{ key: "weekly", label: "Weekly" },
-	{ key: "monthly", label: "Monthly" },
-	{ key: "yearly", label: "Yearly" },
-]
 
 interface EventRepeatFieldsProps {
 	frequency: EventRepeatFrequency
@@ -16,6 +11,8 @@ interface EventRepeatFieldsProps {
 }
 
 const EventRepeatFields = ({ frequency, onFrequencyChange }: EventRepeatFieldsProps) => {
+	const { t } = useTranslation()
+
 	return (
 		<Select
 			selectedKey={frequency}
@@ -24,16 +21,16 @@ const EventRepeatFields = ({ frequency, onFrequencyChange }: EventRepeatFieldsPr
 				if (key !== null) onFrequencyChange(key as EventRepeatFrequency)
 			}}
 		>
-			<Label>Repeat</Label>
+			<Label>{t("calendar.fields.repeat")}</Label>
 			<Select.Trigger>
 				<Select.Value />
 				<Select.Indicator />
 			</Select.Trigger>
 			<Select.Popover>
 				<ListBox>
-					{REPEAT_OPTIONS.map((option) => (
-						<ListBox.Item id={option.key} key={option.key} textValue={option.label}>
-							{option.label}
+					{EVENT_REPEAT_OPTIONS.map((option) => (
+						<ListBox.Item id={option.key} key={option.key} textValue={t(option.labelKey)}>
+							{t(option.labelKey)}
 							<ListBox.ItemIndicator />
 						</ListBox.Item>
 					))}

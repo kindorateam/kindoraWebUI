@@ -1,6 +1,7 @@
 import { DateField, FieldError, Input, Label, ListBox, Select, TextArea, TextField } from "@heroui/react"
 import { parseDate } from "@internationalized/date"
 import { Controller, useFormContext } from "react-hook-form"
+import { useTranslation } from "react-i18next"
 
 import LucideUserRound from "~icons/lucide/user-round"
 
@@ -10,6 +11,7 @@ import type { DateValue } from "@internationalized/date"
 import type { AddStaffFormData } from "../../schemas/addStaff.schema"
 
 const PersonalInfoStep = () => {
+	const { t } = useTranslation()
 	const {
 		control,
 		formState: { errors },
@@ -35,10 +37,10 @@ const PersonalInfoStep = () => {
 	return (
 		<div className="flex flex-col gap-6">
 			<div className="flex items-center justify-between">
-				<h2 className="font-medium text-xl">Add staff</h2>
+				<h2 className="font-medium text-xl">{t("staff.addStaff.title")}</h2>
 				<div className="flex items-center gap-2.5 py-1.5">
 					<LucideUserRound className="size-5 text-foreground" />
-					<span className="font-semibold text-foreground text-sm">Personal info</span>
+					<span className="font-semibold text-foreground text-sm">{t("staff.profile.sections.personalInfo")}</span>
 				</div>
 			</div>
 
@@ -48,9 +50,9 @@ const PersonalInfoStep = () => {
 					name="phone"
 					render={({ field }) => (
 						<TextField isInvalid={!!errors.phone} variant="secondary">
-							<Label>Phone</Label>
+							<Label>{t("staff.profile.fields.phone")}</Label>
 
-							<Input {...field} placeholder="Enter phone number" type="tel" />
+							<Input {...field} placeholder={t("staff.addStaff.placeholders.phone")} type="tel" />
 
 							<FieldError>{errors.phone?.message}</FieldError>
 						</TextField>
@@ -66,7 +68,7 @@ const PersonalInfoStep = () => {
 							onChange={(value) => handleDateChange(value, field.onChange)}
 							value={parseDateValue(field.value)}
 						>
-							<Label>Birthday</Label>
+							<Label>{t("staff.profile.fields.birthday")}</Label>
 							<DateField.Group variant="secondary">
 								<DateField.Input>{(segment) => <DateField.Segment segment={segment} />}</DateField.Input>
 							</DateField.Group>
@@ -84,7 +86,7 @@ const PersonalInfoStep = () => {
 							onChange={(value) => handleDateChange(value, field.onChange)}
 							value={parseDateValue(field.value)}
 						>
-							<Label>Enroll date</Label>
+							<Label>{t("staff.profile.fields.enrollDate")}</Label>
 							<DateField.Group variant="secondary">
 								<DateField.Input>{(segment) => <DateField.Segment segment={segment} />}</DateField.Input>
 							</DateField.Group>
@@ -106,7 +108,7 @@ const PersonalInfoStep = () => {
 							selectedKey={field.value ?? null}
 							variant="secondary"
 						>
-							<Label>State</Label>
+							<Label>{t("staff.profile.fields.state")}</Label>
 							<Select.Trigger>
 								<Select.Value />
 								<Select.Indicator />
@@ -130,9 +132,9 @@ const PersonalInfoStep = () => {
 					name="city"
 					render={({ field }) => (
 						<TextField isInvalid={!!errors.city} variant="secondary">
-							<Label>City</Label>
+							<Label>{t("staff.profile.fields.city")}</Label>
 
-							<Input {...field} placeholder="Enter city" />
+							<Input {...field} placeholder={t("staff.addStaff.placeholders.city")} />
 
 							<FieldError>{errors.city?.message}</FieldError>
 						</TextField>
@@ -143,9 +145,9 @@ const PersonalInfoStep = () => {
 					name="streetAddress"
 					render={({ field }) => (
 						<TextField isInvalid={!!errors.streetAddress} variant="secondary">
-							<Label>Street address</Label>
+							<Label>{t("staff.profile.fields.streetAddress")}</Label>
 
-							<Input {...field} placeholder="Enter street address" />
+							<Input {...field} placeholder={t("staff.addStaff.placeholders.streetAddress")} />
 
 							<FieldError>{errors.streetAddress?.message}</FieldError>
 						</TextField>
@@ -156,9 +158,9 @@ const PersonalInfoStep = () => {
 					name="zipCode"
 					render={({ field }) => (
 						<TextField isInvalid={!!errors.zipCode} variant="secondary">
-							<Label>ZIP code</Label>
+							<Label>{t("staff.profile.fields.zipCode")}</Label>
 
-							<Input {...field} placeholder="Enter ZIP code" />
+							<Input {...field} placeholder={t("staff.addStaff.placeholders.zipCode")} />
 
 							<FieldError>{errors.zipCode?.message}</FieldError>
 						</TextField>
@@ -169,8 +171,8 @@ const PersonalInfoStep = () => {
 					name="notes"
 					render={({ field }) => (
 						<TextField isInvalid={!!errors.notes} variant="secondary">
-							<Label>Notes</Label>
-							<TextArea {...field} placeholder="Enter notes" />
+							<Label>{t("staff.profile.fields.notes")}</Label>
+							<TextArea {...field} placeholder={t("staff.addStaff.placeholders.notes")} />
 							<FieldError>{errors.notes?.message}</FieldError>
 						</TextField>
 					)}

@@ -1,5 +1,6 @@
 import { Button, Modal, toast } from "@heroui/react"
 import { useAtomValue } from "jotai"
+import { useTranslation } from "react-i18next"
 
 import { getErrorMessage } from "@/utils/error"
 import MaterialSymbolsDeleteOutline from "~icons/material-symbols/delete-outline"
@@ -12,6 +13,7 @@ interface Props {
 }
 
 export default function DeleteDocumentModal({ employeeId }: Props) {
+	const { t } = useTranslation()
 	const documentId = useAtomValue(deleteDocumentIdAtom)
 	const isOpen = documentId !== null
 	const deleteMutation = useDeleteEmployeeDocument()
@@ -22,14 +24,14 @@ export default function DeleteDocumentModal({ employeeId }: Props) {
 			{ employeeId, documentId },
 			{
 				onSuccess: () => {
-					toast("Document deleted", {
-						description: "Document has been deleted successfully.",
+					toast(t("staff.documents.deleteModal.successTitle"), {
+						description: t("staff.documents.deleteModal.successDescription"),
 						variant: "success",
 					})
 					closeDeleteDocumentModal()
 				},
 				onError: (error) => {
-					toast("Failed to delete document", { description: getErrorMessage(error), variant: "danger" })
+					toast(t("staff.documents.deleteModal.errorTitle"), { description: getErrorMessage(error), variant: "danger" })
 				},
 			},
 		)
@@ -41,22 +43,20 @@ export default function DeleteDocumentModal({ employeeId }: Props) {
 				<Modal.Dialog>
 					<Modal.CloseTrigger />
 					<Modal.Header>
-						<Modal.Heading>Delete File</Modal.Heading>
+						<Modal.Heading>{t("staff.documents.deleteModal.title")}</Modal.Heading>
 					</Modal.Header>
 					<Modal.Body className="flex flex-col items-center gap-4">
 						<div className="flex size-12 items-center justify-center rounded-full bg-danger/10">
 							<MaterialSymbolsDeleteOutline className="size-6 text-danger" />
 						</div>
-						<p className="text-center text-base">
-							This action will permanently delete the attachment and cannot be reversed.
-						</p>
+						<p className="text-center text-base">{t("staff.documents.deleteModal.description")}</p>
 					</Modal.Body>
 					<Modal.Footer className="flex flex-col gap-3">
 						<Button fullWidth variant="danger" isPending={deleteMutation.isPending} onPress={handleDelete}>
-							Yes, delete
+							{t("staff.documents.deleteModal.confirm")}
 						</Button>
 						<Button fullWidth variant="secondary" isDisabled={deleteMutation.isPending} slot="close">
-							Cancel
+							{t("common.cancel")}
 						</Button>
 					</Modal.Footer>
 				</Modal.Dialog>

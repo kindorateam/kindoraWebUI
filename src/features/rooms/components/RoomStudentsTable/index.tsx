@@ -23,7 +23,7 @@ interface RoomStudentsTableProps {
 }
 
 const RoomStudentsTable = ({ roomId }: RoomStudentsTableProps) => {
-	const { t } = useTranslation()
+	const { i18n, t } = useTranslation()
 	const { data: room, isLoading, error, refetch } = useRoom(roomId)
 	const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set([]))
 
@@ -75,6 +75,7 @@ const RoomStudentsTable = ({ roomId }: RoomStudentsTableProps) => {
 					<div className="relative">
 						<Table.ScrollContainer className="min-h-140">
 							<Table.Content
+								key={i18n.language}
 								aria-label={t("rooms.studentsTable.ariaLabel")}
 								selectionMode="multiple"
 								selectedKeys={selectedKeys}

@@ -45,7 +45,7 @@ const StudentDocumentsTab = ({ studentId }: StudentDocumentsTabProps) => {
 				<Table className="[&_td]:py-1.5! [&_tr]:h-12.5!">
 					<div className="relative">
 						<Table.ScrollContainer className="min-h-140">
-							<Table.Content aria-label={t("students.detail.documents.ariaLabel")}>
+							<Table.Content key={i18n.language} aria-label={t("students.detail.documents.ariaLabel")}>
 								<Table.Header columns={columns}>
 									{(column) => (
 										<Table.Column

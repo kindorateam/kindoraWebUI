@@ -1,5 +1,6 @@
 import { FieldError, Input, Label, ListBox, Select, TextField } from "@heroui/react"
 import { Controller, useFormContext } from "react-hook-form"
+import { useTranslation } from "react-i18next"
 
 import StreamlineUltimateEmergencyCall from "~icons/streamline-ultimate/emergency-call"
 
@@ -8,6 +9,7 @@ import { RELATIONSHIP_OPTIONS } from "../../constants"
 import type { AddStaffFormData } from "../../schemas/addStaff.schema"
 
 const EmergencyContactStep = () => {
+	const { t } = useTranslation()
 	const {
 		control,
 		formState: { errors },
@@ -16,10 +18,10 @@ const EmergencyContactStep = () => {
 	return (
 		<div className="flex flex-col gap-6">
 			<div className="flex items-center justify-between">
-				<h2 className="font-medium text-xl">Add staff</h2>
+				<h2 className="font-medium text-xl">{t("staff.addStaff.title")}</h2>
 				<div className="flex items-center gap-2.5 py-1.5">
 					<StreamlineUltimateEmergencyCall className="size-5 text-foreground" />
-					<span className="font-semibold text-foreground text-sm">Emergency contact</span>
+					<span className="font-semibold text-foreground text-sm">{t("staff.profile.sections.emergencyContact")}</span>
 				</div>
 			</div>
 
@@ -29,7 +31,7 @@ const EmergencyContactStep = () => {
 					name="emergencyContactName"
 					render={({ field }) => (
 						<TextField isInvalid={!!errors.emergencyContactName} variant="secondary">
-							<Label>Name</Label>
+							<Label>{t("staff.profile.fields.name")}</Label>
 
 							<Input {...field} value={field.value || ""} />
 
@@ -43,7 +45,7 @@ const EmergencyContactStep = () => {
 					name="emergencyContactPhone"
 					render={({ field }) => (
 						<TextField isInvalid={!!errors.emergencyContactPhone} variant="secondary">
-							<Label>Phone</Label>
+							<Label>{t("staff.profile.fields.phone")}</Label>
 
 							<Input {...field} value={field.value || ""} />
 
@@ -66,7 +68,7 @@ const EmergencyContactStep = () => {
 							selectedKey={field.value ?? null}
 							variant="secondary"
 						>
-							<Label>Relationship to staff</Label>
+							<Label>{t("staff.profile.fields.relationshipToStaff")}</Label>
 							<Select.Trigger>
 								<Select.Value />
 								<Select.Indicator />
@@ -74,8 +76,8 @@ const EmergencyContactStep = () => {
 							<Select.Popover>
 								<ListBox>
 									{RELATIONSHIP_OPTIONS.map((option) => (
-										<ListBox.Item id={option.key} key={option.key} textValue={option.label}>
-											{option.label}
+										<ListBox.Item id={option.key} key={option.key} textValue={t(option.labelKey)}>
+											{t(option.labelKey)}
 											<ListBox.ItemIndicator />
 										</ListBox.Item>
 									))}

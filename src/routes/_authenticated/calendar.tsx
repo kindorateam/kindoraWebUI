@@ -6,7 +6,7 @@ export const Route = createFileRoute("/_authenticated/calendar")({
 	component: CalendarPage,
 	beforeLoad: () => {
 		return {
-			breadcrumb: "Calendar",
+			breadcrumbKey: "calendar.title",
 		}
 	},
 })

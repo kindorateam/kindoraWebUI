@@ -1,5 +1,6 @@
 import { Button, ButtonGroup, Label, Switch, Tabs } from "@heroui/react"
 import { useAtom } from "jotai"
+import { useTranslation } from "react-i18next"
 
 import OcticonFeedPlus16 from "~icons/octicon/feed-plus-16"
 import TablerChevronLeft from "~icons/tabler/chevron-left"
@@ -19,6 +20,7 @@ interface Props {
 }
 
 const CalendarToolbar = ({ title, onNavigatePrev, onNavigateNext, onNavigateToday }: Props) => {
+	const { t } = useTranslation()
 	const [currentView, setCurrentView] = useAtom(calendarViewAtom)
 	const [hideWeekends, setHideWeekends] = useAtom(hideWeekendsAtom)
 
@@ -26,11 +28,11 @@ const CalendarToolbar = ({ title, onNavigatePrev, onNavigateNext, onNavigateToda
 		<div className="flex flex-col gap-4 border-default-200 border-b bg-white px-5 py-4 lg:flex-row lg:items-center lg:justify-between">
 			<div className="flex flex-wrap items-center gap-3">
 				<ButtonGroup size="sm" variant="outline">
-					<Button isIconOnly onPress={onNavigatePrev}>
+					<Button aria-label={t("calendar.toolbar.previous")} isIconOnly onPress={onNavigatePrev}>
 						<TablerChevronLeft className="size-4.5" />
 					</Button>
-					<Button onPress={onNavigateToday}>Today</Button>
-					<Button isIconOnly onPress={onNavigateNext}>
+					<Button onPress={onNavigateToday}>{t("calendar.toolbar.today")}</Button>
+					<Button aria-label={t("calendar.toolbar.next")} isIconOnly onPress={onNavigateNext}>
 						<TablerChevronRight className="size-4.5" />
 					</Button>
 				</ButtonGroup>
@@ -43,7 +45,7 @@ const CalendarToolbar = ({ title, onNavigatePrev, onNavigateNext, onNavigateToda
 						<Switch.Thumb />
 					</Switch.Control>
 					<Switch.Content>
-						<Label className="text-default-600">Hide weekends</Label>
+						<Label className="text-default-600">{t("calendar.toolbar.hideWeekends")}</Label>
 					</Switch.Content>
 				</Switch>
 
@@ -54,12 +56,12 @@ const CalendarToolbar = ({ title, onNavigatePrev, onNavigateNext, onNavigateToda
 				>
 					<Tabs.ListContainer>
 						<Tabs.List
-							aria-label="Calendar view"
+							aria-label={t("calendar.toolbar.viewAria")}
 							className="w-fit *:h-6 *:w-fit *:px-3 *:font-normal *:text-sm *:data-[selected=true]:text-accent-foreground"
 						>
 							{CALENDAR_VIEW_OPTIONS.map((opt) => (
 								<Tabs.Tab key={opt.key} id={opt.key}>
-									{opt.label}
+									{t(opt.labelKey)}
 									<Tabs.Indicator className="bg-accent" />
 								</Tabs.Tab>
 							))}
@@ -74,7 +76,7 @@ const CalendarToolbar = ({ title, onNavigatePrev, onNavigateNext, onNavigateToda
 
 				<Button className="shrink-0" variant="primary" size="sm" onPress={() => openCreateEventModal()}>
 					<OcticonFeedPlus16 aria-hidden className="size-4" />
-					Add Event
+					{t("calendar.toolbar.addEvent")}
 				</Button>
 			</div>
 		</div>

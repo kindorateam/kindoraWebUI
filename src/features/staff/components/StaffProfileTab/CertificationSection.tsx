@@ -1,5 +1,6 @@
 import { Input, Label, ListBox, Select, TextField } from "@heroui/react"
 import { Controller } from "react-hook-form"
+import { useTranslation } from "react-i18next"
 
 import TablerCertificate from "~icons/tabler/certificate"
 
@@ -16,9 +17,14 @@ interface CertificationSectionProps {
 }
 
 const CertificationSection = ({ control }: CertificationSectionProps) => {
+	const { t } = useTranslation()
+
 	return (
 		<section className="flex flex-col gap-6">
-			<SectionHeader icon={<TablerCertificate className="size-5" />} title="Certification" />
+			<SectionHeader
+				icon={<TablerCertificate className="size-5" />}
+				title={t("staff.profile.sections.certification")}
+			/>
 			<div className="flex gap-2">
 				<Controller
 					control={control}
@@ -32,7 +38,7 @@ const CertificationSection = ({ control }: CertificationSectionProps) => {
 								if (key !== null) field.onChange(String(key))
 							}}
 						>
-							<Label>Role</Label>
+							<Label>{t("staff.profile.fields.degree")}</Label>
 							<Select.Trigger>
 								<Select.Value />
 								<Select.Indicator />
@@ -40,8 +46,8 @@ const CertificationSection = ({ control }: CertificationSectionProps) => {
 							<Select.Popover>
 								<ListBox>
 									{DEGREE_OPTIONS.map((d) => (
-										<ListBox.Item id={d.key} key={d.key} textValue={d.label}>
-											{d.label}
+										<ListBox.Item id={d.key} key={d.key} textValue={t(d.labelKey)}>
+											{t(d.labelKey)}
 											<ListBox.ItemIndicator />
 										</ListBox.Item>
 									))}
@@ -55,9 +61,9 @@ const CertificationSection = ({ control }: CertificationSectionProps) => {
 					name="certification"
 					render={({ field }) => (
 						<TextField className="flex-1" variant="secondary">
-							<Label>Certification</Label>
+							<Label>{t("staff.profile.fields.certification")}</Label>
 
-							<Input {...field} />
+							<Input {...field} placeholder={t("staff.profile.placeholders.certification")} />
 						</TextField>
 					)}
 				/>

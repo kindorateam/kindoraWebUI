@@ -1,5 +1,6 @@
 import { Calendar, Chip, DateField, DatePicker, Label, ListBox, Select } from "@heroui/react"
 import { Controller } from "react-hook-form"
+import { useTranslation } from "react-i18next"
 
 import EosIconsRoleBindingOutlined from "~icons/eos-icons/role-binding-outlined"
 
@@ -22,9 +23,14 @@ interface KindoraRoleSectionProps {
 const getRoomLabel = (key: string) => MOCK_ROOMS.find((r) => r.key === key)?.label ?? key
 
 const KindoraRoleSection = ({ control, assignedRooms, onDateChange, parseDateValue }: KindoraRoleSectionProps) => {
+	const { t } = useTranslation()
+
 	return (
 		<section className="flex flex-col gap-6">
-			<SectionHeader icon={<EosIconsRoleBindingOutlined className="size-5" />} title="Kindora role & status" />
+			<SectionHeader
+				icon={<EosIconsRoleBindingOutlined className="size-5" />}
+				title={t("staff.profile.sections.kindoraRole")}
+			/>
 			<div className="flex flex-col gap-2">
 				<div className="flex gap-2">
 					<Controller
@@ -40,7 +46,7 @@ const KindoraRoleSection = ({ control, assignedRooms, onDateChange, parseDateVal
 									if (key !== null) field.onChange(String(key))
 								}}
 							>
-								<Label>Sign up status</Label>
+								<Label>{t("staff.profile.fields.signUpStatus")}</Label>
 								<Select.Trigger>
 									<Select.Value />
 									<Select.Indicator />
@@ -48,8 +54,8 @@ const KindoraRoleSection = ({ control, assignedRooms, onDateChange, parseDateVal
 								<Select.Popover>
 									<ListBox>
 										{SIGNUP_STATUS_OPTIONS.map((s) => (
-											<ListBox.Item id={s.key} key={s.key} textValue={s.label}>
-												{s.label}
+											<ListBox.Item id={s.key} key={s.key} textValue={t(s.labelKey)}>
+												{t(s.labelKey)}
 												<ListBox.ItemIndicator />
 											</ListBox.Item>
 										))}
@@ -71,7 +77,7 @@ const KindoraRoleSection = ({ control, assignedRooms, onDateChange, parseDateVal
 									if (key !== null) field.onChange(String(key))
 								}}
 							>
-								<Label>Role</Label>
+								<Label>{t("staff.profile.fields.role")}</Label>
 								<Select.Trigger>
 									<Select.Value />
 									<Select.Indicator />
@@ -79,8 +85,8 @@ const KindoraRoleSection = ({ control, assignedRooms, onDateChange, parseDateVal
 								<Select.Popover>
 									<ListBox>
 										{STAFF_ROLES.map((r) => (
-											<ListBox.Item id={r.key} key={r.key} textValue={r.label}>
-												{r.label}
+											<ListBox.Item id={r.key} key={r.key} textValue={t(r.labelKey)}>
+												{t(r.labelKey)}
 												<ListBox.ItemIndicator />
 											</ListBox.Item>
 										))}
@@ -104,7 +110,7 @@ const KindoraRoleSection = ({ control, assignedRooms, onDateChange, parseDateVal
 										field.onChange(keys as string[])
 									}}
 								>
-									<Label>Assigned rooms</Label>
+									<Label>{t("staff.profile.fields.assignedRooms")}</Label>
 									<Select.Trigger>
 										<Select.Value />
 										<Select.Indicator />
@@ -142,7 +148,7 @@ const KindoraRoleSection = ({ control, assignedRooms, onDateChange, parseDateVal
 								onChange={(value) => onDateChange(value, field.onChange)}
 								value={parseDateValue(field.value)}
 							>
-								<Label>Hire date</Label>
+								<Label>{t("staff.profile.fields.hireDate")}</Label>
 								<DateField.Group variant="secondary" fullWidth>
 									<DateField.Input>{(segment) => <DateField.Segment segment={segment} />}</DateField.Input>
 									<DateField.Suffix>
@@ -152,7 +158,7 @@ const KindoraRoleSection = ({ control, assignedRooms, onDateChange, parseDateVal
 									</DateField.Suffix>
 								</DateField.Group>
 								<DatePicker.Popover>
-									<Calendar aria-label="Hire date">
+									<Calendar aria-label={t("staff.profile.fields.hireDate")}>
 										<Calendar.Header>
 											<Calendar.YearPickerTrigger>
 												<Calendar.YearPickerTriggerHeading />

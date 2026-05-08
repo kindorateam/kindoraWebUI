@@ -3,6 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { parseDate } from "@internationalized/date"
 import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
+import { useTranslation } from "react-i18next"
 
 import { getErrorMessage } from "@/utils/error"
 import CiSave from "~icons/ci/save"
@@ -10,7 +11,7 @@ import MaterialSymbolsDeleteOutline from "~icons/material-symbols/delete-outline
 import TablerAlertTriangle from "~icons/tabler/alert-triangle"
 
 import { useEmployee, useUpdateEmployee, useUpdateEmployeeAvatar } from "../../hooks/useStaff"
-import { staffProfileSchema } from "../../schemas/staffProfile.schema"
+import { createStaffProfileSchema } from "../../schemas/staffProfile.schema"
 import {
 	buildDefaultValues,
 	buildFormValuesFromEmployee,
@@ -31,6 +32,7 @@ interface StaffProfileTabProps {
 }
 
 const StaffProfileTab = ({ employeeId }: StaffProfileTabProps) => {
+	const { t } = useTranslation()
 	const { data: employee, isLoading } = useEmployee(employeeId)
 	const updateEmployeeMutation = useUpdateEmployee()
 	const updateAvatarMutation = useUpdateEmployeeAvatar()
@@ -47,7 +49,7 @@ const StaffProfileTab = ({ employeeId }: StaffProfileTabProps) => {
 		trigger,
 		formState: { errors, isDirty, isValid },
 	} = useForm<StaffProfileFormData>({
-		resolver: zodResolver(staffProfileSchema),
+		resolver: zodResolver(createStaffProfileSchema(t)),
 		mode: "onChange",
 		defaultValues: buildDefaultValues(),
 	})
@@ -138,13 +140,13 @@ const StaffProfileTab = ({ employeeId }: StaffProfileTabProps) => {
 									setValue("avatarFile", null)
 									if (avatarFileUrl) URL.revokeObjectURL(avatarFileUrl)
 									setAvatarFileUrl(null)
-									toast("Employee updated", {
-										description: "Profile has been saved successfully.",
+									toast(t("staff.profile.updateSuccess"), {
+										description: t("staff.profile.updateSuccessDescription"),
 										variant: "success",
 									})
 								},
 								onError: (error) => {
-									toast("Profile updated but avatar upload failed", {
+									toast(t("staff.profile.avatarUploadFailed"), {
 										description: getErrorMessage(error),
 										variant: "warning",
 									})
@@ -152,14 +154,14 @@ const StaffProfileTab = ({ employeeId }: StaffProfileTabProps) => {
 							},
 						)
 					} else {
-						toast("Employee updated", {
-							description: "Profile has been saved successfully.",
+						toast(t("staff.profile.updateSuccess"), {
+							description: t("staff.profile.updateSuccessDescription"),
 							variant: "success",
 						})
 					}
 				},
 				onError: (error) => {
-					toast("Failed to update employee", {
+					toast(t("staff.profile.updateError"), {
 						description: getErrorMessage(error),
 						variant: "danger",
 					})
@@ -185,7 +187,7 @@ const StaffProfileTab = ({ employeeId }: StaffProfileTabProps) => {
 		return (
 			<Card>
 				<Card.Content className="flex h-96 items-center justify-center">
-					<p className="text-default-500">Employee not found</p>
+					<p className="text-default-500">{t("staff.detail.notFound")}</p>
 				</Card.Content>
 			</Card>
 		)
@@ -234,14 +236,14 @@ const StaffProfileTab = ({ employeeId }: StaffProfileTabProps) => {
 							type="button"
 						>
 							<MaterialSymbolsDeleteOutline aria-hidden className="size-4" />
-							Deactivate Account
+							{t("staff.profile.deactivate.title")}
 						</Button>
 						<Button isDisabled={isSaving} onPress={handleCancel} size="md" type="button" variant="outline">
-							Cancel
+							{t("common.cancel")}
 						</Button>
 						<Button variant="primary" isDisabled={!hasChanges || !isValid} isPending={isSaving} size="md" type="submit">
 							<CiSave aria-hidden className="size-4" />
-							Save Changes
+							{t("staff.profile.saveChanges")}
 						</Button>
 					</div>
 				</form>
@@ -253,17 +255,17 @@ const StaffProfileTab = ({ employeeId }: StaffProfileTabProps) => {
 								<Modal.Icon className="bg-danger-soft text-danger-soft-foreground">
 									<TablerAlertTriangle className="size-5" />
 								</Modal.Icon>
-								<Modal.Heading>Deactivate Account</Modal.Heading>
+								<Modal.Heading>{t("staff.profile.deactivate.title")}</Modal.Heading>
 							</Modal.Header>
 							<Modal.Body>
-								<p>Are you sure you want to deactivate this staff account?</p>
+								<p>{t("staff.profile.deactivate.description")}</p>
 							</Modal.Body>
 							<Modal.Footer>
 								<Button variant="secondary" slot="close">
-									Cancel
+									{t("common.cancel")}
 								</Button>
 								<Button variant="danger" onPress={handleCloseDeactivateModal}>
-									Deactivate
+									{t("staff.profile.deactivate.confirm")}
 								</Button>
 							</Modal.Footer>
 						</Modal.Dialog>

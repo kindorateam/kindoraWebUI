@@ -1,12 +1,14 @@
 import { Chip, FieldError, Input, Label, TextField } from "@heroui/react"
 import { useState } from "react"
 import { Controller, useFormContext } from "react-hook-form"
+import { useTranslation } from "react-i18next"
 
 import JamMedical from "~icons/jam/medical"
 
 import type { AddStaffFormData } from "../../schemas/addStaff.schema"
 
 const MedicalInfoStep = () => {
+	const { t } = useTranslation()
 	const {
 		control,
 		formState: { errors },
@@ -42,23 +44,23 @@ const MedicalInfoStep = () => {
 	return (
 		<div className="flex flex-col gap-6">
 			<div className="flex items-center justify-between">
-				<h2 className="font-medium text-xl">Add staff</h2>
+				<h2 className="font-medium text-xl">{t("staff.addStaff.title")}</h2>
 				<div className="flex items-center gap-2.5 py-1.5">
 					<JamMedical className="size-5 text-foreground" />
-					<span className="font-semibold text-foreground text-sm">Medical info</span>
+					<span className="font-semibold text-foreground text-sm">{t("staff.profile.sections.medicalInfo")}</span>
 				</div>
 			</div>
 
 			<div className="flex flex-col gap-3">
 				<div className="flex flex-col gap-2">
 					<TextField variant="secondary">
-						<Label>Allergies</Label>
+						<Label>{t("staff.profile.fields.allergies")}</Label>
 
 						<Input
 							onBlur={handleAddAllergy}
 							onChange={(e) => setAllergyInput(e.target.value)}
 							onKeyDown={handleAllergyKeyDown}
-							placeholder="Type and press Enter to add"
+							placeholder={t("staff.addStaff.placeholders.allergy")}
 							value={allergyInput}
 						/>
 					</TextField>
@@ -78,7 +80,7 @@ const MedicalInfoStep = () => {
 					name="medications"
 					render={({ field }) => (
 						<TextField isInvalid={!!errors.medications} variant="secondary">
-							<Label>Medications</Label>
+							<Label>{t("staff.profile.fields.medications")}</Label>
 
 							<Input {...field} value={field.value || ""} />
 
@@ -92,7 +94,7 @@ const MedicalInfoStep = () => {
 					name="doctorName"
 					render={({ field }) => (
 						<TextField isInvalid={!!errors.doctorName} variant="secondary">
-							<Label>Doctor</Label>
+							<Label>{t("staff.profile.fields.doctor")}</Label>
 
 							<Input {...field} value={field.value || ""} />
 
@@ -106,7 +108,7 @@ const MedicalInfoStep = () => {
 					name="doctorPhone"
 					render={({ field }) => (
 						<TextField isInvalid={!!errors.doctorPhone} variant="secondary">
-							<Label>Doctor Phone</Label>
+							<Label>{t("staff.profile.fields.doctorPhone")}</Label>
 
 							<Input {...field} value={field.value || ""} />
 

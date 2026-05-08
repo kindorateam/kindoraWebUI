@@ -1,6 +1,7 @@
 import { Button, EmptyState, Label, Pagination, Spinner, Switch, Table } from "@heroui/react"
 import { useNavigate } from "@tanstack/react-router"
 import { useState } from "react"
+import { useTranslation } from "react-i18next"
 
 import TableError from "@/components/TableError"
 import ClarityEmployeeLine from "~icons/clarity/employee-line"
@@ -14,6 +15,7 @@ import columns from "./columns"
 import { renderCell } from "./renderCell"
 
 const StaffTable = () => {
+	const { i18n, t } = useTranslation()
 	const navigate = useNavigate()
 	const [page, setPage] = useState(1)
 	const [showDeactivated, setShowDeactivated] = useState(false)
@@ -47,12 +49,12 @@ const StaffTable = () => {
 					<Switch.Thumb />
 				</Switch.Control>
 				<Switch.Content>
-					<Label className="text-sm">View deactivated</Label>
+					<Label className="text-sm">{t("staff.table.viewDeactivated")}</Label>
 				</Switch.Content>
 			</Switch>
 			<Button variant="primary" onPress={openAddStaffModal}>
 				<OcticonFeedPlus16 aria-hidden className="size-4" />
-				Add Staff
+				{t("staff.addStaff.title")}
 			</Button>
 		</div>
 	)
@@ -61,11 +63,11 @@ const StaffTable = () => {
 	const emptyStateContent = showDeactivated ? (
 		<EmptyState className="flex h-125 w-full flex-col items-center justify-center gap-5 py-8 text-center">
 			<ClarityEmployeeLine aria-hidden className="size-20" />
-			<h3 className="font-semibold text-3xl leading-9">No deactivated staff members</h3>
+			<h3 className="font-semibold text-3xl leading-9">{t("staff.emptyState.noDeactivated")}</h3>
 		</EmptyState>
 	) : (
 		<EmptyState className="flex h-125 w-full items-center justify-center text-default-400">
-			No staff members found
+			{t("staff.emptyState.title")}
 		</EmptyState>
 	)
 
@@ -77,14 +79,14 @@ const StaffTable = () => {
 				<Table className="[&_td]:py-1.5! [&_tr]:h-12.5!">
 					<div className="relative">
 						<Table.ScrollContainer className="min-h-140">
-							<Table.Content aria-label="Employees table">
+							<Table.Content key={i18n.language} aria-label={t("staff.table.ariaLabel")}>
 								<Table.Header columns={columns}>
 									{(column) => (
 										<Table.Column
 											isRowHeader={column.isRowHeader}
 											className={column.align === "center" ? "text-center" : undefined}
 										>
-											{column.label}
+											{t(column.labelKey)}
 										</Table.Column>
 									)}
 								</Table.Header>
@@ -95,7 +97,9 @@ const StaffTable = () => {
 										{(employee) => (
 											<Table.Row id={employee.id}>
 												<Table.Collection items={columns}>
-													{(column) => <Table.Cell>{renderCell(employee, column.key, renderCellOptions)}</Table.Cell>}
+													{(column) => (
+														<Table.Cell>{renderCell(employee, column.key, renderCellOptions, t)}</Table.Cell>
+													)}
 												</Table.Collection>
 											</Table.Row>
 										)}
@@ -124,13 +128,13 @@ const StaffTable = () => {
 					<Table.Footer>
 						<Pagination className="w-full">
 							<Pagination.Summary>
-								{startItem} to {endItem} of {total} employees
+								{t("staff.table.paginationSummary", { count: total, endItem, startItem, total })}
 							</Pagination.Summary>
 							<Pagination.Content>
 								<Pagination.Item>
 									<Pagination.Previous isDisabled={page <= 1} onPress={() => setPage((p) => p - 1)}>
 										<Pagination.PreviousIcon />
-										<span>Prev</span>
+										<span>{t("common.previous")}</span>
 									</Pagination.Previous>
 								</Pagination.Item>
 								{Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
@@ -142,7 +146,7 @@ const StaffTable = () => {
 								))}
 								<Pagination.Item>
 									<Pagination.Next isDisabled={page >= totalPages} onPress={() => setPage((p) => p + 1)}>
-										<span>Next</span>
+										<span>{t("common.next")}</span>
 										<Pagination.NextIcon />
 									</Pagination.Next>
 								</Pagination.Item>

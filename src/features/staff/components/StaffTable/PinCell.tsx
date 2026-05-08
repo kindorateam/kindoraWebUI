@@ -1,5 +1,6 @@
 import { Button } from "@heroui/react"
 import { useState } from "react"
+import { useTranslation } from "react-i18next"
 
 import TablerEye from "~icons/tabler/eye"
 import TablerEyeOff from "~icons/tabler/eye-off"
@@ -9,6 +10,7 @@ interface PinCellProps {
 }
 
 const PinCell = ({ pinCode }: PinCellProps) => {
+	const { t } = useTranslation()
 	const [isVisible, setIsVisible] = useState(false)
 
 	if (pinCode === null || pinCode === undefined) {
@@ -26,7 +28,7 @@ const PinCell = ({ pinCode }: PinCellProps) => {
 				size="sm"
 				variant="ghost"
 				onPress={() => setIsVisible(!isVisible)}
-				aria-label={isVisible ? "Hide PIN" : "Show PIN"}
+				aria-label={t(isVisible ? "staff.table.pin.hide" : "staff.table.pin.show")}
 			>
 				{isVisible ? <TablerEyeOff className="size-4 text-gray-400" /> : <TablerEye className="size-4 text-gray-400" />}
 			</Button>

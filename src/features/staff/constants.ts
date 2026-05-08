@@ -1,8 +1,32 @@
 export const STAFF_ROLES = [
-	{ key: "manager", label: "Manager", description: "Full administrative access" },
-	{ key: "teacher", label: "Teacher", description: "Classroom management and student care" },
-	{ key: "assistant", label: "Assistant", description: "Support role for teachers" },
-	{ key: "admin", label: "Admin", description: "Administrative tasks and records" },
+	{
+		key: "manager",
+		label: "Manager",
+		labelKey: "staff.options.roles.manager",
+		description: "Full administrative access",
+		descriptionKey: "staff.options.roleDescriptions.manager",
+	},
+	{
+		key: "teacher",
+		label: "Teacher",
+		labelKey: "staff.options.roles.teacher",
+		description: "Classroom management and student care",
+		descriptionKey: "staff.options.roleDescriptions.teacher",
+	},
+	{
+		key: "assistant",
+		label: "Assistant",
+		labelKey: "staff.options.roles.assistant",
+		description: "Support role for teachers",
+		descriptionKey: "staff.options.roleDescriptions.assistant",
+	},
+	{
+		key: "admin",
+		label: "Admin",
+		labelKey: "staff.options.roles.admin",
+		description: "Administrative tasks and records",
+		descriptionKey: "staff.options.roleDescriptions.admin",
+	},
 ]
 
 export const US_STATES = [
@@ -59,49 +83,49 @@ export const US_STATES = [
 ]
 
 export const DEGREE_OPTIONS = [
-	{ key: "high_school", label: "GED or high school diploma" },
-	{ key: "associate", label: "Associate degree" },
-	{ key: "bachelor", label: "Bachelor's degree" },
-	{ key: "master", label: "Master's degree" },
-	{ key: "phd", label: "PhD, EdD or other doctorate degree" },
-	{ key: "other", label: "Other" },
+	{ key: "high_school", label: "GED or high school diploma", labelKey: "staff.options.degrees.highSchool" },
+	{ key: "associate", label: "Associate degree", labelKey: "staff.options.degrees.associate" },
+	{ key: "bachelor", label: "Bachelor's degree", labelKey: "staff.options.degrees.bachelor" },
+	{ key: "master", label: "Master's degree", labelKey: "staff.options.degrees.master" },
+	{ key: "phd", label: "PhD, EdD or other doctorate degree", labelKey: "staff.options.degrees.phd" },
+	{ key: "other", label: "Other", labelKey: "staff.options.degrees.other" },
 ]
 
 export const SIGNUP_STATUS_OPTIONS = [
-	{ key: "active", label: "Active" },
-	{ key: "pending", label: "Pending" },
-	{ key: "invited", label: "Invited" },
-	{ key: "inactive", label: "Inactive" },
+	{ key: "active", label: "Active", labelKey: "staff.options.signupStatuses.active" },
+	{ key: "pending", label: "Pending", labelKey: "staff.options.signupStatuses.pending" },
+	{ key: "invited", label: "Invited", labelKey: "staff.options.signupStatuses.invited" },
+	{ key: "inactive", label: "Inactive", labelKey: "staff.options.signupStatuses.inactive" },
 ]
 
 export const PERMISSION_OPTIONS = [
-	{ key: "view_students", label: "View students" },
-	{ key: "edit_students", label: "Edit students" },
-	{ key: "view_staff", label: "View staff" },
-	{ key: "edit_staff", label: "Edit staff" },
-	{ key: "manage_rooms", label: "Manage rooms" },
-	{ key: "view_reports", label: "View reports" },
-	{ key: "manage_billing", label: "Manage billing" },
-	{ key: "admin_settings", label: "Admin settings" },
+	{ key: "view_students", label: "View students", labelKey: "staff.options.permissions.viewStudents" },
+	{ key: "edit_students", label: "Edit students", labelKey: "staff.options.permissions.editStudents" },
+	{ key: "view_staff", label: "View staff", labelKey: "staff.options.permissions.viewStaff" },
+	{ key: "edit_staff", label: "Edit staff", labelKey: "staff.options.permissions.editStaff" },
+	{ key: "manage_rooms", label: "Manage rooms", labelKey: "staff.options.permissions.manageRooms" },
+	{ key: "view_reports", label: "View reports", labelKey: "staff.options.permissions.viewReports" },
+	{ key: "manage_billing", label: "Manage billing", labelKey: "staff.options.permissions.manageBilling" },
+	{ key: "admin_settings", label: "Admin settings", labelKey: "staff.options.permissions.adminSettings" },
 ]
 
 export const RELATIONSHIP_OPTIONS = [
-	{ key: "dad", label: "Dad" },
-	{ key: "mom", label: "Mom" },
-	{ key: "spouse", label: "Spouse" },
-	{ key: "sibling", label: "Sibling" },
-	{ key: "friend", label: "Friend" },
-	{ key: "other", label: "Other" },
+	{ key: "dad", label: "Dad", labelKey: "staff.options.relationships.dad" },
+	{ key: "mom", label: "Mom", labelKey: "staff.options.relationships.mom" },
+	{ key: "spouse", label: "Spouse", labelKey: "staff.options.relationships.spouse" },
+	{ key: "sibling", label: "Sibling", labelKey: "staff.options.relationships.sibling" },
+	{ key: "friend", label: "Friend", labelKey: "staff.options.relationships.friend" },
+	{ key: "other", label: "Other", labelKey: "staff.options.relationships.other" },
 ]
 
 export const WORKING_DAYS = [
-	{ key: "mon", label: "Mon" },
-	{ key: "tue", label: "Tue" },
-	{ key: "wed", label: "Wed" },
-	{ key: "thu", label: "Thu" },
-	{ key: "fri", label: "Fri" },
-	{ key: "sat", label: "Sat" },
-	{ key: "sun", label: "Sun" },
+	{ key: "mon", label: "Mon", labelKey: "staff.options.workingDays.mon" },
+	{ key: "tue", label: "Tue", labelKey: "staff.options.workingDays.tue" },
+	{ key: "wed", label: "Wed", labelKey: "staff.options.workingDays.wed" },
+	{ key: "thu", label: "Thu", labelKey: "staff.options.workingDays.thu" },
+	{ key: "fri", label: "Fri", labelKey: "staff.options.workingDays.fri" },
+	{ key: "sat", label: "Sat", labelKey: "staff.options.workingDays.sat" },
+	{ key: "sun", label: "Sun", labelKey: "staff.options.workingDays.sun" },
 ] as const
 
 export type DayKey = (typeof WORKING_DAYS)[number]["key"]

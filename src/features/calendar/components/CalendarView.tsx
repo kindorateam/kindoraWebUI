@@ -1,6 +1,7 @@
 import { Spinner, toast } from "@heroui/react"
 import { useAtom, useAtomValue } from "jotai"
 import { useRef } from "react"
+import { useTranslation } from "react-i18next"
 
 import TableError from "@/components/TableError"
 import { getErrorMessage } from "@/utils/error"
@@ -26,6 +27,7 @@ const closeMorePopover = () => {
 }
 
 const CalendarView = () => {
+	const { t } = useTranslation()
 	const calendarRef = useRef<FullCalendar>(null)
 	const [currentView, setCurrentView] = useAtom(calendarViewAtom)
 	const hideWeekends = useAtomValue(hideWeekendsAtom)
@@ -78,7 +80,7 @@ const CalendarView = () => {
 			{
 				onError: (error) => {
 					dropInfo.revert()
-					toast("Failed to move event", {
+					toast(t("calendar.toast.moveFailed"), {
 						description: getErrorMessage(error),
 						variant: "danger",
 					})
@@ -99,7 +101,7 @@ const CalendarView = () => {
 			{
 				onError: (error) => {
 					resizeInfo.revert()
-					toast("Failed to resize event", {
+					toast(t("calendar.toast.resizeFailed"), {
 						description: getErrorMessage(error),
 						variant: "danger",
 					})

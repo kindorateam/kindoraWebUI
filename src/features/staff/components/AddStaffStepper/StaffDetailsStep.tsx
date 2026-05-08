@@ -1,6 +1,7 @@
 import { Avatar, FieldError, Input, Label, ListBox, Select, Switch, TextField } from "@heroui/react"
 import { useState } from "react"
 import { Controller, useFormContext } from "react-hook-form"
+import { useTranslation } from "react-i18next"
 
 import ImagePickerModal from "@/features/rooms/components/ImagePickerModal"
 import TablerPencil from "~icons/tabler/pencil"
@@ -10,6 +11,7 @@ import { STAFF_ROLES } from "../../constants"
 import type { AddStaffFormData } from "../../schemas/addStaff.schema"
 
 const StaffDetailsStep = () => {
+	const { t } = useTranslation()
 	const [isImagePickerOpen, setIsImagePickerOpen] = useState(false)
 	const {
 		control,
@@ -40,7 +42,7 @@ const StaffDetailsStep = () => {
 
 	return (
 		<div className="flex flex-col gap-6">
-			<h2 className="font-medium text-xl">Add staff</h2>
+			<h2 className="font-medium text-xl">{t("staff.addStaff.title")}</h2>
 
 			{/* Staff Avatar */}
 			<div className="flex flex-col items-center gap-2">
@@ -66,7 +68,7 @@ const StaffDetailsStep = () => {
 						<TablerPencil className="size-4 text-white" />
 					</button>
 				</div>
-				<span className="text-foreground text-sm">Staff Avatar</span>
+				<span className="text-foreground text-sm">{t("staff.addStaff.details.staffAvatar")}</span>
 				<ImagePickerModal
 					isOpen={isImagePickerOpen}
 					onClose={() => setIsImagePickerOpen(false)}
@@ -81,9 +83,9 @@ const StaffDetailsStep = () => {
 					name="firstName"
 					render={({ field }) => (
 						<TextField isRequired isInvalid={!!errors.firstName} variant="secondary">
-							<Label>First Name</Label>
+							<Label>{t("staff.profile.fields.firstName")}</Label>
 
-							<Input {...field} placeholder="Enter first name" />
+							<Input {...field} placeholder={t("staff.addStaff.placeholders.firstName")} />
 
 							<FieldError>{errors.firstName?.message}</FieldError>
 						</TextField>
@@ -94,9 +96,9 @@ const StaffDetailsStep = () => {
 					name="lastName"
 					render={({ field }) => (
 						<TextField isRequired isInvalid={!!errors.lastName} variant="secondary">
-							<Label>Last Name</Label>
+							<Label>{t("staff.profile.fields.lastName")}</Label>
 
-							<Input {...field} placeholder="Enter last name" />
+							<Input {...field} placeholder={t("staff.addStaff.placeholders.lastName")} />
 
 							<FieldError>{errors.lastName?.message}</FieldError>
 						</TextField>
@@ -117,7 +119,7 @@ const StaffDetailsStep = () => {
 							selectedKey={field.value ?? null}
 							variant="secondary"
 						>
-							<Label>Role</Label>
+							<Label>{t("staff.profile.fields.role")}</Label>
 							<Select.Trigger>
 								<Select.Value />
 								<Select.Indicator />
@@ -125,10 +127,10 @@ const StaffDetailsStep = () => {
 							<Select.Popover>
 								<ListBox>
 									{STAFF_ROLES.map((role) => (
-										<ListBox.Item id={role.key} key={role.key} textValue={role.label}>
+										<ListBox.Item id={role.key} key={role.key} textValue={t(role.labelKey)}>
 											<div className="flex flex-col">
-												<span>{role.label}</span>
-												<span className="text-default-400 text-xs">{role.description}</span>
+												<span>{t(role.labelKey)}</span>
+												<span className="text-default-400 text-xs">{t(role.descriptionKey)}</span>
 											</div>
 											<ListBox.ItemIndicator />
 										</ListBox.Item>
@@ -144,9 +146,9 @@ const StaffDetailsStep = () => {
 					name="email"
 					render={({ field }) => (
 						<TextField isRequired isInvalid={!!errors.email} variant="secondary">
-							<Label>Email</Label>
+							<Label>{t("staff.profile.fields.email")}</Label>
 
-							<Input {...field} placeholder="Enter email address" type="email" />
+							<Input {...field} placeholder={t("staff.addStaff.placeholders.email")} type="email" />
 
 							<FieldError>{errors.email?.message}</FieldError>
 						</TextField>
@@ -157,13 +159,13 @@ const StaffDetailsStep = () => {
 					name="inviteToKindora"
 					render={({ field }) => (
 						<div className="flex items-center justify-between py-3">
-							<span className="text-default-600 text-sm">Invite staff to join Kindora on their devices?</span>
+							<span className="text-default-600 text-sm">{t("staff.addStaff.invitePrompt")}</span>
 							<Switch isSelected={field.value} onChange={field.onChange}>
 								<Switch.Control>
 									<Switch.Thumb />
 								</Switch.Control>
 								<Switch.Content>
-									<Label>Invite</Label>
+									<Label>{t("staff.addStaff.invite")}</Label>
 								</Switch.Content>
 							</Switch>
 						</div>

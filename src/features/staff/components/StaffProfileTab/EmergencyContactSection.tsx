@@ -1,5 +1,6 @@
 import { FieldError, Input, Label, TextField } from "@heroui/react"
 import { Controller } from "react-hook-form"
+import { useTranslation } from "react-i18next"
 
 import { formatUSPhone } from "@/utils/format"
 import StreamlineUltimateEmergencyCall from "~icons/streamline-ultimate/emergency-call"
@@ -16,9 +17,14 @@ interface EmergencyContactSectionProps {
 }
 
 const EmergencyContactSection = ({ control, errors, emergencyContacts }: EmergencyContactSectionProps) => {
+	const { t } = useTranslation()
+
 	return (
 		<section className="flex flex-col gap-6">
-			<SectionHeader icon={<StreamlineUltimateEmergencyCall className="size-5" />} title="Emergency contact" />
+			<SectionHeader
+				icon={<StreamlineUltimateEmergencyCall className="size-5" />}
+				title={t("staff.profile.sections.emergencyContact")}
+			/>
 			<div className="flex flex-col gap-2">
 				{emergencyContacts.map((_, index) => (
 					// biome-ignore lint/suspicious/noArrayIndexKey: emergency contacts may not have stable ids
@@ -28,9 +34,9 @@ const EmergencyContactSection = ({ control, errors, emergencyContacts }: Emergen
 							name={`emergencyContacts.${index}.name`}
 							render={({ field }) => (
 								<TextField className="flex-1" isInvalid={!!errors.emergencyContacts?.[index]?.name} variant="secondary">
-									<Label>Name</Label>
+									<Label>{t("staff.profile.fields.name")}</Label>
 
-									<Input {...field} />
+									<Input {...field} placeholder={t("staff.profile.placeholders.name")} />
 
 									<FieldError>{errors.emergencyContacts?.[index]?.name?.message}</FieldError>
 								</TextField>
@@ -45,12 +51,12 @@ const EmergencyContactSection = ({ control, errors, emergencyContacts }: Emergen
 									isInvalid={!!errors.emergencyContacts?.[index]?.phone}
 									variant="secondary"
 								>
-									<Label>Phone</Label>
+									<Label>{t("staff.profile.fields.phone")}</Label>
 
 									<Input
 										{...field}
 										onChange={(e) => field.onChange(formatUSPhone(e.target.value))}
-										placeholder="(555) 123-4567"
+										placeholder={t("staff.profile.placeholders.phone")}
 										type="tel"
 									/>
 
@@ -63,9 +69,9 @@ const EmergencyContactSection = ({ control, errors, emergencyContacts }: Emergen
 							name={`emergencyContacts.${index}.relationshipTo`}
 							render={({ field }) => (
 								<TextField className="flex-1" variant="secondary">
-									<Label>Relationship to staff</Label>
+									<Label>{t("staff.profile.fields.relationshipToStaff")}</Label>
 
-									<Input {...field} />
+									<Input {...field} placeholder={t("staff.profile.placeholders.relationshipToStaff")} />
 								</TextField>
 							)}
 						/>

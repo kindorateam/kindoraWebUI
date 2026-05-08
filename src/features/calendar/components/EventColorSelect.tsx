@@ -1,4 +1,5 @@
 import { Label, ListBox, Select } from "@heroui/react"
+import { useTranslation } from "react-i18next"
 
 import { EVENT_COLOR_OPTIONS } from "../constants"
 
@@ -8,6 +9,7 @@ interface EventColorSelectProps {
 }
 
 const EventColorSelect = ({ value, onChange }: EventColorSelectProps) => {
+	const { t } = useTranslation()
 	const selectedOption = EVENT_COLOR_OPTIONS.find((opt) => opt.key === value)
 
 	return (
@@ -18,7 +20,7 @@ const EventColorSelect = ({ value, onChange }: EventColorSelectProps) => {
 				if (key !== null) onChange(String(key))
 			}}
 		>
-			<Label>Color</Label>
+			<Label>{t("calendar.fields.color")}</Label>
 			<Select.Trigger>
 				<Select.Value>
 					{({ isPlaceholder, defaultChildren }) => {
@@ -31,7 +33,7 @@ const EventColorSelect = ({ value, onChange }: EventColorSelectProps) => {
 									className="size-3 rounded-full"
 									style={{ backgroundColor: selectedOption.key }}
 								/>
-								{selectedOption.label}
+								{t(selectedOption.labelKey)}
 							</span>
 						)
 					}}
@@ -41,10 +43,10 @@ const EventColorSelect = ({ value, onChange }: EventColorSelectProps) => {
 			<Select.Popover>
 				<ListBox>
 					{EVENT_COLOR_OPTIONS.map((opt) => (
-						<ListBox.Item id={opt.key} key={opt.key} textValue={opt.label}>
+						<ListBox.Item id={opt.key} key={opt.key} textValue={t(opt.labelKey)}>
 							<span className="flex items-center gap-2">
 								<span aria-hidden="true" className="size-3 rounded-full" style={{ backgroundColor: opt.key }} />
-								{opt.label}
+								{t(opt.labelKey)}
 							</span>
 							<ListBox.ItemIndicator />
 						</ListBox.Item>

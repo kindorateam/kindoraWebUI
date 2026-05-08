@@ -47,7 +47,7 @@ const StaffDetailHeader = ({
 	onSendInvite,
 }: StaffDetailHeaderProps) => {
 	const { t } = useTranslation()
-	const fullName = employeeData ? getEmployeeFullName(employeeData) : "Employee"
+	const fullName = employeeData ? getEmployeeFullName(employeeData) : t("staff.detail.fallbackEmployee")
 	const avatarUrl = employeeData ? getEmployeeAvatarUrl(employeeData) : undefined
 	const absenceDate = "Nov 20 - Nov 26"
 
@@ -81,11 +81,11 @@ const StaffDetailHeader = ({
 								<div className="flex shrink-0 gap-3">
 									<Button className="bg-success text-white hover:bg-success/90" onPress={onSendInvite} size="sm">
 										<MingcuteSendFill aria-hidden className="size-4" />
-										Send Invite
+										{t("staff.detail.sendInvite")}
 									</Button>
 									<Button variant="primary" onPress={onSignOut} size="sm">
 										<PhSignInBold aria-hidden className="size-4" />
-										Sign Out
+										{t("staff.detail.signOut")}
 									</Button>
 								</div>
 							</div>
@@ -98,7 +98,7 @@ const StaffDetailHeader = ({
 								{/* Role */}
 								{employeeData?.role && (
 									<div className="flex items-center gap-2">
-										<span>Role:</span>
+										<span>{t("staff.detail.role")}</span>
 										<Chip
 											className="bg-[#792C410D] px-3 py-1 text-sm capitalize"
 											style={{ color: "var(--colors-base-secondary, #7828C8)" }}
@@ -112,7 +112,7 @@ const StaffDetailHeader = ({
 								{/* Pin + Generate button */}
 								{employeeData?.pinCode != null && (
 									<div className="flex items-center gap-2">
-										<span>Pin:</span>
+										<span>{t("staff.detail.pin")}</span>
 										<Chip
 											className="bg-[#792C410D] px-3 py-1 font-medium text-sm"
 											style={{ color: "var(--colors-base-secondary, #7828C8)" }}
@@ -123,7 +123,7 @@ const StaffDetailHeader = ({
 										{/* TODO: Wire to generate pin API when available */}
 										<Tooltip delay={0}>
 											<Button
-												aria-label="Generate new pin"
+												aria-label={t("staff.detail.generatePin")}
 												variant="primary"
 												isIconOnly
 												onPress={onGeneratePin}
@@ -132,7 +132,7 @@ const StaffDetailHeader = ({
 											>
 												<GrommetIconsUpdate className="size-4" />
 											</Button>
-											<Tooltip.Content>Generate new pin</Tooltip.Content>
+											<Tooltip.Content>{t("staff.detail.generatePin")}</Tooltip.Content>
 										</Tooltip>
 									</div>
 								)}
@@ -140,7 +140,7 @@ const StaffDetailHeader = ({
 								{/* Rooms */}
 								{/* TODO: Replace MOCK_ROOMS with actual room data from API */}
 								<div className="flex items-center gap-2">
-									<span className="shrink-0">Rooms:</span>
+									<span className="shrink-0">{t("staff.detail.rooms")}</span>
 									<div className="flex min-w-0 items-center gap-2">
 										{MOCK_ROOMS.slice(0, 2).map((room) => (
 											<IdentityChip
@@ -176,7 +176,7 @@ const StaffDetailHeader = ({
 						{/* TODO: Replace mock absence data with API data when available */}
 						{absenceDate && (
 							<div className="flex items-center gap-3">
-								<span className="shrink-0">Absence date:</span>
+								<span className="shrink-0">{t("staff.detail.absenceDate")}</span>
 								<Chip
 									className="bg-[#792C410D] px-3 py-1 font-medium text-sm"
 									style={{ color: "var(--colors-base-secondary, #7828C8)" }}
@@ -186,7 +186,7 @@ const StaffDetailHeader = ({
 								</Chip>
 								<Popover>
 									<Popover.Trigger>
-										<Button aria-label="Set absence dates" variant="primary" isIconOnly size="sm">
+										<Button aria-label={t("staff.detail.setAbsenceDates")} variant="primary" isIconOnly size="sm">
 											<SolarCalendarBroken className="size-4" />
 										</Button>
 									</Popover.Trigger>
@@ -194,7 +194,7 @@ const StaffDetailHeader = ({
 										<Popover.Dialog>
 											<div className="flex flex-col gap-4">
 												<Select defaultValue="vacation" variant="secondary">
-													<Label>Reason</Label>
+													<Label>{t("rooms.markAbsent.reason")}</Label>
 													<Select.Trigger>
 														<Select.Value />
 														<Select.Indicator />
@@ -210,7 +210,7 @@ const StaffDetailHeader = ({
 														</ListBox>
 													</Select.Popover>
 												</Select>
-												<RangeCalendar aria-label="Absence date range">
+												<RangeCalendar aria-label={t("rooms.markAbsent.dateRangeAria")}>
 													<RangeCalendar.Header>
 														<RangeCalendar.Heading />
 														<RangeCalendar.NavButton slot="previous" />
@@ -237,15 +237,15 @@ const StaffDetailHeader = ({
 				<Tabs onSelectionChange={(key) => onTabChange(key as TabType)} selectedKey={activeTab}>
 					<Tabs.ListContainer>
 						<Tabs.List
-							aria-label="Employee details tabs"
+							aria-label={t("staff.detail.tabsAriaLabel")}
 							className="w-fit *:h-6 *:w-fit *:px-3 *:font-normal *:text-sm *:data-[selected=true]:text-accent-foreground"
 						>
 							<Tabs.Tab id="profile">
-								Profile
+								{t("staff.detail.tabs.profile")}
 								<Tabs.Indicator className="bg-accent" />
 							</Tabs.Tab>
 							<Tabs.Tab id="documents">
-								Documents
+								{t("staff.detail.tabs.documents")}
 								<Tabs.Indicator className="bg-accent" />
 							</Tabs.Tab>
 						</Tabs.List>

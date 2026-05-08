@@ -12,6 +12,7 @@ import {
 	TextField,
 } from "@heroui/react"
 import { Controller } from "react-hook-form"
+import { useTranslation } from "react-i18next"
 
 import { formatUSPhone } from "@/utils/format"
 import FluentPerson16Filled from "~icons/fluent/person-16-filled"
@@ -44,26 +45,27 @@ const PersonalInfoSection = ({
 	onDateChange,
 	parseDateValue,
 }: PersonalInfoSectionProps) => {
+	const { t } = useTranslation()
 	const hasPicture = Boolean(avatarPreview)
 
 	return (
 		<section className="flex flex-col gap-6">
-			<SectionHeader icon={<LucideUserRound className="size-5" />} title="Personal info" />
+			<SectionHeader icon={<LucideUserRound className="size-5" />} title={t("staff.profile.sections.personalInfo")} />
 			<div className="flex flex-col gap-6">
 				<div className="flex items-center gap-3">
 					<Avatar className="size-20">
-						<Avatar.Image src={avatarPreview ?? undefined} alt="Employee avatar" />
+						<Avatar.Image src={avatarPreview ?? undefined} alt={t("staff.profile.employeeAvatarAlt")} />
 						<Avatar.Fallback className="bg-accent text-white">
 							<FluentPerson16Filled className="size-16 text-white" />
 						</Avatar.Fallback>
 					</Avatar>
 					<div className="flex flex-col gap-3">
 						<Button className="cursor-pointer" variant="primary" size="sm">
-							Upload Picture
+							{t("staff.profile.picture.upload")}
 							<input accept="image/*" className="hidden" onChange={onAvatarUpload} type="file" />
 						</Button>
 						<Button className="shadow-sm" variant="danger" isDisabled={!hasPicture} onPress={onDeletePicture} size="sm">
-							Delete Picture
+							{t("staff.profile.picture.delete")}
 						</Button>
 					</div>
 				</div>
@@ -74,9 +76,9 @@ const PersonalInfoSection = ({
 							name="firstName"
 							render={({ field }) => (
 								<TextField className="flex-1" isRequired isInvalid={!!errors.firstName} variant="secondary">
-									<Label>First name</Label>
+									<Label>{t("staff.profile.fields.firstName")}</Label>
 
-									<Input {...field} />
+									<Input {...field} placeholder={t("staff.profile.placeholders.firstName")} />
 
 									<FieldError>{errors.firstName?.message}</FieldError>
 								</TextField>
@@ -87,9 +89,9 @@ const PersonalInfoSection = ({
 							name="lastName"
 							render={({ field }) => (
 								<TextField className="flex-1" isRequired isInvalid={!!errors.lastName} variant="secondary">
-									<Label>Last name</Label>
+									<Label>{t("staff.profile.fields.lastName")}</Label>
 
-									<Input {...field} />
+									<Input {...field} placeholder={t("staff.profile.placeholders.lastName")} />
 
 									<FieldError>{errors.lastName?.message}</FieldError>
 								</TextField>
@@ -100,9 +102,9 @@ const PersonalInfoSection = ({
 							name="email"
 							render={({ field }) => (
 								<TextField className="flex-1" isRequired isInvalid={!!errors.email} variant="secondary">
-									<Label>Email</Label>
+									<Label>{t("staff.profile.fields.email")}</Label>
 
-									<Input {...field} />
+									<Input {...field} placeholder={t("staff.profile.placeholders.email")} />
 
 									<FieldError>{errors.email?.message}</FieldError>
 								</TextField>
@@ -115,12 +117,12 @@ const PersonalInfoSection = ({
 							name="phone"
 							render={({ field }) => (
 								<TextField className="flex-1" isInvalid={!!errors.phone} variant="secondary">
-									<Label>Phone</Label>
+									<Label>{t("staff.profile.fields.phone")}</Label>
 
 									<Input
 										{...field}
 										onChange={(e) => field.onChange(formatUSPhone(e.target.value))}
-										placeholder="(555) 123-4567"
+										placeholder={t("staff.profile.placeholders.phone")}
 										type="tel"
 									/>
 
@@ -138,7 +140,7 @@ const PersonalInfoSection = ({
 									onChange={(value) => onDateChange(value, field.onChange)}
 									value={parseDateValue(field.value)}
 								>
-									<Label>Birthday</Label>
+									<Label>{t("staff.profile.fields.birthday")}</Label>
 									<DateField.Group variant="secondary" fullWidth>
 										<DateField.Input>{(segment) => <DateField.Segment segment={segment} />}</DateField.Input>
 										<DateField.Suffix>
@@ -148,7 +150,7 @@ const PersonalInfoSection = ({
 										</DateField.Suffix>
 									</DateField.Group>
 									<DatePicker.Popover>
-										<Calendar aria-label="Birthday">
+										<Calendar aria-label={t("staff.profile.fields.birthday")}>
 											<Calendar.Header>
 												<Calendar.YearPickerTrigger>
 													<Calendar.YearPickerTriggerHeading />
@@ -183,7 +185,7 @@ const PersonalInfoSection = ({
 									onChange={(value) => onDateChange(value, field.onChange)}
 									value={parseDateValue(field.value)}
 								>
-									<Label>Enroll date</Label>
+									<Label>{t("staff.profile.fields.enrollDate")}</Label>
 									<DateField.Group variant="secondary" fullWidth>
 										<DateField.Input>{(segment) => <DateField.Segment segment={segment} />}</DateField.Input>
 										<DateField.Suffix>
@@ -193,7 +195,7 @@ const PersonalInfoSection = ({
 										</DateField.Suffix>
 									</DateField.Group>
 									<DatePicker.Popover>
-										<Calendar aria-label="Enroll date">
+										<Calendar aria-label={t("staff.profile.fields.enrollDate")}>
 											<Calendar.Header>
 												<Calendar.YearPickerTrigger>
 													<Calendar.YearPickerTriggerHeading />
@@ -232,7 +234,7 @@ const PersonalInfoSection = ({
 										if (key !== null) field.onChange(String(key))
 									}}
 								>
-									<Label>State</Label>
+									<Label>{t("staff.profile.fields.state")}</Label>
 									<Select.Trigger>
 										<Select.Value />
 										<Select.Indicator />
@@ -255,9 +257,9 @@ const PersonalInfoSection = ({
 							name="city"
 							render={({ field }) => (
 								<TextField className="flex-1" variant="secondary">
-									<Label>City</Label>
+									<Label>{t("staff.profile.fields.city")}</Label>
 
-									<Input {...field} />
+									<Input {...field} placeholder={t("staff.profile.placeholders.city")} />
 								</TextField>
 							)}
 						/>
@@ -266,9 +268,9 @@ const PersonalInfoSection = ({
 							name="streetAddress"
 							render={({ field }) => (
 								<TextField className="flex-1" variant="secondary">
-									<Label>Street address</Label>
+									<Label>{t("staff.profile.fields.streetAddress")}</Label>
 
-									<Input {...field} />
+									<Input {...field} placeholder={t("staff.profile.placeholders.streetAddress")} />
 								</TextField>
 							)}
 						/>
@@ -279,9 +281,9 @@ const PersonalInfoSection = ({
 							name="zipCode"
 							render={({ field }) => (
 								<TextField className="flex-1" variant="secondary">
-									<Label>ZIP code</Label>
+									<Label>{t("staff.profile.fields.zipCode")}</Label>
 
-									<Input {...field} />
+									<Input {...field} placeholder={t("staff.profile.placeholders.zipCode")} />
 								</TextField>
 							)}
 						/>
@@ -290,9 +292,9 @@ const PersonalInfoSection = ({
 							name="notes"
 							render={({ field }) => (
 								<TextField className="flex-1" variant="secondary">
-									<Label>Notes</Label>
+									<Label>{t("staff.profile.fields.notes")}</Label>
 
-									<Input {...field} />
+									<Input {...field} placeholder={t("staff.profile.placeholders.notes")} />
 								</TextField>
 							)}
 						/>

@@ -1,5 +1,6 @@
 import { Button, Modal, toast } from "@heroui/react"
 import { useAtomValue } from "jotai"
+import { useTranslation } from "react-i18next"
 
 import { getErrorMessage } from "@/utils/error"
 
@@ -11,6 +12,7 @@ interface Props {
 }
 
 export default function RegeneratePinModal({ employeeId }: Props) {
+	const { t } = useTranslation()
 	const isOpen = useAtomValue(isRegeneratePinModalOpenAtom)
 	const regenerateMutation = useRegenerateEmployeePin()
 
@@ -19,14 +21,14 @@ export default function RegeneratePinModal({ employeeId }: Props) {
 			{ employeeId },
 			{
 				onSuccess: () => {
-					toast("PIN regenerated", {
-						description: "A new PIN has been generated successfully.",
+					toast(t("staff.regeneratePin.successTitle"), {
+						description: t("staff.regeneratePin.successDescription"),
 						variant: "success",
 					})
 					closeRegeneratePinModal()
 				},
 				onError: (error) => {
-					toast("Failed to regenerate PIN", {
+					toast(t("staff.regeneratePin.errorTitle"), {
 						description: getErrorMessage(error),
 						variant: "danger",
 					})
@@ -43,10 +45,8 @@ export default function RegeneratePinModal({ employeeId }: Props) {
 					<Modal.Body>
 						<div className="flex flex-col items-center gap-5">
 							<div className="flex flex-col items-center gap-3 text-center">
-								<h3 className="font-medium text-xl leading-7">Regenerate PIN</h3>
-								<p className="text-foreground text-sm leading-5">
-									Are you sure you want to regenerate the PIN? The current PIN will be replaced with a new one.
-								</p>
+								<h3 className="font-medium text-xl leading-7">{t("staff.regeneratePin.title")}</h3>
+								<p className="text-foreground text-sm leading-5">{t("staff.regeneratePin.description")}</p>
 							</div>
 							<div className="flex w-full flex-col gap-3">
 								<Button
@@ -55,10 +55,10 @@ export default function RegeneratePinModal({ employeeId }: Props) {
 									isPending={regenerateMutation.isPending}
 									onPress={handleRegenerate}
 								>
-									Regenerate
+									{t("staff.regeneratePin.confirm")}
 								</Button>
 								<Button fullWidth isDisabled={regenerateMutation.isPending} slot="close" size="md">
-									Cancel
+									{t("common.cancel")}
 								</Button>
 							</div>
 						</div>

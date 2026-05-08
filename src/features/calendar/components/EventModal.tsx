@@ -1,6 +1,7 @@
 import { Button, Input, Label, Modal, Switch, TextArea, TextField, toast } from "@heroui/react"
 import { useAtomValue } from "jotai"
 import { useEffect, useState } from "react"
+import { useTranslation } from "react-i18next"
 
 import { getErrorMessage } from "@/utils/error"
 import TablerTrash from "~icons/tabler/trash"
@@ -18,6 +19,7 @@ import EventRepeatFields from "./EventRepeatFields"
 import type { EventFormData } from "../types"
 
 const EventModal = () => {
+	const { t } = useTranslation()
 	const modalState = useAtomValue(eventModalAtom)
 	const { isOpen, event, defaultStart, defaultEnd, defaultAllDay } = modalState
 
@@ -97,12 +99,12 @@ const EventModal = () => {
 		}
 
 		const onSuccess = () => {
-			toast(isEditMode ? "Event updated" : "Event created", { variant: "success" })
+			toast(isEditMode ? t("calendar.toast.updated") : t("calendar.toast.created"), { variant: "success" })
 			closeEventModal()
 		}
 
 		const onError = (error: Error) => {
-			toast(`Failed to ${isEditMode ? "update" : "create"} event`, {
+			toast(isEditMode ? t("calendar.toast.updateFailed") : t("calendar.toast.createFailed"), {
 				description: getErrorMessage(error),
 				variant: "danger",
 			})
@@ -158,14 +160,16 @@ const EventModal = () => {
 				<Modal.Dialog>
 					<Modal.CloseTrigger />
 					<Modal.Header>
-						<Modal.Heading>{isEditMode ? "Edit event" : "New event"}</Modal.Heading>
+						<Modal.Heading>
+							{isEditMode ? t("calendar.modal.editTitle") : t("calendar.modal.createTitle")}
+						</Modal.Heading>
 					</Modal.Header>
 					<Modal.Body className="flex flex-col gap-4">
 						<TextField isRequired variant="secondary">
-							<Label>Title</Label>
+							<Label>{t("calendar.fields.title")}</Label>
 
 							<Input
-								placeholder="Event title"
+								placeholder={t("calendar.placeholders.title")}
 								value={formData.title}
 								onChange={(e: React.ChangeEvent<HTMLInputElement>) => ((v) => updateField("title", v))(e.target.value)}
 								autoFocus
@@ -173,9 +177,9 @@ const EventModal = () => {
 						</TextField>
 
 						<TextField variant="secondary">
-							<Label>Description</Label>
+							<Label>{t("calendar.fields.description")}</Label>
 							<TextArea
-								placeholder="Optional description"
+								placeholder={t("calendar.placeholders.description")}
 								value={formData.description}
 								onChange={(e) => ((v: string) => updateField("description", v))(e.target.value)}
 							/>
@@ -190,7 +194,7 @@ const EventModal = () => {
 								<Switch.Thumb />
 							</Switch.Control>
 							<Switch.Content>
-								<Label>All day</Label>
+								<Label>{t("calendar.fields.allDay")}</Label>
 							</Switch.Content>
 						</Switch>
 
@@ -203,7 +207,7 @@ const EventModal = () => {
 								<Switch.Thumb />
 							</Switch.Control>
 							<Switch.Content>
-								<Label>Ends same day</Label>
+								<Label>{t("calendar.fields.endsSameDay")}</Label>
 							</Switch.Content>
 						</Switch>
 
@@ -230,14 +234,14 @@ const EventModal = () => {
 						{isEditMode && (
 							<Button variant="danger" onPress={handleDelete} isDisabled={isLoading}>
 								<TablerTrash />
-								Delete
+								{t("common.delete")}
 							</Button>
 						)}
 						<Button variant="secondary" onPress={handleClose} isDisabled={isLoading}>
-							Cancel
+							{t("common.cancel")}
 						</Button>
 						<Button variant="primary" onPress={handleSubmit} isPending={isLoading} isDisabled={!formData.title.trim()}>
-							{isEditMode ? "Save" : "Create"}
+							{isEditMode ? t("common.save") : t("common.create")}
 						</Button>
 					</Modal.Footer>
 				</Modal.Dialog>

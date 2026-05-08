@@ -8,6 +8,7 @@ import TablerEye from "~icons/tabler/eye"
 import { getEmployeeDocumentDownloadUrl } from "../../services/staff.service"
 import { openDeleteDocumentModal } from "../../stores/deleteDocumentModal.store"
 
+import type { TFunction } from "i18next"
 import type { DocumentStatus, EmployeeDocument } from "../../types"
 
 const statusColorMap: Record<DocumentStatus, "success" | "warning" | "danger" | "default"> = {
@@ -24,25 +25,25 @@ const statusTextClass: Record<DocumentStatus, string> = {
 	uploaded: "justify-center text-black text-xs",
 }
 
-const statusLabelMap: Record<DocumentStatus, string> = {
-	active: "Active",
-	expiring_soon: "Expiring Soon",
-	expired: "Expired",
-	uploaded: "Uploaded",
+const statusLabelKeyMap: Record<DocumentStatus, string> = {
+	active: "staff.documents.statuses.active",
+	expiring_soon: "staff.documents.statuses.expiringSoon",
+	expired: "staff.documents.statuses.expired",
+	uploaded: "staff.documents.statuses.uploaded",
 }
 
-function formatDate(date: string | null): string {
-	if (!date) return "No data"
-	return new Date(date).toLocaleDateString("en-US", {
+function formatDate(date: string | null, locale: string, t: TFunction): string {
+	if (!date) return t("common.noData")
+	return new Date(date).toLocaleDateString(locale, {
 		month: "2-digit",
 		day: "2-digit",
 		year: "numeric",
 	})
 }
 
-function getDocumentFileName(doc: EmployeeDocument): string {
-	if (!doc.media?.path) return "Document"
-	return doc.media.path.split("/").pop() ?? "Document"
+function getDocumentFileName(doc: EmployeeDocument, t: TFunction): string {
+	if (!doc.media?.path) return t("common.document")
+	return doc.media.path.split("/").pop() ?? t("common.document")
 }
 
 function handleDownload(doc: EmployeeDocument) {
@@ -56,10 +57,10 @@ function handleView(doc: EmployeeDocument) {
 	}
 }
 
-export function renderCell(document: EmployeeDocument, columnKey: React.Key) {
+export function renderCell(document: EmployeeDocument, columnKey: React.Key, t: TFunction, locale: string) {
 	switch (columnKey) {
 		case "name":
-			return <span className="text-sm">{getDocumentFileName(document)}</span>
+			return <span className="text-sm">{getDocumentFileName(document, t)}</span>
 
 		case "status":
 			return (
@@ -70,13 +71,13 @@ export function renderCell(document: EmployeeDocument, columnKey: React.Key) {
 						size="md"
 						variant="primary"
 					>
-						{statusLabelMap[document.status]}
+						{t(statusLabelKeyMap[document.status])}
 					</Chip>
 				</div>
 			)
 
 		case "expiryDate":
-			return <span className="text-sm">{formatDate(document.expiryDate)}</span>
+			return <span className="text-sm">{formatDate(document.expiryDate, locale, t)}</span>
 
 		case "type":
 			return (
@@ -89,8 +90,10 @@ export function renderCell(document: EmployeeDocument, columnKey: React.Key) {
 		case "uploaded":
 			return (
 				<div className="flex flex-col">
-					<span className="text-sm">{formatDate(document.uploadedAt)}</span>
-					{document.uploadedBy?.name && <span className="text-xs text-zinc-400">by {document.uploadedBy.name}</span>}
+					<span className="text-sm">{formatDate(document.uploadedAt, locale, t)}</span>
+					{document.uploadedBy?.name && (
+						<span className="text-xs text-zinc-400">{t("common.by", { name: document.uploadedBy.name })}</span>
+					)}
 				</div>
 			)
 
@@ -98,7 +101,7 @@ export function renderCell(document: EmployeeDocument, columnKey: React.Key) {
 			return (
 				<div className="flex justify-center">
 					<Dropdown>
-						<Button isIconOnly variant="ghost" aria-label="Document actions">
+						<Button isIconOnly variant="ghost" aria-label={t("staff.documents.actions.ariaLabel")}>
 							<svg
 								aria-hidden="true"
 								className="size-5 text-gray-600"
@@ -116,7 +119,7 @@ export function renderCell(document: EmployeeDocument, columnKey: React.Key) {
 						</Button>
 						<Dropdown.Popover className="min-w-0">
 							<Dropdown.Menu
-								aria-label="Document actions"
+								aria-label={t("staff.documents.actions.ariaLabel")}
 								onAction={(key) => {
 									switch (key) {
 										case "view":
@@ -128,25 +131,25 @@ export function renderCell(document: EmployeeDocument, columnKey: React.Key) {
 									}
 								}}
 							>
-								<Dropdown.Item id="view" textValue="Preview" className="text-success">
+								<Dropdown.Item id="view" textValue={t("staff.documents.actions.preview")} className="text-success">
 									<ListBox.ItemIndicator />
 									<TablerEye aria-hidden className="size-5" />
-									<span>Preview</span>
+									<span>{t("staff.documents.actions.preview")}</span>
 								</Dropdown.Item>
-								<Dropdown.Item id="edit" textValue="Edit" className="text-warning">
+								<Dropdown.Item id="edit" textValue={t("staff.documents.actions.edit")} className="text-warning">
 									<ListBox.ItemIndicator />
 									<TablerEdit aria-hidden className="size-5" />
-									<span>Edit</span>
+									<span>{t("staff.documents.actions.edit")}</span>
 								</Dropdown.Item>
-								<Dropdown.Item id="download" textValue="Download" className="text-primary">
+								<Dropdown.Item id="download" textValue={t("staff.documents.actions.download")} className="text-primary">
 									<ListBox.ItemIndicator />
 									<MaterialSymbolsDownload aria-hidden className="size-5" />
-									<span>Download</span>
+									<span>{t("staff.documents.actions.download")}</span>
 								</Dropdown.Item>
-								<Dropdown.Item id="delete" textValue="Delete" className="text-danger">
+								<Dropdown.Item id="delete" textValue={t("staff.documents.actions.delete")} className="text-danger">
 									<ListBox.ItemIndicator />
 									<MaterialSymbolsDeleteOutline aria-hidden className="size-5" />
-									<span>Delete</span>
+									<span>{t("staff.documents.actions.delete")}</span>
 								</Dropdown.Item>
 							</Dropdown.Menu>
 						</Dropdown.Popover>

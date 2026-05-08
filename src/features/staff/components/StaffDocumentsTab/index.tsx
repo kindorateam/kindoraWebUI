@@ -1,5 +1,6 @@
 import { Button, EmptyState, Pagination, Spinner, Table } from "@heroui/react"
 import { useState } from "react"
+import { useTranslation } from "react-i18next"
 
 import TableError from "@/components/TableError"
 import OcticonFeedPlus16 from "~icons/octicon/feed-plus-16"
@@ -19,6 +20,7 @@ interface StaffDocumentsTabProps {
 const pageSize = 10
 
 const StaffDocumentsTab = ({ employeeId }: StaffDocumentsTabProps) => {
+	const { i18n, t } = useTranslation()
 	const { data: documents = [], isLoading, error, refetch } = useEmployeeDocuments(employeeId)
 	const [page, setPage] = useState(1)
 
@@ -37,20 +39,20 @@ const StaffDocumentsTab = ({ employeeId }: StaffDocumentsTabProps) => {
 				<div className="flex items-center justify-end">
 					<Button variant="primary" onPress={openAddDocumentModal}>
 						<OcticonFeedPlus16 aria-hidden className="size-4" />
-						Add Document
+						{t("staff.documents.addDocument")}
 					</Button>
 				</div>
 				<Table className="[&_td]:py-1.5! [&_tr]:h-12.5!">
 					<div className="relative">
 						<Table.ScrollContainer className="min-h-140">
-							<Table.Content aria-label="Employee documents table">
+							<Table.Content key={i18n.language} aria-label={t("staff.documents.ariaLabel")}>
 								<Table.Header columns={columns}>
 									{(column) => (
 										<Table.Column
 											isRowHeader={column.isRowHeader}
 											className={column.align === "center" ? "text-center" : undefined}
 										>
-											{column.label}
+											{t(column.labelKey)}
 										</Table.Column>
 									)}
 								</Table.Header>
@@ -61,7 +63,7 @@ const StaffDocumentsTab = ({ employeeId }: StaffDocumentsTabProps) => {
 										{(doc) => (
 											<Table.Row id={doc.id}>
 												<Table.Collection items={columns}>
-													{(column) => <Table.Cell>{renderCell(doc, column.key)}</Table.Cell>}
+													{(column) => <Table.Cell>{renderCell(doc, column.key, t, i18n.language)}</Table.Cell>}
 												</Table.Collection>
 											</Table.Row>
 										)}
@@ -84,7 +86,7 @@ const StaffDocumentsTab = ({ employeeId }: StaffDocumentsTabProps) => {
 						{isEmpty && (
 							<div className="absolute inset-x-0 top-12.5 bottom-0 rounded-[calc(var(--radius)*2)] bg-white">
 								<EmptyState className="flex h-full w-full items-center justify-center text-default-400">
-									No documents yet
+									{t("staff.documents.empty")}
 								</EmptyState>
 							</div>
 						)}
@@ -92,13 +94,13 @@ const StaffDocumentsTab = ({ employeeId }: StaffDocumentsTabProps) => {
 					<Table.Footer>
 						<Pagination className="w-full">
 							<Pagination.Summary>
-								{startItem} to {endItem} of {total} documents
+								{t("staff.documents.paginationSummary", { count: total, endItem, startItem, total })}
 							</Pagination.Summary>
 							<Pagination.Content>
 								<Pagination.Item>
 									<Pagination.Previous isDisabled={page <= 1} onPress={() => setPage((p) => p - 1)}>
 										<Pagination.PreviousIcon />
-										<span>Prev</span>
+										<span>{t("common.previous")}</span>
 									</Pagination.Previous>
 								</Pagination.Item>
 								{Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
@@ -110,7 +112,7 @@ const StaffDocumentsTab = ({ employeeId }: StaffDocumentsTabProps) => {
 								))}
 								<Pagination.Item>
 									<Pagination.Next isDisabled={page >= totalPages} onPress={() => setPage((p) => p + 1)}>
-										<span>Next</span>
+										<span>{t("common.next")}</span>
 										<Pagination.NextIcon />
 									</Pagination.Next>
 								</Pagination.Item>
