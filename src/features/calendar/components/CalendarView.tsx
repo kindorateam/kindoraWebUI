@@ -1,6 +1,6 @@
 import { Spinner, toast } from "@heroui/react"
 import { useAtom, useAtomValue } from "jotai"
-import { useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
 
 import TableError from "@/components/TableError"
@@ -26,11 +26,18 @@ const closeMorePopover = () => {
 	document.querySelector<HTMLElement>(".fc-more-popover .fc-popover-close")?.click()
 }
 
+const isWeekendDate = (date: Date) => {
+	const day = date.getDay()
+
+	return day === 0 || day === 6
+}
+
 const CalendarView = () => {
 	const { t } = useTranslation()
 	const calendarRef = useRef<FullCalendar>(null)
+	const [weekendDateToRestore, setWeekendDateToRestore] = useState<Date | null>(null)
 	const [currentView, setCurrentView] = useAtom(calendarViewAtom)
-	const hideWeekends = useAtomValue(hideWeekendsAtom)
+	const [hideWeekends, setHideWeekends] = useAtom(hideWeekendsAtom)
 	const dateRange = useAtomValue(dateRangeAtom)
 	const updateEventMutation = useUpdateEvent()
 	const { handleDatesSet, handleNext, handlePrev, handleToday, handleYearMonthSelect, isYearView, title, visibleYear } =
@@ -110,6 +117,38 @@ const CalendarView = () => {
 		)
 	}
 
+	const handleHideWeekendsChange = (isSelected: boolean) => {
+		const calendarDate = calendarRef.current?.getApi().getDate()
+
+		if (isSelected && currentView === "timeGridDay" && calendarDate && isWeekendDate(calendarDate)) {
+			setWeekendDateToRestore(new Date(calendarDate))
+		}
+
+		setHideWeekends(isSelected)
+	}
+
+	const handleToolbarNavigatePrev = () => {
+		setWeekendDateToRestore(null)
+		handlePrev()
+	}
+
+	const handleToolbarNavigateNext = () => {
+		setWeekendDateToRestore(null)
+		handleNext()
+	}
+
+	const handleToolbarNavigateToday = () => {
+		setWeekendDateToRestore(null)
+		handleToday()
+	}
+
+	useEffect(() => {
+		if (hideWeekends || !weekendDateToRestore) return
+
+		calendarRef.current?.getApi().gotoDate(weekendDateToRestore)
+		setWeekendDateToRestore(null)
+	}, [hideWeekends, weekendDateToRestore])
+
 	const showInitialError = !!error && events.length === 0
 	const showInitialLoading = isLoading && events.length === 0
 
@@ -117,9 +156,11 @@ const CalendarView = () => {
 		<div className="rounded-lg bg-white shadow-sm">
 			<CalendarToolbar
 				title={title}
-				onNavigatePrev={handlePrev}
-				onNavigateNext={handleNext}
-				onNavigateToday={handleToday}
+				onNavigatePrev={handleToolbarNavigatePrev}
+				onNavigateNext={handleToolbarNavigateNext}
+				onNavigateToday={handleToolbarNavigateToday}
+				hideWeekends={hideWeekends}
+				onHideWeekendsChange={handleHideWeekendsChange}
 			/>
 			<div className="calendar-surface relative">
 				{isYearView ? (

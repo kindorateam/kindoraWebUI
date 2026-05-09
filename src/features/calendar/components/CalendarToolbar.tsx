@@ -7,7 +7,7 @@ import TablerChevronLeft from "~icons/tabler/chevron-left"
 import TablerChevronRight from "~icons/tabler/chevron-right"
 
 import { CALENDAR_VIEW_OPTIONS } from "../constants"
-import { calendarViewAtom, hideWeekendsAtom } from "../stores/calendarSettings.store"
+import { calendarViewAtom } from "../stores/calendarSettings.store"
 import { openCreateEventModal } from "../stores/eventModal.store"
 
 import type { CalendarViewType } from "../types"
@@ -17,12 +17,20 @@ interface Props {
 	onNavigatePrev: () => void
 	onNavigateNext: () => void
 	onNavigateToday: () => void
+	hideWeekends: boolean
+	onHideWeekendsChange: (isSelected: boolean) => void
 }
 
-const CalendarToolbar = ({ title, onNavigatePrev, onNavigateNext, onNavigateToday }: Props) => {
+const CalendarToolbar = ({
+	title,
+	onNavigatePrev,
+	onNavigateNext,
+	onNavigateToday,
+	hideWeekends,
+	onHideWeekendsChange,
+}: Props) => {
 	const { t } = useTranslation()
 	const [currentView, setCurrentView] = useAtom(calendarViewAtom)
-	const [hideWeekends, setHideWeekends] = useAtom(hideWeekendsAtom)
 
 	return (
 		<div className="flex flex-col gap-4 border-default-200 border-b bg-white px-5 py-4 lg:flex-row lg:items-center lg:justify-between">
@@ -40,7 +48,7 @@ const CalendarToolbar = ({ title, onNavigatePrev, onNavigateNext, onNavigateToda
 			</div>
 
 			<div className="flex w-full flex-wrap items-center gap-3 lg:w-auto lg:justify-end">
-				<Switch size="sm" isSelected={hideWeekends} onChange={(isSelected: boolean) => setHideWeekends(isSelected)}>
+				<Switch size="sm" isSelected={hideWeekends} onChange={onHideWeekendsChange}>
 					<Switch.Control>
 						<Switch.Thumb />
 					</Switch.Control>

@@ -14,6 +14,9 @@ import type { EventResizeDoneArg } from "@fullcalendar/interaction"
 import type { CalendarEvent, CalendarViewType } from "../types"
 
 const MONTH_ROW_COUNT_WITH_HEADER = 6.18
+const FULL_DAY_SLOT_MIN_TIME = "00:00:00"
+const FULL_DAY_SLOT_MAX_TIME = "24:00:00"
+const COMPACT_EVENT_HEIGHT = 44
 
 interface CalendarFullViewProps {
 	calendarRef: React.RefObject<FullCalendar | null>
@@ -43,6 +46,10 @@ const CalendarFullView = ({
 	const fullCalendarLocale = i18n.language.startsWith("es") ? esLocale : undefined
 	const monthColumnCount = hideWeekends ? 5 : 7
 	const monthAspectRatio = monthColumnCount / MONTH_ROW_COUNT_WITH_HEADER
+	const currentTimeFormatter = new Intl.DateTimeFormat(i18n.language, {
+		hour: "numeric",
+		minute: "2-digit",
+	})
 	const fullCalendarEvents = events.map((event) => ({
 		id: event.id,
 		title: event.title,
@@ -84,8 +91,8 @@ const CalendarFullView = ({
 			slotDuration={SLOT_DURATION}
 			snapDuration={SNAP_DURATION}
 			progressiveEventRendering
-			slotMinTime="06:00:00"
-			slotMaxTime="19:00:00"
+			slotMinTime={FULL_DAY_SLOT_MIN_TIME}
+			slotMaxTime={FULL_DAY_SLOT_MAX_TIME}
 			businessHours={{
 				daysOfWeek: [1, 2, 3, 4, 5],
 				startTime: BUSINESS_HOURS.startTime,
@@ -94,7 +101,13 @@ const CalendarFullView = ({
 			aspectRatio={isMonthView ? monthAspectRatio : undefined}
 			height={isMonthView ? undefined : "calc(100vh - 250px)"}
 			expandRows
+			eventShortHeight={COMPACT_EVENT_HEIGHT}
 			nowIndicator
+			nowIndicatorContent={(arg) =>
+				arg.isAxis ? (
+					<span className="calendar-now-indicator-label">{currentTimeFormatter.format(arg.date)}</span>
+				) : null
+			}
 			eventDisplay="block"
 		/>
 	)

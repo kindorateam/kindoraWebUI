@@ -8,6 +8,7 @@
 	--fc-event-border-color: #006fee;
 	--fc-event-text-color: #fff;
 	--fc-list-event-hover-bg-color: #f8fafc;
+	--fc-now-indicator-color: #f31260;
 	font-family: inherit;
 	color: #18181b;
 	background: #fff;
@@ -138,16 +139,15 @@
 
 /* Time grid slots */
 .fc .fc-timegrid-slot {
-	height: 3.5rem;
+	height: 2.5rem;
 }
 
 .fc .fc-timegrid-slot-minor {
-	border-top-style: dashed;
-	border-top-color: #f1f5f9;
+	border-top: 0;
 }
 
 .fc .fc-timegrid-col-bg .fc-non-business {
-	background: #fbfbfc;
+	background: transparent;
 }
 
 .fc .fc-timegrid-col.fc-day-sat,
@@ -168,13 +168,57 @@
 }
 
 /* Now indicator line */
+.fc .fc-timegrid-now-indicator-container {
+	overflow: visible;
+	z-index: 5;
+	pointer-events: none;
+}
+
+.fc .fc-timegrid-axis .fc-timegrid-now-indicator-container,
+.fc .fc-timegrid-axis-chunk .fc-timegrid-now-indicator-container {
+	z-index: 10;
+}
+
 .fc .fc-timegrid-now-indicator-line {
 	border-color: #f31260;
-	border-width: 2px;
+	border-width: 2px 0 0;
+	left: -100vw;
+	right: -100vw;
+	z-index: 5;
 }
 
 .fc .fc-timegrid-now-indicator-arrow {
-	border-top-color: #f31260;
+	border-width: 0;
+	margin-top: 0;
+	overflow: visible;
+	z-index: 11;
+}
+
+.fc-direction-ltr .fc-timegrid-now-indicator-arrow,
+.fc-direction-rtl .fc-timegrid-now-indicator-arrow {
+	border-width: 0;
+}
+
+.calendar-now-indicator-label {
+	position: absolute;
+	top: 0;
+	left: 0.5rem;
+	z-index: 12;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	height: 1.25rem;
+	border-radius: 999px;
+	background: #f31260;
+	padding: 0 0.375rem;
+	transform: translateY(-50%);
+	white-space: nowrap;
+	font-variant-numeric: tabular-nums;
+	font-size: 0.6875rem;
+	font-weight: 700;
+	line-height: 1;
+	color: #fff;
+	box-shadow: 0 2px 6px rgba(243, 18, 96, 0.2);
 }
 
 /* Day header links — remove underline */
@@ -204,6 +248,7 @@
 	border: 1px solid color-mix(in srgb, var(--calendar-event-color, #006fee) 18%, #fff);
 	border-radius: 0.5rem;
 	overflow: hidden;
+	padding: 0;
 	box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08);
 }
 
@@ -222,23 +267,27 @@
 	align-items: center;
 	align-content: normal;
 	gap: 0.25rem;
-	padding-top: 0.125rem;
-	padding-bottom: 0.125rem;
+	min-height: 0;
+	padding: 0 0.375rem 0 0.625rem;
 }
 
 .fc .fc-timegrid-event-short .calendar-event-default__rail {
-	top: 0.25rem;
-	bottom: 0.25rem;
+	top: 0.1875rem;
+	bottom: 0.1875rem;
+	left: 0.25rem;
+	width: 0.125rem;
 }
 
 .fc .fc-timegrid-event-short .calendar-event-default__time {
 	flex: 0 0 auto;
 	font-size: 0.625rem;
+	line-height: 1;
 }
 
 .fc .fc-timegrid-event-short .calendar-event-default__title {
 	min-width: 0;
 	font-size: 0.6875rem;
+	line-height: 1;
 }
 
 .fc .fc-timegrid-event-harness-inset .fc-timegrid-event {
