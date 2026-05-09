@@ -1,4 +1,5 @@
 import { ListBox, Select } from "@heroui/react"
+import { useTranslation } from "react-i18next"
 
 import { useEditorToolbarValue } from "./use-editor-toolbar-value"
 
@@ -12,11 +13,11 @@ interface ListTypeSelectProps {
 type ListTypeValue = "none" | "bullet" | "ordered" | "task"
 
 const LIST_OPTIONS = [
-	{ key: "none", label: "No list" },
-	{ key: "bullet", label: "Bullet list" },
-	{ key: "ordered", label: "Ordered list" },
-	{ key: "task", label: "Task list" },
-] satisfies { key: ListTypeValue; label: string }[]
+	{ key: "none", labelKey: "newsletters.toolbar.listTypes.none" },
+	{ key: "bullet", labelKey: "newsletters.toolbar.listTypes.bullet" },
+	{ key: "ordered", labelKey: "newsletters.toolbar.listTypes.ordered" },
+	{ key: "task", labelKey: "newsletters.toolbar.listTypes.task" },
+] satisfies { key: ListTypeValue; labelKey: string }[]
 
 const getEditorStateListType = (editor: Editor): ListTypeValue => {
 	const { $from } = editor.state.selection
@@ -57,6 +58,7 @@ const getListType = (editor: Editor): ListTypeValue => {
 const isListTypeValue = (value: string): value is ListTypeValue => LIST_OPTIONS.some((option) => option.key === value)
 
 const ListTypeSelect = ({ editor }: ListTypeSelectProps) => {
+	const { t } = useTranslation()
 	const [listSelectValue, setListSelectValue] = useEditorToolbarValue(editor, getListType)
 
 	const clearActiveList = () => {
@@ -107,7 +109,7 @@ const ListTypeSelect = ({ editor }: ListTypeSelectProps) => {
 
 	return (
 		<Select
-			aria-label="List type"
+			aria-label={t("newsletters.toolbar.listType")}
 			className="w-32"
 			onSelectionChange={handleListChange}
 			selectedKey={listSelectValue}
@@ -120,8 +122,8 @@ const ListTypeSelect = ({ editor }: ListTypeSelectProps) => {
 			<Select.Popover>
 				<ListBox>
 					{LIST_OPTIONS.map((option) => (
-						<ListBox.Item id={option.key} key={option.key} textValue={option.label}>
-							{option.label}
+						<ListBox.Item id={option.key} key={option.key} textValue={t(option.labelKey)}>
+							{t(option.labelKey)}
 							<ListBox.ItemIndicator />
 						</ListBox.Item>
 					))}

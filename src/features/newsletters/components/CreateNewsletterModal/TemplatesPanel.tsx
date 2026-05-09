@@ -1,4 +1,5 @@
 import { Card } from "@heroui/react"
+import { useTranslation } from "react-i18next"
 
 import type React from "react"
 
@@ -67,6 +68,8 @@ const mockTemplates: Template[] = [
 ]
 
 const TemplatesPanel = ({ selectedTemplateId, onSelectTemplate }: TemplatesPanelProps) => {
+	const { t } = useTranslation()
+
 	const handleTemplateKeyDown = (event: React.KeyboardEvent<HTMLDivElement>, template: Template) => {
 		if (event.key !== "Enter" && event.key !== " ") return
 
@@ -77,14 +80,14 @@ const TemplatesPanel = ({ selectedTemplateId, onSelectTemplate }: TemplatesPanel
 	if (mockTemplates.length === 0) {
 		return (
 			<div className="py-8 text-center">
-				<p className="text-default-400 text-sm">No templates saved yet</p>
+				<p className="text-default-400 text-sm">{t("newsletters.templates.empty")}</p>
 			</div>
 		)
 	}
 
 	return (
 		<div className="flex flex-col gap-2">
-			<p className="text-default-500 text-xs">Click to apply template</p>
+			<p className="text-default-500 text-xs">{t("newsletters.templates.applyHint")}</p>
 			{mockTemplates.map((template) => {
 				const isSelected = selectedTemplateId === template.id
 

@@ -29,5 +29,5 @@ export const Route = createFileRoute("/_authenticated/newsletters")({
 			tab: validTabs.includes(tab as TabType) ? (tab as TabType) : "sent",
 		}
 	},
-	beforeLoad: () => ({ breadcrumb: "Newsletters" }),
+	beforeLoad: () => ({ breadcrumbKey: "newsletters.title" }),
 })

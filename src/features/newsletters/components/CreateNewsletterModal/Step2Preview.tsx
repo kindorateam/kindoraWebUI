@@ -1,4 +1,5 @@
 import { Card } from "@heroui/react"
+import { useTranslation } from "react-i18next"
 
 import { hasNewsletterContent } from "../../utils/newsletter-content"
 import { sanitizeNewsletterHtml } from "../../utils/newsletter-html"
@@ -10,19 +11,20 @@ interface Step2PreviewProps {
 }
 
 const Step2Preview = ({ content }: Step2PreviewProps) => {
+	const { t } = useTranslation()
 	const previewContent = sanitizeNewsletterHtml(content)
 
 	if (!hasNewsletterContent(previewContent)) {
 		return (
 			<div className="flex h-full items-center justify-center">
-				<p className="text-default-400">No content to preview</p>
+				<p className="text-default-400">{t("newsletters.preview.empty")}</p>
 			</div>
 		)
 	}
 
 	return (
 		<div className="mx-auto max-w-2xl p-6">
-			<p className="mb-4 text-center text-default-500 text-sm">Preview how your newsletter will appear to recipients</p>
+			<p className="mb-4 text-center text-default-500 text-sm">{t("newsletters.preview.description")}</p>
 
 			<Card>
 				<Card.Content>

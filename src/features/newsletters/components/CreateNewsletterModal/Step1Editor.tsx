@@ -1,5 +1,6 @@
 import { Tabs } from "@heroui/react"
 import { useState } from "react"
+import { useTranslation } from "react-i18next"
 
 import NewsletterEditor from "./NewsletterEditor"
 import TemplatesPanel from "./TemplatesPanel"
@@ -19,6 +20,7 @@ const Step1Editor = ({
 	onEditorContentGetterChange,
 	onLoadTemplate,
 }: Step1EditorProps) => {
+	const { t } = useTranslation()
 	const [activeTab, setActiveTab] = useState<"editor" | "templates">("editor")
 	const [selectedTemplateId, setSelectedTemplateId] = useState<string>()
 
@@ -37,15 +39,15 @@ const Step1Editor = ({
 				>
 					<Tabs.ListContainer className="w-full">
 						<Tabs.List
-							aria-label="Editor panels"
+							aria-label={t("newsletters.editor.panelsAria")}
 							className="w-full *:h-6 *:flex-1 *:px-3 *:font-normal *:text-sm *:data-[selected=true]:text-accent-foreground"
 						>
 							<Tabs.Tab id="editor">
-								Editor
+								{t("newsletters.editor.editor")}
 								<Tabs.Indicator className="bg-accent" />
 							</Tabs.Tab>
 							<Tabs.Tab id="templates">
-								Templates
+								{t("newsletters.editor.templates")}
 								<Tabs.Indicator className="bg-accent" />
 							</Tabs.Tab>
 						</Tabs.List>

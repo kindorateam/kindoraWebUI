@@ -1,5 +1,6 @@
 import { Button, EmptyState, Pagination, Spinner, Table } from "@heroui/react"
 import { useState } from "react"
+import { useTranslation } from "react-i18next"
 
 import columns from "./columns"
 import { renderCell } from "./renderCell"
@@ -20,6 +21,7 @@ const newslettersData: Newsletter[] = [
 ]
 
 const NewslettersTable = ({ onCreateNew }: NewslettersTableProps) => {
+	const { i18n, t } = useTranslation()
 	const [page, setPage] = useState(1)
 	const newsletters = newslettersData
 	const isLoading = false
@@ -34,7 +36,7 @@ const NewslettersTable = ({ onCreateNew }: NewslettersTableProps) => {
 	const topContent = (
 		<div className="flex items-center justify-end">
 			<Button variant="primary" onPress={onCreateNew}>
-				Create New
+				{t("newsletters.table.createNew")}
 			</Button>
 		</div>
 	)
@@ -42,12 +44,12 @@ const NewslettersTable = ({ onCreateNew }: NewslettersTableProps) => {
 	return (
 		<div className="flex flex-col gap-4">
 			{topContent}
-			<Table aria-label="Newsletters table" className="[&_td]:py-1.5! [&_tr]:h-12.5!">
+			<Table aria-label={t("newsletters.table.ariaLabel")} className="[&_td]:py-1.5! [&_tr]:h-12.5!">
 				<div className="relative">
 					<Table.ScrollContainer className="min-h-140">
-						<Table.Content className="min-w-125">
+						<Table.Content key={i18n.language} className="min-w-125">
 							<Table.Header columns={columns}>
-								{(column) => <Table.Column isRowHeader={column.isRowHeader}>{column.label}</Table.Column>}
+								{(column) => <Table.Column isRowHeader={column.isRowHeader}>{t(column.labelKey)}</Table.Column>}
 							</Table.Header>
 							{isLoading || isEmpty ? (
 								<Table.Body />
@@ -72,7 +74,7 @@ const NewslettersTable = ({ onCreateNew }: NewslettersTableProps) => {
 					{isEmpty && (
 						<div className="absolute inset-x-0 top-12.5 bottom-0 rounded-[calc(var(--radius)*2)] bg-white">
 							<EmptyState className="flex h-full w-full items-center justify-center text-default-400">
-								No newsletters sent
+								{t("newsletters.table.emptySent")}
 							</EmptyState>
 						</div>
 					)}
@@ -80,13 +82,13 @@ const NewslettersTable = ({ onCreateNew }: NewslettersTableProps) => {
 				<Table.Footer>
 					<Pagination className="w-full">
 						<Pagination.Summary>
-							{startItem} to {endItem} of {total} newsletters
+							{t("newsletters.table.paginationSummary", { count: total, endItem, startItem, total })}
 						</Pagination.Summary>
 						<Pagination.Content>
 							<Pagination.Item>
 								<Pagination.Previous isDisabled={page <= 1} onPress={() => setPage((currentPage) => currentPage - 1)}>
 									<Pagination.PreviousIcon />
-									<span>Prev</span>
+									<span>{t("common.previous")}</span>
 								</Pagination.Previous>
 							</Pagination.Item>
 							{Array.from({ length: totalPages }, (_, index) => index + 1).map((paginationPage) => (
@@ -101,7 +103,7 @@ const NewslettersTable = ({ onCreateNew }: NewslettersTableProps) => {
 									isDisabled={page >= totalPages}
 									onPress={() => setPage((currentPage) => currentPage + 1)}
 								>
-									<span>Next</span>
+									<span>{t("common.next")}</span>
 									<Pagination.NextIcon />
 								</Pagination.Next>
 							</Pagination.Item>

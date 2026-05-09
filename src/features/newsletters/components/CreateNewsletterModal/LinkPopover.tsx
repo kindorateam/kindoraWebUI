@@ -1,5 +1,6 @@
 import { Button, Input, Popover, Tooltip } from "@heroui/react"
 import { useState } from "react"
+import { useTranslation } from "react-i18next"
 
 import TablerLink from "~icons/tabler/link"
 
@@ -12,6 +13,7 @@ interface LinkPopoverProps {
 }
 
 const LinkPopover = ({ editor }: LinkPopoverProps) => {
+	const { t } = useTranslation()
 	const [linkUrl, setLinkUrl] = useState("")
 	const [linkError, setLinkError] = useState("")
 	const [isLinkOpen, setIsLinkOpen] = useState(false)
@@ -23,13 +25,13 @@ const LinkPopover = ({ editor }: LinkPopoverProps) => {
 			editor.chain().focus().extendMarkRange("link").unsetLink().run()
 		} else {
 			if (!isSafeNewsletterLinkUrl(nextLinkUrl)) {
-				setLinkError("Use http, https, mailto, tel, anchor, or relative URLs.")
+				setLinkError(t("newsletters.toolbar.link.invalidUrl"))
 				return
 			}
 
 			const didSetLink = editor.chain().focus().extendMarkRange("link").setLink({ href: nextLinkUrl }).run()
 			if (!didSetLink) {
-				setLinkError("This link could not be applied.")
+				setLinkError(t("newsletters.toolbar.link.applyFailed"))
 				return
 			}
 		}
@@ -65,7 +67,7 @@ const LinkPopover = ({ editor }: LinkPopoverProps) => {
 						<TablerLink className="size-4" />
 					</Button>
 				</Popover.Trigger>
-				<Tooltip.Content>Insert link</Tooltip.Content>
+				<Tooltip.Content>{t("newsletters.toolbar.insertLink")}</Tooltip.Content>
 			</Tooltip>
 			<Popover.Content>
 				<Popover.Dialog>
@@ -81,7 +83,7 @@ const LinkPopover = ({ editor }: LinkPopoverProps) => {
 								}}
 							/>
 							<Button variant="primary" onPress={setLink} size="sm">
-								{linkUrl ? "Set" : "Remove"}
+								{linkUrl ? t("newsletters.toolbar.link.set") : t("newsletters.toolbar.link.remove")}
 							</Button>
 						</div>
 						{linkError && <p className="text-danger text-xs">{linkError}</p>}

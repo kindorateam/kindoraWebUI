@@ -1,4 +1,5 @@
 import { ListBox, Select } from "@heroui/react"
+import { useTranslation } from "react-i18next"
 
 import { useEditorToolbarValue } from "./use-editor-toolbar-value"
 
@@ -9,12 +10,12 @@ const HEADING_LEVELS = [1, 2, 3, 4] as const
 type HeadingLevel = (typeof HEADING_LEVELS)[number]
 type TextStyleValue = "paragraph" | `h${HeadingLevel}` | ""
 
-const TEXT_STYLE_OPTIONS: { key: Exclude<TextStyleValue, "">; label: string }[] = [
-	{ key: "h1", label: "Heading 1" },
-	{ key: "h2", label: "Heading 2" },
-	{ key: "h3", label: "Heading 3" },
-	{ key: "h4", label: "Heading 4" },
-	{ key: "paragraph", label: "Paragraph" },
+const TEXT_STYLE_OPTIONS: { key: Exclude<TextStyleValue, "">; labelKey: string }[] = [
+	{ key: "h1", labelKey: "newsletters.toolbar.textStyles.heading1" },
+	{ key: "h2", labelKey: "newsletters.toolbar.textStyles.heading2" },
+	{ key: "h3", labelKey: "newsletters.toolbar.textStyles.heading3" },
+	{ key: "h4", labelKey: "newsletters.toolbar.textStyles.heading4" },
+	{ key: "paragraph", labelKey: "newsletters.toolbar.textStyles.paragraph" },
 ]
 
 interface TextStyleSelectProps {
@@ -78,6 +79,7 @@ const getTextStyleValue = (editor: Editor): TextStyleValue => {
 }
 
 const TextStyleSelect = ({ editor }: TextStyleSelectProps) => {
+	const { t } = useTranslation()
 	const [textStyleValue, setTextStyleValue] = useEditorToolbarValue(editor, getTextStyleValue)
 
 	const handleHeadingChange = (key: React.Key | null) => {
@@ -99,10 +101,10 @@ const TextStyleSelect = ({ editor }: TextStyleSelectProps) => {
 
 	return (
 		<Select
-			aria-label="Text style"
+			aria-label={t("newsletters.toolbar.textStyle")}
 			className="w-32"
 			onSelectionChange={handleHeadingChange}
-			placeholder="Style"
+			placeholder={t("newsletters.toolbar.stylePlaceholder")}
 			selectedKey={textStyleValue || null}
 			variant="secondary"
 		>
@@ -113,8 +115,8 @@ const TextStyleSelect = ({ editor }: TextStyleSelectProps) => {
 			<Select.Popover>
 				<ListBox>
 					{TEXT_STYLE_OPTIONS.map((option) => (
-						<ListBox.Item id={option.key} key={option.key} textValue={option.label}>
-							{option.label}
+						<ListBox.Item id={option.key} key={option.key} textValue={t(option.labelKey)}>
+							{t(option.labelKey)}
 							<ListBox.ItemIndicator />
 						</ListBox.Item>
 					))}

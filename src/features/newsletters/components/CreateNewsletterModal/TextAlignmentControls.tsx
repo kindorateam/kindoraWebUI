@@ -1,5 +1,6 @@
 import { ToggleButtonGroup } from "@heroui/react"
 import { useEffect, useRef } from "react"
+import { useTranslation } from "react-i18next"
 
 import TablerAlignCenter from "~icons/tabler/align-center"
 import TablerAlignLeft from "~icons/tabler/align-left"
@@ -41,6 +42,7 @@ const isAlignment = (value: ToolbarSelectionKey): value is Alignment =>
 	typeof value === "string" && ALIGNMENTS.includes(value as Alignment)
 
 const TextAlignmentControls = ({ editor }: TextAlignmentControlsProps) => {
+	const { t } = useTranslation()
 	const [selectedAlignment, setSelectedAlignment] = useEditorToolbarValue(editor, getSelectedAlignment)
 	const selectedImagePositionRef = useRef<number | null>(getSelectedImagePosition(editor))
 
@@ -86,7 +88,7 @@ const TextAlignmentControls = ({ editor }: TextAlignmentControlsProps) => {
 
 	return (
 		<ToggleButtonGroup
-			aria-label="Text alignment"
+			aria-label={t("newsletters.toolbar.textAlignment")}
 			className="flex gap-1"
 			disallowEmptySelection
 			isDetached
@@ -99,19 +101,19 @@ const TextAlignmentControls = ({ editor }: TextAlignmentControlsProps) => {
 				icon={<TablerAlignLeft className="size-4" />}
 				id="left"
 				onPress={() => applyAlignment("left")}
-				tooltip="Align left"
+				tooltip={t("newsletters.toolbar.alignLeft")}
 			/>
 			<ToolbarToggleButton
 				icon={<TablerAlignCenter className="size-4" />}
 				id="center"
 				onPress={() => applyAlignment("center")}
-				tooltip="Align center"
+				tooltip={t("newsletters.toolbar.alignCenter")}
 			/>
 			<ToolbarToggleButton
 				icon={<TablerAlignRight className="size-4" />}
 				id="right"
 				onPress={() => applyAlignment("right")}
-				tooltip="Align right"
+				tooltip={t("newsletters.toolbar.alignRight")}
 			/>
 		</ToggleButtonGroup>
 	)

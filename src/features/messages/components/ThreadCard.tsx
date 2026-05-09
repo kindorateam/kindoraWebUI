@@ -1,5 +1,6 @@
 import { Avatar } from "@heroui/react"
 import clsx from "clsx"
+import { useTranslation } from "react-i18next"
 
 import FluentPerson16Filled from "~icons/fluent/person-16-filled"
 import MdiClockTimeFourOutline from "~icons/mdi/clock-time-four-outline"
@@ -16,6 +17,8 @@ interface ThreadCardProps {
 }
 
 const ThreadCard = ({ isSelected, item, onPress, onToggleFavorite }: ThreadCardProps) => {
+	const { t } = useTranslation()
+
 	return (
 		<div
 			className={clsx(
@@ -57,7 +60,7 @@ const ThreadCard = ({ isSelected, item, onPress, onToggleFavorite }: ThreadCardP
 						</div>
 						{item.unreadCount ? (
 							<span className="inline-flex items-center rounded-full bg-success px-2 py-0.5 font-medium text-[11px] text-white shadow-sm">
-								{item.unreadCount} new
+								{t("messages.thread.newCount", { count: item.unreadCount })}
 							</span>
 						) : null}
 					</div>

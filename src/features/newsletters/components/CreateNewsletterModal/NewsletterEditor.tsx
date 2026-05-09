@@ -8,12 +8,13 @@ import Underline from "@tiptap/extension-underline"
 import { EditorContent, NodeViewWrapper, ReactNodeViewRenderer, useEditor } from "@tiptap/react"
 import StarterKit from "@tiptap/starter-kit"
 import { useEffect, useRef, useState } from "react"
+import { useTranslation } from "react-i18next"
 
 import { hasNewsletterContent } from "../../utils/newsletter-content"
 import { isSafeNewsletterLinkUrl, sanitizeNewsletterHtml } from "../../utils/newsletter-html"
 
 import EditorToolbar from "./EditorToolbar"
-import { FooterExtension, HeaderExtension } from "./extensions/header-footer"
+import { createFooterExtension, createHeaderExtension } from "./extensions/header-footer"
 import { type ImageSizeMode, getImageSizeMode } from "./image-toolbar-utils"
 
 import type { NodeViewProps } from "@tiptap/react"
@@ -187,48 +188,55 @@ const ResizableImage = Image.extend({
 })
 
 const NewsletterEditor = ({ content, onContentPresenceChange, onEditorContentGetterChange }: NewsletterEditorProps) => {
+	const { t } = useTranslation()
 	const [editorStateVersion, setEditorStateVersion] = useState(0)
+	const footerPlaceholder = t("newsletters.editor.footerPlaceholder")
+	const headerPlaceholder = t("newsletters.editor.headerPlaceholder")
+	const editorPlaceholder = t("newsletters.editor.placeholder")
 
-	const editor = useEditor({
-		extensions: [
-			StarterKit.configure({
-				heading: {
-					levels: [1, 2, 3, 4],
-				},
-				link: false,
-				underline: false,
-			}),
-			TaskList,
-			TaskItem.configure({ nested: true }),
-			Placeholder.configure({
-				placeholder: "Start writing your newsletter...",
-			}),
-			Link.configure({
-				openOnClick: false,
-				isAllowedUri: (url) => isSafeNewsletterLinkUrl(url),
-				HTMLAttributes: {
-					class: "newsletter-link",
-				},
-			}),
-			ResizableImage,
-			TextAlign.configure({
-				types: ["heading", "paragraph"],
-			}),
-			Underline,
-			HeaderExtension,
-			FooterExtension,
-		],
-		content,
-		onUpdate: ({ editor }) => {
-			onContentPresenceChange(!editor.isEmpty)
-		},
-		editorProps: {
-			attributes: {
-				class: "newsletter-editor",
+	const editor = useEditor(
+		{
+			extensions: [
+				StarterKit.configure({
+					heading: {
+						levels: [1, 2, 3, 4],
+					},
+					link: false,
+					underline: false,
+				}),
+				TaskList,
+				TaskItem.configure({ nested: true }),
+				Placeholder.configure({
+					placeholder: editorPlaceholder,
+				}),
+				Link.configure({
+					openOnClick: false,
+					isAllowedUri: (url) => isSafeNewsletterLinkUrl(url),
+					HTMLAttributes: {
+						class: "newsletter-link",
+					},
+				}),
+				ResizableImage,
+				TextAlign.configure({
+					types: ["heading", "paragraph"],
+				}),
+				Underline,
+				createHeaderExtension(headerPlaceholder),
+				createFooterExtension(footerPlaceholder),
+			],
+			content,
+			onUpdate: ({ editor }) => {
+				onContentPresenceChange(!editor.isEmpty)
 			},
+			editorProps: {
+				attributes: {
+					class: "newsletter-editor",
+				},
+			},
+			immediatelyRender: false,
 		},
-		immediatelyRender: false,
-	})
+		[editorPlaceholder, footerPlaceholder, headerPlaceholder],
+	)
 
 	// Keep derived toolbar state in one subscription instead of per-control listeners.
 	useEffect(() => {

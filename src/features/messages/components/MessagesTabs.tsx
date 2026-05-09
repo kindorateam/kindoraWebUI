@@ -1,4 +1,5 @@
 import { Tabs } from "@heroui/react"
+import { useTranslation } from "react-i18next"
 
 import type { MessageTab } from "../types"
 
@@ -8,19 +9,21 @@ interface MessagesTabsProps {
 }
 
 const MessagesTabs = ({ activeTab, onSelectionChange }: MessagesTabsProps) => {
+	const { t } = useTranslation()
+
 	return (
 		<Tabs className="w-full" selectedKey={activeTab} onSelectionChange={(key) => onSelectionChange(key as MessageTab)}>
 			<Tabs.ListContainer className="w-full">
 				<Tabs.List
-					aria-label="Messages tabs"
+					aria-label={t("messages.tabs.ariaLabel")}
 					className="w-full *:h-6 *:flex-1 *:px-3 *:font-normal *:text-sm *:data-[selected=true]:text-accent-foreground"
 				>
 					<Tabs.Tab id="all">
-						All messages
+						{t("messages.tabs.all")}
 						<Tabs.Indicator className="bg-accent" />
 					</Tabs.Tab>
 					<Tabs.Tab id="favorites">
-						Favorites
+						{t("messages.tabs.favorites")}
 						<Tabs.Indicator className="bg-accent" />
 					</Tabs.Tab>
 				</Tabs.List>

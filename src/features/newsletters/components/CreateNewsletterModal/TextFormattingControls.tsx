@@ -1,4 +1,5 @@
 import { ToggleButtonGroup } from "@heroui/react"
+import { useTranslation } from "react-i18next"
 
 import TablerBold from "~icons/tabler/bold"
 import TablerItalic from "~icons/tabler/italic"
@@ -41,6 +42,7 @@ const getSelectedFormatMarks = (editor: Editor) =>
 	new Set<ToolbarSelectionKey>(FORMAT_MARKS.filter((mark) => editor.isActive(mark)))
 
 const TextFormattingControls = ({ editor }: TextFormattingControlsProps) => {
+	const { t } = useTranslation()
 	const [selectedFormatMarks, setSelectedFormatMarks] = useEditorToolbarValue(editor, getSelectedFormatMarks)
 
 	const handleSelectionChange = (keys: Set<ToolbarSelectionKey>) => {
@@ -55,7 +57,7 @@ const TextFormattingControls = ({ editor }: TextFormattingControlsProps) => {
 
 	return (
 		<ToggleButtonGroup
-			aria-label="Text formatting"
+			aria-label={t("newsletters.toolbar.textFormatting")}
 			className="flex gap-1"
 			isDetached
 			onSelectionChange={handleSelectionChange}
@@ -63,10 +65,22 @@ const TextFormattingControls = ({ editor }: TextFormattingControlsProps) => {
 			selectionMode="multiple"
 			size="sm"
 		>
-			<ToolbarToggleButton icon={<TablerBold className="size-4" />} id="bold" tooltip="Bold" />
-			<ToolbarToggleButton icon={<TablerItalic className="size-4" />} id="italic" tooltip="Italic" />
-			<ToolbarToggleButton icon={<TablerUnderline className="size-4" />} id="underline" tooltip="Underline" />
-			<ToolbarToggleButton icon={<TablerStrikethrough className="size-4" />} id="strike" tooltip="Strikethrough" />
+			<ToolbarToggleButton icon={<TablerBold className="size-4" />} id="bold" tooltip={t("newsletters.toolbar.bold")} />
+			<ToolbarToggleButton
+				icon={<TablerItalic className="size-4" />}
+				id="italic"
+				tooltip={t("newsletters.toolbar.italic")}
+			/>
+			<ToolbarToggleButton
+				icon={<TablerUnderline className="size-4" />}
+				id="underline"
+				tooltip={t("newsletters.toolbar.underline")}
+			/>
+			<ToolbarToggleButton
+				icon={<TablerStrikethrough className="size-4" />}
+				id="strike"
+				tooltip={t("newsletters.toolbar.strikethrough")}
+			/>
 		</ToggleButtonGroup>
 	)
 }

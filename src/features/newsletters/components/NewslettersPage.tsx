@@ -1,5 +1,6 @@
 import { Tabs } from "@heroui/react"
 import { useState } from "react"
+import { useTranslation } from "react-i18next"
 
 import SubHeader from "@/components/SubHeader"
 
@@ -14,6 +15,7 @@ interface NewslettersPageProps {
 }
 
 export default function NewslettersPage({ activeTab, onTabChange }: NewslettersPageProps) {
+	const { t } = useTranslation()
 	const [isOpen, setIsOpen] = useState(false)
 	const onOpen = () => setIsOpen(true)
 	const onOpenChange = setIsOpen
@@ -25,19 +27,19 @@ export default function NewslettersPage({ activeTab, onTabChange }: NewslettersP
 					<Tabs selectedKey={activeTab} onSelectionChange={(key) => onTabChange(key as TabKey)}>
 						<Tabs.ListContainer>
 							<Tabs.List
-								aria-label="Newsletters tabs"
+								aria-label={t("newsletters.tabs.ariaLabel")}
 								className="w-fit *:h-6 *:w-fit *:px-3 *:font-normal *:text-sm *:data-[selected=true]:text-accent-foreground"
 							>
 								<Tabs.Tab id="sent">
-									Sent
+									{t("newsletters.tabs.sent")}
 									<Tabs.Indicator className="bg-accent" />
 								</Tabs.Tab>
 								<Tabs.Tab id="scheduled">
-									Scheduled
+									{t("newsletters.tabs.scheduled")}
 									<Tabs.Indicator className="bg-accent" />
 								</Tabs.Tab>
 								<Tabs.Tab id="drafts">
-									Drafts
+									{t("newsletters.tabs.drafts")}
 									<Tabs.Indicator className="bg-accent" />
 								</Tabs.Tab>
 							</Tabs.List>

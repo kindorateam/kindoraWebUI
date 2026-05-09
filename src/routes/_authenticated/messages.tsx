@@ -6,7 +6,7 @@ export const Route = createFileRoute("/_authenticated/messages")({
 	component: MessagesPage,
 	beforeLoad: () => {
 		return {
-			breadcrumb: "Messages",
+			breadcrumbKey: "messages.title",
 		}
 	},
 })

@@ -1,5 +1,6 @@
 import { Button, Input, Popover, Tooltip } from "@heroui/react"
 import { useState } from "react"
+import { useTranslation } from "react-i18next"
 
 import TablerPhoto from "~icons/tabler/photo"
 
@@ -13,6 +14,7 @@ interface ImageToolbarControlsProps {
 }
 
 const ImageToolbarControls = ({ editor }: ImageToolbarControlsProps) => {
+	const { t } = useTranslation()
 	const [imageUrl, setImageUrl] = useState("")
 	const [imageError, setImageError] = useState("")
 	const [isImageOpen, setIsImageOpen] = useState(false)
@@ -22,7 +24,7 @@ const ImageToolbarControls = ({ editor }: ImageToolbarControlsProps) => {
 		if (!nextImageUrl) return
 
 		if (!isSafeNewsletterImageUrl(nextImageUrl)) {
-			setImageError("Use a same-origin or configured media URL.")
+			setImageError(t("newsletters.toolbar.image.invalidUrl"))
 			return
 		}
 
@@ -46,14 +48,14 @@ const ImageToolbarControls = ({ editor }: ImageToolbarControlsProps) => {
 						<TablerPhoto className="size-4" />
 					</Button>
 				</Popover.Trigger>
-				<Tooltip.Content>Insert image</Tooltip.Content>
+				<Tooltip.Content>{t("newsletters.toolbar.insertImage")}</Tooltip.Content>
 			</Tooltip>
 			<Popover.Content>
 				<Popover.Dialog>
 					<div className="flex flex-col gap-2 p-2">
 						<div className="flex gap-2">
 							<Input
-								placeholder="Image URL"
+								placeholder={t("newsletters.toolbar.image.placeholder")}
 								value={imageUrl}
 								onKeyDown={(event) => event.key === "Enter" && addImage()}
 								onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
@@ -62,7 +64,7 @@ const ImageToolbarControls = ({ editor }: ImageToolbarControlsProps) => {
 								}}
 							/>
 							<Button variant="primary" isDisabled={!imageUrl} onPress={addImage} size="sm">
-								Add
+								{t("newsletters.toolbar.image.add")}
 							</Button>
 						</div>
 						{imageError && <p className="text-danger text-xs">{imageError}</p>}

@@ -1,5 +1,6 @@
 import { Button, Modal } from "@heroui/react"
 import { useEffect, useRef, useState } from "react"
+import { useTranslation } from "react-i18next"
 
 import { hasNewsletterContent } from "../../utils/newsletter-content"
 import { sanitizeNewsletterHtml } from "../../utils/newsletter-html"
@@ -13,6 +14,7 @@ interface CreateNewsletterModalProps {
 }
 
 const CreateNewsletterModal = ({ isOpen, onOpenChange }: CreateNewsletterModalProps) => {
+	const { t } = useTranslation()
 	const [currentStep, setCurrentStep] = useState<1 | 2>(1)
 	const [content, setContent] = useState("")
 	const [hasContent, setHasContent] = useState(false)
@@ -74,9 +76,9 @@ const CreateNewsletterModal = ({ isOpen, onOpenChange }: CreateNewsletterModalPr
 					<Modal.CloseTrigger />
 					<Modal.Header>
 						<div className="flex w-full items-center justify-between gap-4 pr-9">
-							<Modal.Heading>Create newsletter</Modal.Heading>
+							<Modal.Heading>{t("newsletters.create.title")}</Modal.Heading>
 							<span className="shrink-0 text-default-500 text-sm">
-								Step <span className="font-semibold text-foreground">{currentStep}/2</span>
+								{t("newsletters.create.step")} <span className="font-semibold text-foreground">{currentStep}/2</span>
 							</span>
 						</div>
 					</Modal.Header>
@@ -101,14 +103,14 @@ const CreateNewsletterModal = ({ isOpen, onOpenChange }: CreateNewsletterModalPr
 							{currentStep === 1 ? (
 								<>
 									<Button onPress={handleAddToTemplates} variant="secondary">
-										Add to templates
+										{t("newsletters.create.addToTemplates")}
 									</Button>
 									<div className="flex gap-3">
 										<Button onPress={handleSaveDraft} variant="secondary">
-											Save draft
+											{t("newsletters.create.saveDraft")}
 										</Button>
 										<Button variant="primary" isDisabled={!hasContent} onPress={nextStep}>
-											Preview →
+											{t("newsletters.create.preview")} →
 										</Button>
 									</div>
 								</>
@@ -117,10 +119,10 @@ const CreateNewsletterModal = ({ isOpen, onOpenChange }: CreateNewsletterModalPr
 									<div />
 									<div className="flex gap-3">
 										<Button onPress={prevStep} variant="ghost">
-											← Back
+											← {t("common.back")}
 										</Button>
 										<Button variant="primary" isDisabled={!hasContent} onPress={handleSend}>
-											Send
+											{t("newsletters.create.send")}
 										</Button>
 									</div>
 								</>

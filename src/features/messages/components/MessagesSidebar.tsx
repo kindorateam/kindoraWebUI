@@ -1,5 +1,6 @@
 import { Input, Label, TextField } from "@heroui/react"
 import clsx from "clsx"
+import { useTranslation } from "react-i18next"
 
 import ThreadCard from "./ThreadCard"
 
@@ -28,6 +29,8 @@ const MessagesSidebar = ({
 	onToggleFavorite,
 	onThreadSelect,
 }: MessagesSidebarProps) => {
+	const { t } = useTranslation()
+
 	return (
 		<section className={clsx("min-h-0 overflow-hidden", className)}>
 			<div className="flex h-full min-h-0 flex-col gap-3 rounded-2xl border border-default-200 bg-content1 p-3">
@@ -35,11 +38,11 @@ const MessagesSidebar = ({
 
 				<div className="flex items-end">
 					<TextField className="flex-1" variant="secondary">
-						<Label>Search chat</Label>
+						<Label>{t("messages.sidebar.searchLabel")}</Label>
 
 						<Input
-							aria-label="Search chat"
-							placeholder="Search by family or student name"
+							aria-label={t("messages.sidebar.searchLabel")}
+							placeholder={t("messages.sidebar.searchPlaceholder")}
 							value={searchValue}
 							onChange={(e: React.ChangeEvent<HTMLInputElement>) => onSearchChange(e.target.value)}
 						/>
@@ -61,12 +64,12 @@ const MessagesSidebar = ({
 						) : (
 							<div className="flex flex-1 flex-col items-center justify-center px-6 text-center">
 								<p className="font-medium text-foreground">
-									{hasThreads ? "No conversations found" : "No messages yet"}
+									{hasThreads ? t("messages.sidebar.noConversationsFound") : t("messages.empty.noMessages")}
 								</p>
 								<p className="mt-1 text-default-500 text-sm">
 									{hasThreads
-										? "Try a different name or switch tabs."
-										: "Family conversations will appear here once messages are available."}
+										? t("messages.sidebar.noConversationsDescription")
+										: t("messages.empty.noMessagesDescription")}
 								</p>
 							</div>
 						)}

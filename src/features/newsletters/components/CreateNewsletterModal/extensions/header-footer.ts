@@ -11,66 +11,68 @@ declare module "@tiptap/core" {
 	}
 }
 
-export const HeaderExtension = Node.create({
-	name: "emailHeader",
-	group: "block",
-	content: "block+",
-	defining: true,
-	isolating: true,
+export const createHeaderExtension = (placeholderText: string) =>
+	Node.create({
+		name: "emailHeader",
+		group: "block",
+		content: "block+",
+		defining: true,
+		isolating: true,
 
-	parseHTML() {
-		return [{ tag: 'header[data-type="email-header"]' }]
-	},
+		parseHTML() {
+			return [{ tag: 'header[data-type="email-header"]' }]
+		},
 
-	renderHTML({ HTMLAttributes }) {
-		return ["header", mergeAttributes(HTMLAttributes, { "data-type": "email-header" }), 0]
-	},
+		renderHTML({ HTMLAttributes }) {
+			return ["header", mergeAttributes(HTMLAttributes, { "data-type": "email-header" }), 0]
+		},
 
-	addCommands() {
-		return {
-			insertEmailHeader:
-				() =>
-				({ commands }) => {
-					return commands.insertContent([
-						{
-							type: this.name,
-							content: [{ type: "paragraph", content: [{ type: "text", text: "Your Logo Here" }] }],
-						},
-						{ type: "paragraph" },
-					])
-				},
-		}
-	},
-})
+		addCommands() {
+			return {
+				insertEmailHeader:
+					() =>
+					({ commands }) => {
+						return commands.insertContent([
+							{
+								type: this.name,
+								content: [{ type: "paragraph", content: [{ type: "text", text: placeholderText }] }],
+							},
+							{ type: "paragraph" },
+						])
+					},
+			}
+		},
+	})
 
-export const FooterExtension = Node.create({
-	name: "emailFooter",
-	group: "block",
-	content: "block+",
-	defining: true,
-	isolating: true,
+export const createFooterExtension = (placeholderText: string) =>
+	Node.create({
+		name: "emailFooter",
+		group: "block",
+		content: "block+",
+		defining: true,
+		isolating: true,
 
-	parseHTML() {
-		return [{ tag: 'footer[data-type="email-footer"]' }]
-	},
+		parseHTML() {
+			return [{ tag: 'footer[data-type="email-footer"]' }]
+		},
 
-	renderHTML({ HTMLAttributes }) {
-		return ["footer", mergeAttributes(HTMLAttributes, { "data-type": "email-footer" }), 0]
-	},
+		renderHTML({ HTMLAttributes }) {
+			return ["footer", mergeAttributes(HTMLAttributes, { "data-type": "email-footer" }), 0]
+		},
 
-	addCommands() {
-		return {
-			insertEmailFooter:
-				() =>
-				({ commands }) => {
-					return commands.insertContent([
-						{
-							type: this.name,
-							content: [{ type: "paragraph", content: [{ type: "text", text: "© 2026 Your Company" }] }],
-						},
-						{ type: "paragraph" },
-					])
-				},
-		}
-	},
-})
+		addCommands() {
+			return {
+				insertEmailFooter:
+					() =>
+					({ commands }) => {
+						return commands.insertContent([
+							{
+								type: this.name,
+								content: [{ type: "paragraph", content: [{ type: "text", text: placeholderText }] }],
+							},
+							{ type: "paragraph" },
+						])
+					},
+			}
+		},
+	})

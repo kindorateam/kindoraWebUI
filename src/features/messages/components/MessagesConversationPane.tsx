@@ -1,5 +1,6 @@
 import { Avatar, Button, Chip, Input, ScrollShadow, Tooltip } from "@heroui/react"
 import clsx from "clsx"
+import { useTranslation } from "react-i18next"
 
 import FluentPerson16Filled from "~icons/fluent/person-16-filled"
 import MdiArrowLeft from "~icons/mdi/arrow-left"
@@ -34,6 +35,7 @@ const MessagesConversationPane = ({
 	showBackButton,
 	thread,
 }: MessagesConversationPaneProps) => {
+	const { t } = useTranslation()
 	const isConnected = connection.status === "connected"
 
 	if (!thread) {
@@ -42,12 +44,12 @@ const MessagesConversationPane = ({
 				<div className="flex h-full min-h-0 w-full flex-col rounded-2xl border border-default-200 bg-content1">
 					<div className="flex flex-1 flex-col items-center justify-center px-6 text-center">
 						<p className="font-medium text-foreground text-lg">
-							{hasThreads ? "No conversation selected" : "No messages yet"}
+							{hasThreads ? t("messages.empty.noConversationSelected") : t("messages.empty.noMessages")}
 						</p>
 						<p className="mt-2 max-w-sm text-default-500 text-sm">
 							{hasThreads
-								? "Choose a conversation from the list to review messages and continue the chat."
-								: "When families send messages, the selected conversation will open here."}
+								? t("messages.empty.noConversationSelectedDescription")
+								: t("messages.empty.noMessagesDescription")}
 						</p>
 					</div>
 				</div>
@@ -69,7 +71,7 @@ const MessagesConversationPane = ({
 					<div className="flex min-w-0 flex-1 items-start gap-3">
 						{showBackButton ? (
 							<Button
-								aria-label="Back to conversations"
+								aria-label={t("messages.actions.backToConversations")}
 								className="lg:hidden"
 								isIconOnly
 								variant="ghost"
@@ -97,7 +99,10 @@ const MessagesConversationPane = ({
 										))}
 										{hiddenParents.length > 0 ? (
 											<Tooltip delay={0}>
-												<Tooltip.Trigger aria-label={`${hiddenParents.length} more parents`} className="cursor-pointer">
+												<Tooltip.Trigger
+													aria-label={t("messages.parents.moreParents", { count: hiddenParents.length })}
+													className="cursor-pointer"
+												>
 													<Chip size="sm" variant="soft">
 														+{hiddenParents.length}
 													</Chip>
@@ -113,17 +118,17 @@ const MessagesConversationPane = ({
 										) : null}
 									</>
 								) : (
-									<p className="text-default-500 text-xs leading-5">No parents linked</p>
+									<p className="text-default-500 text-xs leading-5">{t("messages.parents.noParentsLinked")}</p>
 								)}
 							</div>
 						</div>
 					</div>
 
 					<div className="flex items-center gap-1">
-						<Button aria-label="Search messages" isIconOnly variant="ghost">
+						<Button aria-label={t("messages.actions.searchMessages")} isIconOnly variant="ghost">
 							<MdiMagnify className="size-5" />
 						</Button>
-						<Button aria-label="More conversation actions" isIconOnly variant="ghost">
+						<Button aria-label={t("messages.actions.moreConversationActions")} isIconOnly variant="ghost">
 							<MdiDotsVertical className="size-5" />
 						</Button>
 					</div>
@@ -142,17 +147,22 @@ const MessagesConversationPane = ({
 
 					<div className="border-default-200 border-t p-3">
 						<div className="flex items-end gap-2">
-							<Button aria-label="Attach file" isIconOnly variant="ghost">
+							<Button aria-label={t("messages.actions.attachFile")} isIconOnly variant="ghost">
 								<SolarPaperclipLinear className="size-5" />
 							</Button>
 							<Input
-								aria-label="Type your message"
+								aria-label={t("messages.composer.inputAria")}
 								className="flex-1"
 								disabled={!isConnected}
-								placeholder="Type your message"
+								placeholder={t("messages.composer.placeholder")}
 								variant="secondary"
 							/>
-							<Button aria-label="Send message" isDisabled={!isConnected} isIconOnly variant="primary">
+							<Button
+								aria-label={t("messages.actions.sendMessage")}
+								isDisabled={!isConnected}
+								isIconOnly
+								variant="primary"
+							>
 								<MingcuteSendFill className="size-5" />
 							</Button>
 						</div>
