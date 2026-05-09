@@ -7,6 +7,8 @@ import type { CalendarViewType } from "../types"
 
 export const hideWeekendsAtom = atomWithStorage<boolean>("calendar-hide-weekends", false)
 
+export const showMealsAtom = atomWithStorage<boolean>("calendar-show-meals", true)
+
 export const calendarViewAtom = atomWithStorage<CalendarViewType>("calendar-view", "timeGridWeek")
 
 export const dateRangeAtom = atom<{ start: string; end: string }>({

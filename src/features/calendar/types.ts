@@ -1,3 +1,7 @@
+import type { MealType } from "@/features/meals/types"
+
+export type CalendarDisplayKind = "event" | "meal"
+
 export interface CalendarEvent {
 	id: string
 	title: string
@@ -8,6 +12,11 @@ export interface CalendarEvent {
 	color?: string
 	repeatFrequency?: EventRepeatFrequency
 	excludedDates?: string[]
+	displayKind?: CalendarDisplayKind
+	sourceId?: string
+	mealType?: MealType
+	allergens?: string[]
+	items?: string[]
 }
 
 export type EventRepeatFrequency = "none" | "daily" | "weekly" | "monthly" | "yearly"
