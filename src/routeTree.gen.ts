@@ -19,6 +19,7 @@ import { Route as AuthenticatedRoomsRouteImport } from './routes/_authenticated/
 import { Route as AuthenticatedReportsRouteImport } from './routes/_authenticated/reports'
 import { Route as AuthenticatedNewslettersRouteImport } from './routes/_authenticated/newsletters'
 import { Route as AuthenticatedMessagesRouteImport } from './routes/_authenticated/messages'
+import { Route as AuthenticatedMealsRouteImport } from './routes/_authenticated/meals'
 import { Route as AuthenticatedInsightsRouteImport } from './routes/_authenticated/insights'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedCalendarRouteImport } from './routes/_authenticated/calendar'
@@ -79,6 +80,11 @@ const AuthenticatedNewslettersRoute =
 const AuthenticatedMessagesRoute = AuthenticatedMessagesRouteImport.update({
   id: '/messages',
   path: '/messages',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedMealsRoute = AuthenticatedMealsRouteImport.update({
+  id: '/meals',
+  path: '/meals',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
 const AuthenticatedInsightsRoute = AuthenticatedInsightsRouteImport.update({
@@ -154,6 +160,7 @@ export interface FileRoutesByFullPath {
   '/calendar': typeof AuthenticatedCalendarRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/insights': typeof AuthenticatedInsightsRoute
+  '/meals': typeof AuthenticatedMealsRoute
   '/messages': typeof AuthenticatedMessagesRoute
   '/newsletters': typeof AuthenticatedNewslettersRoute
   '/reports': typeof AuthenticatedReportsRoute
@@ -176,6 +183,7 @@ export interface FileRoutesByTo {
   '/calendar': typeof AuthenticatedCalendarRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/insights': typeof AuthenticatedInsightsRoute
+  '/meals': typeof AuthenticatedMealsRoute
   '/messages': typeof AuthenticatedMessagesRoute
   '/newsletters': typeof AuthenticatedNewslettersRoute
   '/reports': typeof AuthenticatedReportsRoute
@@ -198,6 +206,7 @@ export interface FileRoutesById {
   '/_authenticated/calendar': typeof AuthenticatedCalendarRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/insights': typeof AuthenticatedInsightsRoute
+  '/_authenticated/meals': typeof AuthenticatedMealsRoute
   '/_authenticated/messages': typeof AuthenticatedMessagesRoute
   '/_authenticated/newsletters': typeof AuthenticatedNewslettersRoute
   '/_authenticated/reports': typeof AuthenticatedReportsRoute
@@ -222,6 +231,7 @@ export interface FileRouteTypes {
     | '/calendar'
     | '/dashboard'
     | '/insights'
+    | '/meals'
     | '/messages'
     | '/newsletters'
     | '/reports'
@@ -244,6 +254,7 @@ export interface FileRouteTypes {
     | '/calendar'
     | '/dashboard'
     | '/insights'
+    | '/meals'
     | '/messages'
     | '/newsletters'
     | '/reports'
@@ -265,6 +276,7 @@ export interface FileRouteTypes {
     | '/_authenticated/calendar'
     | '/_authenticated/dashboard'
     | '/_authenticated/insights'
+    | '/_authenticated/meals'
     | '/_authenticated/messages'
     | '/_authenticated/newsletters'
     | '/_authenticated/reports'
@@ -356,6 +368,13 @@ declare module '@tanstack/react-router' {
       path: '/messages'
       fullPath: '/messages'
       preLoaderRoute: typeof AuthenticatedMessagesRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/meals': {
+      id: '/_authenticated/meals'
+      path: '/meals'
+      fullPath: '/meals'
+      preLoaderRoute: typeof AuthenticatedMealsRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/insights': {
@@ -493,6 +512,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedCalendarRoute: typeof AuthenticatedCalendarRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedInsightsRoute: typeof AuthenticatedInsightsRoute
+  AuthenticatedMealsRoute: typeof AuthenticatedMealsRoute
   AuthenticatedMessagesRoute: typeof AuthenticatedMessagesRoute
   AuthenticatedNewslettersRoute: typeof AuthenticatedNewslettersRoute
   AuthenticatedReportsRoute: typeof AuthenticatedReportsRoute
@@ -508,6 +528,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedCalendarRoute: AuthenticatedCalendarRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedInsightsRoute: AuthenticatedInsightsRoute,
+  AuthenticatedMealsRoute: AuthenticatedMealsRoute,
   AuthenticatedMessagesRoute: AuthenticatedMessagesRoute,
   AuthenticatedNewslettersRoute: AuthenticatedNewslettersRoute,
   AuthenticatedReportsRoute: AuthenticatedReportsRoute,
