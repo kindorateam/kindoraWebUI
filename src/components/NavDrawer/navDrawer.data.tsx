@@ -24,6 +24,7 @@ const navDrawerData: NavDrawerItem[] = [
 			{ labelKey: "nav.rooms", path: "/rooms" },
 			{ labelKey: "nav.staff", path: "/staff" },
 			{ labelKey: "nav.calendar", path: "/calendar" },
+			{ labelKey: "nav.meals", path: "/meals" },
 			{ labelKey: "nav.newsActivity", path: "/news-activity" },
 		],
 	},

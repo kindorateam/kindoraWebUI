@@ -12,6 +12,12 @@ import { openCreateEventModal } from "../stores/eventModal.store"
 
 import type { CalendarViewType } from "../types"
 
+type SwitchChangeValue = boolean | { target: { checked: boolean } }
+
+const getSwitchSelection = (value: SwitchChangeValue) => {
+	return typeof value === "boolean" ? value : value.target.checked
+}
+
 interface Props {
 	title: string
 	onNavigatePrev: () => void
@@ -52,7 +58,11 @@ const CalendarToolbar = ({
 			</div>
 
 			<div className="flex w-full flex-wrap items-center gap-3 lg:w-auto lg:justify-end">
-				<Switch size="sm" isSelected={hideWeekends} onChange={onHideWeekendsChange}>
+				<Switch
+					size="sm"
+					isSelected={hideWeekends}
+					onChange={(value) => onHideWeekendsChange(getSwitchSelection(value))}
+				>
 					<Switch.Control>
 						<Switch.Thumb />
 					</Switch.Control>
@@ -61,7 +71,7 @@ const CalendarToolbar = ({
 					</Switch.Content>
 				</Switch>
 
-				<Switch size="sm" isSelected={showMeals} onChange={onShowMealsChange}>
+				<Switch size="sm" isSelected={showMeals} onChange={(value) => onShowMealsChange(getSwitchSelection(value))}>
 					<Switch.Control>
 						<Switch.Thumb />
 					</Switch.Control>
