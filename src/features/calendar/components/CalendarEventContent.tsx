@@ -46,6 +46,15 @@ const CalendarEventContent = ({ eventInfo }: CalendarEventContentProps) => {
 		"--calendar-event-bg": getEventTint(color),
 	} as React.CSSProperties
 
+	if (eventInfo.event.extendedProps.displayKind === "meal" && eventInfo.view.type !== "dayGridMonth") {
+		return (
+			<div className="calendar-event-meal" style={style}>
+				{eventInfo.timeText && <span className="calendar-event-meal__type">{eventInfo.timeText}</span>}
+				<span className="calendar-event-meal__title">{eventInfo.event.title}</span>
+			</div>
+		)
+	}
+
 	if (eventInfo.view.type !== "dayGridMonth") {
 		return (
 			<div className="calendar-event-default" style={style}>

@@ -56,11 +56,17 @@ const CalendarFullView = ({
 		start: event.start,
 		end: event.end,
 		allDay: event.allDay,
+		editable: event.displayKind !== "meal",
 		backgroundColor: isMonthView ? "transparent" : event.color,
 		borderColor: isMonthView ? "transparent" : event.color,
 		extendedProps: {
 			color: event.color || DEFAULT_EVENT_COLOR,
 			description: event.description,
+			displayKind: event.displayKind ?? "event",
+			sourceId: event.sourceId,
+			mealType: event.mealType,
+			allergens: event.allergens,
+			items: event.items,
 		},
 	}))
 

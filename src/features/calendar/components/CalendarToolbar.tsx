@@ -19,6 +19,8 @@ interface Props {
 	onNavigateToday: () => void
 	hideWeekends: boolean
 	onHideWeekendsChange: (isSelected: boolean) => void
+	showMeals: boolean
+	onShowMealsChange: (isSelected: boolean) => void
 }
 
 const CalendarToolbar = ({
@@ -28,6 +30,8 @@ const CalendarToolbar = ({
 	onNavigateToday,
 	hideWeekends,
 	onHideWeekendsChange,
+	showMeals,
+	onShowMealsChange,
 }: Props) => {
 	const { t } = useTranslation()
 	const [currentView, setCurrentView] = useAtom(calendarViewAtom)
@@ -54,6 +58,15 @@ const CalendarToolbar = ({
 					</Switch.Control>
 					<Switch.Content>
 						<Label className="text-default-600">{t("calendar.toolbar.hideWeekends")}</Label>
+					</Switch.Content>
+				</Switch>
+
+				<Switch size="sm" isSelected={showMeals} onChange={onShowMealsChange}>
+					<Switch.Control>
+						<Switch.Thumb />
+					</Switch.Control>
+					<Switch.Content>
+						<Label className="text-default-600">{t("calendar.toolbar.showMeals")}</Label>
 					</Switch.Content>
 				</Switch>
 

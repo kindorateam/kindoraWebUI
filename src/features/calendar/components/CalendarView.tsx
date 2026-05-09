@@ -4,11 +4,14 @@ import { useEffect, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
 
 import TableError from "@/components/TableError"
+import { useMealPlans } from "@/features/meals/hooks/useMeals"
+import { openMealDetailsModal } from "@/features/meals/stores/mealDetailsModal.store"
+import { mealPlansToCalendarEvents } from "@/features/meals/utils/mealCalendar"
 import { getErrorMessage } from "@/utils/error"
 
 import { useCalendarEvents, useUpdateEvent } from "../hooks/useCalendar"
 import { useCalendarNavigation } from "../hooks/useCalendarNavigation"
-import { calendarViewAtom, dateRangeAtom, hideWeekendsAtom } from "../stores/calendarSettings.store"
+import { calendarViewAtom, dateRangeAtom, hideWeekendsAtom, showMealsAtom } from "../stores/calendarSettings.store"
 import { openCreateEventModal, openEditEventModal } from "../stores/eventModal.store"
 
 import CalendarFullView from "./CalendarFullView"
@@ -38,6 +41,7 @@ const CalendarView = () => {
 	const [weekendDateToRestore, setWeekendDateToRestore] = useState<Date | null>(null)
 	const [currentView, setCurrentView] = useAtom(calendarViewAtom)
 	const [hideWeekends, setHideWeekends] = useAtom(hideWeekendsAtom)
+	const [showMeals, setShowMeals] = useAtom(showMealsAtom)
 	const dateRange = useAtomValue(dateRangeAtom)
 	const updateEventMutation = useUpdateEvent()
 	const { handleDatesSet, handleNext, handlePrev, handleToday, handleYearMonthSelect, isYearView, title, visibleYear } =
@@ -56,6 +60,14 @@ const CalendarView = () => {
 		start: dateRange.start,
 		end: dateRange.end,
 	})
+	const { data: mealPlans = [] } = useMealPlans(
+		{
+			start: dateRange.start,
+			end: dateRange.end,
+		},
+		showMeals,
+	)
+	const visibleCalendarItems = showMeals ? [...events, ...mealPlansToCalendarEvents(mealPlans)] : events
 
 	const handleDateSelect = (selectInfo: DateSelectArg) => {
 		openCreateEventModal({
@@ -67,7 +79,18 @@ const CalendarView = () => {
 	}
 
 	const handleEventClick = (clickInfo: EventClickArg) => {
-		const matchedEvent = events.find((event) => event.id === clickInfo.event.id)
+		const matchedEvent = visibleCalendarItems.find((event) => event.id === clickInfo.event.id)
+
+		if (matchedEvent?.displayKind === "meal") {
+			const mealPlan = mealPlans.find((item) => item.id === matchedEvent.sourceId)
+
+			if (mealPlan) {
+				openMealDetailsModal(mealPlan)
+			}
+
+			return
+		}
+
 		if (matchedEvent) {
 			closeMorePopover()
 			openEditEventModal(matchedEvent)
@@ -161,11 +184,13 @@ const CalendarView = () => {
 				onNavigateToday={handleToolbarNavigateToday}
 				hideWeekends={hideWeekends}
 				onHideWeekendsChange={handleHideWeekendsChange}
+				showMeals={showMeals}
+				onShowMealsChange={setShowMeals}
 			/>
 			<div className="calendar-surface relative">
 				{isYearView ? (
 					<CalendarYearView
-						events={events}
+						events={visibleCalendarItems}
 						hideWeekends={hideWeekends}
 						onMonthSelect={handleYearMonthSelect}
 						year={visibleYear}
@@ -174,7 +199,7 @@ const CalendarView = () => {
 					<CalendarFullView
 						calendarRef={calendarRef}
 						currentView={currentView}
-						events={events}
+						events={visibleCalendarItems}
 						hideWeekends={hideWeekends}
 						onDateSelect={handleDateSelect}
 						onDatesSet={handleDatesSet}

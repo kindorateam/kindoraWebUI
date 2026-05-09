@@ -1,5 +1,7 @@
 import { useTranslation } from "react-i18next"
 
+import MealDetailsModal from "@/features/meals/components/MealDetailsModal"
+
 import CalendarView from "./CalendarView"
 import DeleteEventModal from "./DeleteEventModal"
 import EventModal from "./EventModal"
@@ -17,6 +19,7 @@ export default function CalendarPage() {
 				<CalendarView />
 			</main>
 			<EventModal />
+			<MealDetailsModal />
 			<DeleteEventModal />
 		</>
 	)
