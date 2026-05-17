@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next"
 import { closeMealDetailsModal, mealDetailsModalAtom } from "../stores/mealDetailsModal.store"
 
 const MealDetailsModal = () => {
-	const { t } = useTranslation()
+	const { t, i18n } = useTranslation()
 	const { isOpen, mealPlan } = useAtomValue(mealDetailsModalAtom)
 
 	return (
@@ -23,6 +23,18 @@ const MealDetailsModal = () => {
 									<Label className="text-default-500 text-xs">{t("meals.fields.type")}</Label>
 									<p className="font-medium text-sm">{t(`meals.types.${mealPlan.mealType}`)}</p>
 								</div>
+								{mealPlan.repeatFrequency === "weekly" && (
+									<div className="grid gap-1">
+										<Label className="text-default-500 text-xs">{t("meals.fields.repeat")}</Label>
+										<p className="font-medium text-sm">
+											{mealPlan.repeatUntil
+												? t("meals.repeat.weeklyUntil", {
+														date: new Date(`${mealPlan.repeatUntil}T00:00:00`).toLocaleDateString(i18n.language),
+													})
+												: t("meals.repeat.weekly")}
+										</p>
+									</div>
+								)}
 								<div className="grid gap-1">
 									<Label className="text-default-500 text-xs">{t("meals.fields.items")}</Label>
 									<div className="flex flex-wrap gap-1.5">

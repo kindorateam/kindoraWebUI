@@ -8,58 +8,34 @@ import { getErrorMessage } from "@/utils/error"
 import { MEAL_TYPE_OPTIONS } from "../constants"
 import { useCreateMealPlan, useUpdateMealPlan } from "../hooks/useMeals"
 import { closeMealPlanModal, mealPlanModalAtom } from "../stores/mealPlanModal.store"
+import { getMealPlanFormState, splitMealFormList } from "../utils/mealForm"
+
+import MealRepeatFields from "./MealRepeatFields"
 
 import type { MealType } from "../types"
-
-interface MealPlanFormState {
-	date: string
-	mealType: MealType
-	title: string
-	servedTime: string
-	items: string
-	allergens: string
-	notes: string
-}
-
-const getTodayDate = () => new Date().toISOString().slice(0, 10)
-
-const splitList = (value: string) =>
-	value
-		.split(",")
-		.map((item) => item.trim())
-		.filter(Boolean)
+import type { MealPlanFormState } from "../utils/mealForm"
 
 const MealPlanModal = () => {
 	const { t } = useTranslation()
 	const { isOpen, mealPlan } = useAtomValue(mealPlanModalAtom)
 	const createMealPlanMutation = useCreateMealPlan()
 	const updateMealPlanMutation = useUpdateMealPlan()
-	const [formData, setFormData] = useState<MealPlanFormState>({
-		date: getTodayDate(),
-		mealType: "lunch",
-		title: "",
-		servedTime: "11:30",
-		items: "",
-		allergens: "",
-		notes: "",
-	})
+	const [formData, setFormData] = useState<MealPlanFormState>(getMealPlanFormState())
 
 	useEffect(() => {
 		if (!isOpen) return
 
-		setFormData({
-			date: mealPlan?.date ?? getTodayDate(),
-			mealType: mealPlan?.mealType ?? "lunch",
-			title: mealPlan?.title ?? "",
-			servedTime: mealPlan?.servedAt.slice(11, 16) ?? "11:30",
-			items: mealPlan?.items.join(", ") ?? "",
-			allergens: mealPlan?.allergens.join(", ") ?? "",
-			notes: mealPlan?.notes ?? "",
-		})
+		setFormData(getMealPlanFormState(mealPlan))
 	}, [isOpen, mealPlan])
 
 	const updateField = <K extends keyof MealPlanFormState>(field: K, value: MealPlanFormState[K]) => {
-		setFormData((prev) => ({ ...prev, [field]: value }))
+		setFormData((prev) => {
+			if (field === "repeatFrequency" && value === "none") {
+				return { ...prev, repeatFrequency: "none", repeatUntil: "" }
+			}
+
+			return { ...prev, [field]: value }
+		})
 	}
 
 	const handleSubmit = () => {
@@ -69,10 +45,12 @@ const MealPlanModal = () => {
 			date: formData.date,
 			mealType: formData.mealType,
 			title: formData.title.trim(),
-			items: splitList(formData.items),
-			allergens: splitList(formData.allergens),
+			items: splitMealFormList(formData.items),
+			allergens: splitMealFormList(formData.allergens),
 			roomIds: mealPlan?.roomIds ?? [],
 			notes: formData.notes.trim() || undefined,
+			repeatFrequency: formData.repeatFrequency,
+			repeatUntil: formData.repeatFrequency === "weekly" ? formData.repeatUntil || undefined : undefined,
 			servedAt: `${formData.date}T${formData.servedTime}:00`,
 		}
 		const onSuccess = () => {
@@ -164,6 +142,13 @@ const MealPlanModal = () => {
 							<Label>{t("meals.fields.notes")}</Label>
 							<TextArea value={formData.notes} onChange={(event) => updateField("notes", event.target.value)} />
 						</TextField>
+
+						<MealRepeatFields
+							repeatFrequency={formData.repeatFrequency}
+							repeatUntil={formData.repeatUntil}
+							onRepeatFrequencyChange={(repeatFrequency) => updateField("repeatFrequency", repeatFrequency)}
+							onRepeatUntilChange={(repeatUntil) => updateField("repeatUntil", repeatUntil)}
+						/>
 					</Modal.Body>
 					<Modal.Footer>
 						<Button variant="secondary" onPress={closeMealPlanModal} isDisabled={isLoading}>

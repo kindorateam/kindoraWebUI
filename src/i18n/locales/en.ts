@@ -163,9 +163,19 @@ const en = {
 			date: "Date",
 			items: "Items",
 			notes: "Notes",
+			repeat: "Repeat",
+			repeatUntil: "Repeat until",
 			servedTime: "Serving time",
 			title: "Menu title",
 			type: "Meal type",
+		},
+		placeholders: {
+			noRepeatEnd: "No end date",
+		},
+		repeat: {
+			none: "Does not repeat",
+			weekly: "Repeat weekly",
+			weeklyUntil: "Repeats weekly until {{date}}",
 		},
 		modal: {
 			createTitle: "Add meal plan",

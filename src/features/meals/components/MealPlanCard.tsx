@@ -24,6 +24,7 @@ const MealPlanCard = ({ mealPlan }: MealPlanCardProps) => {
 						<p className="font-semibold text-foreground">{mealPlan.title}</p>
 						<p className="text-default-500 text-sm">
 							{servedAt} · {t(`meals.types.${mealPlan.mealType}`)}
+							{mealPlan.repeatFrequency === "weekly" ? ` · ${t("meals.repeat.weekly")}` : ""}
 						</p>
 					</div>
 					<div className="flex flex-wrap gap-1.5">

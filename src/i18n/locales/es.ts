@@ -163,9 +163,19 @@ const es = {
 			date: "Fecha",
 			items: "Elementos",
 			notes: "Notas",
+			repeat: "Repetir",
+			repeatUntil: "Repetir hasta",
 			servedTime: "Hora de servicio",
 			title: "Título del menú",
 			type: "Tipo de comida",
+		},
+		placeholders: {
+			noRepeatEnd: "Sin fecha de fin",
+		},
+		repeat: {
+			none: "No se repite",
+			weekly: "Repetir semanalmente",
+			weeklyUntil: "Se repite semanalmente hasta {{date}}",
 		},
 		modal: {
 			createTitle: "Agregar plan de comida",

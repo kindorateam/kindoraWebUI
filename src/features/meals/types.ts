@@ -1,4 +1,5 @@
 export type MealType = "breakfast" | "lunch" | "snack"
+export type MealRepeatFrequency = "none" | "weekly"
 
 export interface MealPlan {
 	id: string
@@ -9,7 +10,10 @@ export interface MealPlan {
 	allergens: string[]
 	roomIds: string[]
 	notes?: string
+	repeatFrequency: MealRepeatFrequency
+	repeatUntil?: string
 	servedAt: string
+	baseMealPlanId?: string
 }
 
 export interface GetMealPlansParams {
@@ -25,6 +29,8 @@ export interface CreateMealPlanPayload {
 	allergens: string[]
 	roomIds: string[]
 	notes?: string
+	repeatFrequency: MealRepeatFrequency
+	repeatUntil?: string
 	servedAt: string
 }
 
