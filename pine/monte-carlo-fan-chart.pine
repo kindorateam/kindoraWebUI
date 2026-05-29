@@ -19,6 +19,7 @@ bool   volatilityAdj = input.bool(true, "Volatility Adjust", group=gAdj, tooltip
 bool   useLog        = input.string("Log Returns", "Returns Style", group=gAdj, options=["Percent", "Log Returns"]) == "Log Returns"
 bool   waitForSteps  = input.bool(false, "Update Every Bar", group=gAdj)
 bool   realtime      = input.bool(false, "Real-time (Every Tick)", group=gAdj, tooltip="Recompute the whole simulation on every incoming tick. Heavy — may hit Pine's calculation-time limit at high simulation counts. Uses a deterministic per-bar seed so the picture stays stable within a bar and only shifts as price moves.")
+int    throttleSecs  = input.int(1, "Real-time Throttle (sec)", group=gAdj, minval=0, tooltip="In real-time mode, recompute at most once per this many seconds (wall-clock). 0 = every tick (heaviest).")
 
 string gVis = "Visual Preferences"
 bool   showFan    = input.bool(true,  "Show Fan Bands",             group=gVis)
@@ -303,16 +304,20 @@ if barstate.islast
     if bar_index + 1 < driftLength
         runtime.error('Use a "Drift" less than available bars: ' + str.tostring(bar_index))
 
-    var int counter = -1
+    var int counter  = -1
+    var int lastCalc = 0
     counter += 1
     bool once = counter == 0 ? true : barstate.isconfirmed
-    bool wait = realtime ? true : (not waitForSteps ? (0 == counter % steps and once) : (0 == counter or barstate.isconfirmed))
+    // Real-time throttle: recompute at most once per `throttleSecs` (0 = every tick).
+    bool tickReady = throttleSecs == 0 or counter == 0 or (timenow - lastCalc >= throttleSecs * 1000)
+    bool wait = realtime ? tickReady : (not waitForSteps ? (0 == counter % steps and once) : (0 == counter or barstate.isconfirmed))
 
     if wait
         // Real-time: reseed deterministically per bar so the picture is stable within a bar
         // (only price drift changes it), not jittering on every tick from an advancing seed.
         if realtime
-            seed := bar_index * 7919 + 1
+            seed     := bar_index * 7919 + 1
+            lastCalc := timenow
         [Rdm, mu, sigma] = prep_returns(lookback, useLog, volatilityAdj)
         float dterm = drift_term(driftLength, driftStyle, mu, dStdGlobal)
         [lowArr, highArr, bwArr] = build_ranges(open, sigma, steps, useLog)
