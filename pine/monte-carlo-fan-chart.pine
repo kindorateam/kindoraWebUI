@@ -27,8 +27,8 @@ bool   showPct    = input.bool(true,  "Distribution % Labels",      group=gVis, 
 bool   startLine  = input.bool(true,  "Starting Line",              group=gVis)
 
 string gCol = "Color Preferences"
-color colBull   = input.color(#00FFFF, "Bullish", group=gCol, inline="c")
-color colBear   = input.color(#FF22CC, "Bearish", group=gCol, inline="c")
+color colBull   = input.color(#26C281, "Bullish", group=gCol, inline="c")
+color colBear   = input.color(#FF4D4D, "Bearish", group=gCol, inline="c")
 color colMedian = input.color(#FFB617, "Median",  group=gCol)
 color colStart  = input.color(#7E7E7E, "Start",   group=gCol)
 color colText   = input.color(#FFFFFF, "Text",    group=gCol)
@@ -200,7 +200,7 @@ render_fan(matrix<int> bm, int nsteps, array<float> lowArr, array<float> bwArr, 
             int   transp = (g == 1 or g == 2) ? 60 : 80   // inner gaps brighter
             float mass   = (levels.get(g + 1) - levels.get(g)) * 100.0   // probability mass in this band
             string txt   = showPct and last ? str.tostring(mass, "#") + "%" : ""
-            box b = box.new(xL, top, xR, bot, border_color=#00000000, bgcolor=color.new(base, transp), text=txt, text_color=cText, text_size=size.tiny, text_halign=text.align_right)
+            box b = box.new(xL, top, xR, bot, border_color=#00000000, bgcolor=color.new(base, transp), text=txt, text_color=cText, text_size=size.normal, text_halign=text.align_right)
             fanBoxes.push(b)
 
 // Returns the new polyline; caller reassigns the global var (Pine forbids reassigning globals in fns).
@@ -255,7 +255,7 @@ render_terminal(matrix<int> bm, int nsteps, array<float> lowArr, array<float> bw
             color base   = center >= open ? cBull : cBear
             float prob   = total > 0 ? 100.0 * bm.get(t, c) / total : 0.0
             string txt   = showPct and prob >= 0.05 ? str.tostring(prob, "#.##") + "%" : ""
-            box b = box.new(x0, lo + (c + 1) * bw, x0 + width, lo + c * bw, border_color=#00000000, bgcolor=color.new(base, 30), text=txt, text_color=cText, text_size=size.tiny, text_halign=text.align_left)
+            box b = box.new(x0, lo + (c + 1) * bw, x0 + width, lo + c * bw, border_color=#00000000, bgcolor=color.new(base, 30), text=txt, text_color=cText, text_size=size.small, text_halign=text.align_left)
             termBoxes.push(b)
 
 // Returns the new line; caller reassigns the global var.
