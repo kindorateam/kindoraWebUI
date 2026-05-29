@@ -24,6 +24,7 @@ bool   showFan    = input.bool(true,  "Show Fan Bands",             group=gVis)
 bool   showMedian = input.bool(true,  "Show Median Path",           group=gVis)
 bool   showTerm   = input.bool(true,  "Show Terminal Distribution", group=gVis)
 bool   showPct    = input.bool(true,  "Distribution % Labels",      group=gVis, tooltip="Print each bin's probability on the terminal distribution.")
+bool   showBias   = input.bool(true,  "Bull/Bear Bias",             group=gVis, tooltip="Show total probability of finishing above (bulls) vs below (bears) the start price.")
 bool   startLine  = input.bool(true,  "Starting Line",              group=gVis)
 
 string gCol = "Color Preferences"
@@ -178,6 +179,7 @@ var array<box>  fanBoxes  = array.new<box>()
 var array<box>  termBoxes = array.new<box>()
 var polyline    medianLine = na
 var line        startLn    = na
+var table       biasTable  = table.new(position.top_right, 2, 2, border_width=1)
 
 clear_boxes(array<box> arr) =>
     if arr.size() > 0
@@ -264,6 +266,30 @@ render_start(line prev, color c) =>
         prev.delete()
     line.new(bar_index, open, bar_index + 1, open, color=c, extend=extend.left)
 
+// Bull/Bear bias: total probability of finishing above vs below the start price,
+// measured from the terminal step's bins. Rendered into the persistent biasTable.
+render_bias(matrix<int> bm, int nsteps, array<float> lowArr, array<float> bwArr, int nbins, float basePrice, color cBull, color cBear, color cText) =>
+    int t = nsteps - 1
+    int bull = 0
+    int bear = 0
+    float lo = lowArr.get(t)
+    float bw = bwArr.get(t)
+    for c = 0 to nbins - 1
+        float center = lo + (c + 0.5) * bw
+        int   cnt    = bm.get(t, c)
+        if center >= basePrice
+            bull += cnt
+        else
+            bear += cnt
+    int   total    = bull + bear
+    float bullPct  = total > 0 ? 100.0 * bull / total : 0.0
+    float bearPct  = total > 0 ? 100.0 * bear / total : 0.0
+    string lead    = bullPct >= bearPct ? "▲ BULLS" : "▼ BEARS"
+    biasTable.cell(0, 0, lead, text_color=cText, bgcolor=bullPct >= bearPct ? cBull : cBear, text_size=size.normal)
+    biasTable.cell(1, 0, str.tostring(math.max(bullPct, bearPct), "#.#") + "%", text_color=cText, bgcolor=bullPct >= bearPct ? cBull : cBear, text_size=size.normal)
+    biasTable.cell(0, 1, "▲ " + str.tostring(bullPct, "#.#") + "%", text_color=cText, bgcolor=color.new(cBull, 70), text_size=size.small)
+    biasTable.cell(1, 1, "▼ " + str.tostring(bearPct, "#.#") + "%", text_color=cText, bgcolor=color.new(cBear, 70), text_size=size.small)
+
 // ============================== DRIVER ==============================
 var float seed = 987654321
 
@@ -298,6 +324,8 @@ if barstate.islast
             render_terminal(binsM, steps, lowArr, bwArr, bins, smoothing, colBull, colBear, colText, showPct)
         if startLine
             startLn := render_start(startLn, colStart)
+        if showBias
+            render_bias(binsM, steps, lowArr, bwArr, bins, open, colBull, colBear, colText)
 
         // Surface clamping only when significant — never silent truncation.
         float clampPct = 100.0 * clamps / (simulations * steps)
