@@ -23,6 +23,7 @@ string gVis = "Visual Preferences"
 bool   showFan    = input.bool(true,  "Show Fan Bands",             group=gVis)
 bool   showMedian = input.bool(true,  "Show Median Path",           group=gVis)
 bool   showTerm   = input.bool(true,  "Show Terminal Distribution", group=gVis)
+bool   showPct    = input.bool(true,  "Distribution % Labels",      group=gVis, tooltip="Print each bin's probability on the terminal distribution.")
 bool   startLine  = input.bool(true,  "Starting Line",              group=gVis)
 
 string gCol = "Color Preferences"
@@ -231,7 +232,7 @@ smooth_row(matrix<int> bm, int t, int nbins, float len) =>
         result := est
     result
 
-render_terminal(matrix<int> bm, int nsteps, array<float> lowArr, array<float> bwArr, int nbins, float smooth, color cBull, color cBear) =>
+render_terminal(matrix<int> bm, int nsteps, array<float> lowArr, array<float> bwArr, int nbins, float smooth, color cBull, color cBear, color cText, bool showPct) =>
     clear_boxes(termBoxes)
     int   t   = nsteps - 1
     array<float> row = smooth_row(bm, t, nbins, smooth)
@@ -239,13 +240,19 @@ render_terminal(matrix<int> bm, int nsteps, array<float> lowArr, array<float> bw
     int   x0   = bar_index + nsteps
     float lo   = lowArr.get(t)
     float bw   = bwArr.get(t)
+    // True probability from RAW counts (smoothing only shapes the bar length, not the %).
+    int total = 0
+    for c = 0 to nbins - 1
+        total += bm.get(t, c)
     for c = 0 to nbins - 1
         float v = row.get(c)
         if v > 0 and maxv > 0
             float center = lo + (c + 0.5) * bw
             int   width  = int(30 * v / maxv)   // horizontal length scaled to max freq
             color base   = center >= open ? cBull : cBear
-            box b = box.new(x0, lo + (c + 1) * bw, x0 + width, lo + c * bw, border_color=#00000000, bgcolor=color.new(base, 30))
+            float prob   = total > 0 ? 100.0 * bm.get(t, c) / total : 0.0
+            string txt   = showPct and prob >= 0.05 ? str.tostring(prob, "#.##") + "%" : ""
+            box b = box.new(x0, lo + (c + 1) * bw, x0 + width, lo + c * bw, border_color=#00000000, bgcolor=color.new(base, 30), text=txt, text_color=cText, text_size=size.tiny, text_halign=text.align_left)
             termBoxes.push(b)
 
 // Returns the new line; caller reassigns the global var.
@@ -285,7 +292,7 @@ if barstate.islast
         if showMedian
             medianLine := render_median(medianLine, binsM, steps, lowArr, bwArr, bins, colMedian)
         if showTerm
-            render_terminal(binsM, steps, lowArr, bwArr, bins, smoothing, colBull, colBear)
+            render_terminal(binsM, steps, lowArr, bwArr, bins, smoothing, colBull, colBear, colText, showPct)
         if startLine
             startLn := render_start(startLn, colStart)
 
