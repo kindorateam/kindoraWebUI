@@ -18,6 +18,7 @@ string driftStyle    = input.string("Standard", "Style:", group=gAdj, inline="dr
 bool   volatilityAdj = input.bool(true, "Volatility Adjust", group=gAdj, tooltip="Use an EWMA volatility estimate (reactive to recent regime) instead of the plain sample stdev.")
 bool   useLog        = input.string("Log Returns", "Returns Style", group=gAdj, options=["Percent", "Log Returns"]) == "Log Returns"
 bool   waitForSteps  = input.bool(false, "Update Every Bar", group=gAdj)
+bool   realtime      = input.bool(false, "Real-time (Every Tick)", group=gAdj, tooltip="Recompute the whole simulation on every incoming tick. Heavy — may hit Pine's calculation-time limit at high simulation counts. Uses a deterministic per-bar seed so the picture stays stable within a bar and only shifts as price moves.")
 
 string gVis = "Visual Preferences"
 bool   showFan    = input.bool(true,  "Show Fan Bands",             group=gVis)
@@ -305,9 +306,13 @@ if barstate.islast
     var int counter = -1
     counter += 1
     bool once = counter == 0 ? true : barstate.isconfirmed
-    bool wait = not waitForSteps ? (0 == counter % steps and once) : (0 == counter or barstate.isconfirmed)
+    bool wait = realtime ? true : (not waitForSteps ? (0 == counter % steps and once) : (0 == counter or barstate.isconfirmed))
 
     if wait
+        // Real-time: reseed deterministically per bar so the picture is stable within a bar
+        // (only price drift changes it), not jittering on every tick from an advancing seed.
+        if realtime
+            seed := bar_index * 7919 + 1
         [Rdm, mu, sigma] = prep_returns(lookback, useLog, volatilityAdj)
         float dterm = drift_term(driftLength, driftStyle, mu, dStdGlobal)
         [lowArr, highArr, bwArr] = build_ranges(open, sigma, steps, useLog)
