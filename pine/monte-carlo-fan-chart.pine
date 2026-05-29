@@ -41,7 +41,7 @@ const int LCG_MOD = 4294967296  // 2^32
 
 rng(int state) =>
     int next = (1664525 * state + 1013904223) % LCG_MOD
-    [next / LCG_MOD, next]               // [float in [0,1), new state]
+    [next / float(LCG_MOD), next]        // float division -> [float in [0,1), new state]
 
 rng_int(int state, int n) =>
     [v, next] = rng(state)
@@ -201,15 +201,16 @@ render_fan(matrix<int> bm, int nsteps, array<float> lowArr, array<float> bwArr, 
             box b = box.new(xL, top, xR, bot, border_color=#00000000, bgcolor=color.new(base, transp))
             fanBoxes.push(b)
 
-render_median(matrix<int> bm, int nsteps, array<float> lowArr, array<float> bwArr, int nbins, color c) =>
-    if not na(medianLine)
-        medianLine.delete()
+// Returns the new polyline; caller reassigns the global var (Pine forbids reassigning globals in fns).
+render_median(polyline prev, matrix<int> bm, int nsteps, array<float> lowArr, array<float> bwArr, int nbins, color c) =>
+    if not na(prev)
+        prev.delete()
     array<chart.point> pts = array.new<chart.point>()
     pts.push(chart.point.from_index(bar_index, open))
     for t = 0 to nsteps - 1
         float p50 = pctl_price(bm, t, 0.50, lowArr, bwArr, nbins)
         pts.push(chart.point.from_index(bar_index + t + 1, p50))
-    medianLine := polyline.new(pts, line_color=c, line_width=2, closed=false)
+    polyline.new(pts, line_color=c, line_width=2, closed=false)
 
 sinc(float x, float bw) =>
     float omega = math.pi * x / bw
@@ -249,10 +250,11 @@ render_terminal(matrix<int> bm, int nsteps, array<float> lowArr, array<float> bw
             box b = box.new(x0, lo + (c + 1) * bw, x0 + width, lo + c * bw, border_color=#00000000, bgcolor=color.new(base, 30))
             termBoxes.push(b)
 
-render_start(color c) =>
-    if not na(startLn)
-        startLn.delete()
-    startLn := line.new(bar_index, open, bar_index + 1, open, color=c, extend=extend.left)
+// Returns the new line; caller reassigns the global var.
+render_start(line prev, color c) =>
+    if not na(prev)
+        prev.delete()
+    line.new(bar_index, open, bar_index + 1, open, color=c, extend=extend.left)
 
 // ============================== DRIVER ==============================
 var float seed = 987654321
@@ -280,11 +282,11 @@ if barstate.islast
         if showFan
             render_fan(binsM, steps, lowArr, bwArr, bins, colBull, colBear)
         if showMedian
-            render_median(binsM, steps, lowArr, bwArr, bins, colMedian)
+            medianLine := render_median(medianLine, binsM, steps, lowArr, bwArr, bins, colMedian)
         if showTerm
             render_terminal(binsM, steps, lowArr, bwArr, bins, smoothing, colBull, colBear)
         if startLine
-            render_start(colStart)
+            startLn := render_start(startLn, colStart)
 
         // Surface clamping only when significant — never silent truncation.
         float clampPct = 100.0 * clamps / (simulations * steps)
