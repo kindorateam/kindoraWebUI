@@ -185,19 +185,22 @@ clear_boxes(array<box> arr) =>
             arr.get(i).delete()
             arr.remove(i)
 
-render_fan(matrix<int> bm, int nsteps, array<float> lowArr, array<float> bwArr, int nbins, color cBull, color cBear) =>
+render_fan(matrix<int> bm, int nsteps, array<float> lowArr, array<float> bwArr, int nbins, color cBull, color cBear, color cText, bool showPct) =>
     clear_boxes(fanBoxes)
     array<float> levels = array.from(0.05, 0.25, 0.50, 0.75, 0.95)
     for t = 0 to nsteps - 1
-        int xL = bar_index + t
-        int xR = bar_index + t + 1
+        int  xL    = bar_index + t
+        int  xR    = bar_index + t + 1
+        bool last  = t == nsteps - 1   // label only the rightmost column
         for g = 0 to levels.size() - 2
             float top    = pctl_price(bm, t, levels.get(g + 1), lowArr, bwArr, nbins)
             float bot    = pctl_price(bm, t, levels.get(g),     lowArr, bwArr, nbins)
             float center = (top + bot) / 2
             color base   = center >= open ? cBull : cBear
             int   transp = (g == 1 or g == 2) ? 60 : 80   // inner gaps brighter
-            box b = box.new(xL, top, xR, bot, border_color=#00000000, bgcolor=color.new(base, transp))
+            float mass   = (levels.get(g + 1) - levels.get(g)) * 100.0   // probability mass in this band
+            string txt   = showPct and last ? str.tostring(mass, "#") + "%" : ""
+            box b = box.new(xL, top, xR, bot, border_color=#00000000, bgcolor=color.new(base, transp), text=txt, text_color=cText, text_size=size.tiny, text_halign=text.align_right)
             fanBoxes.push(b)
 
 // Returns the new polyline; caller reassigns the global var (Pine forbids reassigning globals in fns).
@@ -288,7 +291,7 @@ if barstate.islast
         seed := sEnd
 
         if showFan
-            render_fan(binsM, steps, lowArr, bwArr, bins, colBull, colBear)
+            render_fan(binsM, steps, lowArr, bwArr, bins, colBull, colBear, colText, showPct)
         if showMedian
             medianLine := render_median(medianLine, binsM, steps, lowArr, bwArr, bins, colMedian)
         if showTerm
