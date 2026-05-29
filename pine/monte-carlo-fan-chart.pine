@@ -1,0 +1,292 @@
+// This Pine Script™ code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+
+//@version=6
+indicator("Monte Carlo Fan Chart", overlay=true, max_boxes_count=500, max_lines_count=500, max_polylines_count=100, max_labels_count=100, max_bars_back=5000)
+
+// ============================== INPUTS ==============================
+string gControls = "Primary Controls"
+int   simulations = input.int(500,   "Number of Simulations", group=gControls, minval=50,  step=50)
+int   lookback    = input.int(500,   "Lookback",              group=gControls, minval=50,  step=50)
+int   steps       = input.int(10,    "Steps Into Future",     group=gControls, minval=2,   step=1)
+int   bins        = input.int(50,    "Outcome Granularity",   group=gControls, minval=10,  step=5)
+int   blockLen    = input.int(5,     "Block Length",          group=gControls, minval=1,   step=1, tooltip="Length of contiguous return blocks resampled. Preserves volatility clustering / short-term autocorrelation.")
+float smoothing   = input.float(1.75,"Outcome Smoothing",     group=gControls, minval=0.0, step=0.25)
+
+string gAdj = "Additional Adjustments"
+int    driftLength   = input.int(34, "Drift", group=gAdj, inline="drift", minval=0)
+string driftStyle    = input.string("Standard", "Style:", group=gAdj, inline="drift", options=["Linear Regression", "Standard", "None"])
+bool   volatilityAdj = input.bool(true, "Volatility Adjust", group=gAdj, tooltip="Use an EWMA volatility estimate (reactive to recent regime) instead of the plain sample stdev.")
+bool   useLog        = input.string("Log Returns", "Returns Style", group=gAdj, options=["Percent", "Log Returns"]) == "Log Returns"
+bool   waitForSteps  = input.bool(false, "Update Every Bar", group=gAdj)
+
+string gVis = "Visual Preferences"
+bool   showFan    = input.bool(true,  "Show Fan Bands",             group=gVis)
+bool   showMedian = input.bool(true,  "Show Median Path",           group=gVis)
+bool   showTerm   = input.bool(true,  "Show Terminal Distribution", group=gVis)
+bool   startLine  = input.bool(true,  "Starting Line",              group=gVis)
+
+string gCol = "Color Preferences"
+color colBull   = input.color(#00FFFF, "Bullish", group=gCol, inline="c")
+color colBear   = input.color(#FF22CC, "Bearish", group=gCol, inline="c")
+color colMedian = input.color(#FFB617, "Median",  group=gCol)
+color colStart  = input.color(#7E7E7E, "Start",   group=gCol)
+color colText   = input.color(#FFFFFF, "Text",    group=gCol)
+
+// Range half-width in sigmas. TUNING TARGET: drop to 4.0 if the cone/histogram looks coarse.
+const float K_SIGMA = 5.0
+
+// ============================== PRNG ==============================
+// Numerical Recipes LCG. Deterministic -> stable redraws. State threaded explicitly.
+const int LCG_MOD = 4294967296  // 2^32
+
+rng(int state) =>
+    int next = (1664525 * state + 1013904223) % LCG_MOD
+    [next / LCG_MOD, next]               // [float in [0,1), new state]
+
+rng_int(int state, int n) =>
+    [v, next] = rng(state)
+    [int(v * n), next]                   // int in [0, n)
+
+// ============================== MODEL ==============================
+// Returns over `lb` bars, demeaned so drift is added back explicitly (no double count).
+// sigma is EWMA when volatilityAdj is on, else the plain sample stdev.
+prep_returns(int lb, bool logRet, bool ewma) =>
+    array<float> R = array.new<float>()
+    for i = 0 to lb - 1
+        float r = logRet ? math.log(close[i] / close[i + 1]) : (close[i] - close[i + 1]) / close[i + 1]
+        R.push(r)
+    float mu = R.avg()
+    float sigma = na
+    if ewma
+        // EWMA variance, lambda = 0.94 (RiskMetrics), seeded with sample variance.
+        float lambda = 0.94
+        float var0 = math.pow(R.stdev(), 2)
+        float v = var0
+        for i = R.size() - 1 to 0
+            float d = R.get(i) - mu
+            v := lambda * v + (1.0 - lambda) * d * d
+        sigma := math.sqrt(v)
+    else
+        sigma := R.stdev()
+    array<float> Rdm = array.new<float>()
+    for i = 0 to R.size() - 1
+        Rdm.push(R.get(i) - mu)
+    [Rdm, mu, sigma]
+
+standard_drift(int len) =>
+    float lr  = math.log(close / close[1])
+    float lr2 = math.pow(lr, 2)
+    float mean = 0.0
+    float vari = 0.0
+    for i = 0 to len - 1
+        mean += lr[i]
+        vari += lr2[i]
+    mean / len - vari / (len * 2)
+
+lin_reg_slope(int len) =>
+    float sx = 0.0, float sy = 0.0, float sx2 = 0.0, float sxy = 0.0
+    for i = 0 to len - 1
+        float src = close[i]
+        int   x   = i + 1
+        sx  += x
+        sy  += src
+        sx2 += math.pow(x, 2)
+        sxy += src * x
+    -((len * sxy - sx * sy) / (len * sx2 - sx * sx))
+
+// Per-step drift expressed in RETURN units (so it composes with bootstrapped returns).
+// Standard -> log-return; Linear Regression -> slope/price; None -> sample mean.
+drift_term(int driftLen, string style, float mu) =>
+    int len = driftLen == 0 ? lookback : driftLen
+    switch style
+        "Standard"          => standard_drift(len)
+        "Linear Regression" => lin_reg_slope(len) / close
+        => mu
+
+// Analytic per-step price range: open * exp(±K*sigma*sqrt(t)). Single pass, no range discovery.
+build_ranges(float basePrice, float sigma, int nsteps, bool logRet) =>
+    array<float> lowArr  = array.new<float>()
+    array<float> highArr = array.new<float>()
+    array<float> bwArr   = array.new<float>()
+    for t = 1 to nsteps
+        float hw = K_SIGMA * sigma * math.sqrt(t)
+        float lo = logRet ? basePrice * math.exp(-hw) : math.max(0.0, basePrice * (1 - hw))
+        float hi = logRet ? basePrice * math.exp(hw)  : basePrice * (1 + hw)
+        // Guard zero variance: give a degenerate but non-zero width so binning never divides by 0.
+        if hi - lo <= 0.0
+            lo := basePrice * 0.9999
+            hi := basePrice * 1.0001
+        lowArr.push(lo)
+        highArr.push(hi)
+        bwArr.push((hi - lo) / bins)
+    [lowArr, highArr, bwArr]
+
+// Moving block bootstrap: concatenate circular contiguous blocks of demeaned returns.
+sample_path(array<float> R, int L, int nsteps, int state) =>
+    int n = R.size()
+    int Lc = math.min(L, n)
+    array<float> path = array.new<float>()
+    int st = state
+    while path.size() < nsteps
+        [s, ns] = rng_int(st, n)
+        st := ns
+        for k = 0 to Lc - 1
+            if path.size() >= nsteps
+                break
+            path.push(R.get((s + k) % n))
+    [path, st]
+
+// ============================== BINNING ==============================
+bin_index(float price, float lo, float bw) =>
+    int idx = bw > 0 ? int((price - lo) / bw) : 0
+    math.max(0, math.min(bins - 1, idx))   // clamp into edge bins
+
+// Run all sims in a single pass; fill `binsM` (steps x bins) and return clamp count + state.
+run_simulations(array<float> R, int L, int nsteps, int nsims, float basePrice, float dterm, bool logRet, array<float> lowArr, array<float> bwArr, matrix<int> binsM, int state) =>
+    int st = state
+    int clamps = 0
+    for sim = 0 to nsims - 1
+        [path, ns] = sample_path(R, L, nsteps, st)
+        st := ns
+        float p = basePrice
+        for t = 0 to nsteps - 1
+            p := logRet ? p * math.exp(path.get(t) + dterm) : p * (1 + path.get(t) + dterm)
+            float lo = lowArr.get(t)
+            float bw = bwArr.get(t)
+            int   idx = bin_index(p, lo, bw)
+            if p < lo or p > lo + bw * bins
+                clamps += 1
+            binsM.set(t, idx, binsM.get(t, idx) + 1)
+    [clamps, st]
+
+// Percentile price for step row `t`: walk the CDF to the bin where it crosses p, return bin center.
+pctl_price(matrix<int> bm, int t, float p, array<float> lowArr, array<float> bwArr, int nbins) =>
+    int total = 0
+    for c = 0 to nbins - 1
+        total += bm.get(t, c)
+    float target = p * total
+    int   cum    = 0
+    int   hit    = nbins - 1
+    for c = 0 to nbins - 1
+        cum += bm.get(t, c)
+        if cum >= target
+            hit := c
+            break
+    lowArr.get(t) + (hit + 0.5) * bwArr.get(t)
+
+// ============================== RENDER ==============================
+var array<box>  fanBoxes  = array.new<box>()
+var array<box>  termBoxes = array.new<box>()
+var polyline    medianLine = na
+var line        startLn    = na
+
+clear_boxes(array<box> arr) =>
+    if arr.size() > 0
+        for i = arr.size() - 1 to 0
+            arr.get(i).delete()
+            arr.remove(i)
+
+render_fan(matrix<int> bm, int nsteps, array<float> lowArr, array<float> bwArr, int nbins, color cBull, color cBear) =>
+    clear_boxes(fanBoxes)
+    array<float> levels = array.from(0.05, 0.25, 0.50, 0.75, 0.95)
+    for t = 0 to nsteps - 1
+        int xL = bar_index + t
+        int xR = bar_index + t + 1
+        for g = 0 to levels.size() - 2
+            float top    = pctl_price(bm, t, levels.get(g + 1), lowArr, bwArr, nbins)
+            float bot    = pctl_price(bm, t, levels.get(g),     lowArr, bwArr, nbins)
+            float center = (top + bot) / 2
+            color base   = center >= open ? cBull : cBear
+            int   transp = (g == 1 or g == 2) ? 60 : 80   // inner gaps brighter
+            box b = box.new(xL, top, xR, bot, border_color=#00000000, bgcolor=color.new(base, transp))
+            fanBoxes.push(b)
+
+render_median(matrix<int> bm, int nsteps, array<float> lowArr, array<float> bwArr, int nbins, color c) =>
+    if not na(medianLine)
+        medianLine.delete()
+    array<chart.point> pts = array.new<chart.point>()
+    pts.push(chart.point.from_index(bar_index, open))
+    for t = 0 to nsteps - 1
+        float p50 = pctl_price(bm, t, 0.50, lowArr, bwArr, nbins)
+        pts.push(chart.point.from_index(bar_index + t + 1, p50))
+    medianLine := polyline.new(pts, line_color=c, line_width=2, closed=false)
+
+sinc(float x, float bw) =>
+    float omega = math.pi * x / bw
+    x != 0.0 ? math.sin(omega) / omega : 1.0
+
+smooth_row(matrix<int> bm, int t, int nbins, float len) =>
+    array<float> raw = array.new<float>()
+    for c = 0 to nbins - 1
+        raw.push(bm.get(t, c))
+    array<float> result = raw
+    if len > 0.0
+        array<float> est = array.new<float>()
+        for i = 0 to nbins - 1
+            float sum = 0.0, float sumw = 0.0
+            for j = 0 to nbins - 1
+                float w = sinc(i - j, len + 1.0)
+                sum  += w * raw.get(j)
+                sumw += w
+            est.push(math.max(0.0, sum / sumw))
+        result := est
+    result
+
+render_terminal(matrix<int> bm, int nsteps, array<float> lowArr, array<float> bwArr, int nbins, float smooth, color cBull, color cBear) =>
+    clear_boxes(termBoxes)
+    int   t   = nsteps - 1
+    array<float> row = smooth_row(bm, t, nbins, smooth)
+    float maxv = row.max()
+    int   x0   = bar_index + nsteps
+    float lo   = lowArr.get(t)
+    float bw   = bwArr.get(t)
+    for c = 0 to nbins - 1
+        float v = row.get(c)
+        if v > 0 and maxv > 0
+            float center = lo + (c + 0.5) * bw
+            int   width  = int(30 * v / maxv)   // horizontal length scaled to max freq
+            color base   = center >= open ? cBull : cBear
+            box b = box.new(x0, lo + (c + 1) * bw, x0 + width, lo + c * bw, border_color=#00000000, bgcolor=color.new(base, 30))
+            termBoxes.push(b)
+
+render_start(color c) =>
+    if not na(startLn)
+        startLn.delete()
+    startLn := line.new(bar_index, open, bar_index + 1, open, color=c, extend=extend.left)
+
+// ============================== DRIVER ==============================
+var float seed = 987654321
+
+if barstate.islast
+    if bar_index + 1 < lookback
+        runtime.error('Use a "Lookback" less than available bars: ' + str.tostring(bar_index))
+    if bar_index + 1 < driftLength
+        runtime.error('Use a "Drift" less than available bars: ' + str.tostring(bar_index))
+
+    var int counter = -1
+    counter += 1
+    bool once = counter == 0 ? true : barstate.isconfirmed
+    bool wait = not waitForSteps ? (0 == counter % steps and once) : (0 == counter or barstate.isconfirmed)
+
+    if wait
+        [Rdm, mu, sigma] = prep_returns(lookback, useLog, volatilityAdj)
+        float dterm = drift_term(driftLength, driftStyle, mu)
+        [lowArr, highArr, bwArr] = build_ranges(open, sigma, steps, useLog)
+
+        matrix<int> binsM = matrix.new<int>(steps, bins, 0)
+        [clamps, sEnd] = run_simulations(Rdm, blockLen, steps, simulations, open, dterm, useLog, lowArr, bwArr, binsM, int(seed))
+        seed := sEnd
+
+        if showFan
+            render_fan(binsM, steps, lowArr, bwArr, bins, colBull, colBear)
+        if showMedian
+            render_median(binsM, steps, lowArr, bwArr, bins, colMedian)
+        if showTerm
+            render_terminal(binsM, steps, lowArr, bwArr, bins, smoothing, colBull, colBear)
+        if startLine
+            render_start(colStart)
+
+        // Surface clamping only when significant — never silent truncation.
+        float clampPct = 100.0 * clamps / (simulations * steps)
+        if clampPct > 1.0
+            label.new(bar_index + steps, highArr.get(steps - 1), "⚠ " + str.tostring(clampPct, "#.#") + "% clamped — lower K_SIGMA", color=color.new(color.orange, 60), textcolor=colText, style=label.style_label_left, size=size.small)
