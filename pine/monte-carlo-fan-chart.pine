@@ -17,7 +17,7 @@ int    driftLength   = input.int(34, "Drift", group=gAdj, inline="drift", minval
 string driftStyle    = input.string("Standard", "Style:", group=gAdj, inline="drift", options=["Linear Regression", "Standard", "None"])
 bool   volatilityAdj = input.bool(true, "Volatility Adjust", group=gAdj, tooltip="Use an EWMA volatility estimate (reactive to recent regime) instead of the plain sample stdev.")
 bool   useLog        = input.string("Log Returns", "Returns Style", group=gAdj, options=["Percent", "Log Returns"]) == "Log Returns"
-bool   waitForSteps  = input.bool(true, "Update Every Bar", group=gAdj, tooltip="Recompute on every closed candle (bar confirm). Off = recompute every `steps` bars.")
+bool   waitForSteps  = input.bool(false, "Update Every Bar", group=gAdj, tooltip="On = recompute on every closed candle. Off (default) = recompute every `steps` bars, letting each forecast run its full horizon.")
 bool   realtime      = input.bool(false, "Real-time (Every Tick)", group=gAdj, tooltip="Recompute the whole simulation on every incoming tick. Heavy — may hit Pine's calculation-time limit at high simulation counts. Uses a deterministic per-bar seed so the picture stays stable within a bar and only shifts as price moves.")
 int    throttleSecs  = input.int(1, "Real-time Throttle (sec)", group=gAdj, minval=0, tooltip="In real-time mode, recompute at most once per this many seconds (wall-clock). 0 = every tick (heaviest).")
 
