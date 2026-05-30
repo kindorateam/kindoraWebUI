@@ -181,6 +181,7 @@ var array<box>  fanBoxes  = array.new<box>()
 var array<box>  termBoxes = array.new<box>()
 var polyline    medianLine = na
 var line        startLn    = na
+var label       clampLbl   = na
 var table       biasTable  = table.new(position.top_right, 2, 2, border_width=1)
 
 clear_boxes(array<box> arr) =>
@@ -338,6 +339,10 @@ if barstate.islast
             render_bias(binsM, steps, lowArr, bwArr, bins, open, colBull, colBear, colText)
 
         // Surface clamping only when significant — never silent truncation.
+        // Reuse a single label (delete the previous) so real-time recomputes don't pile up.
+        if not na(clampLbl)
+            clampLbl.delete()
+            clampLbl := na
         float clampPct = 100.0 * clamps / (simulations * steps)
         if clampPct > 1.0
-            label.new(bar_index + steps, highArr.get(steps - 1), "⚠ " + str.tostring(clampPct, "#.#") + "% clamped — lower K_SIGMA", color=color.new(color.orange, 60), textcolor=colText, style=label.style_label_left, size=size.small)
+            clampLbl := label.new(bar_index + steps, highArr.get(steps - 1), "⚠ " + str.tostring(clampPct, "#.#") + "% clamped — raise K_SIGMA", color=color.new(color.orange, 60), textcolor=colText, style=label.style_label_left, size=size.small)
