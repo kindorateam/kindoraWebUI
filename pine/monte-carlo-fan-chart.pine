@@ -184,7 +184,7 @@ var polyline    medianLine = na
 var line        startLn    = na
 var label       clampLbl   = na
 var table       biasTable  = table.new(position.top_right, 2, 2, border_width=1)
-var table       sumTable   = table.new(position.top_left, 2, 6, border_width=1, frame_width=1, frame_color=color.new(color.gray, 50))
+var table       sumTable   = table.new(position.bottom_left, 2, 6, border_width=1, frame_width=1, frame_color=color.new(color.gray, 50))
 
 clear_boxes(array<box> arr) =>
     if arr.size() > 0
