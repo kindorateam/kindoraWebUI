@@ -330,22 +330,22 @@ render_summary(matrix<int> bm, int nsteps, array<float> lowArr, array<float> bwA
     float p50 = pctl_price(bm, t, 0.50, lowArr, bwArr, nbins)
     float p75 = pctl_price(bm, t, 0.75, lowArr, bwArr, nbins)
     float p95 = pctl_price(bm, t, 0.95, lowArr, bwArr, nbins)
-    color cHdr   = color.new(color.gray, 20)
-    color cLeft  = color.new(color.gray, 85)
-    color cRight = color.new(color.gray, 92)
-    sumTable.cell(0, 0, "🎯 Forecast: " + str.tostring(nsteps) + " bars ahead", text_color=cText, bgcolor=cHdr, text_size=size.small, text_halign=text.align_left)
+    color cHdr   = color.new(#1E222D, 0)   // near-black header
+    color cLeft  = color.new(#2A2E39, 0)   // dark label cells
+    color cRight = color.new(#363A45, 0)   // slightly lighter value cells
+    sumTable.cell(0, 0, "🎯 Forecast: " + str.tostring(nsteps) + " bars ahead", text_color=color.white, bgcolor=cHdr, text_size=size.normal, text_halign=text.align_left)
     sumTable.cell(1, 0, "", bgcolor=cHdr)
     sumTable.merge_cells(0, 0, 1, 0)
-    sumTable.cell(0, 1, "Bias", text_color=cText, bgcolor=cLeft, text_size=size.small, text_halign=text.align_left)
-    sumTable.cell(1, 1, (bullLead ? "▲ Bulls " : "▼ Bears ") + str.tostring(math.max(bullPct, bearPct), "#") + "%", text_color=color.white, bgcolor=bullLead ? cBull : cBear, text_size=size.small)
-    sumTable.cell(0, 2, "Most likely", text_color=cText, bgcolor=cLeft, text_size=size.small, text_halign=text.align_left)
-    sumTable.cell(1, 2, str.tostring(modeP, format.mintick) + "  (" + fmt_move(modeP, basePrice) + ")", text_color=cText, bgcolor=cRight, text_size=size.small)
-    sumTable.cell(0, 3, "Median (P50)", text_color=cText, bgcolor=cLeft, text_size=size.small, text_halign=text.align_left)
-    sumTable.cell(1, 3, str.tostring(p50, format.mintick) + "  (" + fmt_move(p50, basePrice) + ")", text_color=cText, bgcolor=cRight, text_size=size.small)
-    sumTable.cell(0, 4, "50% zone", text_color=cText, bgcolor=cLeft, text_size=size.small, text_halign=text.align_left)
-    sumTable.cell(1, 4, str.tostring(p25, format.mintick) + " … " + str.tostring(p75, format.mintick), text_color=cText, bgcolor=cRight, text_size=size.small)
-    sumTable.cell(0, 5, "90% range", text_color=cText, bgcolor=cLeft, text_size=size.small, text_halign=text.align_left)
-    sumTable.cell(1, 5, str.tostring(p05, format.mintick) + " … " + str.tostring(p95, format.mintick), text_color=cText, bgcolor=cRight, text_size=size.small)
+    sumTable.cell(0, 1, "Bias", text_color=color.white, bgcolor=cLeft, text_size=size.normal, text_halign=text.align_left)
+    sumTable.cell(1, 1, (bullLead ? "▲ Bulls " : "▼ Bears ") + str.tostring(math.max(bullPct, bearPct), "#") + "%", text_color=color.white, bgcolor=bullLead ? cBull : cBear, text_size=size.normal)
+    sumTable.cell(0, 2, "Most likely", text_color=color.white, bgcolor=cLeft, text_size=size.normal, text_halign=text.align_left)
+    sumTable.cell(1, 2, str.tostring(modeP, format.mintick) + "  (" + fmt_move(modeP, basePrice) + ")", text_color=color.white, bgcolor=cRight, text_size=size.normal)
+    sumTable.cell(0, 3, "Median (P50)", text_color=color.white, bgcolor=cLeft, text_size=size.normal, text_halign=text.align_left)
+    sumTable.cell(1, 3, str.tostring(p50, format.mintick) + "  (" + fmt_move(p50, basePrice) + ")", text_color=color.white, bgcolor=cRight, text_size=size.normal)
+    sumTable.cell(0, 4, "50% zone", text_color=color.white, bgcolor=cLeft, text_size=size.normal, text_halign=text.align_left)
+    sumTable.cell(1, 4, str.tostring(p25, format.mintick) + " … " + str.tostring(p75, format.mintick), text_color=color.white, bgcolor=cRight, text_size=size.normal)
+    sumTable.cell(0, 5, "90% range", text_color=color.white, bgcolor=cLeft, text_size=size.normal, text_halign=text.align_left)
+    sumTable.cell(1, 5, str.tostring(p05, format.mintick) + " … " + str.tostring(p95, format.mintick), text_color=color.white, bgcolor=cRight, text_size=size.normal)
 
 // ============================== DRIVER ==============================
 var float seed = 987654321
