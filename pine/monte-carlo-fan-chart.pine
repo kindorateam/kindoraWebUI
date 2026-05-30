@@ -5,9 +5,9 @@ indicator("Monte Carlo Fan Chart", overlay=true, max_boxes_count=500, max_lines_
 
 // ============================== INPUTS ==============================
 string gControls = "Primary Controls"
-int   simulations = input.int(500,   "Number of Simulations", group=gControls, minval=50,  step=50)
+int   simulations = input.int(750,   "Number of Simulations", group=gControls, minval=50,  step=50)
 int   lookback    = input.int(500,   "Lookback",              group=gControls, minval=50,  step=50)
-int   steps       = input.int(10,    "Steps Into Future",     group=gControls, minval=2,   step=1)
+int   steps       = input.int(5,     "Steps Into Future",     group=gControls, minval=2,   step=1, tooltip="Forecast horizon in bars. ~5 is the sweet spot — matches the block length where the model has real predictive edge. Beyond ~8 it's mostly noise.")
 int   bins        = input.int(50,    "Outcome Granularity",   group=gControls, minval=10,  step=5)
 int   blockLen    = input.int(5,     "Block Length",          group=gControls, minval=1,   step=1, tooltip="Length of contiguous return blocks resampled. Preserves volatility clustering / short-term autocorrelation.")
 float smoothing   = input.float(1.75,"Outcome Smoothing",     group=gControls, minval=0.0, step=0.25)
