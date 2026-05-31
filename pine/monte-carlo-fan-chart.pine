@@ -394,13 +394,14 @@ if barstate.islast
     var int counter  = -1
     var int lastCalc = 0
     counter += 1
-    // Initial paint must fire ONCE on load, not every tick. The old `counter == 0 ? true`
-    // stayed true for the whole first forming bar (counter only commits at bar close),
-    // causing intrabar redraws. barstate.isnew is true only on a bar's first tick -> fires once.
-    bool initial = counter == 0 and barstate.isnew
     // Real-time throttle: recompute at most once per `throttleSecs` (0 = every tick).
     bool tickReady = throttleSecs == 0 or counter == 0 or (timenow - lastCalc >= throttleSecs * 1000)
-    bool wait = realtime ? tickReady : (initial or (not waitForSteps ? (barstate.isconfirmed and 0 == counter % steps) : barstate.isconfirmed))
+    // Non-realtime: recompute ONLY on a CLOSED bar (barstate.isconfirmed) -> zero intrabar movement.
+    // Pine rolls back all state every tick of a forming bar, so a once-per-load paint can't be held
+    // without recomputing every tick (= jitter). So first paint lands on the first close after load
+    // (<= 1 bar). Every `steps` closed bars, or every closed bar when waitForSteps is on.
+    bool closeBar = barstate.isconfirmed
+    bool wait = realtime ? tickReady : (closeBar and (waitForSteps or 0 == counter % steps))
 
     if wait
         // Real-time: reseed deterministically per bar so the picture is stable within a bar
