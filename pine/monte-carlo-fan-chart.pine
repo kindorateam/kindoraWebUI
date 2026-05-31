@@ -6,7 +6,7 @@ indicator("Monte Carlo Fan Chart", overlay=true, max_boxes_count=500, max_lines_
 // ============================== INPUTS ==============================
 string gControls = "Primary Controls"
 int   simulations = input.int(750,   "Number of Simulations", group=gControls, minval=50,  step=50)
-int   lookback    = input.int(500,   "Lookback",              group=gControls, minval=50,  step=50)
+int   lookback    = input.int(500,   "Lookback",              group=gControls, minval=50,  maxval=4990, step=50)
 int   steps       = input.int(5,     "Steps Into Future",     group=gControls, minval=2,   maxval=100, step=1, tooltip="Forecast horizon in bars. ~5 is the sweet spot — matches the block length where the model has real predictive edge. Beyond ~8 it's mostly noise. Capped at 100 (Pine future-bar / runtime limits).")
 int   bins        = input.int(50,    "Outcome Granularity",   group=gControls, minval=10,  maxval=500, step=5)
 int   blockLen    = input.int(5,     "Block Length",          group=gControls, minval=1,   step=1, tooltip="Expected length of resampled return blocks (stationary bootstrap). Preserves volatility clustering / short-term autocorrelation.")
@@ -15,7 +15,7 @@ string quality    = input.string("Balanced", "Quality", group=gControls, options
 int   userSeed    = input.int(987654321, "Random Seed", group=gControls, minval=1, tooltip="Change for a different but reproducible random draw.")
 
 string gAdj = "Additional Adjustments"
-int    driftLength   = input.int(34, "Drift", group=gAdj, inline="drift", minval=0)
+int    driftLength   = input.int(34, "Drift", group=gAdj, inline="drift", minval=0, maxval=4990)
 string driftStyle    = input.string("Standard", "Style:", group=gAdj, inline="drift", options=["Linear Regression", "Standard", "Historical Mean", "None"], tooltip="Standard = vol-degraded mean log return. Linear Regression = trend slope. Historical Mean = average return. None = zero drift (trendless).")
 bool   volatilityAdj = input.bool(true, "Volatility Adjust", group=gAdj, tooltip="Use an EWMA volatility estimate (reactive to recent regime) instead of the plain sample stdev.")
 bool   useLog        = input.string("Log Returns", "Returns Style", group=gAdj, options=["Percent", "Log Returns"]) == "Log Returns"
@@ -40,8 +40,8 @@ color colMedian = input.color(#FFB617, "Median",  group=gCol)
 color colStart  = input.color(#7E7E7E, "Start",   group=gCol)
 color colText   = input.color(#FFFFFF, "Text",    group=gCol)
 
-// Range half-width in sigmas. TUNING TARGET: drop to 4.0 if the cone/histogram looks coarse.
-const float K_SIGMA = 5.0
+// Range half-width in sigmas. Wider = less clamping but coarser bins.
+float kSigma = input.float(5.0, "Range Width (σ)", group=gControls, minval=2.0, maxval=10.0, step=0.5, tooltip="Half-width of the bin range in standard deviations. Raise if the clamp warning fires; lower (≈4) for finer resolution.")
 
 // ============================== PRNG ==============================
 // Numerical Recipes LCG. Deterministic -> stable redraws. State threaded explicitly.
@@ -86,17 +86,19 @@ prep_returns(int lb, bool logRet, bool ewma, int histOffset) =>
         Rdm.push((R.get(i) - mu) * scale)
     [Rdm, mu, sigma, scale]
 
-// Uses math.sum (rolling window) instead of a history-operator loop, so it stays
-// consistent when called once per bar at global scope (avoids CW10003).
-standard_drift(int len) =>
-    float lr   = math.log(close / close[1])
-    float mean = math.sum(lr, len) / len
-    float msq  = math.sum(lr * lr, len) / len
-    float vari = math.max(msq - mean * mean, 0.0)   // true variance E[r²]-mean², not E[r²]
-    mean - 0.5 * vari
+// Drift from a return series. math.sum (rolling) keeps it consistent at global scope (no CW10003).
+// Log mode: GBM-style mean - ½·variance. Percent mode: plain mean (same units as the sim).
+standard_drift_from_return(float r, int len, bool logRet) =>
+    float mean = math.sum(r, len) / len
+    float msq  = math.sum(r * r, len) / len
+    float vari = math.max(msq - mean * mean, 0.0)
+    logRet ? mean - 0.5 * vari : mean
 
 lin_reg_slope(int len) =>
-    float sx = 0.0, float sy = 0.0, float sx2 = 0.0, float sxy = 0.0
+    float sx  = 0.0
+    float sy  = 0.0
+    float sx2 = 0.0
+    float sxy = 0.0
     for i = 0 to len - 1
         float src = close[i]
         int   x   = i + 1
@@ -120,12 +122,12 @@ drift_term(int driftLen, string style, float muDrift, float dStd, float basePric
 
 // Analytic per-step range, CENTERED on the drifted expected price so bins track the drifting
 // cloud (else strong drift pushes outcomes off-center -> wasted bins + clamping). Single pass.
-build_ranges(float basePrice, float sigma, float dterm, int nsteps, bool logRet) =>
+build_ranges(float basePrice, float sigma, float dterm, int nsteps, bool logRet, float kSigma) =>
     array<float> lowArr  = array.new<float>()
     array<float> highArr = array.new<float>()
     array<float> bwArr   = array.new<float>()
     for t = 1 to nsteps
-        float hw     = K_SIGMA * sigma * math.sqrt(t)
+        float hw     = kSigma * sigma * math.sqrt(t)
         float center = logRet ? basePrice * math.exp(dterm * t) : basePrice * math.pow(math.max(0.000001, 1.0 + dterm), t)
         float lo = logRet ? center * math.exp(-hw) : math.max(0.0, center * (1 - hw))
         float hi = logRet ? center * math.exp(hw)  : center * (1 + hw)
@@ -210,20 +212,26 @@ clear_boxes(array<box> arr) =>
 
 render_fan(matrix<int> bm, int nsteps, array<float> lowArr, array<float> bwArr, int nbins, float basePrice, color cBull, color cBear, color cText, bool showPct) =>
     clear_boxes(fanBoxes)
-    array<float> levels = array.from(0.05, 0.25, 0.50, 0.75, 0.95)
+    array<float> masses  = array.from(20.0, 25.0, 25.0, 20.0)   // 5/25/50/75/95 band masses
+    array<int>   transps = array.from(80, 60, 60, 80)           // inner bands brighter
     for t = 0 to nsteps - 1
-        int  xL    = bar_index + t
-        int  xR    = bar_index + t + 1
-        bool last  = t == nsteps - 1   // label only the rightmost column
-        for g = 0 to levels.size() - 2
-            float top    = pctl_price(bm, t, levels.get(g + 1), lowArr, bwArr, nbins)
-            float bot    = pctl_price(bm, t, levels.get(g),     lowArr, bwArr, nbins)
+        int  xL   = bar_index + t
+        int  xR   = bar_index + t + 1
+        bool last = t == nsteps - 1
+        // Compute the 5 percentile prices ONCE per step (was 8 CDF walks per step, now 5).
+        float v0 = pctl_price(bm, t, 0.05, lowArr, bwArr, nbins)
+        float v1 = pctl_price(bm, t, 0.25, lowArr, bwArr, nbins)
+        float v2 = pctl_price(bm, t, 0.50, lowArr, bwArr, nbins)
+        float v3 = pctl_price(bm, t, 0.75, lowArr, bwArr, nbins)
+        float v4 = pctl_price(bm, t, 0.95, lowArr, bwArr, nbins)
+        array<float> vs = array.from(v0, v1, v2, v3, v4)
+        for g = 0 to 3
+            float bot    = vs.get(g)
+            float top    = vs.get(g + 1)
             float center = (top + bot) / 2
             color base   = center >= basePrice ? cBull : cBear
-            int   transp = (g == 1 or g == 2) ? 60 : 80   // inner gaps brighter
-            float mass   = (levels.get(g + 1) - levels.get(g)) * 100.0   // probability mass in this band
-            string txt   = showPct and last ? str.tostring(mass, "#") + "%" : ""
-            box b = box.new(xL, top, xR, bot, border_color=#00000000, bgcolor=color.new(base, transp), text=txt, text_color=cText, text_size=size.normal, text_halign=text.align_right)
+            string txt   = showPct and last ? str.tostring(masses.get(g), "#") + "%" : ""
+            box b = box.new(xL, top, xR, bot, border_color=#00000000, bgcolor=color.new(base, transps.get(g)), text=txt, text_color=cText, text_size=size.normal, text_halign=text.align_right)
             fanBoxes.push(b)
 
 // Returns the new polyline; caller reassigns the global var (Pine forbids reassigning globals in fns).
@@ -247,14 +255,16 @@ smooth_row(matrix<int> bm, int t, int nbins, float len) =>
         raw.push(bm.get(t, c))
     array<float> result = raw
     if len > 0.0
+        int radius = int(math.ceil((len + 1.0) * 3.0))   // sinc tails negligible beyond ~3 lobes -> cap O(bins²)
         array<float> est = array.new<float>()
         for i = 0 to nbins - 1
-            float sum = 0.0, float sumw = 0.0
-            for j = 0 to nbins - 1
+            float sum  = 0.0
+            float sumw = 0.0
+            for j = math.max(0, i - radius) to math.min(nbins - 1, i + radius)
                 float w = sinc(i - j, len + 1.0)
                 sum  += w * raw.get(j)
                 sumw += w
-            est.push(math.max(0.0, sum / sumw))
+            est.push(sumw != 0.0 ? math.max(0.0, sum / sumw) : 0.0)
         result := est
     result
 
@@ -359,7 +369,6 @@ render_summary(matrix<int> bm, int nsteps, array<float> lowArr, array<float> bwA
     color cRight = color.new(#363A45, 0)   // slightly lighter value cells
     sumTable.cell(0, 0, "🎯 Forecast: " + str.tostring(nsteps) + " bars ahead", text_color=color.white, bgcolor=cHdr, text_size=size.normal, text_halign=text.align_left)
     sumTable.cell(1, 0, "", bgcolor=cHdr)
-    sumTable.merge_cells(0, 0, 1, 0)
     sumTable.cell(0, 1, "Bias", text_color=color.white, bgcolor=cLeft, text_size=size.normal, text_halign=text.align_left)
     sumTable.cell(1, 1, (bullLead ? "▲ Bulls " : "▼ Bears ") + str.tostring(math.max(bullPct, bearPct), "#") + "%", text_color=color.white, bgcolor=bullLead ? cBull : cBear, text_size=size.normal)
     sumTable.cell(0, 2, "Most likely", text_color=color.white, bgcolor=cLeft, text_size=size.normal, text_halign=text.align_left)
@@ -389,8 +398,8 @@ int simsEff = switch quality
 
 // Computed on EVERY bar (not inside the conditional) so rolling history stays consistent.
 int   dLenG         = driftLength == 0 ? lookback : driftLength
-float dStdGlobal    = standard_drift(dLenG)
 float ret1G         = useLog ? math.log(close / close[1]) : (close - close[1]) / close[1]
+float dStdGlobal    = standard_drift_from_return(ret1G, dLenG, useLog)
 float muDriftGlobal = math.sum(ret1G, dLenG) / dLenG   // mean return over the DRIFT window
 
 if barstate.islast
@@ -407,17 +416,23 @@ if barstate.islast
 
     var   int  counter      = -1
     varip int  lastCalcRT   = 0        // varip: persists intrabar so the real-time throttle actually limits
-    varip bool firstPainted = false    // varip: holds across ticks -> paint once on load, no jitter
+    var   bool firstPainted = false    // set on a CLOSED bar -> committed, survives rollback
+    var   bool sumMerged    = false
     counter += 1
-    // Real-time throttle: recompute at most once per `throttleSecs` (0 = every tick).
-    bool tickReady = throttleSecs == 0 or counter == 0 or (timenow - lastCalcRT >= throttleSecs * 1000)
-    // Non-realtime: paint ONCE on load (firstPainted, varip -> no rollback -> no jitter), then
-    // recompute only on CLOSED bars. Every `steps` closed bars, or every closed bar if waitForSteps.
+    // Real-time throttle: lastCalcRT starts at 0 so the first tick always passes (no counter==0 hack,
+    // which broke because var counter rolls back every realtime tick).
+    bool tickReady = throttleSecs == 0 or (timenow - lastCalcRT >= throttleSecs * 1000)
+    // Non-realtime: draw ONLY on CLOSED bars. Drawings made on a forming bar are rolled back on the
+    // next tick and (since we don't redraw) would vanish -> flicker. Closed-bar drawings are committed
+    // and persist. firstPainted forces the first close to paint even if it's not a steps-multiple.
     bool closeBar = barstate.isconfirmed
-    bool wait = realtime ? tickReady : ((not firstPainted) or (closeBar and (waitForSteps or 0 == counter % steps)))
+    bool wait = realtime ? tickReady : (closeBar and ((not firstPainted) or waitForSteps or 0 == counter % steps))
 
     if wait
         firstPainted := true
+        if showSummary and not sumMerged
+            sumTable.merge_cells(0, 0, 1, 0)
+            sumMerged := true
         // Real-time: reseed deterministically per bar so the picture is stable within a bar
         // (only price drift changes it), not jittering on every tick from an advancing seed.
         if realtime
@@ -429,7 +444,7 @@ if barstate.islast
         float basePrice = forecastBase == "Close" ? close : open
         [Rdm, mu, sigma, volScale] = prep_returns(lookback, useLog, volatilityAdj, histOffset)
         float dterm = drift_term(driftLength, driftStyle, muDriftGlobal, dStdGlobal, basePrice, useLog)
-        [lowArr, highArr, bwArr] = build_ranges(basePrice, sigma, dterm, steps, useLog)
+        [lowArr, highArr, bwArr] = build_ranges(basePrice, sigma, dterm, steps, useLog, kSigma)
 
         matrix<int> binsM = matrix.new<int>(steps, bins, 0)
         [clamps, sEnd] = run_simulations(Rdm, blockLen, steps, simsEff, basePrice, dterm, useLog, lowArr, bwArr, binsM, int(seed))
@@ -455,4 +470,4 @@ if barstate.islast
             clampLbl := na
         float clampPct = 100.0 * clamps / (simsEff * steps)
         if clampPct > 1.0
-            clampLbl := label.new(bar_index + steps, highArr.get(steps - 1), "⚠ " + str.tostring(clampPct, "#.#") + "% clamped — raise K_SIGMA", color=color.new(color.orange, 60), textcolor=colText, style=label.style_label_left, size=size.small)
+            clampLbl := label.new(bar_index + steps, highArr.get(steps - 1), "⚠ " + str.tostring(clampPct, "#.#") + "% clamped — raise Range Width (σ)", color=color.new(color.orange, 60), textcolor=colText, style=label.style_label_left, size=size.small)
