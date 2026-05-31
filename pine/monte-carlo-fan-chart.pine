@@ -14,9 +14,10 @@ float smoothing   = input.float(1.75,"Outcome Smoothing",     group=gControls, m
 
 string gAdj = "Additional Adjustments"
 int    driftLength   = input.int(34, "Drift", group=gAdj, inline="drift", minval=0)
-string driftStyle    = input.string("Standard", "Style:", group=gAdj, inline="drift", options=["Linear Regression", "Standard", "None"])
+string driftStyle    = input.string("Standard", "Style:", group=gAdj, inline="drift", options=["Linear Regression", "Standard", "Historical Mean", "None"], tooltip="Standard = vol-degraded mean log return. Linear Regression = trend slope. Historical Mean = average return. None = zero drift (trendless).")
 bool   volatilityAdj = input.bool(true, "Volatility Adjust", group=gAdj, tooltip="Use an EWMA volatility estimate (reactive to recent regime) instead of the plain sample stdev.")
 bool   useLog        = input.string("Log Returns", "Returns Style", group=gAdj, options=["Percent", "Log Returns"]) == "Log Returns"
+string forecastBase  = input.string("Close", "Forecast Base", group=gAdj, options=["Close", "Open"], tooltip="Price the forecast projects from. Close = current live price (recommended). Open = this bar's open (can be stale on long candles).")
 bool   waitForSteps  = input.bool(false, "Update Every Bar", group=gAdj, tooltip="On = recompute on every closed candle. Off (default) = recompute every `steps` bars, letting each forecast run its full horizon.")
 bool   realtime      = input.bool(false, "Real-time (Every Tick)", group=gAdj, tooltip="Recompute the whole simulation on every incoming tick. Heavy — may hit Pine's calculation-time limit at high simulation counts. Uses a deterministic per-bar seed so the picture stays stable within a bar and only shifts as price moves.")
 int    throttleSecs  = input.int(1, "Real-time Throttle (sec)", group=gAdj, minval=0, tooltip="In real-time mode, recompute at most once per this many seconds (wall-clock). 0 = every tick (heaviest).")
@@ -60,22 +61,23 @@ prep_returns(int lb, bool logRet, bool ewma) =>
     for i = 0 to lb - 1
         float r = logRet ? math.log(close[i] / close[i + 1]) : (close[i] - close[i + 1]) / close[i + 1]
         R.push(r)
-    float mu = R.avg()
-    float sigma = na
+    float mu       = R.avg()
+    float sampleSd = R.stdev()
+    float sigma    = sampleSd
     if ewma
         // EWMA variance, lambda = 0.94 (RiskMetrics), seeded with sample variance.
         float lambda = 0.94
-        float var0 = math.pow(R.stdev(), 2)
-        float v = var0
+        float v = math.pow(sampleSd, 2)
         for i = R.size() - 1 to 0
             float d = R.get(i) - mu
             v := lambda * v + (1.0 - lambda) * d * d
         sigma := math.sqrt(v)
-    else
-        sigma := R.stdev()
+    // Rescale residuals to the chosen volatility so the simulated PATH magnitude reacts to
+    // current vol regime (not just the bin ranges). scale = 1 when EWMA off (sigma == sampleSd).
+    float scale = sampleSd > 0.0 ? sigma / sampleSd : 1.0
     array<float> Rdm = array.new<float>()
     for i = 0 to R.size() - 1
-        Rdm.push(R.get(i) - mu)
+        Rdm.push((R.get(i) - mu) * scale)
     [Rdm, mu, sigma]
 
 // Uses math.sum (rolling window) instead of a history-operator loop, so it stays
@@ -104,7 +106,8 @@ drift_term(int driftLen, string style, float mu, float dStd) =>
     switch style
         "Standard"          => dStd
         "Linear Regression" => lin_reg_slope(len) / close
-        => mu
+        "Historical Mean"   => mu
+        => 0.0   // "None" = truly no drift (trendless)
 
 // Analytic per-step price range: open * exp(±K*sigma*sqrt(t)). Single pass, no range discovery.
 build_ranges(float basePrice, float sigma, int nsteps, bool logRet) =>
@@ -192,7 +195,7 @@ clear_boxes(array<box> arr) =>
             arr.get(i).delete()
             arr.remove(i)
 
-render_fan(matrix<int> bm, int nsteps, array<float> lowArr, array<float> bwArr, int nbins, color cBull, color cBear, color cText, bool showPct) =>
+render_fan(matrix<int> bm, int nsteps, array<float> lowArr, array<float> bwArr, int nbins, float basePrice, color cBull, color cBear, color cText, bool showPct) =>
     clear_boxes(fanBoxes)
     array<float> levels = array.from(0.05, 0.25, 0.50, 0.75, 0.95)
     for t = 0 to nsteps - 1
@@ -203,7 +206,7 @@ render_fan(matrix<int> bm, int nsteps, array<float> lowArr, array<float> bwArr, 
             float top    = pctl_price(bm, t, levels.get(g + 1), lowArr, bwArr, nbins)
             float bot    = pctl_price(bm, t, levels.get(g),     lowArr, bwArr, nbins)
             float center = (top + bot) / 2
-            color base   = center >= open ? cBull : cBear
+            color base   = center >= basePrice ? cBull : cBear
             int   transp = (g == 1 or g == 2) ? 60 : 80   // inner gaps brighter
             float mass   = (levels.get(g + 1) - levels.get(g)) * 100.0   // probability mass in this band
             string txt   = showPct and last ? str.tostring(mass, "#") + "%" : ""
@@ -211,11 +214,11 @@ render_fan(matrix<int> bm, int nsteps, array<float> lowArr, array<float> bwArr, 
             fanBoxes.push(b)
 
 // Returns the new polyline; caller reassigns the global var (Pine forbids reassigning globals in fns).
-render_median(polyline prev, matrix<int> bm, int nsteps, array<float> lowArr, array<float> bwArr, int nbins, color c) =>
+render_median(polyline prev, matrix<int> bm, int nsteps, array<float> lowArr, array<float> bwArr, int nbins, float basePrice, color c) =>
     if not na(prev)
         prev.delete()
     array<chart.point> pts = array.new<chart.point>()
-    pts.push(chart.point.from_index(bar_index, open))
+    pts.push(chart.point.from_index(bar_index, basePrice))
     for t = 0 to nsteps - 1
         float p50 = pctl_price(bm, t, 0.50, lowArr, bwArr, nbins)
         pts.push(chart.point.from_index(bar_index + t + 1, p50))
@@ -242,7 +245,7 @@ smooth_row(matrix<int> bm, int t, int nbins, float len) =>
         result := est
     result
 
-render_terminal(matrix<int> bm, int nsteps, array<float> lowArr, array<float> bwArr, int nbins, float smooth, color cBull, color cBear, color cText, bool showPct) =>
+render_terminal(matrix<int> bm, int nsteps, array<float> lowArr, array<float> bwArr, int nbins, float smooth, float basePrice, color cBull, color cBear, color cText, bool showPct) =>
     clear_boxes(termBoxes)
     int   t   = nsteps - 1
     array<float> row = smooth_row(bm, t, nbins, smooth)
@@ -259,17 +262,17 @@ render_terminal(matrix<int> bm, int nsteps, array<float> lowArr, array<float> bw
         if v > 0 and maxv > 0
             float center = lo + (c + 0.5) * bw
             int   width  = int(30 * v / maxv)   // horizontal length scaled to max freq
-            color base   = center >= open ? cBull : cBear
+            color base   = center >= basePrice ? cBull : cBear
             float prob   = total > 0 ? 100.0 * bm.get(t, c) / total : 0.0
             string txt   = showPct and prob >= 0.05 ? str.tostring(prob, "#.##") + "%" : ""
             box b = box.new(x0, lo + (c + 1) * bw, x0 + width, lo + c * bw, border_color=#00000000, bgcolor=color.new(base, 30), text=txt, text_color=cText, text_size=size.small, text_halign=text.align_left)
             termBoxes.push(b)
 
 // Returns the new line; caller reassigns the global var.
-render_start(line prev, color c) =>
+render_start(line prev, float basePrice, color c) =>
     if not na(prev)
         prev.delete()
-    line.new(bar_index, open, bar_index + 1, open, color=c, extend=extend.left)
+    line.new(bar_index, basePrice, bar_index + 1, basePrice, color=c, extend=extend.left)
 
 // Bull/Bear bias: total probability of finishing above vs below the start price,
 // measured from the terminal step's bins. Rendered into the persistent biasTable.
@@ -354,9 +357,10 @@ var float seed = 987654321
 float dStdGlobal = standard_drift(driftLength == 0 ? lookback : driftLength)
 
 if barstate.islast
-    if bar_index + 1 < lookback
+    // prep_returns reads close[lookback] (i+1 at i=lookback-1) -> needs bar_index >= lookback.
+    if bar_index < lookback
         runtime.error('Use a "Lookback" less than available bars: ' + str.tostring(bar_index))
-    if bar_index + 1 < driftLength
+    if bar_index < driftLength
         runtime.error('Use a "Drift" less than available bars: ' + str.tostring(bar_index))
 
     var int counter  = -1
@@ -373,26 +377,27 @@ if barstate.islast
         if realtime
             seed     := bar_index * 7919 + 1
             lastCalc := timenow
+        float basePrice = forecastBase == "Close" ? close : open
         [Rdm, mu, sigma] = prep_returns(lookback, useLog, volatilityAdj)
         float dterm = drift_term(driftLength, driftStyle, mu, dStdGlobal)
-        [lowArr, highArr, bwArr] = build_ranges(open, sigma, steps, useLog)
+        [lowArr, highArr, bwArr] = build_ranges(basePrice, sigma, steps, useLog)
 
         matrix<int> binsM = matrix.new<int>(steps, bins, 0)
-        [clamps, sEnd] = run_simulations(Rdm, blockLen, steps, simulations, open, dterm, useLog, lowArr, bwArr, binsM, int(seed))
+        [clamps, sEnd] = run_simulations(Rdm, blockLen, steps, simulations, basePrice, dterm, useLog, lowArr, bwArr, binsM, int(seed))
         seed := sEnd
 
         if showFan
-            render_fan(binsM, steps, lowArr, bwArr, bins, colBull, colBear, colText, showPct)
+            render_fan(binsM, steps, lowArr, bwArr, bins, basePrice, colBull, colBear, colText, showPct)
         if showMedian
-            medianLine := render_median(medianLine, binsM, steps, lowArr, bwArr, bins, colMedian)
+            medianLine := render_median(medianLine, binsM, steps, lowArr, bwArr, bins, basePrice, colMedian)
         if showTerm
-            render_terminal(binsM, steps, lowArr, bwArr, bins, smoothing, colBull, colBear, colText, showPct)
+            render_terminal(binsM, steps, lowArr, bwArr, bins, smoothing, basePrice, colBull, colBear, colText, showPct)
         if startLine
-            startLn := render_start(startLn, colStart)
+            startLn := render_start(startLn, basePrice, colStart)
         if showBias
-            render_bias(binsM, steps, lowArr, bwArr, bins, open, colBull, colBear, colText)
+            render_bias(binsM, steps, lowArr, bwArr, bins, basePrice, colBull, colBear, colText)
         if showSummary
-            render_summary(binsM, steps, lowArr, bwArr, bins, open, colBull, colBear, colText)
+            render_summary(binsM, steps, lowArr, bwArr, bins, basePrice, colBull, colBear, colText)
 
         // Surface clamping only when significant — never silent truncation.
         // Reuse a single label (delete the previous) so real-time recomputes don't pile up.
