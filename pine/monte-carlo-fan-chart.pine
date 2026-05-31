@@ -58,9 +58,12 @@ rng_int(int state, int n) =>
 // ============================== MODEL ==============================
 // Returns over `lb` bars, demeaned so drift is added back explicitly (no double count).
 // sigma is EWMA when volatilityAdj is on, else the plain sample stdev.
-prep_returns(int lb, bool logRet, bool ewma) =>
+prep_returns(int lb, bool logRet, bool ewma, int histOffset) =>
     array<float> R = array.new<float>()
-    for i = 0 to lb - 1
+    // Build OLDEST -> NEWEST so a continuing block (src+1) advances FORWARD in real time,
+    // preserving momentum/autocorrelation. histOffset skips the still-forming bar in real-time.
+    for j = 0 to lb - 1
+        int i = lb - 1 - j + histOffset
         float r = logRet ? math.log(close[i] / close[i + 1]) : (close[i] - close[i + 1]) / close[i + 1]
         R.push(r)
     float mu       = R.avg()
@@ -68,9 +71,10 @@ prep_returns(int lb, bool logRet, bool ewma) =>
     float sigma    = sampleSd
     if ewma
         // EWMA variance, lambda = 0.94 (RiskMetrics), seeded with sample variance.
+        // R is oldest->newest, so walk 0 -> size-1: the newest return gets the most weight.
         float lambda = 0.94
         float v = math.pow(sampleSd, 2)
-        for i = R.size() - 1 to 0
+        for i = 0 to R.size() - 1
             float d = R.get(i) - mu
             v := lambda * v + (1.0 - lambda) * d * d
         sigma := math.sqrt(v)
@@ -102,29 +106,33 @@ lin_reg_slope(int len) =>
         sxy += src * x
     -((len * sxy - sx * sy) / (len * sx2 - sx * sx))
 
-// Per-step drift expressed in RETURN units (so it composes with bootstrapped returns).
-// Standard -> log-return (precomputed at global scope); Linear Regression -> slope/price; None -> sample mean.
-drift_term(int driftLen, string style, float mu, float dStd) =>
+// Per-step drift in RETURN units. muDrift = mean return over the DRIFT window (not lookback);
+// lin-reg slope scaled by basePrice and made log-aware; None = zero.
+drift_term(int driftLen, string style, float muDrift, float dStd, float basePrice, bool logRet) =>
     int len = driftLen == 0 ? lookback : driftLen
     switch style
         "Standard"          => dStd
-        "Linear Regression" => lin_reg_slope(len) / close
-        "Historical Mean"   => mu
+        "Linear Regression" =>
+            float sp = lin_reg_slope(len)
+            logRet ? math.log(math.max(basePrice + sp, syminfo.mintick) / basePrice) : sp / basePrice
+        "Historical Mean"   => muDrift
         => 0.0   // "None" = truly no drift (trendless)
 
-// Analytic per-step price range: open * exp(±K*sigma*sqrt(t)). Single pass, no range discovery.
-build_ranges(float basePrice, float sigma, int nsteps, bool logRet) =>
+// Analytic per-step range, CENTERED on the drifted expected price so bins track the drifting
+// cloud (else strong drift pushes outcomes off-center -> wasted bins + clamping). Single pass.
+build_ranges(float basePrice, float sigma, float dterm, int nsteps, bool logRet) =>
     array<float> lowArr  = array.new<float>()
     array<float> highArr = array.new<float>()
     array<float> bwArr   = array.new<float>()
     for t = 1 to nsteps
-        float hw = K_SIGMA * sigma * math.sqrt(t)
-        float lo = logRet ? basePrice * math.exp(-hw) : math.max(0.0, basePrice * (1 - hw))
-        float hi = logRet ? basePrice * math.exp(hw)  : basePrice * (1 + hw)
+        float hw     = K_SIGMA * sigma * math.sqrt(t)
+        float center = logRet ? basePrice * math.exp(dterm * t) : basePrice * math.pow(math.max(0.000001, 1.0 + dterm), t)
+        float lo = logRet ? center * math.exp(-hw) : math.max(0.0, center * (1 - hw))
+        float hi = logRet ? center * math.exp(hw)  : center * (1 + hw)
         // Guard zero variance: give a degenerate but non-zero width so binning never divides by 0.
         if hi - lo <= 0.0
-            lo := basePrice * 0.9999
-            hi := basePrice * 1.0001
+            lo := center * 0.9999
+            hi := center * 1.0001
         lowArr.push(lo)
         highArr.push(hi)
         bwArr.push((hi - lo) / bins)
@@ -379,40 +387,49 @@ int simsEff = switch quality
     "Research" => math.max(simulations, 3000)
     => simulations  // "Balanced"
 
-// Computed on EVERY bar (not inside the conditional) so its rolling history stays consistent.
-float dStdGlobal = standard_drift(driftLength == 0 ? lookback : driftLength)
+// Computed on EVERY bar (not inside the conditional) so rolling history stays consistent.
+int   dLenG         = driftLength == 0 ? lookback : driftLength
+float dStdGlobal    = standard_drift(dLenG)
+float ret1G         = useLog ? math.log(close / close[1]) : (close - close[1]) / close[1]
+float muDriftGlobal = math.sum(ret1G, dLenG) / dLenG   // mean return over the DRIFT window
 
 if barstate.islast
-    // prep_returns reads close[lookback] (i+1 at i=lookback-1) -> needs bar_index >= lookback.
-    if bar_index < lookback
+    // Returns read up to close[lookback+1] (oldest block + real-time histOffset) -> need lookback+1 bars.
+    if bar_index < lookback + 1
         runtime.error('Use a "Lookback" less than available bars: ' + str.tostring(bar_index))
     if bar_index < driftLength
         runtime.error('Use a "Drift" less than available bars: ' + str.tostring(bar_index))
     if steps * bins > 100000
         runtime.error('steps × Outcome Granularity must be ≤ 100,000 (Pine matrix limit). Lower Steps or Granularity.')
+    // Box budget: fan needs steps×4, terminal needs `bins`; Pine caps boxes at 500.
+    if (showFan ? steps * 4 : 0) + (showTerm ? bins : 0) > 500
+        runtime.error('Too many boxes (fan ' + str.tostring(showFan ? steps * 4 : 0) + ' + terminal ' + str.tostring(showTerm ? bins : 0) + ' > 500). Lower Steps/Granularity or disable Fan/Terminal.')
 
-    var int counter  = -1
-    var int lastCalc = 0
+    var   int  counter      = -1
+    varip int  lastCalcRT   = 0        // varip: persists intrabar so the real-time throttle actually limits
+    varip bool firstPainted = false    // varip: holds across ticks -> paint once on load, no jitter
     counter += 1
     // Real-time throttle: recompute at most once per `throttleSecs` (0 = every tick).
-    bool tickReady = throttleSecs == 0 or counter == 0 or (timenow - lastCalc >= throttleSecs * 1000)
-    // Non-realtime: recompute ONLY on a CLOSED bar (barstate.isconfirmed) -> zero intrabar movement.
-    // Pine rolls back all state every tick of a forming bar, so a once-per-load paint can't be held
-    // without recomputing every tick (= jitter). So first paint lands on the first close after load
-    // (<= 1 bar). Every `steps` closed bars, or every closed bar when waitForSteps is on.
+    bool tickReady = throttleSecs == 0 or counter == 0 or (timenow - lastCalcRT >= throttleSecs * 1000)
+    // Non-realtime: paint ONCE on load (firstPainted, varip -> no rollback -> no jitter), then
+    // recompute only on CLOSED bars. Every `steps` closed bars, or every closed bar if waitForSteps.
     bool closeBar = barstate.isconfirmed
-    bool wait = realtime ? tickReady : (closeBar and (waitForSteps or 0 == counter % steps))
+    bool wait = realtime ? tickReady : ((not firstPainted) or (closeBar and (waitForSteps or 0 == counter % steps)))
 
     if wait
+        firstPainted := true
         // Real-time: reseed deterministically per bar so the picture is stable within a bar
         // (only price drift changes it), not jittering on every tick from an advancing seed.
         if realtime
-            seed     := bar_index * 7919 + userSeed
-            lastCalc := timenow
+            seed       := bar_index * 7919 + userSeed
+            lastCalcRT := timenow
+        // Real-time: train the distribution on CLOSED bars only (skip the forming bar) so it
+        // doesn't mutate every tick — only basePrice (live close) moves the cone.
+        int histOffset = realtime and not barstate.isconfirmed ? 1 : 0
         float basePrice = forecastBase == "Close" ? close : open
-        [Rdm, mu, sigma, volScale] = prep_returns(lookback, useLog, volatilityAdj)
-        float dterm = drift_term(driftLength, driftStyle, mu, dStdGlobal)
-        [lowArr, highArr, bwArr] = build_ranges(basePrice, sigma, steps, useLog)
+        [Rdm, mu, sigma, volScale] = prep_returns(lookback, useLog, volatilityAdj, histOffset)
+        float dterm = drift_term(driftLength, driftStyle, muDriftGlobal, dStdGlobal, basePrice, useLog)
+        [lowArr, highArr, bwArr] = build_ranges(basePrice, sigma, dterm, steps, useLog)
 
         matrix<int> binsM = matrix.new<int>(steps, bins, 0)
         [clamps, sEnd] = run_simulations(Rdm, blockLen, steps, simsEff, basePrice, dterm, useLog, lowArr, bwArr, binsM, int(seed))
