@@ -7,10 +7,12 @@ indicator("Monte Carlo Fan Chart", overlay=true, max_boxes_count=500, max_lines_
 string gControls = "Primary Controls"
 int   simulations = input.int(750,   "Number of Simulations", group=gControls, minval=50,  step=50)
 int   lookback    = input.int(500,   "Lookback",              group=gControls, minval=50,  step=50)
-int   steps       = input.int(5,     "Steps Into Future",     group=gControls, minval=2,   step=1, tooltip="Forecast horizon in bars. ~5 is the sweet spot — matches the block length where the model has real predictive edge. Beyond ~8 it's mostly noise.")
-int   bins        = input.int(50,    "Outcome Granularity",   group=gControls, minval=10,  step=5)
-int   blockLen    = input.int(5,     "Block Length",          group=gControls, minval=1,   step=1, tooltip="Length of contiguous return blocks resampled. Preserves volatility clustering / short-term autocorrelation.")
+int   steps       = input.int(5,     "Steps Into Future",     group=gControls, minval=2,   maxval=100, step=1, tooltip="Forecast horizon in bars. ~5 is the sweet spot — matches the block length where the model has real predictive edge. Beyond ~8 it's mostly noise. Capped at 100 (Pine future-bar / runtime limits).")
+int   bins        = input.int(50,    "Outcome Granularity",   group=gControls, minval=10,  maxval=500, step=5)
+int   blockLen    = input.int(5,     "Block Length",          group=gControls, minval=1,   step=1, tooltip="Expected length of resampled return blocks (stationary bootstrap). Preserves volatility clustering / short-term autocorrelation.")
 float smoothing   = input.float(1.75,"Outcome Smoothing",     group=gControls, minval=0.0, step=0.25)
+string quality    = input.string("Balanced", "Quality", group=gControls, options=["Fast", "Balanced", "Accurate", "Research"], tooltip="Scales effective simulations. Fast=300, Balanced=your setting, Accurate=≥1500, Research=≥3000. Heavier = cleaner but may hit Pine's time limit.")
+int   userSeed    = input.int(987654321, "Random Seed", group=gControls, minval=1, tooltip="Change for a different but reproducible random draw.")
 
 string gAdj = "Additional Adjustments"
 int    driftLength   = input.int(34, "Drift", group=gAdj, inline="drift", minval=0)
@@ -78,15 +80,16 @@ prep_returns(int lb, bool logRet, bool ewma) =>
     array<float> Rdm = array.new<float>()
     for i = 0 to R.size() - 1
         Rdm.push((R.get(i) - mu) * scale)
-    [Rdm, mu, sigma]
+    [Rdm, mu, sigma, scale]
 
 // Uses math.sum (rolling window) instead of a history-operator loop, so it stays
 // consistent when called once per bar at global scope (avoids CW10003).
 standard_drift(int len) =>
     float lr   = math.log(close / close[1])
     float mean = math.sum(lr, len) / len
-    float vari = math.sum(lr * lr, len) / (len * 2)
-    mean - vari
+    float msq  = math.sum(lr * lr, len) / len
+    float vari = math.max(msq - mean * mean, 0.0)   // true variance E[r²]-mean², not E[r²]
+    mean - 0.5 * vari
 
 lin_reg_slope(int len) =>
     float sx = 0.0, float sy = 0.0, float sx2 = 0.0, float sxy = 0.0
@@ -127,36 +130,38 @@ build_ranges(float basePrice, float sigma, int nsteps, bool logRet) =>
         bwArr.push((hi - lo) / bins)
     [lowArr, highArr, bwArr]
 
-// Moving block bootstrap: concatenate circular contiguous blocks of demeaned returns.
-sample_path(array<float> R, int L, int nsteps, int state) =>
-    int n = R.size()
-    int Lc = math.min(L, n)
-    array<float> path = array.new<float>()
-    int st = state
-    while path.size() < nsteps
-        [s, ns] = rng_int(st, n)
-        st := ns
-        for k = 0 to Lc - 1
-            if path.size() >= nsteps
-                break
-            path.push(R.get((s + k) % n))
-    [path, st]
-
 // ============================== BINNING ==============================
 bin_index(float price, float lo, float bw) =>
     int idx = bw > 0 ? int((price - lo) / bw) : 0
     math.max(0, math.min(bins - 1, idx))   // clamp into edge bins
 
 // Run all sims in a single pass; fill `binsM` (steps x bins) and return clamp count + state.
+// Stationary bootstrap (Politis-Romano): blocks restart with probability 1/L, so block length
+// is random with mean L — avoids the periodicity artifacts of fixed-length blocks. Sampling is
+// inlined (no per-sim path array) for speed.
 run_simulations(array<float> R, int L, int nsteps, int nsims, float basePrice, float dterm, bool logRet, array<float> lowArr, array<float> bwArr, matrix<int> binsM, int state) =>
-    int st = state
-    int clamps = 0
+    int   st       = state
+    int   clamps   = 0
+    int   n        = R.size()
+    float pRestart = L > 0 ? 1.0 / L : 1.0
     for sim = 0 to nsims - 1
-        [path, ns] = sample_path(R, L, nsteps, st)
-        st := ns
-        float p = basePrice
+        float p   = basePrice
+        int   src = 0
         for t = 0 to nsteps - 1
-            p := logRet ? p * math.exp(path.get(t) + dterm) : p * (1 + path.get(t) + dterm)
+            bool restart = t == 0
+            if not restart
+                [u, stu] = rng(st)
+                st := stu
+                restart := u < pRestart
+            if restart
+                [srcNew, sts] = rng_int(st, n)
+                st  := sts
+                src := srcNew
+            else
+                src := (src + 1) % n
+            float r    = R.get(src)
+            float mult = logRet ? math.exp(r + dterm) : math.max(0.000001, 1.0 + r + dterm)  // percent floor: price can't go ≤0
+            p := p * mult
             float lo = lowArr.get(t)
             float bw = bwArr.get(t)
             int   idx = bin_index(p, lo, bw)
@@ -187,7 +192,7 @@ var polyline    medianLine = na
 var line        startLn    = na
 var label       clampLbl   = na
 var table       biasTable  = table.new(position.top_right, 2, 2, border_width=1)
-var table       sumTable   = table.new(position.bottom_right, 2, 6, border_width=1, frame_width=1, frame_color=color.new(color.gray, 50))
+var table       sumTable   = table.new(position.bottom_right, 2, 9, border_width=1, frame_width=1, frame_color=color.new(color.gray, 50))
 
 clear_boxes(array<box> arr) =>
     if arr.size() > 0
@@ -305,14 +310,15 @@ fmt_move(float price, float base) =>
 
 // One panel with everything needed to read the forecast: leader, most-likely price,
 // median target, the 50% zone and the 90% range — all in price + % move.
-render_summary(matrix<int> bm, int nsteps, array<float> lowArr, array<float> bwArr, int nbins, float basePrice, color cBull, color cBear, color cText) =>
+render_summary(matrix<int> bm, int nsteps, array<float> lowArr, array<float> bwArr, int nbins, float basePrice, float volScale, color cBull, color cBear, color cText) =>
     int t = nsteps - 1
     float lo = lowArr.get(t)
     float bw = bwArr.get(t)
-    int bull = 0
-    int bear = 0
-    int maxC = -1
-    int maxI = 0
+    int   bull   = 0
+    int   bear   = 0
+    int   maxC   = -1
+    int   maxI   = 0
+    float sumAbs = 0.0   // for expected (mean absolute) move
     for c = 0 to nbins - 1
         int cnt = bm.get(t, c)
         float center = lo + (c + 0.5) * bw
@@ -323,6 +329,7 @@ render_summary(matrix<int> bm, int nsteps, array<float> lowArr, array<float> bwA
         if cnt > maxC
             maxC := cnt
             maxI := c
+        sumAbs += cnt * math.abs(center - basePrice)
     int   total    = bull + bear
     float bullPct  = total > 0 ? 100.0 * bull / total : 0.0
     float bearPct  = 100.0 - bullPct
@@ -333,6 +340,12 @@ render_summary(matrix<int> bm, int nsteps, array<float> lowArr, array<float> bwA
     float p50 = pctl_price(bm, t, 0.50, lowArr, bwArr, nbins)
     float p75 = pctl_price(bm, t, 0.75, lowArr, bwArr, nbins)
     float p95 = pctl_price(bm, t, 0.95, lowArr, bwArr, nbins)
+    // Expected move = probability-weighted mean absolute move, as % of base.
+    float expMove = (total > 0 and basePrice > 0) ? (sumAbs / total) / basePrice * 100.0 : 0.0
+    // Skew = which tail is fatter (upper vs lower distance around the median).
+    float upTail   = p95 - p50
+    float downTail = p50 - p05
+    string skewTxt = upTail > downTail * 1.1 ? "Up-tail heavy" : downTail > upTail * 1.1 ? "Down-tail heavy" : "Symmetric"
     color cHdr   = color.new(#1E222D, 0)   // near-black header
     color cLeft  = color.new(#2A2E39, 0)   // dark label cells
     color cRight = color.new(#363A45, 0)   // slightly lighter value cells
@@ -349,9 +362,22 @@ render_summary(matrix<int> bm, int nsteps, array<float> lowArr, array<float> bwA
     sumTable.cell(1, 4, str.tostring(p25, format.mintick) + " … " + str.tostring(p75, format.mintick), text_color=color.white, bgcolor=cRight, text_size=size.normal)
     sumTable.cell(0, 5, "90% range", text_color=color.white, bgcolor=cLeft, text_size=size.normal, text_halign=text.align_left)
     sumTable.cell(1, 5, str.tostring(p05, format.mintick) + " … " + str.tostring(p95, format.mintick), text_color=color.white, bgcolor=cRight, text_size=size.normal)
+    sumTable.cell(0, 6, "Exp. move", text_color=color.white, bgcolor=cLeft, text_size=size.normal, text_halign=text.align_left)
+    sumTable.cell(1, 6, "±" + str.tostring(expMove, "#.##") + "%", text_color=color.white, bgcolor=cRight, text_size=size.normal)
+    sumTable.cell(0, 7, "Skew", text_color=color.white, bgcolor=cLeft, text_size=size.normal, text_halign=text.align_left)
+    sumTable.cell(1, 7, skewTxt, text_color=color.white, bgcolor=cRight, text_size=size.normal)
+    sumTable.cell(0, 8, "Vol scale", text_color=color.white, bgcolor=cLeft, text_size=size.normal, text_halign=text.align_left)
+    sumTable.cell(1, 8, str.tostring(volScale, "#.##") + "x", text_color=color.white, bgcolor=cRight, text_size=size.normal)
 
 // ============================== DRIVER ==============================
-var float seed = 987654321
+var float seed = userSeed
+
+// Effective simulations from the Quality preset.
+int simsEff = switch quality
+    "Fast"     => math.min(simulations, 300)
+    "Accurate" => math.max(simulations, 1500)
+    "Research" => math.max(simulations, 3000)
+    => simulations  // "Balanced"
 
 // Computed on EVERY bar (not inside the conditional) so its rolling history stays consistent.
 float dStdGlobal = standard_drift(driftLength == 0 ? lookback : driftLength)
@@ -362,6 +388,8 @@ if barstate.islast
         runtime.error('Use a "Lookback" less than available bars: ' + str.tostring(bar_index))
     if bar_index < driftLength
         runtime.error('Use a "Drift" less than available bars: ' + str.tostring(bar_index))
+    if steps * bins > 100000
+        runtime.error('steps × Outcome Granularity must be ≤ 100,000 (Pine matrix limit). Lower Steps or Granularity.')
 
     var int counter  = -1
     var int lastCalc = 0
@@ -375,15 +403,15 @@ if barstate.islast
         // Real-time: reseed deterministically per bar so the picture is stable within a bar
         // (only price drift changes it), not jittering on every tick from an advancing seed.
         if realtime
-            seed     := bar_index * 7919 + 1
+            seed     := bar_index * 7919 + userSeed
             lastCalc := timenow
         float basePrice = forecastBase == "Close" ? close : open
-        [Rdm, mu, sigma] = prep_returns(lookback, useLog, volatilityAdj)
+        [Rdm, mu, sigma, volScale] = prep_returns(lookback, useLog, volatilityAdj)
         float dterm = drift_term(driftLength, driftStyle, mu, dStdGlobal)
         [lowArr, highArr, bwArr] = build_ranges(basePrice, sigma, steps, useLog)
 
         matrix<int> binsM = matrix.new<int>(steps, bins, 0)
-        [clamps, sEnd] = run_simulations(Rdm, blockLen, steps, simulations, basePrice, dterm, useLog, lowArr, bwArr, binsM, int(seed))
+        [clamps, sEnd] = run_simulations(Rdm, blockLen, steps, simsEff, basePrice, dterm, useLog, lowArr, bwArr, binsM, int(seed))
         seed := sEnd
 
         if showFan
@@ -397,13 +425,13 @@ if barstate.islast
         if showBias
             render_bias(binsM, steps, lowArr, bwArr, bins, basePrice, colBull, colBear, colText)
         if showSummary
-            render_summary(binsM, steps, lowArr, bwArr, bins, basePrice, colBull, colBear, colText)
+            render_summary(binsM, steps, lowArr, bwArr, bins, basePrice, volScale, colBull, colBear, colText)
 
         // Surface clamping only when significant — never silent truncation.
         // Reuse a single label (delete the previous) so real-time recomputes don't pile up.
         if not na(clampLbl)
             clampLbl.delete()
             clampLbl := na
-        float clampPct = 100.0 * clamps / (simulations * steps)
+        float clampPct = 100.0 * clamps / (simsEff * steps)
         if clampPct > 1.0
             clampLbl := label.new(bar_index + steps, highArr.get(steps - 1), "⚠ " + str.tostring(clampPct, "#.#") + "% clamped — raise K_SIGMA", color=color.new(color.orange, 60), textcolor=colText, style=label.style_label_left, size=size.small)
