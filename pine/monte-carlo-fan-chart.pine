@@ -1,5 +1,9 @@
 // This Pine Script™ code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
 
+// DISCLAIMER: This is a probabilistic visualization tool, NOT a directional trading signal.
+// Outcomes are a BINNED Monte Carlo estimate from historically resampled returns and can fail
+// under regime change, gaps, news, and illiquid markets. Use for risk/range context, not prediction.
+
 //@version=6
 indicator("Monte Carlo Fan Chart", overlay=true, max_boxes_count=500, max_lines_count=500, max_polylines_count=100, max_labels_count=100, max_bars_back=5000)
 
@@ -16,7 +20,7 @@ int   userSeed    = input.int(987654321, "Random Seed", group=gControls, minval=
 
 string gAdj = "Additional Adjustments"
 int    driftLength   = input.int(34, "Drift", group=gAdj, inline="drift", minval=0, maxval=4990)
-string driftStyle    = input.string("Standard", "Style:", group=gAdj, inline="drift", options=["Linear Regression", "Standard", "Historical Mean", "None"], tooltip="Standard = vol-degraded mean log return. Linear Regression = trend slope. Historical Mean = average return. None = zero drift (trendless).")
+string driftStyle    = input.string("Standard", "Style:", group=gAdj, inline="drift", options=["Linear Regression", "Standard", "Historical Mean", "None"], tooltip="Standard = volatility-adjusted mean (log mode) / mean return (percent mode). Linear Regression = trend slope. Historical Mean = average return. None = zero drift (trendless).")
 bool   volatilityAdj = input.bool(true, "Volatility Adjust", group=gAdj, tooltip="Use an EWMA volatility estimate (reactive to recent regime) instead of the plain sample stdev.")
 bool   useLog        = input.string("Log Returns", "Returns Style", group=gAdj, options=["Percent", "Log Returns"]) == "Log Returns"
 string forecastBase  = input.string("Close", "Forecast Base", group=gAdj, options=["Close", "Open"], tooltip="Price the forecast projects from. Close = current live price (recommended). Open = this bar's open (can be stale on long candles).")
@@ -438,7 +442,9 @@ if barstate.islast
     // the LAST CLOSED bar -> identical each tick -> looks frozen, no jitter, shows instantly). After
     // that, draw only on closed bars (committed -> persist), every `steps` bars or every bar.
     bool closeBar = barstate.isconfirmed
-    bool wait = realtime ? tickReady : ((not firstPainted) or (closeBar and (waitForSteps or 0 == counter % steps)))
+    // Realtime: ALWAYS run on the confirmed close (so the final state/drawings commit), throttle only
+    // intrabar. Non-realtime: paint once on load, then on qualifying closed bars.
+    bool wait = realtime ? (closeBar or tickReady) : ((not firstPainted) or (closeBar and (waitForSteps or 0 == counter % steps)))
 
     if wait
         bool confirmedNow   = barstate.isconfirmed
