@@ -422,11 +422,11 @@ if barstate.islast
     // Real-time throttle: lastCalcRT starts at 0 so the first tick always passes (no counter==0 hack,
     // which broke because var counter rolls back every realtime tick).
     bool tickReady = throttleSecs == 0 or (timenow - lastCalcRT >= throttleSecs * 1000)
-    // Non-realtime: draw ONLY on CLOSED bars. Drawings made on a forming bar are rolled back on the
-    // next tick and (since we don't redraw) would vanish -> flicker. Closed-bar drawings are committed
-    // and persist. firstPainted forces the first close to paint even if it's not a steps-multiple.
+    // Non-realtime: until the first close after load, redraw every tick (the picture is anchored to
+    // the LAST CLOSED bar -> identical each tick -> looks frozen, no jitter, shows instantly). After
+    // that, draw only on closed bars (committed -> persist), every `steps` bars or every bar.
     bool closeBar = barstate.isconfirmed
-    bool wait = realtime ? tickReady : (closeBar and ((not firstPainted) or waitForSteps or 0 == counter % steps))
+    bool wait = realtime ? tickReady : ((not firstPainted) or (closeBar and (waitForSteps or 0 == counter % steps)))
 
     if wait
         firstPainted := true
@@ -438,10 +438,14 @@ if barstate.islast
         if realtime
             seed       := bar_index * 7919 + userSeed
             lastCalcRT := timenow
-        // Real-time: train the distribution on CLOSED bars only (skip the forming bar) so it
-        // doesn't mutate every tick — only basePrice (live close) moves the cone.
-        int histOffset = realtime and not barstate.isconfirmed ? 1 : 0
-        float basePrice = forecastBase == "Close" ? close : open
+        // Train on CLOSED bars only when a bar is forming (skip the incomplete bar).
+        bool  confirmedNow = barstate.isconfirmed
+        int   histOffset   = confirmedNow ? 0 : 1
+        // Non-realtime + forming bar: anchor to the LAST CLOSED price (close[1]) so the forecast
+        // shows immediately from the previous bar instead of waiting for the current one to close.
+        // Realtime: anchor to live close (the cone is meant to move with price).
+        float anchorClose = (realtime or confirmedNow) ? close : close[1]
+        float basePrice   = forecastBase == "Open" ? open : anchorClose
         [Rdm, mu, sigma, volScale] = prep_returns(lookback, useLog, volatilityAdj, histOffset)
         float dterm = drift_term(driftLength, driftStyle, muDriftGlobal, dStdGlobal, basePrice, useLog)
         [lowArr, highArr, bwArr] = build_ranges(basePrice, sigma, dterm, steps, useLog, kSigma)
