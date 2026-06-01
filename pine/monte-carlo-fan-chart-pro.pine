@@ -282,7 +282,7 @@ var array<box>  termBoxes = array.new<box>()
 var polyline    medianLine = na
 var line        startLn    = na
 var label       clampLbl   = na
-var table       sumTable   = table.new(position.bottom_right, 2, 13, border_width=1, frame_width=1, frame_color=color.new(color.gray, 50))
+var table       sumTable   = table.new(position.bottom_right, 2, 14, border_width=1, frame_width=1, frame_color=color.new(color.gray, 50))
 // riskTable removed — calibration now lives under the Forecast panel (same sumTable). Re-enable a
 // separate trade panel by restoring: var table riskTable = table.new(position.bottom_left, 2, N, ...)
 
@@ -535,32 +535,35 @@ if barstate.islast
         if showSummary
             sumTable.cell(0, 0, "🎯 Forecast: " + str.tostring(steps) + " bars", text_color=color.white, bgcolor=cHdr, text_size=size.normal, text_halign=text.align_left)
             sumTable.cell(1, 0, "", bgcolor=cHdr)
-            cell_l(sumTable, 1, "P(close>start)", colText)
-            cell_v(sumTable, 1, (bullLead ? "▲ " : "▼ ") + str.tostring(bullPct, "#.#") + "% ±" + str.tostring(mcSE, "#.#") + (edgeMeaningful ? "" : " ≈coin"), edgeMeaningful ? (bullLead ? colBull : colBear) : color.new(color.gray, 30), color.white)
-            cell_l(sumTable, 2, "Modal bin", colText)
-            cell_v(sumTable, 2, str.tostring(modeP, format.mintick) + " (" + fmt_move(modeP, basePrice) + ")", cVal, color.white)
-            cell_l(sumTable, 3, "Median (P50)", colText)
-            cell_v(sumTable, 3, str.tostring(p50, format.mintick) + " (" + fmt_move(p50, basePrice) + ")", cVal, color.white)
-            cell_l(sumTable, 4, "50% zone", colText)
-            cell_v(sumTable, 4, str.tostring(p25, format.mintick) + " … " + str.tostring(p75, format.mintick), cVal, color.white)
-            cell_l(sumTable, 5, "90% range", colText)
-            cell_v(sumTable, 5, str.tostring(p05, format.mintick) + " … " + str.tostring(p95, format.mintick), cVal, color.white)
-            cell_l(sumTable, 6, "Exp. move", colText)
-            cell_v(sumTable, 6, "±" + str.tostring(expMove, "#.##") + "%", cVal, color.white)
-            cell_l(sumTable, 7, "Skew", colText)
-            cell_v(sumTable, 7, skewTxt, cVal, color.white)
-            cell_l(sumTable, 8, "Vol scale", colText)
-            cell_v(sumTable, 8, str.tostring(volScale, "#.##") + "x", cVal, color.white)
-            cell_l(sumTable, 9, "Clamp lo/hi", colText)
-            cell_v(sumTable, 9, str.tostring(100.0 * clampLow / (simsUse * steps), "#.#") + "/" + str.tostring(100.0 * clampHigh / (simsUse * steps), "#.#") + "%", clampPct > 1.0 ? color.orange : cVal, color.white)
+            // Prominent directional verdict (grey ≈ NEUTRAL when the lean is within Monte Carlo noise).
+            cell_l(sumTable, 1, "Bias", colText)
+            cell_v(sumTable, 1, edgeMeaningful ? (bullLead ? "▲ BULLS " : "▼ BEARS ") + str.tostring(math.max(bullPct, 100.0 - bullPct), "#") + "%" : "≈ NEUTRAL", edgeMeaningful ? (bullLead ? colBull : colBear) : color.new(color.gray, 30), color.white)
+            cell_l(sumTable, 2, "P(close>start)", colText)
+            cell_v(sumTable, 2, (bullLead ? "▲ " : "▼ ") + str.tostring(bullPct, "#.#") + "% ±" + str.tostring(mcSE, "#.#") + (edgeMeaningful ? "" : " ≈coin"), edgeMeaningful ? (bullLead ? colBull : colBear) : color.new(color.gray, 30), color.white)
+            cell_l(sumTable, 3, "Modal bin", colText)
+            cell_v(sumTable, 3, str.tostring(modeP, format.mintick) + " (" + fmt_move(modeP, basePrice) + ")", cVal, color.white)
+            cell_l(sumTable, 4, "Median (P50)", colText)
+            cell_v(sumTable, 4, str.tostring(p50, format.mintick) + " (" + fmt_move(p50, basePrice) + ")", cVal, color.white)
+            cell_l(sumTable, 5, "50% zone", colText)
+            cell_v(sumTable, 5, str.tostring(p25, format.mintick) + " … " + str.tostring(p75, format.mintick), cVal, color.white)
+            cell_l(sumTable, 6, "90% range", colText)
+            cell_v(sumTable, 6, str.tostring(p05, format.mintick) + " … " + str.tostring(p95, format.mintick), cVal, color.white)
+            cell_l(sumTable, 7, "Exp. move", colText)
+            cell_v(sumTable, 7, "±" + str.tostring(expMove, "#.##") + "%", cVal, color.white)
+            cell_l(sumTable, 8, "Skew", colText)
+            cell_v(sumTable, 8, skewTxt, cVal, color.white)
+            cell_l(sumTable, 9, "Vol scale", colText)
+            cell_v(sumTable, 9, str.tostring(volScale, "#.##") + "x", cVal, color.white)
+            cell_l(sumTable, 10, "Clamp lo/hi", colText)
+            cell_v(sumTable, 10, str.tostring(100.0 * clampLow / (simsUse * steps), "#.#") + "/" + str.tostring(100.0 * clampHigh / (simsUse * steps), "#.#") + "%", clampPct > 1.0 ? color.orange : cVal, color.white)
             // Calibration block appended UNDER the Forecast panel (same table). Toggle with showRisk.
             if showRisk
-                cell_l(sumTable, 10, "Calib 50%", colText)
-                cell_v(sumTable, 10, str.tostring(cov50, "#.#") + "% (~50)", cVal, color.white)
-                cell_l(sumTable, 11, "Calib 90%", colText)
-                cell_v(sumTable, 11, str.tostring(cov90, "#.#") + "% (~90)", cVal, color.white)
-                cell_l(sumTable, 12, "MC error", colText)
-                cell_v(sumTable, 12, "±" + str.tostring(mcSE, "#.#") + "pp", cVal, color.white)
+                cell_l(sumTable, 11, "Calib 50%", colText)
+                cell_v(sumTable, 11, str.tostring(cov50, "#.#") + "% (~50)", cVal, color.white)
+                cell_l(sumTable, 12, "Calib 90%", colText)
+                cell_v(sumTable, 12, str.tostring(cov90, "#.#") + "% (~90)", cVal, color.white)
+                cell_l(sumTable, 13, "MC error", colText)
+                cell_v(sumTable, 13, "±" + str.tostring(mcSE, "#.#") + "pp", cVal, color.white)
         // --- Trade/risk panel (VaR/CVaR/MFE/target/stop/Exp R) HIDDEN in prod, kept in code: see the
         //     commented Trade Setup inputs + computation block above. Re-enable by restoring a riskTable. ---
 
