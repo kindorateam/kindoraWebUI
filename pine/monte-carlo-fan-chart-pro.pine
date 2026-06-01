@@ -11,7 +11,7 @@ indicator("Monte Carlo Fan Chart Pro", overlay=true, max_boxes_count=500, max_li
 
 // ============================== INPUTS ==============================
 string gControls = "Primary Controls"
-int   simulations = input.int(1500,  "Number of Simulations", group=gControls, minval=50,  maxval=5000, step=50, tooltip="Aim for simulations/bins ≥ 30 so bin counts (and the mode) aren't noisy. 1500/50 = 30 per bin.")
+int   simulations = input.int(1500,  "Number of Simulations", group=gControls, minval=50,  maxval=100000, step=50, tooltip="Aim for simulations/bins ≥ 30 so bin counts (and the mode) aren't noisy. WARNING: very high counts (>10k) likely hit Pine's 500ms/loop limit -> 'calculation timed out'. Accuracy gain past ~3000 is tiny (error falls as 1/√N).")
 int   lookback    = input.int(500,   "Lookback",              group=gControls, minval=50,  maxval=4990, step=50)
 int   steps       = input.int(10,    "Steps Into Future",     group=gControls, minval=2,   maxval=100, step=1, tooltip="Forecast horizon in bars. Short horizons preserve local volatility/autocorrelation better; long horizons grow increasingly diffuse (uncertainty ~√t).")
 int   bins        = input.int(50,    "Outcome Granularity",   group=gControls, minval=10,  maxval=500, step=5)
@@ -411,8 +411,10 @@ if barstate.islast
         runtime.error('Use a "Drift" less than available bars: ' + str.tostring(bar_index))
     if steps * bins > 100000
         runtime.error('steps × Outcome Granularity must be ≤ 100,000 (Pine matrix limit).')
-    if simsEff * steps > 300000
-        runtime.error('Too heavy: simulations × steps > 300,000. Lower Simulations / Quality / Steps.')
+    // Raised cap to allow high simulation counts. Pine's own 500ms/loop limit is the real ceiling —
+    // very high simsEff*steps will time out at runtime regardless of this guard.
+    if simsEff * steps > 2000000
+        runtime.error('Too heavy: simulations × steps > 2,000,000. Lower Simulations / Quality / Steps.')
     if realtime and simsEff * steps > 50000
         runtime.error('Real-time mode too heavy at this setting.')
     if (showFan ? steps * 4 : 0) + (showTerm ? bins : 0) > 500
