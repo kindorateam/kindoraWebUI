@@ -282,8 +282,9 @@ var array<box>  termBoxes = array.new<box>()
 var polyline    medianLine = na
 var line        startLn    = na
 var label       clampLbl   = na
-var table       sumTable   = table.new(position.bottom_right, 2, 10, border_width=1, frame_width=1, frame_color=color.new(color.gray, 50))
-var table       riskTable  = table.new(position.bottom_left,  2, 4, border_width=1, frame_width=1, frame_color=color.new(color.gray, 50))
+var table       sumTable   = table.new(position.bottom_right, 2, 13, border_width=1, frame_width=1, frame_color=color.new(color.gray, 50))
+// riskTable removed — calibration now lives under the Forecast panel (same sumTable). Re-enable a
+// separate trade panel by restoring: var table riskTable = table.new(position.bottom_left, 2, N, ...)
 
 clear_boxes(array<box> arr) =>
     if arr.size() > 0
@@ -552,35 +553,16 @@ if barstate.islast
             cell_v(sumTable, 8, str.tostring(volScale, "#.##") + "x", cVal, color.white)
             cell_l(sumTable, 9, "Clamp lo/hi", colText)
             cell_v(sumTable, 9, str.tostring(100.0 * clampLow / (simsUse * steps), "#.#") + "/" + str.tostring(100.0 * clampHigh / (simsUse * steps), "#.#") + "%", clampPct > 1.0 ? color.orange : cVal, color.white)
-
-        if showRisk
-            riskTable.cell(0, 0, "📊 Calibration", text_color=color.white, bgcolor=cHdr, text_size=size.normal, text_halign=text.align_left)
-            riskTable.cell(1, 0, "", bgcolor=cHdr)
-            // --- Trade/risk rows HIDDEN in prod, kept in code (re-enable with Trade Setup + computations above) ---
-            // cell_l(riskTable, 1, "Direction", colText)
-            // cell_v(riskTable, 1, enableTrade ? tradeDir : "—", cVal, color.white)
-            // cell_l(riskTable, 2, "Adverse VaR 5%", colText)
-            // cell_v(riskTable, 2, fmt_pct(adverseVar), cVal, color.white)
-            // cell_l(riskTable, 3, "Adverse ES 5%", colText)
-            // cell_v(riskTable, 3, fmt_pct(adverseES), cVal, color.white)
-            // cell_l(riskTable, 4, "Favorable ES 5%", colText)
-            // cell_v(riskTable, 4, fmt_pct(favorES), cVal, color.white)
-            // cell_l(riskTable, 5, "Avg MFE", colText)
-            // cell_v(riskTable, 5, fmt_pct(avgMFE), cVal, color.white)
-            // cell_l(riskTable, 6, "Avg MAE", colText)
-            // cell_v(riskTable, 6, "-" + str.tostring(avgMAE, "#.##") + "%", cVal, color.white)
-            // cell_l(riskTable, 7, "P(target 1st)", colText)
-            // cell_v(riskTable, 7, enableTrade ? str.tostring(pTgt, "#.#") + "% ±" + str.tostring(seTgt, "#.#") : "—", enableTrade ? color.new(colBull, 40) : cVal, color.white)
-            // cell_l(riskTable, 8, "P(stop 1st)", colText)
-            // cell_v(riskTable, 8, enableTrade ? str.tostring(pStp, "#.#") + "% ±" + str.tostring(seStp, "#.#") : "—", enableTrade ? color.new(colBear, 40) : cVal, color.white)
-            // cell_l(riskTable, 9, "Exp. R (net)", colText)
-            // cell_v(riskTable, 9, enableTrade ? str.tostring(expR, "#.##") + "R" : "—", enableTrade ? (expR >= 0 ? color.new(colBull, 40) : color.new(colBear, 40)) : cVal, color.white)
-            cell_l(riskTable, 1, "Calib 50%", colText)
-            cell_v(riskTable, 1, str.tostring(cov50, "#.#") + "% (~50)", cVal, color.white)
-            cell_l(riskTable, 2, "Calib 90%", colText)
-            cell_v(riskTable, 2, str.tostring(cov90, "#.#") + "% (~90)", cVal, color.white)
-            cell_l(riskTable, 3, "MC error", colText)
-            cell_v(riskTable, 3, "±" + str.tostring(mcSE, "#.#") + "pp", cVal, color.white)
+            // Calibration block appended UNDER the Forecast panel (same table). Toggle with showRisk.
+            if showRisk
+                cell_l(sumTable, 10, "Calib 50%", colText)
+                cell_v(sumTable, 10, str.tostring(cov50, "#.#") + "% (~50)", cVal, color.white)
+                cell_l(sumTable, 11, "Calib 90%", colText)
+                cell_v(sumTable, 11, str.tostring(cov90, "#.#") + "% (~90)", cVal, color.white)
+                cell_l(sumTable, 12, "MC error", colText)
+                cell_v(sumTable, 12, "±" + str.tostring(mcSE, "#.#") + "pp", cVal, color.white)
+        // --- Trade/risk panel (VaR/CVaR/MFE/target/stop/Exp R) HIDDEN in prod, kept in code: see the
+        //     commented Trade Setup inputs + computation block above. Re-enable by restoring a riskTable. ---
 
         // Clamp warning (reuse single label).
         if not na(clampLbl)
