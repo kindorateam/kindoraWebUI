@@ -535,7 +535,10 @@ if barstate.islast
         color cHdr = color.new(#1E222D, 0)
         color cVal = color.new(#363A45, 0)
         if showSummary
-            sumTable.cell(0, 0, "🎯 Forecast: " + str.tostring(steps) + " bars", text_color=color.white, bgcolor=cHdr, text_size=size.normal, text_halign=text.align_left)
+            // Horizon = steps × timeframe, shown in human time next to the bar count.
+            int    horizonMin = steps * timeframe.in_seconds() / 60
+            string horizonTxt = horizonMin >= 1440 ? str.tostring(math.round(horizonMin / 1440.0, 1)) + "d" : horizonMin >= 60 ? str.tostring(math.round(horizonMin / 60.0, 1)) + "h" : str.tostring(horizonMin) + "m"
+            sumTable.cell(0, 0, "🎯 Forecast: " + str.tostring(steps) + " bars (~" + horizonTxt + ")", text_color=color.white, bgcolor=cHdr, text_size=size.normal, text_halign=text.align_left)
             sumTable.cell(1, 0, "", bgcolor=cHdr)
             // Prominent directional verdict (grey ≈ NEUTRAL when the lean is within Monte Carlo noise).
             cell_l(sumTable, 1, "Bias", colText)
