@@ -31,12 +31,13 @@ bool   waitForSteps  = input.bool(false, "Update Every Bar", group=gAdj, tooltip
 bool   realtime      = input.bool(false, "Real-time (Every Tick)", group=gAdj, tooltip="Recompute on every tick. Heavy. Always commits on the confirmed close.")
 int    throttleSecs  = input.int(1, "Real-time Throttle (sec)", group=gAdj, minval=0, tooltip="Real-time: recompute at most once per N seconds. 0 = every tick.")
 
-string gTrade = "Trade Setup (Stop / Target)"
-bool   enableTrade = input.bool(true, "Enable Stop/Target Stats", group=gTrade, tooltip="Simulate a trade with target/stop; report close-path touch-first probabilities and expected R. NOTE: close-to-close path, not intrabar OHLC order.")
-string tradeDir    = input.string("Long", "Direction", group=gTrade, options=["Long", "Short"], tooltip="Long: target above / stop below. Short: target below / stop above.")
-float  targetPct   = input.float(2.0, "Target %", group=gTrade, minval=0.05, step=0.05)
-float  stopPct     = input.float(1.0, "Stop %",   group=gTrade, minval=0.05, step=0.05)
-float  feePct      = input.float(0.05, "Fees + Slippage %", group=gTrade, minval=0.0, step=0.01, tooltip="Round-trip cost subtracted from every simulated trade's R, so Expected R reflects NET edge.")
+// --- Trade Setup (Stop/Target) HIDDEN in prod, kept in code. Uncomment to re-enable. ---
+// string gTrade = "Trade Setup (Stop / Target)"
+// bool   enableTrade = input.bool(true, "Enable Stop/Target Stats", group=gTrade, tooltip="Simulate a trade with target/stop; report close-path touch-first probabilities and expected R. NOTE: close-to-close path, not intrabar OHLC order.")
+// string tradeDir    = input.string("Long", "Direction", group=gTrade, options=["Long", "Short"], tooltip="Long: target above / stop below. Short: target below / stop above.")
+// float  targetPct   = input.float(2.0, "Target %", group=gTrade, minval=0.05, step=0.05)
+// float  stopPct     = input.float(1.0, "Stop %",   group=gTrade, minval=0.05, step=0.05)
+// float  feePct      = input.float(0.05, "Fees + Slippage %", group=gTrade, minval=0.0, step=0.01, tooltip="Round-trip cost subtracted from every simulated trade's R, so Expected R reflects NET edge.")
 
 string gVis = "Visual Preferences"
 bool   showFan     = input.bool(true,  "Show Fan Bands",             group=gVis)
@@ -282,7 +283,7 @@ var polyline    medianLine = na
 var line        startLn    = na
 var label       clampLbl   = na
 var table       sumTable   = table.new(position.bottom_right, 2, 10, border_width=1, frame_width=1, frame_color=color.new(color.gray, 50))
-var table       riskTable  = table.new(position.bottom_left,  2, 13, border_width=1, frame_width=1, frame_color=color.new(color.gray, 50))
+var table       riskTable  = table.new(position.bottom_left,  2, 4, border_width=1, frame_width=1, frame_color=color.new(color.gray, 50))
 
 clear_boxes(array<box> arr) =>
     if arr.size() > 0
@@ -440,13 +441,16 @@ if barstate.islast
         float dterm = drift_term(driftLength, driftStyle, muUse, basePrice, useLog, histOffset)
         [lowArr, highArr, bwArr] = build_ranges(basePrice, sigma, dterm, steps, useLog, kSigma)
 
-        bool  isLong      = tradeDir == "Long"
-        float oneRprice   = basePrice * stopPct / 100.0
+        // Trade Setup hidden in prod -> stop/target tracking disabled (na levels). Kept in code below.
+        bool  isLong      = true
+        float oneRprice   = 0.0
         float targetLevel = na
         float stopLevel   = na
-        if enableTrade
-            targetLevel := isLong ? basePrice * (1.0 + targetPct / 100.0) : basePrice * (1.0 - targetPct / 100.0)
-            stopLevel   := isLong ? basePrice * (1.0 - stopPct / 100.0)   : basePrice * (1.0 + stopPct / 100.0)
+        // bool  isLong      = tradeDir == "Long"
+        // float oneRprice   = basePrice * stopPct / 100.0
+        // if enableTrade
+        //     targetLevel := isLong ? basePrice * (1.0 + targetPct / 100.0) : basePrice * (1.0 - targetPct / 100.0)
+        //     stopLevel   := isLong ? basePrice * (1.0 - stopPct / 100.0)   : basePrice * (1.0 + stopPct / 100.0)
 
         // Deterministic per-bar seed: same bar + settings -> same draw, regardless of recompute count.
         int seedStart = userSeed + bar_index * 7919
@@ -486,29 +490,26 @@ if barstate.islast
         float pHat   = bullPct / 100.0
         float mcSE   = simsUse > 0 ? 100.0 * math.sqrt(pHat * (1.0 - pHat) / simsUse) : na
         bool  edgeMeaningful = math.abs(bullPct - 50.0) > 2.0 * mcSE
-        // VaR / CVaR (downside) and upside expected tail, as % move.
-        float var5  = (p05 - basePrice) / basePrice * 100.0
-        float var95 = (p95 - basePrice) / basePrice * 100.0
-        float cvar5 = tail_cvar(binsM, tLast, 0.05, lowArr, bwArr, bins, basePrice, true)
-        float es5up = tail_cvar(binsM, tLast, 0.05, lowArr, bwArr, bins, basePrice, false)
-        // Trade-directional tails: for a SHORT the adverse side is the UPPER price tail.
-        float adverseVar = isLong ? var5  : -var95
-        float adverseES  = isLong ? cvar5 : -es5up
-        float favorES    = isLong ? es5up : -cvar5
-        // Stop/target stats (+ Monte Carlo standard error of each probability).
-        float pTgt = simsUse > 0 ? 100.0 * nTgtFirst / simsUse : 0.0
-        float pStp = simsUse > 0 ? 100.0 * nStpFirst / simsUse : 0.0
-        float pT   = pTgt / 100.0
-        float pS   = pStp / 100.0
-        float seTgt = simsUse > 0 ? 100.0 * math.sqrt(pT * (1.0 - pT) / simsUse) : na
-        float seStp = simsUse > 0 ? 100.0 * math.sqrt(pS * (1.0 - pS) / simsUse) : na
-        float rr   = stopPct > 0.0 ? targetPct / stopPct : 0.0
-        float feeR = stopPct > 0.0 ? feePct / stopPct : 0.0
-        // Gross expected R: target-first (+RR), stop-first (-1), no-hit (terminal R). Net subtracts fees.
-        float expRGross = simsUse > 0 ? (nTgtFirst * rr - nStpFirst * 1.0 + sumNoHitR) / simsUse : 0.0
-        float expR = expRGross - feeR
-        float avgMFE = simsUse > 0 ? 100.0 * sumMFE / simsUse : 0.0
-        float avgMAE = simsUse > 0 ? 100.0 * sumMAE / simsUse : 0.0
+        // --- Trade/risk metrics HIDDEN in prod, kept in code. Uncomment with the Trade Setup inputs. ---
+        // float var5  = (p05 - basePrice) / basePrice * 100.0
+        // float var95 = (p95 - basePrice) / basePrice * 100.0
+        // float cvar5 = tail_cvar(binsM, tLast, 0.05, lowArr, bwArr, bins, basePrice, true)
+        // float es5up = tail_cvar(binsM, tLast, 0.05, lowArr, bwArr, bins, basePrice, false)
+        // float adverseVar = isLong ? var5  : -var95
+        // float adverseES  = isLong ? cvar5 : -es5up
+        // float favorES    = isLong ? es5up : -cvar5
+        // float pTgt = simsUse > 0 ? 100.0 * nTgtFirst / simsUse : 0.0
+        // float pStp = simsUse > 0 ? 100.0 * nStpFirst / simsUse : 0.0
+        // float pT   = pTgt / 100.0
+        // float pS   = pStp / 100.0
+        // float seTgt = simsUse > 0 ? 100.0 * math.sqrt(pT * (1.0 - pT) / simsUse) : na
+        // float seStp = simsUse > 0 ? 100.0 * math.sqrt(pS * (1.0 - pS) / simsUse) : na
+        // float rr   = stopPct > 0.0 ? targetPct / stopPct : 0.0
+        // float feeR = stopPct > 0.0 ? feePct / stopPct : 0.0
+        // float expRGross = simsUse > 0 ? (nTgtFirst * rr - nStpFirst * 1.0 + sumNoHitR) / simsUse : 0.0
+        // float expR = expRGross - feeR
+        // float avgMFE = simsUse > 0 ? 100.0 * sumMFE / simsUse : 0.0
+        // float avgMAE = simsUse > 0 ? 100.0 * sumMAE / simsUse : 0.0
         // Calibration coverage (in-sample, overlapping). Convert model percentiles to returns.
         float p25ret = useLog ? math.log(p25 / basePrice) : (p25 - basePrice) / basePrice
         float p75ret = useLog ? math.log(p75 / basePrice) : (p75 - basePrice) / basePrice
@@ -553,32 +554,33 @@ if barstate.islast
             cell_v(sumTable, 9, str.tostring(100.0 * clampLow / (simsUse * steps), "#.#") + "/" + str.tostring(100.0 * clampHigh / (simsUse * steps), "#.#") + "%", clampPct > 1.0 ? color.orange : cVal, color.white)
 
         if showRisk
-            riskTable.cell(0, 0, "📊 Risk / Trade (close-path)", text_color=color.white, bgcolor=cHdr, text_size=size.normal, text_halign=text.align_left)
+            riskTable.cell(0, 0, "📊 Calibration", text_color=color.white, bgcolor=cHdr, text_size=size.normal, text_halign=text.align_left)
             riskTable.cell(1, 0, "", bgcolor=cHdr)
-            cell_l(riskTable, 1, "Direction", colText)
-            cell_v(riskTable, 1, enableTrade ? tradeDir : "—", cVal, color.white)
-            cell_l(riskTable, 2, "Adverse VaR 5%", colText)
-            cell_v(riskTable, 2, fmt_pct(adverseVar), cVal, color.white)
-            cell_l(riskTable, 3, "Adverse ES 5%", colText)
-            cell_v(riskTable, 3, fmt_pct(adverseES), cVal, color.white)
-            cell_l(riskTable, 4, "Favorable ES 5%", colText)
-            cell_v(riskTable, 4, fmt_pct(favorES), cVal, color.white)
-            cell_l(riskTable, 5, "Avg MFE", colText)
-            cell_v(riskTable, 5, fmt_pct(avgMFE), cVal, color.white)
-            cell_l(riskTable, 6, "Avg MAE", colText)
-            cell_v(riskTable, 6, "-" + str.tostring(avgMAE, "#.##") + "%", cVal, color.white)
-            cell_l(riskTable, 7, "P(target 1st)", colText)
-            cell_v(riskTable, 7, enableTrade ? str.tostring(pTgt, "#.#") + "% ±" + str.tostring(seTgt, "#.#") : "—", enableTrade ? color.new(colBull, 40) : cVal, color.white)
-            cell_l(riskTable, 8, "P(stop 1st)", colText)
-            cell_v(riskTable, 8, enableTrade ? str.tostring(pStp, "#.#") + "% ±" + str.tostring(seStp, "#.#") : "—", enableTrade ? color.new(colBear, 40) : cVal, color.white)
-            cell_l(riskTable, 9, "Exp. R (net)", colText)
-            cell_v(riskTable, 9, enableTrade ? str.tostring(expR, "#.##") + "R" : "—", enableTrade ? (expR >= 0 ? color.new(colBull, 40) : color.new(colBear, 40)) : cVal, color.white)
-            cell_l(riskTable, 10, "Calib 50%", colText)
-            cell_v(riskTable, 10, str.tostring(cov50, "#.#") + "% (~50)", cVal, color.white)
-            cell_l(riskTable, 11, "Calib 90%", colText)
-            cell_v(riskTable, 11, str.tostring(cov90, "#.#") + "% (~90)", cVal, color.white)
-            cell_l(riskTable, 12, "MC error", colText)
-            cell_v(riskTable, 12, "±" + str.tostring(mcSE, "#.#") + "pp", cVal, color.white)
+            // --- Trade/risk rows HIDDEN in prod, kept in code (re-enable with Trade Setup + computations above) ---
+            // cell_l(riskTable, 1, "Direction", colText)
+            // cell_v(riskTable, 1, enableTrade ? tradeDir : "—", cVal, color.white)
+            // cell_l(riskTable, 2, "Adverse VaR 5%", colText)
+            // cell_v(riskTable, 2, fmt_pct(adverseVar), cVal, color.white)
+            // cell_l(riskTable, 3, "Adverse ES 5%", colText)
+            // cell_v(riskTable, 3, fmt_pct(adverseES), cVal, color.white)
+            // cell_l(riskTable, 4, "Favorable ES 5%", colText)
+            // cell_v(riskTable, 4, fmt_pct(favorES), cVal, color.white)
+            // cell_l(riskTable, 5, "Avg MFE", colText)
+            // cell_v(riskTable, 5, fmt_pct(avgMFE), cVal, color.white)
+            // cell_l(riskTable, 6, "Avg MAE", colText)
+            // cell_v(riskTable, 6, "-" + str.tostring(avgMAE, "#.##") + "%", cVal, color.white)
+            // cell_l(riskTable, 7, "P(target 1st)", colText)
+            // cell_v(riskTable, 7, enableTrade ? str.tostring(pTgt, "#.#") + "% ±" + str.tostring(seTgt, "#.#") : "—", enableTrade ? color.new(colBull, 40) : cVal, color.white)
+            // cell_l(riskTable, 8, "P(stop 1st)", colText)
+            // cell_v(riskTable, 8, enableTrade ? str.tostring(pStp, "#.#") + "% ±" + str.tostring(seStp, "#.#") : "—", enableTrade ? color.new(colBear, 40) : cVal, color.white)
+            // cell_l(riskTable, 9, "Exp. R (net)", colText)
+            // cell_v(riskTable, 9, enableTrade ? str.tostring(expR, "#.##") + "R" : "—", enableTrade ? (expR >= 0 ? color.new(colBull, 40) : color.new(colBear, 40)) : cVal, color.white)
+            cell_l(riskTable, 1, "Calib 50%", colText)
+            cell_v(riskTable, 1, str.tostring(cov50, "#.#") + "% (~50)", cVal, color.white)
+            cell_l(riskTable, 2, "Calib 90%", colText)
+            cell_v(riskTable, 2, str.tostring(cov90, "#.#") + "% (~90)", cVal, color.white)
+            cell_l(riskTable, 3, "MC error", colText)
+            cell_v(riskTable, 3, "±" + str.tostring(mcSE, "#.#") + "pp", cVal, color.white)
 
         // Clamp warning (reuse single label).
         if not na(clampLbl)
