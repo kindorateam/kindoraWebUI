@@ -15,7 +15,7 @@ bun run build        # Production build
 
 ## Tech Stack
 
-Bun, React 19, TypeScript 5 (strict), Vite 7, TanStack Router (file-based routing), TanStack Query 5, Jotai 2, Axios via shared `apiClient`, Tailwind CSS 4, HeroUI 2, Biome 2, React Hook Form + Zod, Iconify via `unplugin-icons`.
+Bun, React 19, TypeScript 6 (strict), Vite 8, TanStack Router (file-based routing), TanStack Query 5, Jotai 2, Axios via shared `apiClient`, Tailwind CSS 4, HeroUI 3, Biome 2, React Hook Form + Zod, Iconify via `unplugin-icons`.
 
 ## Architecture
 
