@@ -2,8 +2,7 @@ import { Avatar, Tooltip } from "@heroui/react"
 import { useTranslation } from "react-i18next"
 
 import { getMediaUrl } from "@/utils/media"
-
-import { getAvatarInitials } from "../../utils/avatarInitials"
+import { getInitials } from "@/utils/name"
 
 import SignedInTooltipContent from "./SignedInTooltipContent"
 
@@ -48,7 +47,7 @@ const SignedInAvatarGroup = ({ items, tooltipLabel }: SignedInAvatarGroupProps) 
 									alt={item.name}
 									className={avatarImgClassName}
 								/>
-								<Avatar.Fallback className={avatarFallbackClassName}>{getAvatarInitials(item.name)}</Avatar.Fallback>
+								<Avatar.Fallback className={avatarFallbackClassName}>{getInitials(item.name)}</Avatar.Fallback>
 							</Avatar>
 						))}
 						{overflowCount > 0 && (

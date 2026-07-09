@@ -1,14 +1,14 @@
-import { Button, Card, Checkbox, FieldError, InputGroup, Label, Link, Separator, TextField, toast } from "@heroui/react"
-import { useState } from "react"
+import { Button, Card, Checkbox, Label, Link, Separator, toast } from "@heroui/react"
 import { Controller, useForm } from "react-hook-form"
+import { useTranslation } from "react-i18next"
 
 import { getErrorMessage } from "@/utils/error"
 import LogosGoogleIcon from "~icons/logos/google-icon"
 
-import { EMAIL_PATTERN } from "../constants"
 import useAuth from "../hooks/useAuth"
 
-import PasswordVisibilityToggle from "./PasswordVisibilityToggle"
+import AuthEmailField from "./AuthEmailField"
+import AuthPasswordField from "./AuthPasswordField"
 
 import type { SignInFormData } from "../types"
 
@@ -19,13 +19,13 @@ interface SignInFormProps {
 }
 
 const SignInForm = ({ onForgotPassword, onVerificationRequired, defaultEmail }: SignInFormProps) => {
+	const { t } = useTranslation()
 	const { handleGoogleLogin, emailLoginMutation, isLoading } = useAuth()
-	const [isPasswordVisible, setIsPasswordVisible] = useState(false)
 
 	const {
 		control,
 		handleSubmit,
-		formState: { errors, isValid },
+		formState: { isValid },
 	} = useForm<SignInFormData>({
 		defaultValues: {
 			email: defaultEmail || "",
@@ -45,7 +45,7 @@ const SignInForm = ({ onForgotPassword, onVerificationRequired, defaultEmail }: 
 					}
 				},
 				onError: (error) => {
-					toast("Login failed", { description: getErrorMessage(error), variant: "danger" })
+					toast(t("auth.signIn.loginFailed"), { description: getErrorMessage(error), variant: "danger" })
 				},
 			},
 		)
@@ -54,57 +54,19 @@ const SignInForm = ({ onForgotPassword, onVerificationRequired, defaultEmail }: 
 	return (
 		<>
 			<Card.Header>
-				<h1 className="font-semibold text-xl">Sign in</h1>
+				<h1 className="font-semibold text-xl">{t("auth.signIn.title")}</h1>
 			</Card.Header>
 
 			<Card.Content className="gap-4">
 				<form onSubmit={handleSubmit(onSubmit)}>
 					<div className="mb-4 flex flex-col gap-3">
-						<Controller
+						<AuthEmailField control={control} name="email" />
+						<AuthPasswordField
 							control={control}
-							name="email"
-							render={({ field }) => (
-								<TextField isRequired isInvalid={!!errors.email} variant="secondary">
-									<Label>Email</Label>
-									<InputGroup>
-										<InputGroup.Input {...field} placeholder="Enter your email" type="email" />
-									</InputGroup>
-									<FieldError>{errors.email?.message}</FieldError>
-								</TextField>
-							)}
-							rules={{
-								required: "Email is required",
-								pattern: {
-									value: EMAIL_PATTERN,
-									message: "Invalid email address",
-								},
-							}}
-						/>
-						<Controller
-							control={control}
+							label={t("auth.fields.password")}
 							name="password"
-							render={({ field }) => (
-								<TextField isRequired isInvalid={!!errors.password} variant="secondary">
-									<Label>Password</Label>
-									<InputGroup>
-										<InputGroup.Input
-											{...field}
-											placeholder="Enter your password"
-											type={isPasswordVisible ? "text" : "password"}
-										/>
-										<InputGroup.Suffix>
-											<PasswordVisibilityToggle
-												isVisible={isPasswordVisible}
-												onToggle={() => setIsPasswordVisible(!isPasswordVisible)}
-											/>
-										</InputGroup.Suffix>
-									</InputGroup>
-									<FieldError>{errors.password?.message}</FieldError>
-								</TextField>
-							)}
-							rules={{
-								required: "Password is required",
-							}}
+							placeholder={t("auth.placeholders.password")}
+							requiredMessage={t("auth.validation.passwordRequired")}
 						/>
 					</div>
 					<div className="flex items-center justify-between">
@@ -117,12 +79,12 @@ const SignInForm = ({ onForgotPassword, onVerificationRequired, defaultEmail }: 
 										<Checkbox.Indicator />
 									</Checkbox.Control>
 									<Checkbox.Content>
-										<Label>Remember me</Label>
+										<Label>{t("auth.signIn.rememberMe")}</Label>
 									</Checkbox.Content>
 								</Checkbox>
 							)}
 						/>
-						<Link onPress={onForgotPassword}>Forgot password?</Link>
+						<Link onPress={onForgotPassword}>{t("auth.signIn.forgotPassword")}</Link>
 					</div>
 
 					<Button
@@ -134,14 +96,14 @@ const SignInForm = ({ onForgotPassword, onVerificationRequired, defaultEmail }: 
 						size="md"
 						type="submit"
 					>
-						Sign In
+						{t("auth.signIn.submit")}
 					</Button>
 				</form>
 			</Card.Content>
 			<Card.Footer className="flex-col gap-4">
 				<div className="flex items-center gap-4">
 					<Separator className="flex-1" />
-					<span className="text-default-400 text-sm">OR</span>
+					<span className="text-default-400 text-sm">{t("auth.signIn.or")}</span>
 					<Separator className="flex-1" />
 				</div>
 
@@ -154,7 +116,7 @@ const SignInForm = ({ onForgotPassword, onVerificationRequired, defaultEmail }: 
 					}}
 					variant="outline"
 				>
-					<LogosGoogleIcon /> Sign in with Google
+					<LogosGoogleIcon /> {t("auth.signIn.google")}
 				</Button>
 			</Card.Footer>
 		</>

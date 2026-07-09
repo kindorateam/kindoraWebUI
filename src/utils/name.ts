@@ -1,4 +1,4 @@
-export const getAvatarInitials = (name: string) =>
+export const getInitials = (name: string): string =>
 	name
 		.split(" ")
 		.filter(Boolean)

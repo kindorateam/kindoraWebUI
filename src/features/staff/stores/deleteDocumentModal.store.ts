@@ -1,13 +1,7 @@
-import { atom } from "jotai"
+import { createNullableSelectionStore } from "@/stores/createNullableSelectionStore"
 
-import { appStore } from "@/stores/jotaiStore"
+const deleteDocumentStore = createNullableSelectionStore<number>()
 
-export const deleteDocumentIdAtom = atom<number | null>(null)
-
-export const openDeleteDocumentModal = (documentId: number) => {
-	appStore.set(deleteDocumentIdAtom, documentId)
-}
-
-export const closeDeleteDocumentModal = () => {
-	appStore.set(deleteDocumentIdAtom, null)
-}
+export const deleteDocumentIdAtom = deleteDocumentStore.valueAtom
+export const openDeleteDocumentModal = deleteDocumentStore.select
+export const closeDeleteDocumentModal = deleteDocumentStore.clear

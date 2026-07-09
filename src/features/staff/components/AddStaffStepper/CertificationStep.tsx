@@ -6,6 +6,8 @@ import TablerCertificate from "~icons/tabler/certificate"
 
 import { DEGREE_OPTIONS } from "../../constants"
 
+import AddStaffStepHeader from "./AddStaffStepHeader"
+
 import type { AddStaffFormData } from "../../schemas/addStaff.schema"
 
 const CertificationStep = () => {
@@ -17,13 +19,10 @@ const CertificationStep = () => {
 
 	return (
 		<div className="flex flex-col gap-6">
-			<div className="flex items-center justify-between">
-				<h2 className="font-medium text-xl">{t("staff.addStaff.title")}</h2>
-				<div className="flex items-center gap-2.5 py-1.5">
-					<TablerCertificate className="size-5 text-foreground" />
-					<span className="font-semibold text-foreground text-sm">{t("staff.profile.sections.certification")}</span>
-				</div>
-			</div>
+			<AddStaffStepHeader
+				icon={<TablerCertificate className="size-5 text-foreground" />}
+				title={t("staff.profile.sections.certification")}
+			/>
 
 			<div className="flex flex-col gap-3">
 				<Controller

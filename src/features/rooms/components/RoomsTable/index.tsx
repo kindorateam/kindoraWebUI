@@ -1,9 +1,10 @@
-import { Button, Label, Pagination, Spinner, Switch, Table } from "@heroui/react"
+import { Button, Label, Spinner, Switch, Table } from "@heroui/react"
 import { useAtom } from "jotai"
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
 
 import TableError from "@/components/TableError"
+import TablePagination from "@/components/ui/TablePagination"
 import OcticonFeedPlus16 from "~icons/octicon/feed-plus-16"
 
 import { useRooms } from "../../hooks/useRooms"
@@ -110,32 +111,17 @@ const RoomsTable = () => {
 						)}
 					</div>
 					<Table.Footer>
-						<Pagination className="w-full">
-							<Pagination.Summary>
-								{t("rooms.table.paginationSummary", { count: visibleTotal, endItem, startItem, total: visibleTotal })}
-							</Pagination.Summary>
-							<Pagination.Content>
-								<Pagination.Item>
-									<Pagination.Previous isDisabled={page <= 1} onPress={() => setPage((p) => p - 1)}>
-										<Pagination.PreviousIcon />
-										<span>{t("common.previous")}</span>
-									</Pagination.Previous>
-								</Pagination.Item>
-								{Array.from({ length: visibleTotalPages }, (_, i) => i + 1).map((p) => (
-									<Pagination.Item key={p}>
-										<Pagination.Link isActive={p === page} onPress={() => setPage(p)}>
-											{p}
-										</Pagination.Link>
-									</Pagination.Item>
-								))}
-								<Pagination.Item>
-									<Pagination.Next isDisabled={page >= visibleTotalPages} onPress={() => setPage((p) => p + 1)}>
-										<span>{t("common.next")}</span>
-										<Pagination.NextIcon />
-									</Pagination.Next>
-								</Pagination.Item>
-							</Pagination.Content>
-						</Pagination>
+						<TablePagination
+							onPageChange={setPage}
+							page={page}
+							summary={t("rooms.table.paginationSummary", {
+								count: visibleTotal,
+								endItem,
+								startItem,
+								total: visibleTotal,
+							})}
+							totalPages={visibleTotalPages}
+						/>
 					</Table.Footer>
 				</Table>
 			</div>

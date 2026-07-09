@@ -95,7 +95,6 @@ Do not skip layers. Components should consume hooks, not call service modules di
 - FullCalendar's React adapter can call `flushSync`; do not call calendar API methods synchronously from `useEffect`
 - Defer effect-driven FullCalendar calls with a cancellable `setTimeout(0)` pattern, as used in `src/features/calendar/hooks/useCalendarNavigation.ts`
 - `src/router.tsx` configures intent preloading, a pending UI, and automatic route code splitting; preserve those defaults unless the task explicitly changes routing behavior
-- The `pine/` directory is independent TradingView Pine Script work and is outside the React, TypeScript, Biome, and Vite checks; touch it only for Pine-specific tasks
 
 ## Implementation Heuristics
 

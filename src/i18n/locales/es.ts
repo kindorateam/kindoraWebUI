@@ -1,3 +1,33 @@
+const sharedDocumentTranslations = {
+	addDocument: "Agregar documento",
+	empty: "Aún no hay documentos",
+	paginationSummary: "{{startItem}} a {{endItem}} de {{total}} documento",
+	paginationSummary_other: "{{startItem}} a {{endItem}} de {{total}} documentos",
+	columns: {
+		name: "Nombre",
+		status: "Estado",
+		expiryDate: "Fecha de vencimiento",
+		type: "Tipo",
+		uploaded: "Subido",
+		actions: "Acciones",
+	},
+	actions: {
+		ariaLabel: "Acciones del documento",
+		preview: "Vista previa",
+		edit: "Editar",
+		download: "Descargar",
+		delete: "Eliminar",
+	},
+	deleteModal: {
+		title: "Eliminar archivo",
+		description: "Esta acción eliminará permanentemente el archivo adjunto y no se puede deshacer.",
+		confirm: "Sí, eliminar",
+		successTitle: "Documento eliminado",
+		successDescription: "El documento se eliminó correctamente.",
+		errorTitle: "No se pudo eliminar el documento",
+	},
+} as const
+
 const es = {
 	common: {
 		back: "Atrás",
@@ -28,6 +58,51 @@ const es = {
 		successTitle: "Documento subido",
 		successDescription: "El documento se subió correctamente.",
 		errorTitle: "No se pudo subir el documento",
+	},
+	auth: {
+		fields: {
+			confirmPassword: "Confirma tu contraseña",
+			email: "Correo electrónico",
+			newPassword: "Crea una contraseña",
+			password: "Contraseña",
+		},
+		placeholders: {
+			confirmPassword: "Vuelve a ingresar tu contraseña",
+			email: "Ingresa tu correo electrónico",
+			password: "Ingresa tu contraseña",
+		},
+		validation: {
+			confirmPasswordRequired: "Confirma tu contraseña",
+			emailRequired: "El correo electrónico es obligatorio",
+			invalidEmail: "Correo electrónico inválido",
+			passwordMismatch: "Las contraseñas no coinciden. Inténtalo de nuevo.",
+			passwordRequired: "La contraseña es obligatoria",
+		},
+		passwordVisibility: {
+			hide: "Ocultar {{label}}",
+			show: "Mostrar {{label}}",
+		},
+		signIn: {
+			forgotPassword: "¿Olvidaste tu contraseña?",
+			google: "Iniciar sesión con Google",
+			loginFailed: "No se pudo iniciar sesión",
+			or: "O",
+			rememberMe: "Recordarme",
+			submit: "Iniciar sesión",
+			title: "Iniciar sesión",
+		},
+		forgotPassword: {
+			description: "Te enviaremos un código a tu correo electrónico",
+			sendFailed: "No se pudo enviar el correo de recuperación",
+			title: "¿Olvidaste tu contraseña?",
+		},
+		resetPassword: {
+			failed: "No se pudo restablecer la contraseña",
+			none: "Ninguna",
+			strength: "Fortaleza:",
+			submit: "Restablecer contraseña",
+			title: "Crea una nueva contraseña",
+		},
 	},
 	tableError: {
 		title: "No pudimos cargar los datos.",
@@ -667,34 +742,8 @@ const es = {
 			},
 		},
 		documents: {
-			addDocument: "Agregar documento",
+			...sharedDocumentTranslations,
 			ariaLabel: "Tabla de documentos del empleado",
-			empty: "Aún no hay documentos",
-			paginationSummary: "{{startItem}} a {{endItem}} de {{total}} documento",
-			paginationSummary_other: "{{startItem}} a {{endItem}} de {{total}} documentos",
-			columns: {
-				name: "Nombre",
-				status: "Estado",
-				expiryDate: "Fecha de vencimiento",
-				type: "Tipo",
-				uploaded: "Subido",
-				actions: "Acciones",
-			},
-			actions: {
-				ariaLabel: "Acciones del documento",
-				preview: "Vista previa",
-				edit: "Editar",
-				download: "Descargar",
-				delete: "Eliminar",
-			},
-			deleteModal: {
-				title: "Eliminar archivo",
-				description: "Esta acción eliminará permanentemente el archivo adjunto y no se puede deshacer.",
-				confirm: "Sí, eliminar",
-				successTitle: "Documento eliminado",
-				successDescription: "El documento se eliminó correctamente.",
-				errorTitle: "No se pudo eliminar el documento",
-			},
 			types: {
 				backgroundCheck: "Verificación de antecedentes",
 				covidVaccination: "Vacuna contra COVID-19",
@@ -958,34 +1007,8 @@ const es = {
 				},
 			},
 			documents: {
-				addDocument: "Agregar documento",
+				...sharedDocumentTranslations,
 				ariaLabel: "Tabla de documentos del estudiante",
-				empty: "Aún no hay documentos",
-				paginationSummary: "{{startItem}} a {{endItem}} de {{total}} documento",
-				paginationSummary_other: "{{startItem}} a {{endItem}} de {{total}} documentos",
-				columns: {
-					name: "Nombre",
-					status: "Estado",
-					expiryDate: "Fecha de vencimiento",
-					type: "Tipo",
-					uploaded: "Subido",
-					actions: "Acciones",
-				},
-				actions: {
-					ariaLabel: "Acciones del documento",
-					preview: "Vista previa",
-					edit: "Editar",
-					download: "Descargar",
-					delete: "Eliminar",
-				},
-				deleteModal: {
-					title: "Eliminar archivo",
-					description: "Esta acción eliminará permanentemente el archivo adjunto y no se puede deshacer.",
-					confirm: "Sí, eliminar",
-					successTitle: "Documento eliminado",
-					successDescription: "El documento se eliminó correctamente.",
-					errorTitle: "No se pudo eliminar el documento",
-				},
 				types: {
 					cprCertification: "Certificación CPR",
 					backgroundCheck: "Verificación de antecedentes",

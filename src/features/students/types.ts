@@ -54,7 +54,7 @@ export interface StudentRoom {
 	title: string
 }
 
-export type StudentDocumentStatus = "active" | "expiring_soon" | "expired" | "uploaded"
+export type StudentDocumentStatus = SharedDocumentStatus
 
 export interface Student {
 	id: string
@@ -79,22 +79,10 @@ export interface Student {
 	medicalInfo?: StudentMedicalInfo
 }
 
-export interface StudentDocumentMedia {
-	id: string
-	path: string
-	name?: string
-}
+export type StudentDocumentMedia = DocumentMedia
 
-export interface StudentDocument {
-	id: number
+export interface StudentDocument extends DocumentRecord {
 	studentId: string
-	media: StudentDocumentMedia
-	status: StudentDocumentStatus
-	expiryDate: string | null
-	type: string
-	notes: string | null
-	uploadedAt: string
-	uploadedBy: { id: string; name: string } | null
 }
 
 export interface GetStudentsResult {
@@ -103,3 +91,9 @@ export interface GetStudentsResult {
 	limit: number
 	offset: number
 }
+
+import type {
+	DocumentMedia,
+	DocumentRecord,
+	DocumentStatus as SharedDocumentStatus,
+} from "@/components/documents/types"

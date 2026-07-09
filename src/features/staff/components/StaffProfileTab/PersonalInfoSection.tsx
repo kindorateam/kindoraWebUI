@@ -1,19 +1,9 @@
-import {
-	Avatar,
-	Button,
-	Calendar,
-	DateField,
-	DatePicker,
-	FieldError,
-	Input,
-	Label,
-	ListBox,
-	Select,
-	TextField,
-} from "@heroui/react"
+import { Avatar, Button, FieldError, Input, Label, ListBox, Select, TextField } from "@heroui/react"
 import { Controller } from "react-hook-form"
 import { useTranslation } from "react-i18next"
 
+import DatePickerField from "@/components/ui/DatePickerField"
+import { parseDateValue, serializeDateValue } from "@/utils/date"
 import { formatUSPhone } from "@/utils/format"
 import FluentPerson16Filled from "~icons/fluent/person-16-filled"
 import LucideUserRound from "~icons/lucide/user-round"
@@ -22,7 +12,6 @@ import { US_STATES } from "../../constants"
 
 import SectionHeader from "./SectionHeader"
 
-import type { DateValue } from "@internationalized/date"
 import type { Control, FieldErrors } from "react-hook-form"
 import type { StaffProfileFormData } from "../../schemas/staffProfile.schema"
 
@@ -32,8 +21,6 @@ interface PersonalInfoSectionProps {
 	avatarPreview: string | null | undefined
 	onAvatarUpload: (e: React.ChangeEvent<HTMLInputElement>) => void
 	onDeletePicture: () => void
-	onDateChange: (value: DateValue | null, onChange: (value: string | undefined) => void) => void
-	parseDateValue: (value: string | undefined) => DateValue | null
 }
 
 const PersonalInfoSection = ({
@@ -42,8 +29,6 @@ const PersonalInfoSection = ({
 	avatarPreview,
 	onAvatarUpload,
 	onDeletePicture,
-	onDateChange,
-	parseDateValue,
 }: PersonalInfoSectionProps) => {
 	const { t } = useTranslation()
 	const hasPicture = Boolean(avatarPreview)
@@ -134,45 +119,13 @@ const PersonalInfoSection = ({
 							control={control}
 							name="birthday"
 							render={({ field }) => (
-								<DatePicker
+								<DatePickerField
 									className="flex-1"
-									granularity="day"
-									onChange={(value) => onDateChange(value, field.onChange)}
+									label={t("staff.profile.fields.birthday")}
+									onChange={(value) => field.onChange(serializeDateValue(value))}
+									showYearPicker
 									value={parseDateValue(field.value)}
-								>
-									<Label>{t("staff.profile.fields.birthday")}</Label>
-									<DateField.Group variant="secondary" fullWidth>
-										<DateField.Input>{(segment) => <DateField.Segment segment={segment} />}</DateField.Input>
-										<DateField.Suffix>
-											<DatePicker.Trigger>
-												<DatePicker.TriggerIndicator />
-											</DatePicker.Trigger>
-										</DateField.Suffix>
-									</DateField.Group>
-									<DatePicker.Popover>
-										<Calendar aria-label={t("staff.profile.fields.birthday")}>
-											<Calendar.Header>
-												<Calendar.YearPickerTrigger>
-													<Calendar.YearPickerTriggerHeading />
-													<Calendar.YearPickerTriggerIndicator />
-												</Calendar.YearPickerTrigger>
-												<Calendar.NavButton slot="previous" />
-												<Calendar.NavButton slot="next" />
-											</Calendar.Header>
-											<Calendar.Grid>
-												<Calendar.GridHeader>
-													{(day) => <Calendar.HeaderCell>{day}</Calendar.HeaderCell>}
-												</Calendar.GridHeader>
-												<Calendar.GridBody>{(date) => <Calendar.Cell date={date} />}</Calendar.GridBody>
-											</Calendar.Grid>
-											<Calendar.YearPickerGrid>
-												<Calendar.YearPickerGridBody>
-													{({ year }) => <Calendar.YearPickerCell year={year} />}
-												</Calendar.YearPickerGridBody>
-											</Calendar.YearPickerGrid>
-										</Calendar>
-									</DatePicker.Popover>
-								</DatePicker>
+								/>
 							)}
 						/>
 					</div>

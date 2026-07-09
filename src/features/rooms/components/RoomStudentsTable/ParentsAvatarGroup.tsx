@@ -2,8 +2,7 @@ import { Avatar, Tooltip } from "@heroui/react"
 import { useTranslation } from "react-i18next"
 
 import { getMediaUrl } from "@/utils/media"
-
-import { getAvatarInitials } from "../../utils/avatarInitials"
+import { getInitials } from "@/utils/name"
 
 import ParentTooltipContent from "./ParentTooltipContent"
 
@@ -42,7 +41,7 @@ const ParentsAvatarGroup = ({ parents }: ParentsAvatarGroupProps) => {
 									alt={fullName}
 									className={avatarImgClassName}
 								/>
-								<Avatar.Fallback className={avatarFallbackClassName}>{getAvatarInitials(fullName)}</Avatar.Fallback>
+								<Avatar.Fallback className={avatarFallbackClassName}>{getInitials(fullName)}</Avatar.Fallback>
 							</Avatar>
 						)
 					})}

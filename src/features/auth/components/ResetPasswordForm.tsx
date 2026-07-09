@@ -1,6 +1,7 @@
-import { Button, Card, FieldError, InputGroup, Label, TextField, toast } from "@heroui/react"
+import { Button, Card, toast } from "@heroui/react"
 import { useState } from "react"
-import { Controller, useForm } from "react-hook-form"
+import { useForm } from "react-hook-form"
+import { useTranslation } from "react-i18next"
 
 import { getErrorMessage } from "@/utils/error"
 import TablerCheck from "~icons/tabler/check"
@@ -9,7 +10,7 @@ import { barColorMap } from "../constants"
 import { useResetPassword } from "../hooks/useAuthMutations"
 import { areRequiredRequirementsMet, calculatePasswordStrength, getRequirementStatuses } from "../utils/password"
 
-import PasswordVisibilityToggle from "./PasswordVisibilityToggle"
+import AuthPasswordField from "./AuthPasswordField"
 import ResetPasswordConfirmation from "./ResetPasswordConfirmation"
 
 import type { ResetPasswordFormData } from "../types"
@@ -24,17 +25,11 @@ interface ResetPasswordFormProps {
 const formId = "reset-password-form"
 
 const ResetPasswordForm = ({ email, token, onBack, onResetSuccess }: ResetPasswordFormProps) => {
-	const [isPasswordVisible, setIsPasswordVisible] = useState(false)
-	const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false)
+	const { t } = useTranslation()
 	const [resetComplete, setResetComplete] = useState(false)
 	const resetPasswordMutation = useResetPassword()
 
-	const {
-		control,
-		handleSubmit,
-		watch,
-		formState: { errors },
-	} = useForm<ResetPasswordFormData>({
+	const { control, handleSubmit, watch } = useForm<ResetPasswordFormData>({
 		defaultValues: {
 			password: "",
 			confirmPassword: "",
@@ -60,7 +55,7 @@ const ResetPasswordForm = ({ email, token, onBack, onResetSuccess }: ResetPasswo
 			{
 				onSuccess: () => setResetComplete(true),
 				onError: (error) => {
-					toast("Failed to reset password", { description: getErrorMessage(error), variant: "danger" })
+					toast(t("auth.resetPassword.failed"), { description: getErrorMessage(error), variant: "danger" })
 				},
 			},
 		)
@@ -73,74 +68,35 @@ const ResetPasswordForm = ({ email, token, onBack, onResetSuccess }: ResetPasswo
 	return (
 		<>
 			<Card.Header>
-				<h1 className="font-medium text-xl">Create a new password</h1>
+				<h1 className="font-medium text-xl">{t("auth.resetPassword.title")}</h1>
 			</Card.Header>
 
 			<Card.Content>
 				<form className="flex flex-col gap-5" id={formId} onSubmit={handleSubmit(onSubmit)}>
 					<div className="flex flex-col gap-3">
-						<Controller
+						<AuthPasswordField
 							control={control}
+							label={t("auth.fields.newPassword")}
 							name="password"
-							render={({ field }) => (
-								<TextField isRequired isInvalid={!!errors.password} variant="secondary">
-									<Label>Create a password</Label>
-									<InputGroup>
-										<InputGroup.Input
-											{...field}
-											placeholder="Enter your password"
-											type={isPasswordVisible ? "text" : "password"}
-										/>
-										<InputGroup.Suffix>
-											<PasswordVisibilityToggle
-												isVisible={isPasswordVisible}
-												onToggle={() => setIsPasswordVisible((prev) => !prev)}
-											/>
-										</InputGroup.Suffix>
-									</InputGroup>
-									<FieldError>{errors.password?.message}</FieldError>
-								</TextField>
-							)}
-							rules={{
-								required: "Password is required",
-							}}
+							placeholder={t("auth.placeholders.password")}
+							requiredMessage={t("auth.validation.passwordRequired")}
 						/>
 
-						<Controller
+						<AuthPasswordField
 							control={control}
+							label={t("auth.fields.confirmPassword")}
 							name="confirmPassword"
-							render={({ field }) => (
-								<TextField isRequired isInvalid={!!errors.confirmPassword} variant="secondary">
-									<Label>Confirm your password</Label>
-									<InputGroup>
-										<InputGroup.Input
-											{...field}
-											placeholder="Re-enter your password"
-											type={isConfirmPasswordVisible ? "text" : "password"}
-										/>
-										<InputGroup.Suffix>
-											<PasswordVisibilityToggle
-												isVisible={isConfirmPasswordVisible}
-												onToggle={() => setIsConfirmPasswordVisible((prev) => !prev)}
-											/>
-										</InputGroup.Suffix>
-									</InputGroup>
-									<FieldError>{errors.confirmPassword?.message}</FieldError>
-								</TextField>
-							)}
-							rules={{
-								required: "Please confirm your password",
-								validate: (value) =>
-									value === passwordValue || "The passwords you entered don't match. Please try again.",
-							}}
+							placeholder={t("auth.placeholders.confirmPassword")}
+							requiredMessage={t("auth.validation.confirmPasswordRequired")}
+							validate={(value) => value === passwordValue || t("auth.validation.passwordMismatch")}
 						/>
 					</div>
 
 					<div className="flex items-center gap-8">
 						<div className="flex min-w-44 items-center gap-1 text-sm">
-							<p className="text-foreground">Strength:</p>
+							<p className="text-foreground">{t("auth.resetPassword.strength")}</p>
 							<span className={strength.barsFilled > 0 ? strength.colorClass : "text-default-400"}>
-								{strength.barsFilled > 0 ? strength.displayLabel : "None"}
+								{strength.barsFilled > 0 ? strength.displayLabel : t("auth.resetPassword.none")}
 							</span>
 						</div>
 						<div className="flex flex-1 items-center gap-2">
@@ -181,10 +137,10 @@ const ResetPasswordForm = ({ email, token, onBack, onResetSuccess }: ResetPasswo
 					isPending={resetPasswordMutation.isPending}
 					type="submit"
 				>
-					Reset password
+					{t("auth.resetPassword.submit")}
 				</Button>
 				<Button fullWidth onPress={onBack} variant="outline">
-					Back
+					{t("common.back")}
 				</Button>
 			</Card.Footer>
 		</>

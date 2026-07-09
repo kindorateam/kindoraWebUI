@@ -1,31 +1,16 @@
-import { Button, Card, Modal, Spinner, toast } from "@heroui/react"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { parseDate } from "@internationalized/date"
-import { useEffect, useState } from "react"
-import { useForm } from "react-hook-form"
+import { Card, Spinner } from "@heroui/react"
+import { useState } from "react"
 import { useTranslation } from "react-i18next"
 
-import { getErrorMessage } from "@/utils/error"
-import CiSave from "~icons/ci/save"
-import MaterialSymbolsDeleteOutline from "~icons/material-symbols/delete-outline"
-import TablerAlertTriangle from "~icons/tabler/alert-triangle"
-
-import { useEmployee, useUpdateEmployee, useUpdateEmployeeAvatar } from "../../hooks/useStaff"
-import { createStaffProfileSchema } from "../../schemas/staffProfile.schema"
-import {
-	buildDefaultValues,
-	buildFormValuesFromEmployee,
-	buildPayloadFromFormData,
-} from "../../utils/staffProfile.utils"
+import { useStaffProfileForm } from "../../hooks/useStaffProfileForm"
 
 import CertificationSection from "./CertificationSection"
+import DeactivateStaffModal from "./DeactivateStaffModal"
 import EmergencyContactSection from "./EmergencyContactSection"
 import KindoraRoleSection from "./KindoraRoleSection"
 import MedicalInfoSection from "./MedicalInfoSection"
 import PersonalInfoSection from "./PersonalInfoSection"
-
-import type { DateValue } from "@internationalized/date"
-import type { StaffProfileFormData } from "../../schemas/staffProfile.schema"
+import StaffProfileActions from "./StaffProfileActions"
 
 interface StaffProfileTabProps {
 	employeeId: string
@@ -33,145 +18,25 @@ interface StaffProfileTabProps {
 
 const StaffProfileTab = ({ employeeId }: StaffProfileTabProps) => {
 	const { t } = useTranslation()
-	const { data: employee, isLoading } = useEmployee(employeeId)
-	const updateEmployeeMutation = useUpdateEmployee()
-	const updateAvatarMutation = useUpdateEmployeeAvatar()
-
-	const [avatarFileUrl, setAvatarFileUrl] = useState<string | null>(null)
 	const [isDeactivateModalOpen, setIsDeactivateModalOpen] = useState(false)
-
 	const {
+		allergies,
+		assignedRooms,
+		avatarPreview,
 		control,
+		emergencyContacts,
+		employee,
+		formState: { errors, isValid },
+		handleAllergiesChange,
+		handleAvatarUpload,
+		handleCancel,
+		handleDeletePicture,
+		handleProfileSubmit,
 		handleSubmit,
-		watch,
-		setValue,
-		reset,
-		trigger,
-		formState: { errors, isDirty, isValid },
-	} = useForm<StaffProfileFormData>({
-		resolver: zodResolver(createStaffProfileSchema(t)),
-		mode: "onChange",
-		defaultValues: buildDefaultValues(),
-	})
-
-	const avatarPreview = watch("avatarPreview")
-	const avatarFile = watch("avatarFile")
-	const emergencyContacts = watch("emergencyContacts")
-	const allergies = watch("allergies") ?? []
-	const assignedRooms = watch("assignedRooms") ?? []
-
-	// Sync form state when employee data loads
-	useEffect(() => {
-		if (employee) {
-			reset(buildFormValuesFromEmployee(employee))
-			void trigger()
-		}
-	}, [employee, reset, trigger])
-
-	// Clean up object URLs on unmount
-	useEffect(() => {
-		return () => {
-			if (avatarFileUrl) URL.revokeObjectURL(avatarFileUrl)
-		}
-	}, [avatarFileUrl])
-
-	const handleAvatarUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-		const file = e.target.files?.[0]
-		if (!file) return
-		if (avatarFileUrl) URL.revokeObjectURL(avatarFileUrl)
-		const url = URL.createObjectURL(file)
-		setAvatarFileUrl(url)
-		setValue("avatarFile", file, { shouldDirty: true })
-		setValue("avatarPreview", url, { shouldDirty: true })
-	}
-
-	const handleDeletePicture = () => {
-		if (avatarFileUrl) URL.revokeObjectURL(avatarFileUrl)
-		setAvatarFileUrl(null)
-		setValue("avatarPreview", null, { shouldDirty: true })
-		setValue("avatarFile", null, { shouldDirty: true })
-	}
-
-	const handleCancel = () => {
-		if (employee) {
-			if (avatarFileUrl) URL.revokeObjectURL(avatarFileUrl)
-			setAvatarFileUrl(null)
-			reset(buildFormValuesFromEmployee(employee))
-		}
-	}
-
-	const handleCloseDeactivateModal = () => {
-		setIsDeactivateModalOpen(false)
-	}
-
-	const handleDateChange = (value: DateValue | null, onChange: (value: string | undefined) => void) => {
-		if (value) {
-			onChange(value.toString())
-		} else {
-			onChange(undefined)
-		}
-	}
-
-	const parseDateValue = (value: string | undefined): DateValue | null => {
-		if (!value) return null
-		try {
-			return parseDate(value)
-		} catch {
-			return null
-		}
-	}
-
-	const handleAllergiesChange = (newAllergies: string[]) => {
-		setValue("allergies", newAllergies, { shouldDirty: true })
-	}
-
-	const onSubmit = (data: StaffProfileFormData) => {
-		const payload = buildPayloadFromFormData(data)
-
-		updateEmployeeMutation.mutate(
-			{ employeeId, payload },
-			{
-				onSuccess: () => {
-					if (data.avatarFile) {
-						updateAvatarMutation.mutate(
-							{ employeeId, avatarFile: data.avatarFile },
-							{
-								onSuccess: () => {
-									setValue("avatarFile", null)
-									if (avatarFileUrl) URL.revokeObjectURL(avatarFileUrl)
-									setAvatarFileUrl(null)
-									toast(t("staff.profile.updateSuccess"), {
-										description: t("staff.profile.updateSuccessDescription"),
-										variant: "success",
-									})
-								},
-								onError: (error) => {
-									toast(t("staff.profile.avatarUploadFailed"), {
-										description: getErrorMessage(error),
-										variant: "warning",
-									})
-								},
-							},
-						)
-					} else {
-						toast(t("staff.profile.updateSuccess"), {
-							description: t("staff.profile.updateSuccessDescription"),
-							variant: "success",
-						})
-					}
-				},
-				onError: (error) => {
-					toast(t("staff.profile.updateError"), {
-						description: getErrorMessage(error),
-						variant: "danger",
-					})
-				},
-			},
-		)
-	}
-
-	const isSaving = updateEmployeeMutation.isPending || updateAvatarMutation.isPending
-	const hasChanges = isDirty || !!avatarFile
+		hasChanges,
+		isLoading,
+		isSaving,
+	} = useStaffProfileForm(employeeId)
 
 	if (isLoading) {
 		return (
@@ -196,81 +61,32 @@ const StaffProfileTab = ({ employeeId }: StaffProfileTabProps) => {
 	return (
 		<Card className="p-5 shadow-xl">
 			<Card.Content className="p-0">
-				<form className="flex flex-col gap-6" onSubmit={handleSubmit(onSubmit)}>
+				<form className="flex flex-col gap-6" onSubmit={handleSubmit(handleProfileSubmit)}>
 					<PersonalInfoSection
+						avatarPreview={avatarPreview}
 						control={control}
 						errors={errors}
-						avatarPreview={avatarPreview}
 						onAvatarUpload={handleAvatarUpload}
 						onDeletePicture={handleDeletePicture}
-						onDateChange={handleDateChange}
-						parseDateValue={parseDateValue}
 					/>
-
 					<CertificationSection control={control} errors={errors} />
-
-					<KindoraRoleSection
-						control={control}
-						errors={errors}
-						assignedRooms={assignedRooms}
-						onDateChange={handleDateChange}
-						parseDateValue={parseDateValue}
-					/>
-
+					<KindoraRoleSection assignedRooms={assignedRooms} control={control} />
 					<MedicalInfoSection
+						allergies={allergies}
 						control={control}
 						errors={errors}
-						allergies={allergies}
 						onAllergiesChange={handleAllergiesChange}
 					/>
-
-					<EmergencyContactSection control={control} errors={errors} emergencyContacts={emergencyContacts} />
-
-					{/* Action Buttons */}
-					<div className="flex items-center gap-5">
-						<Button
-							className="mr-auto text-xs shadow-sm"
-							variant="danger"
-							onPress={() => setIsDeactivateModalOpen(true)}
-							size="md"
-							type="button"
-						>
-							<MaterialSymbolsDeleteOutline aria-hidden className="size-4" />
-							{t("staff.profile.deactivate.title")}
-						</Button>
-						<Button isDisabled={isSaving} onPress={handleCancel} size="md" type="button" variant="outline">
-							{t("common.cancel")}
-						</Button>
-						<Button variant="primary" isDisabled={!hasChanges || !isValid} isPending={isSaving} size="md" type="submit">
-							<CiSave aria-hidden className="size-4" />
-							{t("staff.profile.saveChanges")}
-						</Button>
-					</div>
+					<EmergencyContactSection control={control} emergencyContacts={emergencyContacts} errors={errors} />
+					<StaffProfileActions
+						hasChanges={hasChanges}
+						isSaving={isSaving}
+						isValid={isValid}
+						onCancel={handleCancel}
+						onDeactivate={() => setIsDeactivateModalOpen(true)}
+					/>
 				</form>
-				<Modal.Backdrop isOpen={isDeactivateModalOpen} onOpenChange={(open) => !open && handleCloseDeactivateModal()}>
-					<Modal.Container>
-						<Modal.Dialog>
-							<Modal.CloseTrigger />
-							<Modal.Header>
-								<Modal.Icon className="bg-danger-soft text-danger-soft-foreground">
-									<TablerAlertTriangle className="size-5" />
-								</Modal.Icon>
-								<Modal.Heading>{t("staff.profile.deactivate.title")}</Modal.Heading>
-							</Modal.Header>
-							<Modal.Body>
-								<p>{t("staff.profile.deactivate.description")}</p>
-							</Modal.Body>
-							<Modal.Footer>
-								<Button variant="secondary" slot="close">
-									{t("common.cancel")}
-								</Button>
-								<Button variant="danger" onPress={handleCloseDeactivateModal}>
-									{t("staff.profile.deactivate.confirm")}
-								</Button>
-							</Modal.Footer>
-						</Modal.Dialog>
-					</Modal.Container>
-				</Modal.Backdrop>
+				<DeactivateStaffModal isOpen={isDeactivateModalOpen} onClose={() => setIsDeactivateModalOpen(false)} />
 			</Card.Content>
 		</Card>
 	)

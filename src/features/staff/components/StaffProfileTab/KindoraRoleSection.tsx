@@ -1,28 +1,26 @@
-import { Calendar, Chip, DateField, DatePicker, Label, ListBox, Select } from "@heroui/react"
+import { Chip, Label, ListBox, Select } from "@heroui/react"
 import { Controller } from "react-hook-form"
 import { useTranslation } from "react-i18next"
 
+import DatePickerField from "@/components/ui/DatePickerField"
+import { parseDateValue, serializeDateValue } from "@/utils/date"
 import EosIconsRoleBindingOutlined from "~icons/eos-icons/role-binding-outlined"
 
 import { MOCK_ROOMS, SIGNUP_STATUS_OPTIONS, STAFF_ROLES } from "../../constants"
 
 import SectionHeader from "./SectionHeader"
 
-import type { DateValue } from "@internationalized/date"
-import type { Control, FieldErrors } from "react-hook-form"
+import type { Control } from "react-hook-form"
 import type { StaffProfileFormData } from "../../schemas/staffProfile.schema"
 
 interface KindoraRoleSectionProps {
 	control: Control<StaffProfileFormData>
-	errors: FieldErrors<StaffProfileFormData>
 	assignedRooms: string[]
-	onDateChange: (value: DateValue | null, onChange: (value: string | undefined) => void) => void
-	parseDateValue: (value: string | undefined) => DateValue | null
 }
 
 const getRoomLabel = (key: string) => MOCK_ROOMS.find((r) => r.key === key)?.label ?? key
 
-const KindoraRoleSection = ({ control, assignedRooms, onDateChange, parseDateValue }: KindoraRoleSectionProps) => {
+const KindoraRoleSection = ({ control, assignedRooms }: KindoraRoleSectionProps) => {
 	const { t } = useTranslation()
 
 	return (
@@ -142,45 +140,13 @@ const KindoraRoleSection = ({ control, assignedRooms, onDateChange, parseDateVal
 						control={control}
 						name="hireDate"
 						render={({ field }) => (
-							<DatePicker
+							<DatePickerField
 								className="flex-1"
-								granularity="day"
-								onChange={(value) => onDateChange(value, field.onChange)}
+								label={t("staff.profile.fields.hireDate")}
+								onChange={(value) => field.onChange(serializeDateValue(value))}
+								showYearPicker
 								value={parseDateValue(field.value)}
-							>
-								<Label>{t("staff.profile.fields.hireDate")}</Label>
-								<DateField.Group variant="secondary" fullWidth>
-									<DateField.Input>{(segment) => <DateField.Segment segment={segment} />}</DateField.Input>
-									<DateField.Suffix>
-										<DatePicker.Trigger>
-											<DatePicker.TriggerIndicator />
-										</DatePicker.Trigger>
-									</DateField.Suffix>
-								</DateField.Group>
-								<DatePicker.Popover>
-									<Calendar aria-label={t("staff.profile.fields.hireDate")}>
-										<Calendar.Header>
-											<Calendar.YearPickerTrigger>
-												<Calendar.YearPickerTriggerHeading />
-												<Calendar.YearPickerTriggerIndicator />
-											</Calendar.YearPickerTrigger>
-											<Calendar.NavButton slot="previous" />
-											<Calendar.NavButton slot="next" />
-										</Calendar.Header>
-										<Calendar.Grid>
-											<Calendar.GridHeader>
-												{(day) => <Calendar.HeaderCell>{day}</Calendar.HeaderCell>}
-											</Calendar.GridHeader>
-											<Calendar.GridBody>{(date) => <Calendar.Cell date={date} />}</Calendar.GridBody>
-										</Calendar.Grid>
-										<Calendar.YearPickerGrid>
-											<Calendar.YearPickerGridBody>
-												{({ year }) => <Calendar.YearPickerCell year={year} />}
-											</Calendar.YearPickerGridBody>
-										</Calendar.YearPickerGrid>
-									</Calendar>
-								</DatePicker.Popover>
-							</DatePicker>
+							/>
 						)}
 					/>
 				</div>

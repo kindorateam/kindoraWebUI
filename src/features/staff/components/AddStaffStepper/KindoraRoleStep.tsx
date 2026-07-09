@@ -1,13 +1,14 @@
 import { DateField, FieldError, Label, ListBox, Select } from "@heroui/react"
-import { parseDate } from "@internationalized/date"
 import { Controller, useFormContext } from "react-hook-form"
 import { useTranslation } from "react-i18next"
 
+import { parseDateValue, serializeDateValue } from "@/utils/date"
 import EosIconsRoleBindingOutlined from "~icons/eos-icons/role-binding-outlined"
 
 import { MOCK_ROOMS, PERMISSION_OPTIONS, STAFF_ROLES } from "../../constants"
 
-import type { DateValue } from "@internationalized/date"
+import AddStaffStepHeader from "./AddStaffStepHeader"
+
 import type { AddStaffFormData } from "../../schemas/addStaff.schema"
 
 const KindoraRoleStep = () => {
@@ -17,32 +18,12 @@ const KindoraRoleStep = () => {
 		formState: { errors },
 	} = useFormContext<AddStaffFormData>()
 
-	const handleDateChange = (value: DateValue | null, onChange: (value: string | undefined) => void) => {
-		if (value) {
-			onChange(value.toString())
-		} else {
-			onChange(undefined)
-		}
-	}
-
-	const parseDateValue = (value: string | undefined): DateValue | null => {
-		if (!value) return null
-		try {
-			return parseDate(value)
-		} catch {
-			return null
-		}
-	}
-
 	return (
 		<div className="flex flex-col gap-6">
-			<div className="flex items-center justify-between">
-				<h2 className="font-medium text-xl">{t("staff.addStaff.title")}</h2>
-				<div className="flex items-center gap-2.5 py-1.5">
-					<EosIconsRoleBindingOutlined className="size-5 text-foreground" />
-					<span className="font-semibold text-foreground text-sm">{t("staff.profile.sections.kindoraRole")}</span>
-				</div>
-			</div>
+			<AddStaffStepHeader
+				icon={<EosIconsRoleBindingOutlined className="size-5 text-foreground" />}
+				title={t("staff.profile.sections.kindoraRole")}
+			/>
 
 			<div className="flex flex-col gap-3">
 				<Controller
@@ -86,7 +67,7 @@ const KindoraRoleStep = () => {
 						<DateField
 							granularity="day"
 							isInvalid={!!errors.hireDate}
-							onChange={(value) => handleDateChange(value, field.onChange)}
+							onChange={(value) => field.onChange(serializeDateValue(value))}
 							value={parseDateValue(field.value)}
 						>
 							<Label>{t("staff.profile.fields.hireDate")}</Label>

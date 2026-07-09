@@ -1,14 +1,8 @@
 import type { RoomStatus } from "./types"
 
-export const getAvatarUrl = (seed: string) => `https://i.pravatar.cc/80?u=${encodeURIComponent(seed)}`
+export { getInitials } from "@/utils/name"
 
-export const getInitials = (name: string) =>
-	name
-		.split(" ")
-		.filter(Boolean)
-		.slice(0, 2)
-		.map((part) => part[0]?.toUpperCase() ?? "")
-		.join("")
+export const getAvatarUrl = (seed: string) => `https://i.pravatar.cc/80?u=${encodeURIComponent(seed)}`
 
 export const getFirstName = (name?: string) => {
 	if (!name) return "Sophia"

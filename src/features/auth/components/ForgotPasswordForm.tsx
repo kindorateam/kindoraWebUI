@@ -1,12 +1,13 @@
-import { Button, Card, FieldError, InputGroup, Label, TextField, toast } from "@heroui/react"
+import { Button, Card, toast } from "@heroui/react"
 import { useEffect, useState } from "react"
-import { Controller, useForm } from "react-hook-form"
+import { useForm } from "react-hook-form"
+import { useTranslation } from "react-i18next"
 
 import { getErrorMessage } from "@/utils/error"
 
-import { EMAIL_PATTERN } from "../constants"
 import { useRequestPasswordReset } from "../hooks/useAuthMutations"
 
+import AuthEmailField from "./AuthEmailField"
 import ForgotPasswordConfirmation from "./ForgotPasswordConfirmation"
 
 import type { ForgotPasswordFormData } from "../types"
@@ -18,6 +19,7 @@ interface ForgotPasswordFormProps {
 }
 
 const ForgotPasswordForm = ({ onBack, onNext, defaultEmail }: ForgotPasswordFormProps) => {
+	const { t } = useTranslation()
 	const [emailSent, setEmailSent] = useState(false)
 	const [submittedEmail, setSubmittedEmail] = useState("")
 	const [codeSentAt, setCodeSentAt] = useState<number | null>(null)
@@ -27,7 +29,7 @@ const ForgotPasswordForm = ({ onBack, onNext, defaultEmail }: ForgotPasswordForm
 		control,
 		handleSubmit,
 		reset,
-		formState: { errors, isValid },
+		formState: { isValid },
 	} = useForm<ForgotPasswordFormData>({
 		defaultValues: {
 			email: defaultEmail || "",
@@ -50,7 +52,7 @@ const ForgotPasswordForm = ({ onBack, onNext, defaultEmail }: ForgotPasswordForm
 				setEmailSent(true)
 			},
 			onError: (error) => {
-				toast("Failed to send reset email", { description: getErrorMessage(error), variant: "danger" })
+				toast(t("auth.forgotPassword.sendFailed"), { description: getErrorMessage(error), variant: "danger" })
 			},
 		})
 	}
@@ -68,32 +70,12 @@ const ForgotPasswordForm = ({ onBack, onNext, defaultEmail }: ForgotPasswordForm
 	return (
 		<>
 			<Card.Header>
-				<h1 className="font-semibold text-xl">Forgot Password?</h1>
+				<h1 className="font-semibold text-xl">{t("auth.forgotPassword.title")}</h1>
 			</Card.Header>
 
 			<Card.Content className="gap-4">
-				<p className="text-default-500 text-sm">We will email you a code to your email address</p>
-
-				<Controller
-					control={control}
-					name="email"
-					render={({ field }) => (
-						<TextField isRequired isInvalid={!!errors.email} variant="secondary">
-							<Label>Email</Label>
-							<InputGroup>
-								<InputGroup.Input {...field} placeholder="Enter your email" type="email" />
-							</InputGroup>
-							<FieldError>{errors.email?.message}</FieldError>
-						</TextField>
-					)}
-					rules={{
-						required: "Email is required",
-						pattern: {
-							value: EMAIL_PATTERN,
-							message: "Invalid email address",
-						},
-					}}
-				/>
+				<p className="text-default-500 text-sm">{t("auth.forgotPassword.description")}</p>
+				<AuthEmailField control={control} name="email" />
 			</Card.Content>
 
 			<Card.Footer className="flex-col gap-4">
@@ -106,11 +88,11 @@ const ForgotPasswordForm = ({ onBack, onNext, defaultEmail }: ForgotPasswordForm
 						size="md"
 						type="submit"
 					>
-						Next
+						{t("common.next")}
 					</Button>
 				</form>
 				<Button fullWidth onPress={onBack} size="md" variant="outline">
-					Back
+					{t("common.back")}
 				</Button>
 			</Card.Footer>
 		</>

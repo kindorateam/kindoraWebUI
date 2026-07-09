@@ -1,3 +1,33 @@
+const sharedDocumentTranslations = {
+	addDocument: "Add Document",
+	empty: "No documents yet",
+	paginationSummary: "{{startItem}} to {{endItem}} of {{total}} document",
+	paginationSummary_other: "{{startItem}} to {{endItem}} of {{total}} documents",
+	columns: {
+		name: "Name",
+		status: "Status",
+		expiryDate: "Expiry date",
+		type: "Type",
+		uploaded: "Uploaded",
+		actions: "Actions",
+	},
+	actions: {
+		ariaLabel: "Document actions",
+		preview: "Preview",
+		edit: "Edit",
+		download: "Download",
+		delete: "Delete",
+	},
+	deleteModal: {
+		title: "Delete File",
+		description: "This action will permanently delete the attachment and cannot be reversed.",
+		confirm: "Yes, delete",
+		successTitle: "Document deleted",
+		successDescription: "Document has been deleted successfully.",
+		errorTitle: "Failed to delete document",
+	},
+} as const
+
 const en = {
 	common: {
 		back: "Back",
@@ -28,6 +58,51 @@ const en = {
 		successTitle: "Document uploaded",
 		successDescription: "Document has been uploaded successfully.",
 		errorTitle: "Failed to upload document",
+	},
+	auth: {
+		fields: {
+			confirmPassword: "Confirm your password",
+			email: "Email",
+			newPassword: "Create a password",
+			password: "Password",
+		},
+		placeholders: {
+			confirmPassword: "Re-enter your password",
+			email: "Enter your email",
+			password: "Enter your password",
+		},
+		validation: {
+			confirmPasswordRequired: "Please confirm your password",
+			emailRequired: "Email is required",
+			invalidEmail: "Invalid email address",
+			passwordMismatch: "The passwords you entered don't match. Please try again.",
+			passwordRequired: "Password is required",
+		},
+		passwordVisibility: {
+			hide: "Hide {{label}}",
+			show: "Show {{label}}",
+		},
+		signIn: {
+			forgotPassword: "Forgot password?",
+			google: "Sign in with Google",
+			loginFailed: "Login failed",
+			or: "OR",
+			rememberMe: "Remember me",
+			submit: "Sign In",
+			title: "Sign in",
+		},
+		forgotPassword: {
+			description: "We will email a code to your email address",
+			sendFailed: "Failed to send reset email",
+			title: "Forgot Password?",
+		},
+		resetPassword: {
+			failed: "Failed to reset password",
+			none: "None",
+			strength: "Strength:",
+			submit: "Reset password",
+			title: "Create a new password",
+		},
 	},
 	tableError: {
 		title: "We couldn't load the data.",
@@ -244,6 +319,7 @@ const en = {
 		},
 		thread: {
 			newCount: "{{count}} new",
+			newCount_other: "{{count}} new",
 		},
 	},
 	newsletters: {
@@ -665,34 +741,8 @@ const en = {
 			},
 		},
 		documents: {
-			addDocument: "Add Document",
+			...sharedDocumentTranslations,
 			ariaLabel: "Employee documents table",
-			empty: "No documents yet",
-			paginationSummary: "{{startItem}} to {{endItem}} of {{total}} document",
-			paginationSummary_other: "{{startItem}} to {{endItem}} of {{total}} documents",
-			columns: {
-				name: "Name",
-				status: "Status",
-				expiryDate: "Expiry date",
-				type: "Type",
-				uploaded: "Uploaded",
-				actions: "Actions",
-			},
-			actions: {
-				ariaLabel: "Document actions",
-				preview: "Preview",
-				edit: "Edit",
-				download: "Download",
-				delete: "Delete",
-			},
-			deleteModal: {
-				title: "Delete File",
-				description: "This action will permanently delete the attachment and cannot be reversed.",
-				confirm: "Yes, delete",
-				successTitle: "Document deleted",
-				successDescription: "Document has been deleted successfully.",
-				errorTitle: "Failed to delete document",
-			},
 			types: {
 				backgroundCheck: "Background Check",
 				covidVaccination: "COVID-19 Vaccination",
@@ -956,34 +1006,8 @@ const en = {
 				},
 			},
 			documents: {
-				addDocument: "Add Document",
+				...sharedDocumentTranslations,
 				ariaLabel: "Student documents table",
-				empty: "No documents yet",
-				paginationSummary: "{{startItem}} to {{endItem}} of {{total}} document",
-				paginationSummary_other: "{{startItem}} to {{endItem}} of {{total}} documents",
-				columns: {
-					name: "Name",
-					status: "Status",
-					expiryDate: "Expiry date",
-					type: "Type",
-					uploaded: "Uploaded",
-					actions: "Actions",
-				},
-				actions: {
-					ariaLabel: "Document actions",
-					preview: "Preview",
-					edit: "Edit",
-					download: "Download",
-					delete: "Delete",
-				},
-				deleteModal: {
-					title: "Delete File",
-					description: "This action will permanently delete the attachment and cannot be reversed.",
-					confirm: "Yes, delete",
-					successTitle: "Document deleted",
-					successDescription: "Document has been deleted successfully.",
-					errorTitle: "Failed to delete document",
-				},
 				types: {
 					cprCertification: "CPR Certification",
 					backgroundCheck: "Background Check",

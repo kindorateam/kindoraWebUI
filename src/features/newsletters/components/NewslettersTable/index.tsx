@@ -1,6 +1,8 @@
-import { Button, EmptyState, Pagination, Spinner, Table } from "@heroui/react"
+import { Button, EmptyState, Spinner, Table } from "@heroui/react"
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
+
+import TablePagination from "@/components/ui/TablePagination"
 
 import columns from "./columns"
 import { renderCell } from "./renderCell"
@@ -80,35 +82,12 @@ const NewslettersTable = ({ onCreateNew }: NewslettersTableProps) => {
 					)}
 				</div>
 				<Table.Footer>
-					<Pagination className="w-full">
-						<Pagination.Summary>
-							{t("newsletters.table.paginationSummary", { count: total, endItem, startItem, total })}
-						</Pagination.Summary>
-						<Pagination.Content>
-							<Pagination.Item>
-								<Pagination.Previous isDisabled={page <= 1} onPress={() => setPage((currentPage) => currentPage - 1)}>
-									<Pagination.PreviousIcon />
-									<span>{t("common.previous")}</span>
-								</Pagination.Previous>
-							</Pagination.Item>
-							{Array.from({ length: totalPages }, (_, index) => index + 1).map((paginationPage) => (
-								<Pagination.Item key={paginationPage}>
-									<Pagination.Link isActive={paginationPage === page} onPress={() => setPage(paginationPage)}>
-										{paginationPage}
-									</Pagination.Link>
-								</Pagination.Item>
-							))}
-							<Pagination.Item>
-								<Pagination.Next
-									isDisabled={page >= totalPages}
-									onPress={() => setPage((currentPage) => currentPage + 1)}
-								>
-									<span>{t("common.next")}</span>
-									<Pagination.NextIcon />
-								</Pagination.Next>
-							</Pagination.Item>
-						</Pagination.Content>
-					</Pagination>
+					<TablePagination
+						onPageChange={setPage}
+						page={page}
+						summary={t("newsletters.table.paginationSummary", { count: total, endItem, startItem, total })}
+						totalPages={totalPages}
+					/>
 				</Table.Footer>
 			</Table>
 		</div>

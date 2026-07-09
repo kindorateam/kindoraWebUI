@@ -1,8 +1,9 @@
-import { Button, Checkbox, EmptyState, Pagination, Spinner, Table } from "@heroui/react"
+import { Button, Checkbox, EmptyState, Spinner, Table } from "@heroui/react"
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
 
 import TableError from "@/components/TableError"
+import TablePagination from "@/components/ui/TablePagination"
 import MageExchangeA from "~icons/mage/exchange-a"
 import OcticonFeedPlus16 from "~icons/octicon/feed-plus-16"
 
@@ -146,32 +147,12 @@ const RoomStudentsTable = ({ roomId }: RoomStudentsTableProps) => {
 						)}
 					</div>
 					<Table.Footer>
-						<Pagination className="w-full">
-							<Pagination.Summary>
-								{t("rooms.studentsTable.paginationSummary", { count: total, endItem, startItem, total })}
-							</Pagination.Summary>
-							<Pagination.Content>
-								<Pagination.Item>
-									<Pagination.Previous isDisabled={page <= 1} onPress={() => setPage((p) => p - 1)}>
-										<Pagination.PreviousIcon />
-										<span>{t("common.previous")}</span>
-									</Pagination.Previous>
-								</Pagination.Item>
-								{Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
-									<Pagination.Item key={p}>
-										<Pagination.Link isActive={p === page} onPress={() => setPage(p)}>
-											{p}
-										</Pagination.Link>
-									</Pagination.Item>
-								))}
-								<Pagination.Item>
-									<Pagination.Next isDisabled={page >= totalPages} onPress={() => setPage((p) => p + 1)}>
-										<span>{t("common.next")}</span>
-										<Pagination.NextIcon />
-									</Pagination.Next>
-								</Pagination.Item>
-							</Pagination.Content>
-						</Pagination>
+						<TablePagination
+							onPageChange={setPage}
+							page={page}
+							summary={t("rooms.studentsTable.paginationSummary", { count: total, endItem, startItem, total })}
+							totalPages={totalPages}
+						/>
 					</Table.Footer>
 				</Table>
 			</div>

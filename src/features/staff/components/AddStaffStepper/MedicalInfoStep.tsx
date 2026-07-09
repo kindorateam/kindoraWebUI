@@ -5,6 +5,8 @@ import { useTranslation } from "react-i18next"
 
 import JamMedical from "~icons/jam/medical"
 
+import AddStaffStepHeader from "./AddStaffStepHeader"
+
 import type { AddStaffFormData } from "../../schemas/addStaff.schema"
 
 const MedicalInfoStep = () => {
@@ -43,13 +45,10 @@ const MedicalInfoStep = () => {
 
 	return (
 		<div className="flex flex-col gap-6">
-			<div className="flex items-center justify-between">
-				<h2 className="font-medium text-xl">{t("staff.addStaff.title")}</h2>
-				<div className="flex items-center gap-2.5 py-1.5">
-					<JamMedical className="size-5 text-foreground" />
-					<span className="font-semibold text-foreground text-sm">{t("staff.profile.sections.medicalInfo")}</span>
-				</div>
-			</div>
+			<AddStaffStepHeader
+				icon={<JamMedical className="size-5 text-foreground" />}
+				title={t("staff.profile.sections.medicalInfo")}
+			/>
 
 			<div className="flex flex-col gap-3">
 				<div className="flex flex-col gap-2">

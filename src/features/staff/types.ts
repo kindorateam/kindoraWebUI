@@ -1,3 +1,5 @@
+import type { DocumentRecord, DocumentStatus as SharedDocumentStatus } from "@/components/documents/types"
+
 // API Response Types - Employee Summary (list endpoint)
 export interface EmployeeAvatar {
 	id: string
@@ -9,7 +11,7 @@ export interface EmployeeRoom {
 	title: string
 }
 
-export interface EmployeeSummary {
+interface EmployeeBase {
 	id: string
 	firstName: string
 	lastName: string
@@ -27,23 +29,10 @@ export interface EmployeeSummary {
 	avatar?: EmployeeAvatar | null
 }
 
+export type EmployeeSummary = EmployeeBase
+
 // API Response Types - Employee Full (detail endpoint)
-export interface Employee {
-	id: string
-	firstName: string
-	lastName: string
-	checkedIn: boolean
-	email?: string | null
-	phone?: string | null
-	role?: string | null
-	status?: string | null
-	accountStatus?: string | null
-	roomId?: string | null
-	room?: EmployeeRoom | null
-	rooms?: EmployeeRoom[] | EmployeeRoom | null
-	pinCode?: number | null
-	avatarId?: string | null
-	avatar?: EmployeeAvatar | null
+export interface Employee extends EmployeeBase {
 	hireDate?: string | null
 	streetAddress?: string | null
 	city?: string | null
@@ -100,24 +89,10 @@ export interface EmployeeFull extends Employee {
 }
 
 // API Response Types - Employee Document
-export type DocumentStatus = "active" | "expiring_soon" | "expired" | "uploaded"
+export type DocumentStatus = SharedDocumentStatus
 
-export interface DocumentMedia {
-	id: string
-	path: string
-	name?: string
-}
-
-export interface EmployeeDocument {
-	id: number
+export interface EmployeeDocument extends DocumentRecord {
 	employeeId: string
-	media: DocumentMedia
-	status: DocumentStatus
-	expiryDate: string | null
-	type: string
-	notes: string | null
-	uploadedAt: string
-	uploadedBy: { id: string; name: string } | null
 }
 
 // API Response Types - Paginated List

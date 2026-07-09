@@ -1,7 +1,8 @@
 import { Button, Modal, Tabs } from "@heroui/react"
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
 
+import { useFileDrop } from "@/hooks/useFileDrop"
 import TablerCloudUpload from "~icons/tabler/cloud-upload"
 
 interface ImagePickerModalProps {
@@ -27,8 +28,6 @@ const ImagePickerModal = ({ isOpen, onClose, onSelect }: ImagePickerModalProps) 
 	const [selectedGradient, setSelectedGradient] = useState<string | null>(null)
 	const [uploadedFile, setUploadedFile] = useState<File | null>(null)
 	const [uploadPreview, setUploadPreview] = useState<string | null>(null)
-	const [isDragging, setIsDragging] = useState(false)
-	const fileInputRef = useRef<HTMLInputElement>(null)
 
 	useEffect(() => {
 		return () => {
@@ -37,38 +36,23 @@ const ImagePickerModal = ({ isOpen, onClose, onSelect }: ImagePickerModalProps) 
 	}, [uploadPreview])
 
 	const handleFileSelect = (file: File) => {
-		if (file?.type.startsWith("image/")) {
+		if (file.type.startsWith("image/")) {
 			setUploadedFile(file)
 			setUploadPreview(URL.createObjectURL(file))
 			setSelectedGradient(null)
 		}
 	}
 
-	const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		const file = e.target.files?.[0]
-		if (file) {
-			handleFileSelect(file)
-		}
-	}
-
-	const handleDragOver = (e: React.DragEvent) => {
-		e.preventDefault()
-		setIsDragging(true)
-	}
-
-	const handleDragLeave = (e: React.DragEvent) => {
-		e.preventDefault()
-		setIsDragging(false)
-	}
-
-	const handleDrop = (e: React.DragEvent) => {
-		e.preventDefault()
-		setIsDragging(false)
-		const file = e.dataTransfer.files?.[0]
-		if (file) {
-			handleFileSelect(file)
-		}
-	}
+	const {
+		fileInputRef,
+		handleDragLeave,
+		handleDragOver,
+		handleDrop,
+		handleFileInputChange,
+		isDragging,
+		openFilePicker,
+		resetFileInput,
+	} = useFileDrop(handleFileSelect)
 
 	const handleGradientSelect = (gradient: string) => {
 		setSelectedGradient(gradient)
@@ -90,6 +74,7 @@ const ImagePickerModal = ({ isOpen, onClose, onSelect }: ImagePickerModalProps) 
 		setUploadedFile(null)
 		setUploadPreview(null)
 		setSelectedTab("gallery")
+		resetFileInput()
 		onClose()
 	}
 
@@ -156,9 +141,7 @@ const ImagePickerModal = ({ isOpen, onClose, onSelect }: ImagePickerModalProps) 
 												onPress={() => {
 													setUploadedFile(null)
 													setUploadPreview(null)
-													if (fileInputRef.current) {
-														fileInputRef.current.value = ""
-													}
+													resetFileInput()
 												}}
 												size="sm"
 											>
@@ -170,7 +153,7 @@ const ImagePickerModal = ({ isOpen, onClose, onSelect }: ImagePickerModalProps) 
 											className={`flex min-h-50 w-full cursor-pointer flex-col items-center justify-center gap-3 rounded-lg border-2 border-dashed transition-colors ${
 												isDragging ? "border-primary bg-primary/10" : "border-gray-300 hover:border-primary"
 											}`}
-											onClick={() => fileInputRef.current?.click()}
+											onClick={openFilePicker}
 											onDragLeave={handleDragLeave}
 											onDragOver={handleDragOver}
 											onDrop={handleDrop}
