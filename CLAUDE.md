@@ -1,6 +1,6 @@
-# AGENTS.md
+# CLAUDE.md
 
-This file provides repository-specific guidance to Codex and other coding agents working in this project.
+This file provides self-contained repository guidance to Claude Code. It intentionally repeats shared project rules instead of importing another instruction file, so Claude can operate independently.
 
 ## Commands
 
@@ -130,9 +130,9 @@ Do not skip layers. Components should consume hooks, not call service modules di
 - If refresh fails, redirect to login
 - All `/auth/*` endpoints, including login, verification, OAuth, logout, and refresh, skip interceptor refresh-and-retry logic
 
-## Repo Skills
+## Claude Code Skills
 
-Use the repo-local skills under `.agents/skills/` when relevant:
+Use the independent project skills under `.claude/skills/` when relevant:
 
 - `code-principles`: implementation guardrails for KISS, DRY, YAGNI, and SOLID
 - `new-feature`: scaffold a new feature folder using repo conventions
@@ -140,4 +140,9 @@ Use the repo-local skills under `.agents/skills/` when relevant:
 - `heroui-v3`: use the installed HeroUI v3 compound APIs and avoid known integration traps
 - `i18n`: add or change user-visible text while keeping English and Spanish aligned
 
-Claude Code has independent physical counterparts under `.claude/skills/`. Do not replace either skill directory with symlinks. When shared project behavior changes, update both copies deliberately; environment-specific tool instructions may differ.
+Codex has separate physical counterparts under `.agents/skills/`. Do not replace either skill directory with symlinks. When shared project behavior changes, update both copies deliberately; environment-specific tool instructions may differ.
+
+## Claude Code Integrations
+
+- HeroUI v3 documentation is available through the `heroui-react` MCP server. Use `get_component_docs` before implementing an unfamiliar HeroUI component; inspect source or styles only when debugging internals
+- `.claude/settings.json` grants the standard Bun verification commands; keep it aligned when this file adds or renames a required command
