@@ -1,12 +1,12 @@
 import { Button, Chip, Dropdown, ListBox } from "@heroui/react"
 
+import { getMediaUrl } from "@/utils/media"
 import MaterialSymbolsDeleteOutline from "~icons/material-symbols/delete-outline"
 import MaterialSymbolsDownload from "~icons/material-symbols/download"
 import TablerDotsVertical from "~icons/tabler/dots-vertical"
 import TablerEdit from "~icons/tabler/edit"
 import TablerEye from "~icons/tabler/eye"
 
-import { getStudentDocumentDownloadUrl } from "../../services/student.service"
 import { openDeleteDocumentModal } from "../../stores/deleteDocumentModal.store"
 
 import type { TFunction } from "i18next"
@@ -26,13 +26,6 @@ const statusTextClass: Record<StudentDocumentStatus, string> = {
 	uploaded: "justify-center text-black text-xs",
 }
 
-const statusLabelKeyMap: Record<StudentDocumentStatus, string> = {
-	active: "students.detail.documents.statuses.active",
-	expiring_soon: "students.detail.documents.statuses.expiringSoon",
-	expired: "students.detail.documents.statuses.expired",
-	uploaded: "students.detail.documents.statuses.uploaded",
-}
-
 function formatDate(date: string | null, locale: string, t: TFunction): string {
 	if (!date) return t("common.noData")
 	return new Date(date).toLocaleDateString(locale, {
@@ -43,14 +36,15 @@ function formatDate(date: string | null, locale: string, t: TFunction): string {
 }
 
 function getDocumentFileName(document: StudentDocument, t: TFunction): string {
+	if (document.media?.name) return document.media.name
 	if (!document.media?.path) return t("common.document")
 	return document.media.path.split("/").pop() ?? t("common.document")
 }
 
 function handleDownload(document: StudentDocument) {
-	const url = getStudentDocumentDownloadUrl(document)
+	const url = document.media.path ? getMediaUrl(document.media.path) : ""
 	if (!url) return
-	window.open(url, "_blank")
+	window.open(url, "_blank", "noopener,noreferrer")
 }
 
 function handleView(document: StudentDocument) {
@@ -66,12 +60,12 @@ export function renderCell(document: StudentDocument, columnKey: React.Key, t: T
 			return (
 				<div className="flex justify-center">
 					<Chip
-						className={statusTextClass[document.status]}
+						className={`capitalize ${statusTextClass[document.status]}`}
 						color={statusColorMap[document.status]}
 						size="md"
 						variant="primary"
 					>
-						{t(statusLabelKeyMap[document.status])}
+						{document.status.replace("_", " ")}
 					</Chip>
 				</div>
 			)

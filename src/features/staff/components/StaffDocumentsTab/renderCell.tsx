@@ -1,11 +1,12 @@
 import { Button, Chip, Dropdown, ListBox } from "@heroui/react"
 
+import { getMediaUrl } from "@/utils/media"
 import MaterialSymbolsDeleteOutline from "~icons/material-symbols/delete-outline"
 import MaterialSymbolsDownload from "~icons/material-symbols/download"
+import TablerDotsVertical from "~icons/tabler/dots-vertical"
 import TablerEdit from "~icons/tabler/edit"
 import TablerEye from "~icons/tabler/eye"
 
-import { getEmployeeDocumentDownloadUrl } from "../../services/staff.service"
 import { openDeleteDocumentModal } from "../../stores/deleteDocumentModal.store"
 
 import type { TFunction } from "i18next"
@@ -25,13 +26,6 @@ const statusTextClass: Record<DocumentStatus, string> = {
 	uploaded: "justify-center text-black text-xs",
 }
 
-const statusLabelKeyMap: Record<DocumentStatus, string> = {
-	active: "staff.documents.statuses.active",
-	expiring_soon: "staff.documents.statuses.expiringSoon",
-	expired: "staff.documents.statuses.expired",
-	uploaded: "staff.documents.statuses.uploaded",
-}
-
 function formatDate(date: string | null, locale: string, t: TFunction): string {
 	if (!date) return t("common.noData")
 	return new Date(date).toLocaleDateString(locale, {
@@ -42,18 +36,19 @@ function formatDate(date: string | null, locale: string, t: TFunction): string {
 }
 
 function getDocumentFileName(doc: EmployeeDocument, t: TFunction): string {
+	if (doc.media?.name) return doc.media.name
 	if (!doc.media?.path) return t("common.document")
 	return doc.media.path.split("/").pop() ?? t("common.document")
 }
 
 function handleDownload(doc: EmployeeDocument) {
-	const url = getEmployeeDocumentDownloadUrl(doc.employeeId, doc.id)
-	window.open(url, "_blank")
+	if (!doc.media?.path) return
+	window.open(getMediaUrl(doc.media.path), "_blank", "noopener,noreferrer")
 }
 
 function handleView(doc: EmployeeDocument) {
 	if (doc.media?.path) {
-		window.open(doc.media.path, "_blank")
+		window.open(getMediaUrl(doc.media.path), "_blank", "noopener,noreferrer")
 	}
 }
 
@@ -66,12 +61,12 @@ export function renderCell(document: EmployeeDocument, columnKey: React.Key, t: 
 			return (
 				<div className="flex justify-center">
 					<Chip
-						className={statusTextClass[document.status]}
+						className={`capitalize ${statusTextClass[document.status]}`}
 						color={statusColorMap[document.status]}
 						size="md"
 						variant="primary"
 					>
-						{t(statusLabelKeyMap[document.status])}
+						{document.status.replace("_", " ")}
 					</Chip>
 				</div>
 			)
@@ -102,20 +97,7 @@ export function renderCell(document: EmployeeDocument, columnKey: React.Key, t: 
 				<div className="flex justify-center">
 					<Dropdown>
 						<Button isIconOnly variant="ghost" aria-label={t("staff.documents.actions.ariaLabel")}>
-							<svg
-								aria-hidden="true"
-								className="size-5 text-gray-600"
-								fill="none"
-								stroke="currentColor"
-								strokeLinecap="round"
-								strokeLinejoin="round"
-								strokeWidth={2}
-								viewBox="0 0 24 24"
-							>
-								<circle cx={12} cy={12} r={1} />
-								<circle cx={12} cy={5} r={1} />
-								<circle cx={12} cy={19} r={1} />
-							</svg>
+							<TablerDotsVertical aria-hidden className="size-5 text-gray-600" />
 						</Button>
 						<Dropdown.Popover className="min-w-0">
 							<Dropdown.Menu

@@ -21,7 +21,7 @@ const MealDetailsModal = () => {
 							<>
 								<div className="grid gap-1">
 									<Label className="text-default-500 text-xs">{t("meals.fields.type")}</Label>
-									<p className="font-medium text-sm">{t(`meals.types.${mealPlan.mealType}`)}</p>
+									<p className="font-medium text-sm capitalize">{mealPlan.mealType}</p>
 								</div>
 								{mealPlan.repeatFrequency === "weekly" && (
 									<div className="grid gap-1">

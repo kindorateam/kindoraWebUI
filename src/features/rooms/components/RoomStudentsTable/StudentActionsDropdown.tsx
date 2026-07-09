@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next"
 import PhCheckCircleBold from "~icons/ph/check-circle-bold"
 import PhSignOutBold from "~icons/ph/sign-out-bold"
 import SolarCalendarBroken from "~icons/solar/calendar-broken"
+import TablerDotsVertical from "~icons/tabler/dots-vertical"
 import TablerEdit from "~icons/tabler/edit"
 import TablerEye from "~icons/tabler/eye"
 
@@ -67,20 +68,7 @@ const StudentActionsDropdown = ({ student, roomId }: Props) => {
 					variant="ghost"
 					aria-label={t("rooms.studentsTable.actions.ariaLabel")}
 				>
-					<svg
-						aria-hidden="true"
-						className="size-5 text-gray-600"
-						fill="none"
-						stroke="currentColor"
-						strokeLinecap="round"
-						strokeLinejoin="round"
-						strokeWidth={2}
-						viewBox="0 0 24 24"
-					>
-						<circle cx={12} cy={12} r={1} />
-						<circle cx={12} cy={5} r={1} />
-						<circle cx={12} cy={19} r={1} />
-					</svg>
+					<TablerDotsVertical aria-hidden className="size-5 text-gray-600" />
 				</Button>
 				<Dropdown.Popover>
 					<Dropdown.Menu aria-label={t("rooms.studentsTable.actions.ariaLabel")}>

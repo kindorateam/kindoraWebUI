@@ -1,4 +1,6 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { queryOptions, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+
+import { QUERY_DEFAULTS } from "@/services/query.constants"
 
 import {
 	activateStudent,
@@ -37,6 +39,13 @@ export interface UseStudentsOptions {
 	search?: string
 }
 
+export const getStudentQueryOptions = (studentId: string) =>
+	queryOptions({
+		queryKey: ["students", studentId] as const,
+		queryFn: () => getStudentById(studentId),
+		...QUERY_DEFAULTS,
+	})
+
 export const useStudents = (options: UseStudentsOptions = {}) => {
 	const { status = "active", page = 1, limit = DEFAULT_PAGE_SIZE, search } = options
 	const offset = (page - 1) * limit
@@ -44,8 +53,7 @@ export const useStudents = (options: UseStudentsOptions = {}) => {
 	const query = useQuery<GetStudentsResult, Error>({
 		queryKey: ["students", { status, page, limit, search }],
 		queryFn: () => getStudents({ status, limit, offset, search }),
-		staleTime: 5 * 60 * 1000,
-		gcTime: 10 * 60 * 1000,
+		...QUERY_DEFAULTS,
 	})
 
 	return {
@@ -65,10 +73,8 @@ const invalidateStudentQueries = (queryClient: ReturnType<typeof useQueryClient>
 
 export function useStudent(studentId: string) {
 	return useQuery({
-		queryKey: ["students", studentId],
-		queryFn: () => getStudentById(studentId),
+		...getStudentQueryOptions(studentId),
 		enabled: !!studentId,
-		staleTime: 5 * 60 * 1000,
 	})
 }
 
@@ -146,8 +152,7 @@ export function useStudentAbsences(studentId: string) {
 		queryKey: ["students", studentId, "absences"],
 		queryFn: () => getStudentAbsences(studentId),
 		enabled: !!studentId,
-		staleTime: 5 * 60 * 1000,
-		gcTime: 10 * 60 * 1000,
+		...QUERY_DEFAULTS,
 	})
 }
 
@@ -182,8 +187,7 @@ export function useStudentDocuments(studentId: string) {
 		queryKey: ["students", studentId, "documents"],
 		queryFn: () => getStudentDocuments(studentId),
 		enabled: !!studentId,
-		staleTime: 5 * 60 * 1000,
-		gcTime: 10 * 60 * 1000,
+		...QUERY_DEFAULTS,
 	})
 }
 
@@ -192,8 +196,7 @@ export function useStudentDocument(studentId: string, documentId: number | null)
 		queryKey: ["students", studentId, "documents", documentId],
 		queryFn: () => getStudentDocument(studentId, documentId ?? 0),
 		enabled: !!studentId && documentId !== null,
-		staleTime: 5 * 60 * 1000,
-		gcTime: 10 * 60 * 1000,
+		...QUERY_DEFAULTS,
 	})
 }
 

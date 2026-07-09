@@ -30,9 +30,7 @@ const transformStudent = (apiStudent: ApiStudent): Student => ({
 		firstName: p.firstName,
 		lastName: p.lastName,
 		avatar: p.avatar?.path,
-		email: p.email,
-		phone: p.phone,
-		pin: p.pin,
+		relationship: p.relationship,
 	})),
 	tags: apiStudent.tags ?? [],
 })
@@ -235,15 +233,24 @@ export const updateRoomLogo = async (roomId: string, logoFile: File): Promise<Ro
 }
 
 /**
- * Adds students to a room by moving them to the room
+ * Adds students to a room and makes it their primary room
  */
 export const addStudentsToRoom = async (roomId: string, studentIds: string[]): Promise<void> => {
-	await apiClient.post(`/rooms/${roomId}/students/move`, { ids: studentIds })
+	await apiClient.post(`/rooms/${roomId}/students/add`, { ids: studentIds })
+	await apiClient.post(`/rooms/${roomId}/students/set-primary`, { ids: studentIds })
 }
 
 /**
- * Moves students to a different room
+ * Moves students to a different room.
+ * The API has no atomic move — add to target first so a capacity conflict
+ * aborts before anything is removed from the source room.
  */
-export const moveStudentsToRoom = async (targetRoomId: string, studentIds: string[]): Promise<void> => {
-	await apiClient.post(`/rooms/${targetRoomId}/students/move`, { ids: studentIds })
+export const moveStudentsToRoom = async (
+	sourceRoomId: string,
+	targetRoomId: string,
+	studentIds: string[],
+): Promise<void> => {
+	await apiClient.post(`/rooms/${targetRoomId}/students/add`, { ids: studentIds })
+	await apiClient.post(`/rooms/${targetRoomId}/students/set-primary`, { ids: studentIds })
+	await apiClient.post(`/rooms/${sourceRoomId}/students/remove`, { ids: studentIds })
 }

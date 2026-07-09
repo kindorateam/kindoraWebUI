@@ -36,7 +36,18 @@ export interface VerificationRequiredResponse {
 
 export type LoginResponse = AuthTokenResponse | VerificationRequiredResponse
 
-export type UserProfileResponse = User | { user: User }
+// Wire shape of GET /users/profile — the backend returns the employee account DTO
+export interface ApiProfileUser {
+	id: string
+	firstName: string
+	lastName: string
+	email?: string
+	avatar?: { id: string; path: string }
+}
+
+export interface UserProfileResponse {
+	user: ApiProfileUser
+}
 
 // Store action result
 export type LoginResult =

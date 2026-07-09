@@ -678,12 +678,6 @@ const en = {
 				uploaded: "Uploaded",
 				actions: "Actions",
 			},
-			statuses: {
-				active: "Active",
-				expiringSoon: "Expiring Soon",
-				expired: "Expired",
-				uploaded: "Uploaded",
-			},
 			actions: {
 				ariaLabel: "Document actions",
 				preview: "Preview",
@@ -792,7 +786,6 @@ const en = {
 				doctor: "Doctor",
 				doctorPhone: "Doctor phone",
 				email: "Email",
-				enrollDate: "Enroll date",
 				firstName: "First name",
 				hireDate: "Hire date",
 				lastName: "Last name",
@@ -975,12 +968,6 @@ const en = {
 					type: "Type",
 					uploaded: "Uploaded",
 					actions: "Actions",
-				},
-				statuses: {
-					active: "Active",
-					expiringSoon: "Expiring Soon",
-					expired: "Expired",
-					uploaded: "Uploaded",
 				},
 				actions: {
 					ariaLabel: "Document actions",

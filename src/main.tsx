@@ -2,7 +2,6 @@ import { Toast } from "@heroui/react"
 import { QueryClientProvider } from "@tanstack/react-query"
 import { Provider as JotaiProvider } from "jotai"
 import { createRoot } from "react-dom/client"
-import "jotai-devtools/styles.css"
 
 import "./index.css"
 import "@/i18n"
@@ -26,7 +25,7 @@ createRoot(rootElement).render(
 	>
 		<JotaiProvider store={appStore}>
 			<QueryClientProvider client={queryClient}>
-				<Toast.Provider />
+				<Toast.Provider placement="bottom end" />
 				<App />
 			</QueryClientProvider>
 		</JotaiProvider>

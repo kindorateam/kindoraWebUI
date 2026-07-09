@@ -1,5 +1,5 @@
 import { Button, Modal, Tabs } from "@heroui/react"
-import { useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
 
 import TablerCloudUpload from "~icons/tabler/cloud-upload"
@@ -29,6 +29,12 @@ const ImagePickerModal = ({ isOpen, onClose, onSelect }: ImagePickerModalProps) 
 	const [uploadPreview, setUploadPreview] = useState<string | null>(null)
 	const [isDragging, setIsDragging] = useState(false)
 	const fileInputRef = useRef<HTMLInputElement>(null)
+
+	useEffect(() => {
+		return () => {
+			if (uploadPreview) URL.revokeObjectURL(uploadPreview)
+		}
+	}, [uploadPreview])
 
 	const handleFileSelect = (file: File) => {
 		if (file?.type.startsWith("image/")) {

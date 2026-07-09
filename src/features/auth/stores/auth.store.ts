@@ -5,12 +5,14 @@ import { appStore } from "@/stores/jotaiStore"
 
 import type { User, UserProfileResponse } from "../types"
 
-export const mapUserResponse = (data: UserProfileResponse): User => {
-	if (data && typeof data === "object" && "user" in data && data.user) {
-		return data.user
-	}
-	return data as User
-}
+export const mapUserResponse = ({ user }: UserProfileResponse): User => ({
+	id: user.id,
+	email: user.email ?? "",
+	name: `${user.firstName} ${user.lastName}`.trim(),
+	givenName: user.firstName,
+	familyName: user.lastName,
+	picture: user.avatar?.path,
+})
 
 // Atoms for state - using atomWithStorage handles localStorage automatically
 const userAtom = atomWithStorage<User | null>("auth-user", null, undefined, {

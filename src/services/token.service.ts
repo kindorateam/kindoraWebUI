@@ -1,8 +1,6 @@
 import { tokenAtom } from "@/features/auth/stores/auth.store"
 import { appStore } from "@/stores/jotaiStore"
 
-import { apiClient } from "./api.service"
-
 import type { DecodedBackendToken } from "@/features/auth/types"
 
 export const getToken = (): string | null => {
@@ -13,7 +11,12 @@ export const getCleanToken = (): string | null => {
 	const token = getToken()
 	if (!token) return null
 
-	return sanitizeToken(token)
+	try {
+		return sanitizeToken(token)
+	} catch {
+		clearToken()
+		return null
+	}
 }
 
 export const clearToken = (): void => {
@@ -22,34 +25,6 @@ export const clearToken = (): void => {
 
 export const setTokens = (accessToken: string): void => {
 	appStore.set(tokenAtom, accessToken)
-}
-
-let refreshPromise: Promise<string | null> | null = null
-
-export const refreshAccessToken = async (): Promise<string | null> => {
-	if (refreshPromise) {
-		return refreshPromise
-	}
-
-	refreshPromise = (async () => {
-		try {
-			const response = await apiClient.post<{
-				accessToken: string
-				expiresAt: string
-			}>("/auth/refresh")
-
-			setTokens(response.accessToken)
-
-			return response.accessToken
-		} catch {
-			clearToken()
-			return null
-		} finally {
-			refreshPromise = null
-		}
-	})()
-
-	return refreshPromise
 }
 
 const sanitizeToken = (token: string): string => {
@@ -85,7 +60,9 @@ export const decodeToken = (token: string): DecodedBackendToken | null => {
 		const payload = parts[1]
 		if (parts.length !== 3 || !payload) return null
 
-		const decoded = atob(payload.replace(/-/g, "+").replace(/_/g, "/"))
+		const normalizedPayload = payload.replace(/-/g, "+").replace(/_/g, "/")
+		const paddedPayload = normalizedPayload.padEnd(Math.ceil(normalizedPayload.length / 4) * 4, "=")
+		const decoded = atob(paddedPayload)
 		return JSON.parse(decoded) as DecodedBackendToken
 	} catch {
 		return null

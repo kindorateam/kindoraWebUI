@@ -8,7 +8,7 @@ const MEDIA_BASE_URL = import.meta.env.VITE_MEDIA_BASE_URL ?? "http://localhost:
 export const getMediaUrl = (path: string): string => {
 	if (!path) return ""
 	// If already a full URL, return as-is
-	if (path.startsWith("http://") || path.startsWith("https://")) {
+	if (path.startsWith("http://") || path.startsWith("https://") || path.startsWith("blob:")) {
 		return path
 	}
 	return `${MEDIA_BASE_URL}${path}`

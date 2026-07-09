@@ -78,24 +78,6 @@ const PersonalInfoStep = () => {
 				/>
 				<Controller
 					control={control}
-					name="enrollDate"
-					render={({ field }) => (
-						<DateField
-							granularity="day"
-							isInvalid={!!errors.enrollDate}
-							onChange={(value) => handleDateChange(value, field.onChange)}
-							value={parseDateValue(field.value)}
-						>
-							<Label>{t("staff.profile.fields.enrollDate")}</Label>
-							<DateField.Group variant="secondary">
-								<DateField.Input>{(segment) => <DateField.Segment segment={segment} />}</DateField.Input>
-							</DateField.Group>
-							<FieldError>{errors.enrollDate?.message}</FieldError>
-						</DateField>
-					)}
-				/>
-				<Controller
-					control={control}
 					name="state"
 					render={({ field }) => (
 						<Select

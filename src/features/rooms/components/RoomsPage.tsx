@@ -4,7 +4,7 @@ import AddRoomModal from "./AddRoomModal"
 import DeactivateRoomModal from "./DeactivateRoomModal"
 import RoomsTable from "./RoomsTable"
 
-export default function RoomsPage() {
+const RoomsPage = () => {
 	const { t } = useTranslation()
 
 	return (
@@ -18,3 +18,5 @@ export default function RoomsPage() {
 		</>
 	)
 }
+
+export default RoomsPage

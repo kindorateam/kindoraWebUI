@@ -55,6 +55,18 @@ export async function fetchUserProfile(): Promise<UserProfileResponse> {
 	return apiClient.get<UserProfileResponse>("/users/profile")
 }
 
+export const loginWithGoogle = async (code: string, origin: string): Promise<AuthTokenResponse> => {
+	const response = await apiClient.get<AuthTokenResponse>("/auth/oauth/google/callback", {
+		headers: {
+			CustomOrigin: origin,
+		},
+		params: { code },
+	})
+
+	setTokens(response.accessToken)
+	return response
+}
+
 /**
  * Logout user and clear all tokens
  * Calls backend to clear HttpOnly refresh token cookie

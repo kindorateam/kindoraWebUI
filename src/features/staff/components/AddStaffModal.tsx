@@ -37,14 +37,16 @@ const AddStaffModal = () => {
 			<Modal.Container className={isLastStep ? "max-w-4xl" : "max-w-xl"}>
 				<Modal.Dialog>
 					<Modal.CloseTrigger />
-					<Modal.Body className="p-0">
-						<AddStaffStepper
-							isLoading={false}
-							onCancel={handleCancel}
-							onComplete={handleComplete}
-							onStepChange={handleStepChange}
-						/>
-					</Modal.Body>
+					{isOpen ? (
+						<Modal.Body className="p-0">
+							<AddStaffStepper
+								isLoading={false}
+								onCancel={handleCancel}
+								onComplete={handleComplete}
+								onStepChange={handleStepChange}
+							/>
+						</Modal.Body>
+					) : null}
 				</Modal.Dialog>
 			</Modal.Container>
 		</Modal.Backdrop>

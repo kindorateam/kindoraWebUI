@@ -11,12 +11,10 @@ const LanguageSwitcher = () => {
 
 	return (
 		<Dropdown>
-			<Dropdown.Trigger>
-				<Button className="bg-white shadow-md" variant="ghost">
-					<MaterialSymbolsTranslate className="size-4" />
-					{currentLanguage?.shortLabel ?? locale.toUpperCase()}
-				</Button>
-			</Dropdown.Trigger>
+			<Button className="bg-white shadow-md" variant="ghost">
+				<MaterialSymbolsTranslate className="size-4" />
+				{currentLanguage?.shortLabel ?? locale.toUpperCase()}
+			</Button>
 			<Dropdown.Popover>
 				<Dropdown.Menu aria-label={t("language.switcherAria")}>
 					{languageOptions.map((language) => (

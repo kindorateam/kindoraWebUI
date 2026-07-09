@@ -1,18 +1,44 @@
-import axios, { type AxiosInstance, type AxiosRequestConfig, type AxiosResponse } from "axios"
+import axios, {
+	type AxiosInstance,
+	type AxiosRequestConfig,
+	type AxiosResponse,
+	type InternalAxiosRequestConfig,
+} from "axios"
 
 import { redirectToLogin } from "@/services/redirect.service"
-import { clearToken, getCleanToken, refreshAccessToken } from "@/services/token.service"
+import { clearToken, getCleanToken, setTokens } from "@/services/token.service"
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "/api/v1"
 const API_TIMEOUT = 30000
 
+interface RetryableRequestConfig extends InternalAxiosRequestConfig {
+	_authRetryAttempted?: boolean
+}
+
+interface RefreshTokenResponse {
+	accessToken: string
+}
+
+const isAuthEndpoint = (url?: string): boolean => url?.includes("/auth/") ?? false
+
 class ApiClient {
 	private instance: AxiosInstance
+	private refreshInstance: AxiosInstance
+	private refreshPromise: Promise<string | null> | null = null
 
 	constructor() {
 		this.instance = axios.create({
 			baseURL: API_BASE_URL,
 			timeout: API_TIMEOUT,
+			withCredentials: true,
+			headers: {
+				"Content-Type": "application/json",
+			},
+		})
+		this.refreshInstance = axios.create({
+			baseURL: API_BASE_URL,
+			timeout: API_TIMEOUT,
+			withCredentials: true,
 			headers: {
 				"Content-Type": "application/json",
 			},
@@ -42,30 +68,51 @@ class ApiClient {
 				return response
 			},
 			async (error: unknown) => {
-				if (axios.isAxiosError(error) && error.response?.status === 401) {
-					const isRefreshRequest = error.config?.url?.includes("/auth/refresh")
-
-					if (!isRefreshRequest) {
-						// Try to refresh token first
-						const newToken = await refreshAccessToken()
-						if (newToken) {
-							// Retry the original request with new token
-							const originalRequest = error.config
-							if (originalRequest) {
-								originalRequest.headers.Authorization = `Bearer ${newToken}`
-								return this.instance.request(originalRequest)
-							}
-						}
-
-						// If refresh failed, redirect to login
-						clearToken()
-						redirectToLogin()
-					}
+				if (!axios.isAxiosError(error) || error.response?.status !== 401) {
+					return Promise.reject(error instanceof Error ? error : new Error(String(error)))
 				}
 
-				return Promise.reject(error instanceof Error ? error : new Error(String(error)))
+				const originalRequest = error.config as RetryableRequestConfig | undefined
+				if (!originalRequest || isAuthEndpoint(originalRequest.url)) {
+					return Promise.reject(error)
+				}
+
+				if (originalRequest._authRetryAttempted) {
+					clearToken()
+					redirectToLogin()
+					return Promise.reject(error)
+				}
+
+				originalRequest._authRetryAttempted = true
+				const newToken = await this.refreshAccessToken()
+
+				if (newToken) {
+					originalRequest.headers.Authorization = `Bearer ${newToken}`
+					return this.instance.request(originalRequest)
+				}
+
+				clearToken()
+				redirectToLogin()
+				return Promise.reject(error)
 			},
 		)
+	}
+
+	private async refreshAccessToken(): Promise<string | null> {
+		if (this.refreshPromise) return this.refreshPromise
+
+		this.refreshPromise = this.refreshInstance
+			.post<RefreshTokenResponse>("/auth/refresh")
+			.then(({ data }) => {
+				setTokens(data.accessToken)
+				return data.accessToken
+			})
+			.catch(() => null)
+			.finally(() => {
+				this.refreshPromise = null
+			})
+
+		return this.refreshPromise
 	}
 
 	async get<T>(url: string, config?: AxiosRequestConfig): Promise<T> {

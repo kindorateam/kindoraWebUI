@@ -20,18 +20,15 @@ const StaffTable = () => {
 	const [page, setPage] = useState(1)
 	const [showDeactivated, setShowDeactivated] = useState(false)
 	const status = showDeactivated ? "inactive" : "active"
-	const { data: employees = [], isLoading, error, refetch } = useEmployees(status)
 	const pageSize = 10
+	const { data: items, total, totalPages, isLoading, error, refetch } = useEmployees({ status, page, limit: pageSize })
 
 	const handleEmployeeClick = (employeeId: string) => {
 		navigate({ to: "/staff/$staffId", params: { staffId: employeeId }, search: { tab: "profile" } })
 	}
 
-	const total = employees.length
-	const totalPages = Math.ceil(total / pageSize) || 1
-	const startItem = (page - 1) * pageSize + 1
+	const startItem = total === 0 ? 0 : (page - 1) * pageSize + 1
 	const endItem = Math.min(page * pageSize, total)
-	const items = employees.slice((page - 1) * pageSize, page * pageSize)
 	const hasError = Boolean(error)
 	const showLoading = isLoading
 	const isEmpty = !showLoading && !hasError && items.length === 0

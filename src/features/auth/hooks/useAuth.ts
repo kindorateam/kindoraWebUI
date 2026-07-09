@@ -28,7 +28,7 @@ const useAuth = () => {
 	const googleLogin = useGoogleLogin({
 		flow: "auth-code",
 		ux_mode: "popup",
-		redirect_uri: "http://localhost:5173",
+		redirect_uri: window.location.origin,
 		onSuccess: (codeResponse: CodeResponse) => {
 			googleLoginMutation.mutate(codeResponse.code)
 		},

@@ -8,7 +8,7 @@ interface NewslettersSearch {
 	tab: TabType
 }
 
-function NewslettersLayout() {
+const NewslettersLayout = () => {
 	const { tab } = Route.useSearch()
 	const navigate = useNavigate({ from: Route.fullPath })
 

@@ -175,51 +175,6 @@ const PersonalInfoSection = ({
 								</DatePicker>
 							)}
 						/>
-						<Controller
-							control={control}
-							name="enrollDate"
-							render={({ field }) => (
-								<DatePicker
-									className="flex-1"
-									granularity="day"
-									onChange={(value) => onDateChange(value, field.onChange)}
-									value={parseDateValue(field.value)}
-								>
-									<Label>{t("staff.profile.fields.enrollDate")}</Label>
-									<DateField.Group variant="secondary" fullWidth>
-										<DateField.Input>{(segment) => <DateField.Segment segment={segment} />}</DateField.Input>
-										<DateField.Suffix>
-											<DatePicker.Trigger>
-												<DatePicker.TriggerIndicator />
-											</DatePicker.Trigger>
-										</DateField.Suffix>
-									</DateField.Group>
-									<DatePicker.Popover>
-										<Calendar aria-label={t("staff.profile.fields.enrollDate")}>
-											<Calendar.Header>
-												<Calendar.YearPickerTrigger>
-													<Calendar.YearPickerTriggerHeading />
-													<Calendar.YearPickerTriggerIndicator />
-												</Calendar.YearPickerTrigger>
-												<Calendar.NavButton slot="previous" />
-												<Calendar.NavButton slot="next" />
-											</Calendar.Header>
-											<Calendar.Grid>
-												<Calendar.GridHeader>
-													{(day) => <Calendar.HeaderCell>{day}</Calendar.HeaderCell>}
-												</Calendar.GridHeader>
-												<Calendar.GridBody>{(date) => <Calendar.Cell date={date} />}</Calendar.GridBody>
-											</Calendar.Grid>
-											<Calendar.YearPickerGrid>
-												<Calendar.YearPickerGridBody>
-													{({ year }) => <Calendar.YearPickerCell year={year} />}
-												</Calendar.YearPickerGridBody>
-											</Calendar.YearPickerGrid>
-										</Calendar>
-									</DatePicker.Popover>
-								</DatePicker>
-							)}
-						/>
 					</div>
 					<div className="flex gap-2">
 						<Controller

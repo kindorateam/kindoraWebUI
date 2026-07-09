@@ -1,4 +1,6 @@
-import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { queryOptions, useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+
+import { QUERY_DEFAULTS } from "@/services/query.constants"
 
 import {
 	activateRoom,
@@ -17,7 +19,7 @@ import {
 } from "../services/room.service"
 
 import type { GetRoomsResult, PaginatedResult, RoomStatus } from "../services/room.service"
-import type { AddRoomFormData, Room, RoomUpdatePayload } from "../types"
+import type { AddRoomFormData, RoomUpdatePayload } from "../types"
 
 const DEFAULT_PAGE_SIZE = 10
 
@@ -26,6 +28,13 @@ export interface UseRoomsOptions {
 	page?: number
 	limit?: number
 }
+
+export const getRoomQueryOptions = (roomId: string) =>
+	queryOptions({
+		queryKey: ["rooms", roomId] as const,
+		queryFn: () => getRoomById(roomId),
+		...QUERY_DEFAULTS,
+	})
 
 /**
  * Hook to fetch rooms from the API using TanStack Query with server-side pagination
@@ -37,8 +46,7 @@ export const useRooms = (options: UseRoomsOptions = {}) => {
 	const query = useQuery<GetRoomsResult, Error>({
 		queryKey: ["rooms", { status, page, limit }],
 		queryFn: () => getRooms({ status, limit, offset }),
-		staleTime: 5 * 60 * 1000, // 5 minutes
-		gcTime: 10 * 60 * 1000, // 10 minutes
+		...QUERY_DEFAULTS,
 	})
 
 	return {
@@ -56,9 +64,8 @@ export const useRooms = (options: UseRoomsOptions = {}) => {
 export const useRoom = (roomId: string) => {
 	const queryClient = useQueryClient()
 
-	return useQuery<Room, Error>({
-		queryKey: ["rooms", roomId],
-		queryFn: () => getRoomById(roomId),
+	return useQuery({
+		...getRoomQueryOptions(roomId),
 		placeholderData: () => {
 			// Search all cached room list pages for this room
 			const cache = queryClient.getQueriesData<GetRoomsResult>({
@@ -73,8 +80,6 @@ export const useRoom = (roomId: string) => {
 			}
 			return undefined
 		},
-		staleTime: 5 * 60 * 1000, // 5 minutes
-		gcTime: 10 * 60 * 1000, // 10 minutes
 		enabled: !!roomId, // Only run query if roomId is provided
 	})
 }
@@ -110,19 +115,7 @@ export const useCreateRoom = () => {
 			return room
 		},
 		onSuccess: () => {
-			// Invalidate all active rooms pages (new rooms are always active)
-			queryClient.invalidateQueries({
-				predicate: (query) => {
-					const key = query.queryKey
-					return (
-						key[0] === "rooms" &&
-						typeof key[1] === "object" &&
-						key[1] !== null &&
-						"status" in key[1] &&
-						key[1].status === "active"
-					)
-				},
-			})
+			void queryClient.invalidateQueries({ queryKey: ["rooms"] })
 		},
 	})
 }
@@ -148,8 +141,7 @@ export const useInfiniteAllStudents = (enabled = true) => {
 		queryFn: ({ pageParam = 0 }) => getStudentsPaginated({ limit: INFINITE_PAGE_SIZE, offset: pageParam }),
 		initialPageParam: 0,
 		getNextPageParam,
-		staleTime: 5 * 60 * 1000,
-		gcTime: 10 * 60 * 1000,
+		...QUERY_DEFAULTS,
 		enabled,
 	})
 
@@ -174,8 +166,7 @@ export const useInfiniteAllEmployees = (enabled = true) => {
 		queryFn: ({ pageParam = 0 }) => getEmployeesPaginated({ limit: INFINITE_PAGE_SIZE, offset: pageParam }),
 		initialPageParam: 0,
 		getNextPageParam,
-		staleTime: 5 * 60 * 1000,
-		gcTime: 10 * 60 * 1000,
+		...QUERY_DEFAULTS,
 		enabled,
 	})
 
@@ -208,8 +199,7 @@ export const useInfiniteRooms = (status: RoomStatus = "active", enabled = true) 
 		queryFn: ({ pageParam = 0 }) => getRooms({ status, limit: INFINITE_PAGE_SIZE, offset: pageParam }),
 		initialPageParam: 0,
 		getNextPageParam: getRoomsNextPageParam,
-		staleTime: 5 * 60 * 1000,
-		gcTime: 10 * 60 * 1000,
+		...QUERY_DEFAULTS,
 		enabled,
 	})
 
@@ -232,19 +222,8 @@ export const useInactivateRoom = () => {
 
 	return useMutation({
 		mutationFn: (roomId: string) => inactivateRoom(roomId),
-		onSuccess: (_data, roomId) => {
-			// Room moves from active to inactive, invalidate both lists and individual room
-			queryClient.invalidateQueries({
-				predicate: (query) => {
-					const key = query.queryKey
-					if (key[0] !== "rooms") return false
-					// Invalidate individual room query
-					if (key[1] === roomId) return true
-					// Invalidate all paginated room lists (both active and inactive)
-					if (typeof key[1] === "object" && key[1] !== null && "status" in key[1]) return true
-					return false
-				},
-			})
+		onSuccess: () => {
+			void queryClient.invalidateQueries({ queryKey: ["rooms"] })
 		},
 	})
 }
@@ -257,19 +236,8 @@ export const useActivateRoom = () => {
 
 	return useMutation({
 		mutationFn: (roomId: string) => activateRoom(roomId),
-		onSuccess: (_data, roomId) => {
-			// Room moves from inactive to active, invalidate both lists and individual room
-			queryClient.invalidateQueries({
-				predicate: (query) => {
-					const key = query.queryKey
-					if (key[0] !== "rooms") return false
-					// Invalidate individual room query
-					if (key[1] === roomId) return true
-					// Invalidate all paginated room lists (both active and inactive)
-					if (typeof key[1] === "object" && key[1] !== null && "status" in key[1]) return true
-					return false
-				},
-			})
+		onSuccess: () => {
+			void queryClient.invalidateQueries({ queryKey: ["rooms"] })
 		},
 	})
 }
@@ -282,16 +250,8 @@ export interface StudentCheckParams {
 /**
  * Invalidates room queries (individual room and room lists)
  */
-const invalidateRoomQueries = (queryClient: ReturnType<typeof useQueryClient>, roomId: string) => {
-	// Invalidate individual room
-	queryClient.invalidateQueries({ queryKey: ["rooms", roomId] })
-	// Invalidate room lists (they contain student data)
-	queryClient.invalidateQueries({
-		predicate: (query) => {
-			const key = query.queryKey
-			return key[0] === "rooms" && typeof key[1] === "object" && key[1] !== null && "status" in key[1]
-		},
-	})
+const invalidateRoomQueries = (queryClient: ReturnType<typeof useQueryClient>) => {
+	void queryClient.invalidateQueries({ queryKey: ["rooms"] })
 }
 
 /**
@@ -302,8 +262,8 @@ export const useCheckInStudent = () => {
 
 	return useMutation({
 		mutationFn: ({ roomId, studentId }: StudentCheckParams) => checkInStudent(roomId, studentId),
-		onSuccess: (_data, { roomId }) => {
-			invalidateRoomQueries(queryClient, roomId)
+		onSuccess: () => {
+			invalidateRoomQueries(queryClient)
 		},
 	})
 }
@@ -316,8 +276,8 @@ export const useCheckOutStudent = () => {
 
 	return useMutation({
 		mutationFn: ({ roomId, studentId }: StudentCheckParams) => checkOutStudent(roomId, studentId),
-		onSuccess: (_data, { roomId }) => {
-			invalidateRoomQueries(queryClient, roomId)
+		onSuccess: () => {
+			invalidateRoomQueries(queryClient)
 		},
 	})
 }
@@ -335,8 +295,8 @@ export const useUpdateRoomLogo = () => {
 
 	return useMutation({
 		mutationFn: ({ roomId, logoFile }: UpdateRoomLogoParams) => updateRoomLogo(roomId, logoFile),
-		onSuccess: (_data, { roomId }) => {
-			invalidateRoomQueries(queryClient, roomId)
+		onSuccess: () => {
+			invalidateRoomQueries(queryClient)
 		},
 	})
 }
@@ -354,8 +314,8 @@ export const useUpdateRoom = () => {
 
 	return useMutation({
 		mutationFn: ({ roomId, payload }: UpdateRoomParams) => updateRoom(roomId, payload),
-		onSuccess: (_data, { roomId }) => {
-			invalidateRoomQueries(queryClient, roomId)
+		onSuccess: () => {
+			invalidateRoomQueries(queryClient)
 		},
 	})
 }
@@ -373,10 +333,11 @@ export const useAddStudentsToRoom = () => {
 
 	return useMutation({
 		mutationFn: ({ roomId, studentIds }: AddStudentsToRoomParams) => addStudentsToRoom(roomId, studentIds),
-		onSuccess: (_data, { roomId }) => {
-			invalidateRoomQueries(queryClient, roomId)
+		onSuccess: () => {
+			invalidateRoomQueries(queryClient)
 			// Invalidate all students list since students are now assigned to a room
-			queryClient.invalidateQueries({ queryKey: ["rooms", "all-students"] })
+			void queryClient.invalidateQueries({ queryKey: ["rooms", "all-students"] })
+			void queryClient.invalidateQueries({ queryKey: ["students"] })
 		},
 	})
 }
@@ -394,12 +355,11 @@ export const useMoveStudentsToRoom = () => {
 	const queryClient = useQueryClient()
 
 	return useMutation({
-		mutationFn: ({ targetRoomId, studentIds }: MoveStudentsToRoomParams) =>
-			moveStudentsToRoom(targetRoomId, studentIds),
-		onSuccess: (_data, { sourceRoomId, targetRoomId }) => {
-			// Invalidate both source and target rooms
-			invalidateRoomQueries(queryClient, sourceRoomId)
-			invalidateRoomQueries(queryClient, targetRoomId)
+		mutationFn: ({ sourceRoomId, targetRoomId, studentIds }: MoveStudentsToRoomParams) =>
+			moveStudentsToRoom(sourceRoomId, targetRoomId, studentIds),
+		onSuccess: () => {
+			invalidateRoomQueries(queryClient)
+			void queryClient.invalidateQueries({ queryKey: ["students"] })
 		},
 	})
 }

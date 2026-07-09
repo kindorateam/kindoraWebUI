@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next"
 
 import { getErrorMessage } from "@/utils/error"
 
-import { useCreateRoom, useUpdateRoomLogo } from "../hooks/useRooms"
+import { useCreateRoom } from "../hooks/useRooms"
 import { closeAddRoomModal, isAddRoomModalOpenAtom } from "../stores/addRoomModal.store"
 
 import AddRoomStepper from "./AddRoomStepper"
@@ -15,32 +15,11 @@ const AddRoomModal = () => {
 	const { t } = useTranslation()
 	const isOpen = useAtomValue(isAddRoomModalOpenAtom)
 	const createRoomMutation = useCreateRoom()
-	const updateLogoMutation = useUpdateRoomLogo()
 
 	const handleComplete = (data: AddRoomFormData) => {
 		createRoomMutation.mutate(data, {
-			onSuccess: (room) => {
-				// If there's a logo file, upload it after room creation
-				if (data.avatarFile) {
-					updateLogoMutation.mutate(
-						{ roomId: room.id, logoFile: data.avatarFile },
-						{
-							onSuccess: () => {
-								closeAddRoomModal()
-							},
-							onError: (error) => {
-								// Room created but logo upload failed
-								toast(t("rooms.addRoom.logoUploadFailed"), {
-									description: getErrorMessage(error),
-									variant: "warning",
-								})
-								closeAddRoomModal()
-							},
-						},
-					)
-				} else {
-					closeAddRoomModal()
-				}
+			onSuccess: () => {
+				closeAddRoomModal()
 			},
 			onError: (error) => {
 				toast(t("rooms.addRoom.createError"), {
@@ -55,16 +34,18 @@ const AddRoomModal = () => {
 		closeAddRoomModal()
 	}
 
-	const isLoading = createRoomMutation.isPending || updateLogoMutation.isPending
+	const isLoading = createRoomMutation.isPending
 
 	return (
 		<Modal.Backdrop isOpen={isOpen} onOpenChange={(open) => !open && closeAddRoomModal()}>
 			<Modal.Container>
 				<Modal.Dialog>
 					<Modal.CloseTrigger />
-					<Modal.Body>
-						<AddRoomStepper isLoading={isLoading} onCancel={handleCancel} onComplete={handleComplete} />
-					</Modal.Body>
+					{isOpen ? (
+						<Modal.Body>
+							<AddRoomStepper isLoading={isLoading} onCancel={handleCancel} onComplete={handleComplete} />
+						</Modal.Body>
+					) : null}
 				</Modal.Dialog>
 			</Modal.Container>
 		</Modal.Backdrop>

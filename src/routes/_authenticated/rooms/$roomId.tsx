@@ -6,8 +6,7 @@ import RoomDetailHeader from "@/features/rooms/components/RoomDetailHeader"
 import RoomStudentsTable from "@/features/rooms/components/RoomStudentsTable"
 import RoomActivityTab from "@/features/rooms/components/RoomTabs/RoomActivityTab"
 import RoomProfileTab from "@/features/rooms/components/RoomTabs/RoomProfileTab"
-import { useRoom } from "@/features/rooms/hooks/useRooms"
-import { getRoomById } from "@/features/rooms/services/room.service"
+import { getRoomQueryOptions, useRoom } from "@/features/rooms/hooks/useRooms"
 import { queryClient } from "@/services/queryClient"
 import { useBreadcrumbOverride } from "@/stores/breadcrumb.store"
 
@@ -18,7 +17,7 @@ interface RoomDetailSearch {
 }
 
 export const Route = createFileRoute("/_authenticated/rooms/$roomId")({
-	component: RoomDetailLayout,
+	component: () => <RoomDetailLayout />,
 	parseParams: (params) => ({
 		roomId: params.roomId,
 	}),
@@ -32,15 +31,11 @@ export const Route = createFileRoute("/_authenticated/rooms/$roomId")({
 	},
 	beforeLoad: () => ({ breadcrumbKey: "rooms.title" }),
 	loader: ({ params }: { params: { roomId: string } }) => {
-		queryClient.ensureQueryData({
-			queryKey: ["rooms", params.roomId],
-			queryFn: () => getRoomById(params.roomId),
-			staleTime: 5 * 60 * 1000,
-		})
+		return queryClient.ensureQueryData(getRoomQueryOptions(params.roomId))
 	},
 })
 
-function RoomDetailLayout() {
+const RoomDetailLayout = () => {
 	const params = Route.useParams()
 	const search = Route.useSearch()
 	const navigate = useNavigate({ from: Route.fullPath })

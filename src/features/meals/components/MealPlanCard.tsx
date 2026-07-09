@@ -23,7 +23,7 @@ const MealPlanCard = ({ mealPlan }: MealPlanCardProps) => {
 					<div>
 						<p className="font-semibold text-foreground">{mealPlan.title}</p>
 						<p className="text-default-500 text-sm">
-							{servedAt} · {t(`meals.types.${mealPlan.mealType}`)}
+							{servedAt} · <span className="capitalize">{mealPlan.mealType}</span>
 							{mealPlan.repeatFrequency === "weekly" ? ` · ${t("meals.repeat.weekly")}` : ""}
 						</p>
 					</div>

@@ -14,7 +14,7 @@ interface NewslettersPageProps {
 	onTabChange: (tab: TabKey) => void
 }
 
-export default function NewslettersPage({ activeTab, onTabChange }: NewslettersPageProps) {
+const NewslettersPage = ({ activeTab, onTabChange }: NewslettersPageProps) => {
 	const { t } = useTranslation()
 	const [isOpen, setIsOpen] = useState(false)
 	const onOpen = () => setIsOpen(true)
@@ -67,3 +67,5 @@ export default function NewslettersPage({ activeTab, onTabChange }: NewslettersP
 		</div>
 	)
 }
+
+export default NewslettersPage

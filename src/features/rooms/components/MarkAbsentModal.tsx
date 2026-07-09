@@ -12,7 +12,6 @@ import { ABSENCE_REASONS } from "../constants"
 import { closeMarkAbsentModal, markAbsentModalAtom } from "../stores/markAbsentModal.store"
 
 import type { CalendarDate } from "@internationalized/date"
-import type { RangeValue } from "react-aria-components"
 
 /**
  * Converts CalendarDate to RFC3339 timestamp string
@@ -27,7 +26,7 @@ const MarkAbsentModal = () => {
 	const markAbsentMutation = useCreateStudentAbsence()
 
 	const todayDate = today(getLocalTimeZone())
-	const [dateRange, setDateRange] = useState<RangeValue<CalendarDate>>({
+	const [dateRange, setDateRange] = useState<{ start: CalendarDate; end: CalendarDate }>({
 		start: todayDate,
 		end: todayDate,
 	})

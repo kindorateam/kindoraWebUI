@@ -1,10 +1,9 @@
 import { useMutation } from "@tanstack/react-query"
 
-import { apiClient } from "@/services/api.service"
-
 import {
 	fetchUserProfile,
 	login,
+	loginWithGoogle,
 	logout as logoutService,
 	requestPasswordReset,
 	resetPassword,
@@ -39,21 +38,7 @@ export const useEmailLogin = () => {
 export const useGoogleLoginMutation = () => {
 	return useMutation({
 		mutationFn: async (code: string) => {
-			const response = await apiClient.get<{
-				accessToken: string
-				expiresAt: string
-				role: string
-			}>(`/auth/oauth/google/callback?code=${code}`, {
-				headers: {
-					CustomOrigin: window.location.origin,
-				},
-			})
-
-			const { accessToken } = response
-
-			// Token is stored by apiClient interceptor via setTokens
-			const { setTokens } = await import("@/services/token.service")
-			setTokens(accessToken)
+			await loginWithGoogle(code, window.location.origin)
 
 			const userResponse = await fetchUserProfile()
 			const user = mapUserResponse(userResponse)

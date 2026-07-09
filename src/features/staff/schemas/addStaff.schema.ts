@@ -22,7 +22,6 @@ export const createAddStaffSchema = (t: TFunction) =>
 		// Step 2: Personal Info (all optional)
 		phone: z.string().optional(),
 		birthday: z.string().optional(),
-		enrollDate: z.string().optional(),
 		state: z.string().optional(),
 		city: z.string().optional(),
 		streetAddress: z.string().optional(),

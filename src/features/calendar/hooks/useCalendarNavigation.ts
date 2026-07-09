@@ -41,8 +41,14 @@ export const useCalendarNavigation = ({ calendarRef, currentView, setCurrentView
 		}
 
 		if (calendarApi && (calendarApi.view.type !== currentView || targetMonthDate)) {
-			calendarApi.changeView(currentView, targetMonthDate || undefined)
-			setTargetMonthDate(null)
+			// FullCalendar flushes synchronously (flushSync), which React forbids
+			// during effect commit — defer the call past the commit phase
+			const timeoutId = setTimeout(() => {
+				calendarApi.changeView(currentView, targetMonthDate || undefined)
+				setTargetMonthDate(null)
+			}, 0)
+
+			return () => clearTimeout(timeoutId)
 		}
 	}, [calendarRef, currentView, isYearView, targetMonthDate, visibleYear])
 

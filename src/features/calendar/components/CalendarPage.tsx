@@ -6,7 +6,7 @@ import CalendarView from "./CalendarView"
 import DeleteEventModal from "./DeleteEventModal"
 import EventModal from "./EventModal"
 
-export default function CalendarPage() {
+const CalendarPage = () => {
 	const { t } = useTranslation()
 
 	return (
@@ -24,3 +24,5 @@ export default function CalendarPage() {
 		</>
 	)
 }
+
+export default CalendarPage

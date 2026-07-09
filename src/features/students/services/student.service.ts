@@ -1,5 +1,4 @@
 import { apiClient } from "@/services/api.service"
-import { getMediaUrl } from "@/utils/media"
 
 import type {
 	GetStudentsResult,
@@ -289,6 +288,8 @@ const buildCreateStudentFormData = (payload: CreateStudentPayload, avatarFile: F
 	appendOptional(formData, "avatarId", payload.avatarId)
 	appendArray(formData, "roomIds", payload.roomIds)
 	appendArray(formData, "tags", payload.tags)
+	if (payload.parents) formData.append("parents", JSON.stringify(payload.parents))
+	if (payload.medicalInfo) formData.append("medicalInfo", JSON.stringify(payload.medicalInfo))
 	return formData
 }
 
@@ -307,9 +308,9 @@ const normalizeStudentDocumentPayload = (payload: UpdateStudentDocumentPayload):
 })
 
 export async function getStudents(params: GetStudentsParams = {}): Promise<GetStudentsResult> {
-	const { limit = 10, offset = 0, search } = params
+	const { limit = 10, offset = 0, search, status } = params
 	const response = await apiClient.get<ApiStudentListResponse>("/students", {
-		params: { limit, offset, search },
+		params: { limit, offset, search, status },
 	})
 
 	return {
@@ -418,8 +419,4 @@ export async function updateStudentDocument(
 
 export async function deleteStudentDocument(studentId: string, documentId: number): Promise<void> {
 	await apiClient.delete(`/students/${studentId}/documents/${documentId}`)
-}
-
-export function getStudentDocumentDownloadUrl(document: StudentDocument): string {
-	return document.media.path ? getMediaUrl(document.media.path) : ""
 }

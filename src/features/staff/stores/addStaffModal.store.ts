@@ -1,13 +1,7 @@
-import { atom } from "jotai"
+import { createModalStore } from "@/stores/createModalStore"
 
-import { appStore } from "@/stores/jotaiStore"
-
-export const isAddStaffModalOpenAtom = atom(false)
-
-export const openAddStaffModal = () => {
-	appStore.set(isAddStaffModalOpenAtom, true)
-}
-
-export const closeAddStaffModal = () => {
-	appStore.set(isAddStaffModalOpenAtom, false)
-}
+export const {
+	close: closeAddStaffModal,
+	isOpenAtom: isAddStaffModalOpenAtom,
+	open: openAddStaffModal,
+} = createModalStore()

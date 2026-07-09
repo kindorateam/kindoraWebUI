@@ -1,4 +1,5 @@
 export type {
+	ApiProfileUser,
 	AuthTokenResponse,
 	AuthTokens,
 	EmailLoginCredentials,

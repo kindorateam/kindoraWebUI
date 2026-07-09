@@ -43,6 +43,18 @@ const weightNumberToName: Record<TextWeightNumber, TextWeightString> = {
 	900: "black",
 }
 
+const weightClassMap: Record<TextWeightString, string> = {
+	black: "font-black",
+	bold: "font-bold",
+	extrabold: "font-extrabold",
+	extralight: "font-extralight",
+	light: "font-light",
+	medium: "font-medium",
+	regular: "font-normal",
+	semibold: "font-semibold",
+	thin: "font-thin",
+}
+
 const colorClassMap: Record<TextColor, string> = {
 	black: "text-black",
 	brand: "text-brand",
@@ -70,7 +82,7 @@ const Text = ({
 }: TextProps) => {
 	const sizeClass = sizeClassMap[size] ?? "text-base"
 	const weightName = typeof weight === "number" ? weightNumberToName[weight] : weight
-	const weightClass = weightName ? `font-${weightName}` : undefined
+	const weightClass = weightName ? weightClassMap[weightName] : undefined
 	const colorClass = colorClassMap[color] ?? "text-neutral-800"
 
 	return (

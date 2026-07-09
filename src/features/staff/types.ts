@@ -14,11 +14,11 @@ export interface EmployeeSummary {
 	firstName: string
 	lastName: string
 	checkedIn: boolean
-	email: string | null
+	email?: string | null
 	phone?: string | null
-	role: string
-	status: string
-	accountStatus: string
+	role?: string | null
+	status?: string | null
+	accountStatus?: string | null
 	roomId?: string | null
 	room?: EmployeeRoom | null
 	rooms?: EmployeeRoom[] | EmployeeRoom | null
@@ -33,11 +33,11 @@ export interface Employee {
 	firstName: string
 	lastName: string
 	checkedIn: boolean
-	email: string | null
+	email?: string | null
 	phone?: string | null
-	role: string
-	status: string
-	accountStatus: string
+	role?: string | null
+	status?: string | null
+	accountStatus?: string | null
 	roomId?: string | null
 	room?: EmployeeRoom | null
 	rooms?: EmployeeRoom[] | EmployeeRoom | null
@@ -45,7 +45,6 @@ export interface Employee {
 	avatarId?: string | null
 	avatar?: EmployeeAvatar | null
 	hireDate?: string | null
-	enrollDate?: string | null
 	streetAddress?: string | null
 	city?: string | null
 	state?: string | null
@@ -106,6 +105,7 @@ export type DocumentStatus = "active" | "expiring_soon" | "expired" | "uploaded"
 export interface DocumentMedia {
 	id: string
 	path: string
+	name?: string
 }
 
 export interface EmployeeDocument {
@@ -172,7 +172,6 @@ export interface UpdateEmployeePayload {
 	role?: string
 	status?: string
 	hireDate?: string
-	enrollDate?: string
 	streetAddress?: string
 	city?: string
 	state?: string

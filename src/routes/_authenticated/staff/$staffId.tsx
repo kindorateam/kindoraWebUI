@@ -5,8 +5,7 @@ import RegeneratePinModal from "@/features/staff/components/RegeneratePinModal"
 import StaffDetailHeader from "@/features/staff/components/StaffDetailHeader"
 import StaffDocumentsTab from "@/features/staff/components/StaffDocumentsTab"
 import StaffProfileTab from "@/features/staff/components/StaffProfileTab"
-import { useEmployee } from "@/features/staff/hooks/useStaff"
-import { getEmployeeById } from "@/features/staff/services/staff.service"
+import { getEmployeeQueryOptions, useEmployee } from "@/features/staff/hooks/useStaff"
 import { openRegeneratePinModal } from "@/features/staff/stores/regeneratePinModal.store"
 import { getEmployeeFullName } from "@/features/staff/types"
 import { queryClient } from "@/services/queryClient"
@@ -19,7 +18,7 @@ interface StaffDetailSearch {
 }
 
 export const Route = createFileRoute("/_authenticated/staff/$staffId")({
-	component: StaffDetailLayout,
+	component: () => <StaffDetailLayout />,
 	parseParams: (params) => ({
 		staffId: params.staffId,
 	}),
@@ -33,15 +32,11 @@ export const Route = createFileRoute("/_authenticated/staff/$staffId")({
 	},
 	beforeLoad: () => ({ breadcrumbKey: "staff.title" }),
 	loader: ({ params }: { params: { staffId: string } }) => {
-		queryClient.ensureQueryData({
-			queryKey: ["employees", params.staffId],
-			queryFn: () => getEmployeeById(params.staffId),
-			staleTime: 5 * 60 * 1000,
-		})
+		return queryClient.ensureQueryData(getEmployeeQueryOptions(params.staffId))
 	},
 })
 
-function StaffDetailLayout() {
+const StaffDetailLayout = () => {
 	const params = Route.useParams()
 	const search = Route.useSearch()
 	const navigate = useNavigate({ from: Route.fullPath })

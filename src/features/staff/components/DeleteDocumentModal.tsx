@@ -12,7 +12,7 @@ interface Props {
 	employeeId: string
 }
 
-export default function DeleteDocumentModal({ employeeId }: Props) {
+const DeleteDocumentModal = ({ employeeId }: Props) => {
 	const { t } = useTranslation()
 	const documentId = useAtomValue(deleteDocumentIdAtom)
 	const isOpen = documentId !== null
@@ -64,3 +64,5 @@ export default function DeleteDocumentModal({ employeeId }: Props) {
 		</Modal.Backdrop>
 	)
 }
+
+export default DeleteDocumentModal

@@ -1,6 +1,5 @@
 import { Breadcrumbs as HeroUIBreadcrumbs } from "@heroui/react"
 import { Link } from "@tanstack/react-router"
-import { memo } from "react"
 
 import usePageMetadata from "@/hooks/usePageMetadata"
 
@@ -10,7 +9,7 @@ interface BreadcrumbsProps {
 	inverse?: boolean
 }
 
-const Breadcrumbs = memo(({ inverse = false }: BreadcrumbsProps) => {
+const Breadcrumbs = ({ inverse = false }: BreadcrumbsProps) => {
 	const { breadcrumbs, pageTitle } = usePageMetadata()
 
 	const filteredBreadcrumbs = breadcrumbs.filter((crumb) => crumb.title !== "Home")
@@ -43,8 +42,6 @@ const Breadcrumbs = memo(({ inverse = false }: BreadcrumbsProps) => {
 			))}
 		</HeroUIBreadcrumbs>
 	)
-})
-
-Breadcrumbs.displayName = "Breadcrumbs"
+}
 
 export default Breadcrumbs

@@ -1,7 +1,7 @@
 import { useNavigate } from "@tanstack/react-router"
 import { useEffect, useState } from "react"
 
-import { getReturnUrlFromLocation } from "@/services/redirect.service"
+import { getReturnUrlFromLocation, getSafeInternalReturnUrl } from "@/services/redirect.service"
 
 import useAuth from "../hooks/useAuth"
 
@@ -9,7 +9,7 @@ import SignInCard from "./SignInCard"
 
 type AuthView = "signin" | "forgot-password" | "otp-verification" | "otp-password-reset" | "reset-password"
 
-export default function LoginPage() {
+const LoginPage = () => {
 	const { isAuthenticated } = useAuth()
 	const navigate = useNavigate()
 	const [view, setView] = useState<AuthView>("signin")
@@ -26,11 +26,12 @@ export default function LoginPage() {
 
 	useEffect(() => {
 		if (isAuthenticated) {
-			const storedUrl = sessionStorage.getItem("authRedirectUrl")
+			const storedValue = sessionStorage.getItem("authRedirectUrl")
+			const storedUrl = getSafeInternalReturnUrl(storedValue)
 			const urlParam = getReturnUrlFromLocation()
 			const returnUrl = storedUrl ?? urlParam
 
-			if (storedUrl) {
+			if (storedValue) {
 				sessionStorage.removeItem("authRedirectUrl")
 			}
 
@@ -55,3 +56,5 @@ export default function LoginPage() {
 		</div>
 	)
 }
+
+export default LoginPage

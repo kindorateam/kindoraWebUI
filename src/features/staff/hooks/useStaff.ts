@@ -1,5 +1,7 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { queryOptions, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
+
+import { QUERY_DEFAULTS } from "@/services/query.constants"
 
 import {
 	deleteEmployeeDocument,
@@ -13,29 +15,43 @@ import {
 	uploadEmployeeDocument,
 } from "../services/staff.service"
 
-import type { EmployeeDocument, EmployeeFull, GetEmployeesResult, PinVisibility, UpdateEmployeePayload } from "../types"
+import type { EmployeeDocument, GetEmployeesResult, PinVisibility, UpdateEmployeePayload } from "../types"
 
-export function useEmployees(status: "active" | "inactive" | "all" = "active") {
+export interface UseEmployeesOptions {
+	status?: "active" | "inactive" | "all"
+	page?: number
+	limit?: number
+	search?: string
+}
+
+export const getEmployeeQueryOptions = (employeeId: string) =>
+	queryOptions({
+		queryKey: ["employees", employeeId] as const,
+		queryFn: () => getEmployeeById(employeeId),
+		...QUERY_DEFAULTS,
+	})
+
+export function useEmployees(options: UseEmployeesOptions = {}) {
+	const { status = "active", page = 1, limit = 10, search } = options
+	const offset = (page - 1) * limit
+
 	const query = useQuery<GetEmployeesResult, Error>({
-		queryKey: ["employees", status],
-		queryFn: () => getEmployees(status),
-		staleTime: 5 * 60 * 1000,
-		gcTime: 10 * 60 * 1000,
+		queryKey: ["employees", { status, page, limit, search }],
+		queryFn: () => getEmployees({ status, limit, offset, search }),
+		...QUERY_DEFAULTS,
 	})
 
 	return {
 		...query,
 		data: query.data?.items ?? [],
 		total: query.data?.total ?? 0,
+		totalPages: Math.ceil((query.data?.total ?? 0) / limit) || 1,
 	}
 }
 
 export function useEmployee(employeeId: string) {
-	return useQuery<EmployeeFull, Error>({
-		queryKey: ["employees", employeeId],
-		queryFn: () => getEmployeeById(employeeId),
-		staleTime: 5 * 60 * 1000,
-		gcTime: 10 * 60 * 1000,
+	return useQuery({
+		...getEmployeeQueryOptions(employeeId),
 		enabled: !!employeeId,
 	})
 }
@@ -44,8 +60,7 @@ export function useEmployeeDocuments(employeeId: string) {
 	return useQuery<EmployeeDocument[], Error>({
 		queryKey: ["employees", employeeId, "documents"],
 		queryFn: () => getEmployeeDocuments(employeeId),
-		staleTime: 5 * 60 * 1000,
-		gcTime: 10 * 60 * 1000,
+		...QUERY_DEFAULTS,
 		enabled: !!employeeId,
 	})
 }
@@ -54,8 +69,7 @@ export function useEmployeeDocument(employeeId: string, documentId: number) {
 	return useQuery<EmployeeDocument, Error>({
 		queryKey: ["employees", employeeId, "documents", documentId],
 		queryFn: () => getEmployeeDocument(employeeId, documentId),
-		staleTime: 5 * 60 * 1000,
-		gcTime: 10 * 60 * 1000,
+		...QUERY_DEFAULTS,
 		enabled: !!employeeId && !!documentId,
 	})
 }
@@ -68,7 +82,7 @@ export function useUpdateEmployee() {
 			updateEmployee(employeeId, payload),
 		onSuccess: (_data, { employeeId }) => {
 			void queryClient.invalidateQueries({ queryKey: ["employees", employeeId] })
-			void queryClient.invalidateQueries({ queryKey: ["employees"], exact: true })
+			void queryClient.invalidateQueries({ queryKey: ["employees"] })
 		},
 	})
 }
@@ -81,7 +95,7 @@ export function useUpdateEmployeeAvatar() {
 			updateEmployeeAvatar(employeeId, avatarFile),
 		onSuccess: (_data, { employeeId }) => {
 			void queryClient.invalidateQueries({ queryKey: ["employees", employeeId] })
-			void queryClient.invalidateQueries({ queryKey: ["employees"], exact: true })
+			void queryClient.invalidateQueries({ queryKey: ["employees"] })
 		},
 	})
 }
@@ -112,7 +126,7 @@ export function useRegenerateEmployeePin() {
 		mutationFn: ({ employeeId }: { employeeId: string }) => regenerateEmployeePin(employeeId),
 		onSuccess: (_data, { employeeId }) => {
 			void queryClient.invalidateQueries({ queryKey: ["employees", employeeId] })
-			void queryClient.invalidateQueries({ queryKey: ["employees"], exact: true })
+			void queryClient.invalidateQueries({ queryKey: ["employees"] })
 		},
 	})
 }

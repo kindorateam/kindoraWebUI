@@ -23,7 +23,7 @@
 		"paths": {
 			"@/*": ["./src/*"]
 		},
-		"types": ["unplugin-icons/types/react"]
+		"types": ["bun", "unplugin-icons/types/react"]
 	},
 	"include": ["src", "vite.config.ts"]
 }

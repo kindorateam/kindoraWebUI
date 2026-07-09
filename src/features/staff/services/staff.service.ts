@@ -43,8 +43,18 @@ function getOrCreateMockDocuments(employeeId: string): EmployeeDocument[] {
 	return MOCK_EMPLOYEE_DOCUMENTS[employeeId]!
 }
 
-export async function getEmployees(status?: "active" | "inactive" | "all"): Promise<GetEmployeesResult> {
-	return apiClient.get<GetEmployeesResult>("/employees", { params: { status } })
+export interface GetEmployeesParams {
+	status?: "active" | "inactive" | "all"
+	limit?: number
+	offset?: number
+	search?: string
+}
+
+export async function getEmployees(params: GetEmployeesParams = {}): Promise<GetEmployeesResult> {
+	const { status, limit, offset, search } = params
+	return apiClient.get<GetEmployeesResult>("/employees", {
+		params: { status, limit, offset, search: search || undefined },
+	})
 }
 
 export async function getEmployeeById(employeeId: string): Promise<EmployeeFull> {
@@ -107,8 +117,8 @@ export async function uploadEmployeeDocument(
 	return uploaded
 }
 
-export async function regenerateEmployeePin(employeeId: string): Promise<EmployeeFull> {
-	return apiClient.post<EmployeeFull>(`/employees/${employeeId}/pin`)
+export async function regenerateEmployeePin(employeeId: string): Promise<{ pinCode: number }> {
+	return apiClient.post<{ pinCode: number }>(`/employees/${employeeId}/pin`)
 }
 
 export async function deleteEmployeeDocument(employeeId: string, documentId: number): Promise<void> {
@@ -116,9 +126,4 @@ export async function deleteEmployeeDocument(employeeId: string, documentId: num
 	// await apiClient.delete(`/employees/${employeeId}/documents/${documentId}`)
 	await new Promise((resolve) => setTimeout(resolve, 300))
 	MOCK_EMPLOYEE_DOCUMENTS[employeeId] = getOrCreateMockDocuments(employeeId).filter((d) => d.id !== documentId)
-}
-
-export function getEmployeeDocumentDownloadUrl(employeeId: string, documentId: number): string {
-	const doc = getOrCreateMockDocuments(employeeId).find((d) => d.id === documentId)
-	return doc?.media.path ?? ""
 }

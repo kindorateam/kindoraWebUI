@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { FormProvider, useForm } from "react-hook-form"
 import { useTranslation } from "react-i18next"
 
@@ -19,7 +19,7 @@ import StaffDetailsStep from "./StaffDetailsStep"
 import type { AddStaffFormData } from "../../schemas/addStaff.schema"
 
 const STEP1_FIELDS = ["firstName", "lastName", "role", "email", "inviteToKindora"] as const
-const STEP2_FIELDS = ["phone", "birthday", "enrollDate", "state", "city", "streetAddress", "zipCode", "notes"] as const
+const STEP2_FIELDS = ["phone", "birthday", "state", "city", "streetAddress", "zipCode", "notes"] as const
 const STEP3_FIELDS = ["degree", "certification"] as const
 const STEP4_FIELDS = ["hireDate", "assignedRooms", "permissions"] as const
 const STEP5_FIELDS = ["workingDays"] as const
@@ -91,7 +91,6 @@ const AddStaffStepper = ({ onComplete, onCancel, onStepChange, isLoading = false
 			// Step 2: Personal Info (mock data)
 			phone: "(415) 555-5678",
 			birthday: "1988-06-16",
-			enrollDate: "2025-08-15",
 			state: "FL",
 			city: "Miami",
 			streetAddress: "123 Peachtree Street NE",
@@ -126,6 +125,12 @@ const AddStaffStepper = ({ onComplete, onCancel, onStepChange, isLoading = false
 		formState: { errors },
 	} = form
 	const formData = watch()
+
+	useEffect(() => {
+		return () => {
+			if (formData.avatarPreview?.startsWith("blob:")) URL.revokeObjectURL(formData.avatarPreview)
+		}
+	}, [formData.avatarPreview])
 
 	const hasStep1Errors = STEP1_FIELDS.some((f) => errors[f])
 	const isStep1Valid =

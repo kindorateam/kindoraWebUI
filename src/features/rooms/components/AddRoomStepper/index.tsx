@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { FormProvider, useForm } from "react-hook-form"
 import { useTranslation } from "react-i18next"
 
@@ -64,6 +64,12 @@ const AddRoomStepper = ({ onComplete, onCancel, isLoading = false }: AddRoomStep
 		formState: { errors },
 	} = form
 	const formData = watch()
+
+	useEffect(() => {
+		return () => {
+			if (formData.avatarPreview?.startsWith("blob:")) URL.revokeObjectURL(formData.avatarPreview)
+		}
+	}, [formData.avatarPreview])
 
 	const hasStep1Errors = STEP1_FIELDS.some((f) => errors[f])
 	const hasStep2Errors = STEP2_FIELDS.some((f) => errors[f])

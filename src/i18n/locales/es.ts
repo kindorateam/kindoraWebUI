@@ -680,12 +680,6 @@ const es = {
 				uploaded: "Subido",
 				actions: "Acciones",
 			},
-			statuses: {
-				active: "Activo",
-				expiringSoon: "Por vencer",
-				expired: "Vencido",
-				uploaded: "Subido",
-			},
 			actions: {
 				ariaLabel: "Acciones del documento",
 				preview: "Vista previa",
@@ -794,7 +788,6 @@ const es = {
 				doctor: "Médico",
 				doctorPhone: "Teléfono del médico",
 				email: "Correo electrónico",
-				enrollDate: "Fecha de inscripción",
 				firstName: "Nombre",
 				hireDate: "Fecha de contratación",
 				lastName: "Apellido",
@@ -977,12 +970,6 @@ const es = {
 					type: "Tipo",
 					uploaded: "Subido",
 					actions: "Acciones",
-				},
-				statuses: {
-					active: "Activo",
-					expiringSoon: "Por vencer",
-					expired: "Vencido",
-					uploaded: "Subido",
 				},
 				actions: {
 					ariaLabel: "Acciones del documento",

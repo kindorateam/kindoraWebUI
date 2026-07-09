@@ -1,13 +1,7 @@
-import { atom } from "jotai"
+import { createModalStore } from "@/stores/createModalStore"
 
-import { appStore } from "@/stores/jotaiStore"
-
-export const isRegeneratePinModalOpenAtom = atom(false)
-
-export const openRegeneratePinModal = () => {
-	appStore.set(isRegeneratePinModalOpenAtom, true)
-}
-
-export const closeRegeneratePinModal = () => {
-	appStore.set(isRegeneratePinModalOpenAtom, false)
-}
+export const {
+	close: closeRegeneratePinModal,
+	isOpenAtom: isRegeneratePinModalOpenAtom,
+	open: openRegeneratePinModal,
+} = createModalStore()

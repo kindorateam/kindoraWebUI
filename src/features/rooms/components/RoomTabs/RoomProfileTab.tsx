@@ -61,6 +61,12 @@ const RoomProfileTab = ({ roomId }: RoomProfileTabProps) => {
 	const avatarFile = watch("avatarFile")
 
 	useEffect(() => {
+		return () => {
+			if (avatarPreview?.startsWith("blob:")) URL.revokeObjectURL(avatarPreview)
+		}
+	}, [avatarPreview])
+
+	useEffect(() => {
 		if (room) {
 			const preview = room.color ?? (room.logo ? getMediaUrl(room.logo) : null)
 			reset({

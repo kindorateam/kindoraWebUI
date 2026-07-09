@@ -25,6 +25,7 @@ const RoomDetailsStep = () => {
 	const avatarPreview = watch("avatarPreview")
 	const minAge = watch("minAge")
 	const maxAge = watch("maxAge")
+
 	const formatAgeOptionLabel = (months: number) => {
 		const years = Math.floor(months / 12)
 		const remainingMonths = months % 12
@@ -49,8 +50,6 @@ const RoomDetailsStep = () => {
 			setValue("avatarFile", undefined)
 		} else {
 			// It's a file - create preview URL
-			// Note: Object URLs are not revoked here because the component unmounts
-			// when navigating between steps. Browser cleans up when page unloads.
 			const previewUrl = URL.createObjectURL(image)
 			setValue("avatarFile", image)
 			setValue("avatarPreview", previewUrl)

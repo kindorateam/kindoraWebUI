@@ -1,5 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
+import { QUERY_DEFAULTS } from "@/services/query.constants"
+
 import { createMealPlan, deleteMealPlan, getMealPlans, updateMealPlan } from "../services/meal.service"
 
 import type { CreateMealPlanPayload, GetMealPlansParams, UpdateMealPlanPayload } from "../types"
@@ -8,8 +10,7 @@ export const useMealPlans = (params: GetMealPlansParams, enabled = true) => {
 	return useQuery({
 		queryKey: ["meal-plans", params.start, params.end],
 		queryFn: () => getMealPlans(params),
-		staleTime: 5 * 60 * 1000,
-		gcTime: 10 * 60 * 1000,
+		...QUERY_DEFAULTS,
 		enabled: enabled && !!params.start && !!params.end,
 	})
 }

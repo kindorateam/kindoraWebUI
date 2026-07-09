@@ -25,7 +25,6 @@ export const createStaffProfileSchema = (t: TFunction) =>
 		city: z.string().optional(),
 		state: z.string().optional(),
 		zipCode: z.string().optional(),
-		enrollDate: z.string().optional(),
 
 		// Certification
 		degree: z.string().optional(),

@@ -1,6 +1,7 @@
 import { createFileRoute, redirect } from "@tanstack/react-router"
 
 import GuestRoute from "@/components/GuestRoute"
+import { getSafeInternalReturnUrl } from "@/services/redirect.service"
 
 export const Route = createFileRoute("/_guest")({
 	component: GuestRoute,
@@ -13,16 +14,12 @@ export const Route = createFileRoute("/_guest")({
 
 			try {
 				const url = new URL(href, window.location.origin)
-				const param = url.searchParams.get("redirect")
-				if (param && param !== "/login") {
-					returnTo = param
-				}
+				returnTo = getSafeInternalReturnUrl(url.searchParams.get("redirect")) ?? undefined
 			} catch {
 				const qIndex = href.indexOf("?")
 				if (qIndex >= 0) {
 					const sp = new URLSearchParams(href.slice(qIndex))
-					const param = sp.get("redirect")
-					if (param && param !== "/login") returnTo = param
+					returnTo = getSafeInternalReturnUrl(sp.get("redirect")) ?? undefined
 				}
 			}
 

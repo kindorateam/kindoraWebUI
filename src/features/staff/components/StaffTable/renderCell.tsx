@@ -2,6 +2,7 @@ import { Avatar, Badge, Button, Dropdown, Label } from "@heroui/react"
 
 import IdentityChip from "@/components/IdentityChip"
 import FluentPerson16Filled from "~icons/fluent/person-16-filled"
+import TablerDotsVertical from "~icons/tabler/dots-vertical"
 
 import { getEmployeeAvatarUrl, getEmployeeFullName } from "../../types"
 
@@ -69,20 +70,7 @@ export function renderCell(employee: EmployeeSummary, columnKey: React.Key, opti
 				<div className="flex justify-center">
 					<Dropdown className="min-w-0">
 						<Button isIconOnly variant="ghost" aria-label={t("staff.table.actions.ariaLabel")}>
-							<svg
-								aria-hidden="true"
-								className="size-5 text-gray-600"
-								fill="none"
-								stroke="currentColor"
-								strokeLinecap="round"
-								strokeLinejoin="round"
-								strokeWidth={2}
-								viewBox="0 0 24 24"
-							>
-								<circle cx={12} cy={12} r={1} />
-								<circle cx={12} cy={5} r={1} />
-								<circle cx={12} cy={19} r={1} />
-							</svg>
+							<TablerDotsVertical aria-hidden className="size-5 text-gray-600" />
 						</Button>
 						<Dropdown.Popover>
 							<Dropdown.Menu aria-label={t("staff.table.actions.ariaLabel")}>

@@ -2,7 +2,7 @@ import { useTranslation } from "react-i18next"
 
 import StaffTable from "./StaffTable"
 
-export default function StaffPage() {
+const StaffPage = () => {
 	const { t } = useTranslation()
 
 	return (
@@ -12,3 +12,5 @@ export default function StaffPage() {
 		</main>
 	)
 }
+
+export default StaffPage

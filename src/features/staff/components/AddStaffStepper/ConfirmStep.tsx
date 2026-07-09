@@ -75,7 +75,6 @@ const ConfirmStep = () => {
 					<DetailRow label={t("staff.profile.fields.email")} value={data.email} />
 					<DetailRow label={t("staff.profile.fields.role")} value={roleName} />
 					<DetailRow label={t("staff.profile.fields.birthday")} value={data.birthday} />
-					<DetailRow label={t("staff.profile.fields.enrollDate")} value={data.enrollDate} />
 					<DetailRow label={t("staff.profile.fields.state")} value={stateName} />
 					<DetailRow label={t("staff.profile.fields.zipCode")} value={data.zipCode} />
 					<DetailRow label={t("staff.profile.fields.city")} value={data.city} />

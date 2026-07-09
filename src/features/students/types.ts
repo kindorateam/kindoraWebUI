@@ -1,6 +1,7 @@
 export interface ShortMedia {
 	id: string
 	path: string
+	name?: string
 }
 
 export interface StudentParent {
@@ -81,6 +82,7 @@ export interface Student {
 export interface StudentDocumentMedia {
 	id: string
 	path: string
+	name?: string
 }
 
 export interface StudentDocument {

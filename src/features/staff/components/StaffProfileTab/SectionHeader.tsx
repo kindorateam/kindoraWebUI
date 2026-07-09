@@ -4,7 +4,7 @@ interface SectionHeaderProps {
 	action?: React.ReactNode
 }
 
-export default function SectionHeader({ icon, title, action }: SectionHeaderProps) {
+const SectionHeader = ({ icon, title, action }: SectionHeaderProps) => {
 	return (
 		<div className="flex items-center justify-between">
 			<div className="flex items-center gap-2.5">
@@ -15,3 +15,5 @@ export default function SectionHeader({ icon, title, action }: SectionHeaderProp
 		</div>
 	)
 }
+
+export default SectionHeader

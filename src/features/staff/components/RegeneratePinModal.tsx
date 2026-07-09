@@ -11,7 +11,7 @@ interface Props {
 	employeeId: string
 }
 
-export default function RegeneratePinModal({ employeeId }: Props) {
+const RegeneratePinModal = ({ employeeId }: Props) => {
 	const { t } = useTranslation()
 	const isOpen = useAtomValue(isRegeneratePinModalOpenAtom)
 	const regenerateMutation = useRegenerateEmployeePin()
@@ -68,3 +68,5 @@ export default function RegeneratePinModal({ employeeId }: Props) {
 		</Modal.Backdrop>
 	)
 }
+
+export default RegeneratePinModal

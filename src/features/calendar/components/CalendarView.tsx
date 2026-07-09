@@ -168,8 +168,14 @@ const CalendarView = () => {
 	useEffect(() => {
 		if (hideWeekends || !weekendDateToRestore) return
 
-		calendarRef.current?.getApi().gotoDate(weekendDateToRestore)
-		setWeekendDateToRestore(null)
+		// FullCalendar flushes synchronously (flushSync), which React forbids
+		// during effect commit — defer the call past the commit phase
+		const timeoutId = setTimeout(() => {
+			calendarRef.current?.getApi().gotoDate(weekendDateToRestore)
+			setWeekendDateToRestore(null)
+		}, 0)
+
+		return () => clearTimeout(timeoutId)
 	}, [hideWeekends, weekendDateToRestore])
 
 	const showInitialError = !!error && events.length === 0

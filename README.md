@@ -1,4 +1,4 @@
-# kindoraweb
+# Kindora Web
 
 To install dependencies:
 
@@ -6,10 +6,16 @@ To install dependencies:
 bun install
 ```
 
-To run:
+To run the HTTPS development server on port 5173:
 
 ```bash
-bun run index.ts
+bun run dev
 ```
 
-This project was created using `bun init` in bun v1.2.14. [Bun](https://bun.sh) is a fast all-in-one JavaScript runtime.
+Useful checks:
+
+```bash
+bun run typecheck
+bun run check
+bun run build
+```

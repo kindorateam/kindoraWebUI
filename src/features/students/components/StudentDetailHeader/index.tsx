@@ -7,7 +7,7 @@ import SolarCalendarBroken from "~icons/solar/calendar-broken"
 
 import type { Student } from "../../types"
 
-type TabType = "activity" | "profile" | "documents" | "imunization" | "billing"
+type TabType = "activity" | "profile" | "documents" | "immunization" | "billing"
 
 interface StudentDetailHeaderProps {
 	student: Student
@@ -113,7 +113,7 @@ const StudentDetailHeader = ({
 							{t("students.detail.header.tabs.documents")}
 							<Tabs.Indicator className="bg-accent" />
 						</Tabs.Tab>
-						<Tabs.Tab id="imunization">
+						<Tabs.Tab id="immunization">
 							{t("students.detail.header.tabs.immunization")}
 							<Tabs.Indicator className="bg-accent" />
 						</Tabs.Tab>
@@ -132,7 +132,7 @@ const StudentDetailHeader = ({
 				<Tabs.Panel id="documents" className="hidden">
 					{null}
 				</Tabs.Panel>
-				<Tabs.Panel id="imunization" className="hidden">
+				<Tabs.Panel id="immunization" className="hidden">
 					{null}
 				</Tabs.Panel>
 				<Tabs.Panel id="billing" className="hidden">

@@ -8,7 +8,7 @@ import { authInitializedAtom, authStateAtom, checkAuthAtom } from "@/stores"
 
 import { router } from "./router"
 
-function InnerApp() {
+const InnerApp = () => {
 	const auth = useAtomValue(authStateAtom)
 
 	return <RouterProvider router={router} context={{ auth }} />

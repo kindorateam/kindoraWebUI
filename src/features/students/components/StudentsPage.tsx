@@ -2,7 +2,7 @@ import { useTranslation } from "react-i18next"
 
 import StudentsTable from "./StudentsTable"
 
-export default function StudentsPage() {
+const StudentsPage = () => {
 	const { t } = useTranslation()
 
 	return (
@@ -12,3 +12,5 @@ export default function StudentsPage() {
 		</main>
 	)
 }
+
+export default StudentsPage

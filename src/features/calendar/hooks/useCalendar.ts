@@ -1,5 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
+import { QUERY_DEFAULTS } from "@/services/query.constants"
+
 import { createEvent, deleteEvent, getEvents, updateEvent } from "../services/calendar.service"
 
 import type { CreateEventPayload, DeleteEventPayload, GetEventsParams, UpdateEventPayload } from "../types"
@@ -8,8 +10,7 @@ export const useCalendarEvents = (params: GetEventsParams) => {
 	return useQuery({
 		queryKey: ["calendar-events", params.start, params.end],
 		queryFn: () => getEvents(params),
-		staleTime: 5 * 60 * 1000,
-		gcTime: 10 * 60 * 1000,
+		...QUERY_DEFAULTS,
 		enabled: !!params.start && !!params.end,
 	})
 }

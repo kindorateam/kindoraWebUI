@@ -3,30 +3,30 @@ import { useTranslation } from "react-i18next"
 
 import { RouteErrorBoundary } from "@/components/error"
 import MarkAbsentModal from "@/features/rooms/components/MarkAbsentModal"
+import TransferStudentModal from "@/features/rooms/components/TransferStudentModal"
 import { openMarkAbsentModal } from "@/features/rooms/stores/markAbsentModal.store"
 import { openTransferStudentModal } from "@/features/rooms/stores/transferStudentModal.store"
 import StudentDetailHeader from "@/features/students/components/StudentDetailHeader"
 import StudentDocumentsTab from "@/features/students/components/StudentDocumentsTab"
 import StudentProfileTab from "@/features/students/components/StudentProfileTab"
-import { useStudent } from "@/features/students/hooks/useStudents"
-import { getStudentById } from "@/features/students/services/student.service"
+import { getStudentQueryOptions, useStudent } from "@/features/students/hooks/useStudents"
 import { queryClient } from "@/services/queryClient"
 import { useBreadcrumbOverride } from "@/stores/breadcrumb.store"
 
-type TabType = "activity" | "profile" | "documents" | "imunization" | "billing"
+type TabType = "activity" | "profile" | "documents" | "immunization" | "billing"
 
 interface StudentDetailSearch {
 	tab: TabType
 }
 
 export const Route = createFileRoute("/_authenticated/students/$studentId")({
-	component: StudentDetailPage,
+	component: () => <StudentDetailPage />,
 	parseParams: (params) => ({
 		studentId: params.studentId,
 	}),
 	validateSearch: (search: Record<string, unknown>): StudentDetailSearch => {
 		const tab = search.tab as string
-		const validTabs: TabType[] = ["activity", "profile", "documents", "imunization", "billing"]
+		const validTabs: TabType[] = ["activity", "profile", "documents", "immunization", "billing"]
 
 		return {
 			tab: validTabs.includes(tab as TabType) ? (tab as TabType) : "activity",
@@ -34,15 +34,11 @@ export const Route = createFileRoute("/_authenticated/students/$studentId")({
 	},
 	beforeLoad: () => ({ breadcrumbKey: "students.title" }),
 	loader: ({ params }: { params: { studentId: string } }) => {
-		queryClient.ensureQueryData({
-			queryKey: ["students", params.studentId],
-			queryFn: () => getStudentById(params.studentId),
-			staleTime: 5 * 60 * 1000,
-		})
+		return queryClient.ensureQueryData(getStudentQueryOptions(params.studentId))
 	},
 })
 
-function StudentDetailPage() {
+const StudentDetailPage = () => {
 	const { t } = useTranslation()
 	const params = Route.useParams()
 	const search = Route.useSearch()
@@ -66,7 +62,15 @@ function StudentDetailPage() {
 		openMarkAbsentModal(student.id, `${student.firstName} ${student.lastName}`)
 	}
 
-	if (isLoading || isError || !student) {
+	if (isLoading) {
+		return (
+			<main className="container mx-auto max-w-4xl py-10">
+				<p className="text-default-500">{t("common.loading")}</p>
+			</main>
+		)
+	}
+
+	if (isError || !student) {
 		return (
 			<RouteErrorBoundary routeName="student-detail">
 				<main className="container mx-auto max-w-4xl py-10">
@@ -90,11 +94,12 @@ function StudentDetailPage() {
 					{tab === "activity" && <p className="text-default-500">{t("students.detail.activityComingSoon")}</p>}
 					{tab === "profile" && <StudentProfileTab student={student} />}
 					{tab === "documents" && <StudentDocumentsTab studentId={student.id} />}
-					{tab === "imunization" && <p className="text-default-500">{t("students.detail.immunizationComingSoon")}</p>}
+					{tab === "immunization" && <p className="text-default-500">{t("students.detail.immunizationComingSoon")}</p>}
 					{tab === "billing" && <p className="text-default-500">{t("students.detail.billingComingSoon")}</p>}
 				</main>
 			</div>
 			<MarkAbsentModal />
+			<TransferStudentModal />
 		</RouteErrorBoundary>
 	)
 }
