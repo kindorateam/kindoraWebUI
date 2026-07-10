@@ -1,19 +1,44 @@
-import { Button, Input, Label, ListBox, Modal, Select, TextArea, TextField, toast } from "@heroui/react"
+import { Button, Label, Modal, TextArea, TextField, toast } from "@heroui/react"
 import { useAtomValue } from "jotai"
 import { useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
 
 import { getErrorMessage } from "@/utils/error"
+import PhBowlFoodDuotone from "~icons/ph/bowl-food-duotone"
+import PhCalendarDotsDuotone from "~icons/ph/calendar-dots-duotone"
+import PhNotePencilDuotone from "~icons/ph/note-pencil-duotone"
+import PhShieldCheckDuotone from "~icons/ph/shield-check-duotone"
 
-import { MEAL_TYPE_OPTIONS } from "../constants"
+import { DEFAULT_MEAL_TIMES } from "../constants"
 import { useCreateMealPlan, useUpdateMealPlan } from "../hooks/useMeals"
 import { closeMealPlanModal, mealPlanModalAtom } from "../stores/mealPlanModal.store"
-import { getMealPlanFormState, splitMealFormList } from "../utils/mealForm"
+import { getMealPlanFormState } from "../utils/mealForm"
 
+import MealAudienceFields from "./MealAudienceFields"
+import MealDetailsFields from "./MealDetailsFields"
 import MealRepeatFields from "./MealRepeatFields"
+import MealTagField from "./MealTagField"
 
-import type { MealType } from "../types"
-import type { MealPlanFormState } from "../utils/mealForm"
+import type { MealRepeatDay, MealRepeatFrequency, MealType } from "../types"
+import type { MealAudience, MealPlanFormState } from "../utils/mealForm"
+
+interface FormSectionProps {
+	title: string
+	icon: React.ComponentType<{ className?: string }>
+	children: React.ReactNode
+}
+
+const FormSection = ({ title, icon: Icon, children }: FormSectionProps) => (
+	<section className="grid gap-4">
+		<div className="flex items-center gap-2.5">
+			<span className="flex size-8 items-center justify-center rounded-[10px] bg-primary-50 text-primary">
+				<Icon aria-hidden className="size-[18px]" />
+			</span>
+			<h3 className="font-semibold text-foreground text-sm tracking-[-0.01em]">{title}</h3>
+		</div>
+		{children}
+	</section>
+)
 
 const MealPlanModal = () => {
 	const { t } = useTranslation()
@@ -24,33 +49,65 @@ const MealPlanModal = () => {
 
 	useEffect(() => {
 		if (!isOpen) return
-
 		setFormData(getMealPlanFormState(mealPlan))
 	}, [isOpen, mealPlan])
 
 	const updateField = <K extends keyof MealPlanFormState>(field: K, value: MealPlanFormState[K]) => {
-		setFormData((prev) => {
-			if (field === "repeatFrequency" && value === "none") {
-				return { ...prev, repeatFrequency: "none", repeatUntil: "" }
-			}
+		setFormData((previous) => ({ ...previous, [field]: value }))
+	}
 
-			return { ...prev, [field]: value }
+	const handleMealTypeChange = (mealType: MealType) => {
+		setFormData((previous) => ({
+			...previous,
+			mealType,
+			servedTime:
+				previous.servedTime === DEFAULT_MEAL_TIMES[previous.mealType]
+					? DEFAULT_MEAL_TIMES[mealType]
+					: previous.servedTime,
+		}))
+	}
+
+	const handleAudienceChange = (audience: MealAudience) => {
+		setFormData((previous) => ({
+			...previous,
+			audience,
+			roomIds: audience === "all" ? [] : previous.roomIds,
+		}))
+	}
+
+	const handleRepeatFrequencyChange = (repeatFrequency: MealRepeatFrequency) => {
+		setFormData((previous) => {
+			const selectedDateDay = new Date(`${previous.date}T12:00:00`).getDay() as MealRepeatDay
+			return {
+				...previous,
+				repeatFrequency,
+				repeatDays:
+					repeatFrequency === "custom" && previous.repeatDays.length === 0 ? [selectedDateDay] : previous.repeatDays,
+				repeatUntil: repeatFrequency === "none" ? "" : previous.repeatUntil,
+			}
 		})
 	}
 
+	const isFormValid =
+		formData.title.trim().length > 0 &&
+		formData.items.length > 0 &&
+		(formData.audience === "all" || formData.roomIds.length > 0) &&
+		(formData.repeatFrequency !== "custom" || formData.repeatDays.length > 0)
+
 	const handleSubmit = () => {
-		if (!formData.title.trim()) return
+		if (!isFormValid) return
 
 		const payload = {
 			date: formData.date,
 			mealType: formData.mealType,
 			title: formData.title.trim(),
-			items: splitMealFormList(formData.items),
-			allergens: splitMealFormList(formData.allergens),
-			roomIds: mealPlan?.roomIds ?? [],
+			items: formData.items,
+			allergens: formData.allergens,
+			roomIds: formData.audience === "all" ? [] : formData.roomIds,
 			notes: formData.notes.trim() || undefined,
 			repeatFrequency: formData.repeatFrequency,
-			repeatUntil: formData.repeatFrequency === "weekly" ? formData.repeatUntil || undefined : undefined,
+			repeatDays: formData.repeatFrequency === "custom" ? formData.repeatDays : undefined,
+			repeatUntil: formData.repeatFrequency !== "none" ? formData.repeatUntil || undefined : undefined,
 			servedAt: `${formData.date}T${formData.servedTime}:00`,
 		}
 		const onSuccess = () => {
@@ -77,84 +134,67 @@ const MealPlanModal = () => {
 	return (
 		<Modal.Backdrop isOpen={isOpen} onOpenChange={(open) => !open && closeMealPlanModal()}>
 			<Modal.Container>
-				<Modal.Dialog>
+				<Modal.Dialog className="max-w-xl">
 					<Modal.CloseTrigger />
 					<Modal.Header>
 						<Modal.Heading>{mealPlan ? t("meals.modal.editTitle") : t("meals.modal.createTitle")}</Modal.Heading>
 					</Modal.Header>
-					<Modal.Body className="gap-4">
-						<div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-							<TextField isRequired variant="secondary">
-								<Label>{t("meals.fields.date")}</Label>
-								<Input
-									type="date"
-									value={formData.date}
-									onChange={(event) => updateField("date", event.target.value)}
+					<Modal.Body className="-mx-1 flex max-h-[min(72dvh,44rem)] flex-col gap-8 overflow-y-auto px-1 py-2">
+						<FormSection icon={PhBowlFoodDuotone} title={t("meals.sections.details")}>
+							<MealDetailsFields
+								formData={formData}
+								onFieldChange={updateField}
+								onMealTypeChange={handleMealTypeChange}
+							/>
+						</FormSection>
+
+						<FormSection icon={PhShieldCheckDuotone} title={t("meals.sections.serving")}>
+							<MealTagField
+								helperText={t("meals.helpers.allergens")}
+								id="meal-allergens"
+								label={t("meals.fields.allergens")}
+								placeholder={t("meals.placeholders.allergens")}
+								values={formData.allergens}
+								onChange={(allergens) => updateField("allergens", allergens)}
+							/>
+							<MealAudienceFields
+								audience={formData.audience}
+								roomIds={formData.roomIds}
+								onAudienceChange={handleAudienceChange}
+								onRoomIdsChange={(roomIds) => updateField("roomIds", roomIds)}
+							/>
+						</FormSection>
+
+						<FormSection icon={PhCalendarDotsDuotone} title={t("meals.sections.schedule")}>
+							<MealRepeatFields
+								date={formData.date}
+								repeatDays={formData.repeatDays}
+								repeatFrequency={formData.repeatFrequency}
+								repeatUntil={formData.repeatUntil}
+								onRepeatDaysChange={(repeatDays) => updateField("repeatDays", repeatDays)}
+								onRepeatFrequencyChange={handleRepeatFrequencyChange}
+								onRepeatUntilChange={(repeatUntil) => updateField("repeatUntil", repeatUntil)}
+							/>
+						</FormSection>
+
+						<FormSection icon={PhNotePencilDuotone} title={t("meals.sections.additional")}>
+							<TextField variant="secondary">
+								<Label>{t("meals.fields.notes")}</Label>
+								<TextArea
+									className="min-h-22"
+									placeholder={t("meals.placeholders.notes")}
+									value={formData.notes}
+									variant="secondary"
+									onChange={(event) => updateField("notes", event.target.value)}
 								/>
 							</TextField>
-							<TextField isRequired variant="secondary">
-								<Label>{t("meals.fields.servedTime")}</Label>
-								<Input
-									type="time"
-									value={formData.servedTime}
-									onChange={(event) => updateField("servedTime", event.target.value)}
-								/>
-							</TextField>
-						</div>
-
-						<Select
-							selectedKey={formData.mealType}
-							variant="secondary"
-							onSelectionChange={(key) => {
-								if (key !== null) updateField("mealType", key as MealType)
-							}}
-						>
-							<Label>{t("meals.fields.type")}</Label>
-							<Select.Trigger>
-								<Select.Value />
-								<Select.Indicator />
-							</Select.Trigger>
-							<Select.Popover>
-								<ListBox>
-									{MEAL_TYPE_OPTIONS.map((option) => (
-										<ListBox.Item id={option.key} key={option.key} textValue={t(option.labelKey)}>
-											{t(option.labelKey)}
-											<ListBox.ItemIndicator />
-										</ListBox.Item>
-									))}
-								</ListBox>
-							</Select.Popover>
-						</Select>
-
-						<TextField isRequired variant="secondary">
-							<Label>{t("meals.fields.title")}</Label>
-							<Input value={formData.title} onChange={(event) => updateField("title", event.target.value)} />
-						</TextField>
-						<TextField variant="secondary">
-							<Label>{t("meals.fields.items")}</Label>
-							<Input value={formData.items} onChange={(event) => updateField("items", event.target.value)} />
-						</TextField>
-						<TextField variant="secondary">
-							<Label>{t("meals.fields.allergens")}</Label>
-							<Input value={formData.allergens} onChange={(event) => updateField("allergens", event.target.value)} />
-						</TextField>
-						<TextField variant="secondary">
-							<Label>{t("meals.fields.notes")}</Label>
-							<TextArea value={formData.notes} onChange={(event) => updateField("notes", event.target.value)} />
-						</TextField>
-
-						<MealRepeatFields
-							repeatFrequency={formData.repeatFrequency}
-							repeatUntil={formData.repeatUntil}
-							onRepeatFrequencyChange={(repeatFrequency) => updateField("repeatFrequency", repeatFrequency)}
-							onRepeatUntilChange={(repeatUntil) => updateField("repeatUntil", repeatUntil)}
-						/>
+						</FormSection>
 					</Modal.Body>
-					<Modal.Footer>
+					<Modal.Footer className="pt-1">
 						<Button variant="secondary" onPress={closeMealPlanModal} isDisabled={isLoading}>
 							{t("common.cancel")}
 						</Button>
-						<Button variant="primary" onPress={handleSubmit} isPending={isLoading} isDisabled={!formData.title.trim()}>
+						<Button variant="primary" onPress={handleSubmit} isPending={isLoading} isDisabled={!isFormValid}>
 							{t("common.save")}
 						</Button>
 					</Modal.Footer>

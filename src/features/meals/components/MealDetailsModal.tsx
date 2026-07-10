@@ -2,11 +2,14 @@ import { Button, Chip, Label, Modal } from "@heroui/react"
 import { useAtomValue } from "jotai"
 import { useTranslation } from "react-i18next"
 
+import { MEAL_REPEAT_SUMMARY_KEYS, MEAL_TYPE_OPTIONS } from "../constants"
 import { closeMealDetailsModal, mealDetailsModalAtom } from "../stores/mealDetailsModal.store"
 
 const MealDetailsModal = () => {
 	const { t, i18n } = useTranslation()
 	const { isOpen, mealPlan } = useAtomValue(mealDetailsModalAtom)
+	const mealTypeLabelKey = MEAL_TYPE_OPTIONS.find((option) => option.key === mealPlan?.mealType)?.labelKey
+	const repeatLabel = mealPlan ? t(MEAL_REPEAT_SUMMARY_KEYS[mealPlan.repeatFrequency]) : ""
 
 	return (
 		<Modal.Backdrop isOpen={isOpen} onOpenChange={(open) => !open && closeMealDetailsModal()}>
@@ -21,17 +24,18 @@ const MealDetailsModal = () => {
 							<>
 								<div className="grid gap-1">
 									<Label className="text-default-500 text-xs">{t("meals.fields.type")}</Label>
-									<p className="font-medium text-sm capitalize">{mealPlan.mealType}</p>
+									<p className="font-medium text-sm">{mealTypeLabelKey ? t(mealTypeLabelKey) : mealPlan.mealType}</p>
 								</div>
-								{mealPlan.repeatFrequency === "weekly" && (
+								{mealPlan.repeatFrequency !== "none" && (
 									<div className="grid gap-1">
 										<Label className="text-default-500 text-xs">{t("meals.fields.repeat")}</Label>
 										<p className="font-medium text-sm">
 											{mealPlan.repeatUntil
-												? t("meals.repeat.weeklyUntil", {
+												? t("meals.repeat.untilDate", {
 														date: new Date(`${mealPlan.repeatUntil}T00:00:00`).toLocaleDateString(i18n.language),
+														frequency: repeatLabel,
 													})
-												: t("meals.repeat.weekly")}
+												: repeatLabel}
 										</p>
 									</div>
 								)}

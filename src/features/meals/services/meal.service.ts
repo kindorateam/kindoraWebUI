@@ -90,15 +90,17 @@ const getRepeatEndDate = (mealPlan: MealPlan, rangeEnd: Date): Date => {
 	return repeatEndDate < rangeEnd ? repeatEndDate : rangeEnd
 }
 
-const getFirstWeeklyOccurrenceDate = (mealPlan: MealPlan, rangeStart: Date): Date => {
+const matchesRepeatSchedule = (mealPlan: MealPlan, date: Date): boolean => {
 	const startDate = parseDateValue(mealPlan.date)
-	if (startDate >= rangeStart) return startDate
+	const dayDiff = Math.round((date.getTime() - startDate.getTime()) / 86_400_000)
 
-	const dayDiff = Math.floor((rangeStart.getTime() - startDate.getTime()) / 86_400_000)
-	const weeksToSkip = Math.floor(dayDiff / 7)
-	const candidate = addDays(startDate, weeksToSkip * 7)
+	if (dayDiff < 0) return false
+	if (mealPlan.repeatFrequency === "weekly") return dayDiff % 7 === 0
+	if (mealPlan.repeatFrequency === "weekdays") return date.getDay() >= 1 && date.getDay() <= 5
+	if (mealPlan.repeatFrequency === "custom")
+		return mealPlan.repeatDays?.includes(date.getDay() as 0 | 1 | 2 | 3 | 4 | 5 | 6) ?? false
 
-	return candidate < rangeStart ? addDays(candidate, 7) : candidate
+	return false
 }
 
 const createMealPlanOccurrence = (mealPlan: MealPlan, date: Date): MealPlan => {
@@ -126,13 +128,17 @@ const expandMealPlanOccurrences = (mealPlan: MealPlan, range: GetMealPlansParams
 	const rangeStart = parseDateValue(range.start)
 	const rangeEnd = parseDateValue(range.end)
 	const repeatEndDate = getRepeatEndDate(mealPlan, rangeEnd)
+	const mealStartDate = parseDateValue(mealPlan.date)
+	const firstCandidateDate = mealStartDate > rangeStart ? mealStartDate : rangeStart
 	const occurrences: MealPlan[] = []
 
 	for (
-		let occurrenceDate = getFirstWeeklyOccurrenceDate(mealPlan, rangeStart);
-		occurrenceDate <= repeatEndDate;
-		occurrenceDate = addDays(occurrenceDate, 7)
+		let occurrenceDate = firstCandidateDate;
+		occurrenceDate < rangeEnd;
+		occurrenceDate = addDays(occurrenceDate, 1)
 	) {
+		if (occurrenceDate > repeatEndDate || !matchesRepeatSchedule(mealPlan, occurrenceDate)) continue
+
 		const occurrence = createMealPlanOccurrence(mealPlan, occurrenceDate)
 
 		if (overlapsRange(occurrence, range)) {
