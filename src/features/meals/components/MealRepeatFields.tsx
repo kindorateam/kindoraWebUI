@@ -18,6 +18,14 @@ interface MealRepeatFieldsProps {
 }
 
 const DAY_VALUES: MealRepeatDay[] = [0, 1, 2, 3, 4, 5, 6]
+const DAY_TOGGLE_STYLE = {
+	"--toggle-button-bg": "transparent",
+	"--toggle-button-bg-pressed": "var(--color-default-hover)",
+	"--toggle-button-bg-selected": "var(--color-accent)",
+	"--toggle-button-bg-selected-hover": "var(--color-accent-hover)",
+	"--toggle-button-bg-selected-pressed": "var(--color-accent-hover)",
+	"--toggle-button-fg-selected": "var(--color-accent-foreground)",
+} as React.CSSProperties
 
 const getDayLabel = (day: MealRepeatDay, locale: string, length: "long" | "short") => {
 	const date = new Date(2026, 0, 4 + day)
@@ -85,7 +93,7 @@ const MealRepeatFields = ({
 					<Label className="font-medium text-foreground text-sm">{t("meals.repeat.chooseDays")}</Label>
 					<ToggleButtonGroup
 						aria-label={t("meals.repeat.chooseDays")}
-						className="grid grid-cols-7 gap-1.5"
+						className="grid! w-full grid-cols-7 gap-1.5 rounded-xl bg-default p-1.5"
 						isDetached
 						onSelectionChange={handleDaySelectionChange}
 						selectedKeys={new Set<SelectionKey>(repeatDays.map(String))}
@@ -94,10 +102,11 @@ const MealRepeatFields = ({
 						{DAY_VALUES.map((day) => (
 							<ToggleButton
 								aria-label={getDayLabel(day, i18n.language, "long")}
-								className="min-w-0 px-1 data-[selected=true]:bg-primary data-[selected=true]:text-white"
+								className="h-9 w-full min-w-0 rounded-lg px-0 font-medium text-default-600 shadow-none"
 								id={String(day)}
 								key={day}
 								size="sm"
+								style={DAY_TOGGLE_STYLE}
 								variant="default"
 							>
 								{getDayLabel(day, i18n.language, "short")}

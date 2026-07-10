@@ -30,10 +30,8 @@ interface FormSectionProps {
 
 const FormSection = ({ title, icon: Icon, children }: FormSectionProps) => (
 	<section className="grid gap-4">
-		<div className="flex items-center gap-2.5">
-			<span className="flex size-8 items-center justify-center rounded-[10px] bg-primary-50 text-primary">
-				<Icon aria-hidden className="size-[18px]" />
-			</span>
+		<div className="flex items-center gap-2">
+			<Icon aria-hidden className="size-5 shrink-0 text-accent" />
 			<h3 className="font-semibold text-foreground text-sm tracking-[-0.01em]">{title}</h3>
 		</div>
 		{children}
