@@ -1,0 +1,92 @@
+What you have
+Your backend Room model (and the FE types mirroring it) stores per room: capacity, ratio (a single number), minAge/maxAge in months, status, logo, color. Every record in the system is scoped to a companyId (that's the multi-tenancy — one database serving many daycare businesses, with tenantWhere() making sure company A can never query company B's children). And routes check permissions like authorize(currentUser, "rooms:move") — that's the role-based access control. This is a genuinely good foundation; most of it the memo lists as table stakes.
+
+What's missing, and why it matters
+Program type. Georgia licenses two different things — child care learning centers (CCLC) and family child care learning homes (FCCLH) — under two different rulebooks (different ratios, records, staffing rules). Your data model has no field saying which kind of program a site is, so there's nowhere to hang "this rule applies to centers only." The memo says: model it from day one, because retrofitting "which rules apply to this customer" later touches everything.
+
+Operating hours/holidays. No model for "we're open 6:30–18:30, closed these dates." That feeds late-pickup fees, attendance expectations, billing proration, staff scheduling — small field, many dependents.
+
+The ratio problem — the core of the warning. Today a room stores ratio: 10, meaning "1 staff per 10 children." But look at the actual Georgia rule your product would need to enforce:
+
+Age group	Ratio	Max group
+Infants < 1yr	1:6	12
+1yr walking	1:8	16
+2yr	1:10	20
+3yr	1:15	30
+4yr	1:18	36
+5yr	1:20	40
+6+	1:25	50
+Three things a single per-room number can't express:
+
+The ratio is a function of who's in the room, not of the room. If a 2-year-old walks into the 3-year-olds' room, the required ratio for that room changes (mixed-age groups generally take the strictest applicable ratio). With ratio: 15 stored on the room, your "live ratio dashboard" would happily show green while the center is actually out of compliance — the worst possible failure for a product whose pitch is "inspection-ready."
+There's a second constraint you don't store at all: max group size. A room can satisfy 1:15 with 30 kids and 2 teachers and still violate the 30-child group cap... actually meet it exactly — at 31 it violates even with 3 teachers. Ratio and group size are independent limits.
+Rules are state-specific and change over time. Tennessee's infant ratio isn't Georgia's; Georgia itself can amend the table (the current rules doc is literally versioned "7-1-25"). If ratio logic is hard-coded — whether as one number per room or one Georgia table in the source — expanding to state #2, or surviving a rule amendment, means a code rewrite and, worse, historical reports become wrong ("were we compliant last March?" needs last March's rules).
+What the memo prescribes instead — the "age-band rule engine with versioned state rules" — is a small set of tables roughly like:
+
+
+RuleSet:   state=GA, programType=CCLC, effectiveFrom=2025-07-01
+RatioRule: ruleSet → ageBand(0–12mo) → ratio 1:6, maxGroup 12
+RatioRule: ruleSet → ageBand(24–36mo) → ratio 1:10, maxGroup 20
+...
+Then "required staff for room X right now" is computed: take the children currently present (you already have this via roomPresence + birth dates), find each child's age band, apply the strictest rule, compare against staff currently clocked into that room. The room's own ratio field becomes at most a display default. Adding a state = inserting rows, not shipping code; a rule change = a new effectiveFrom version, and old reports still evaluate against the rules that were in force.
+
+Why the memo is emphatic about this: for the "Georgia-compliance-native" positioning, the ratio engine is the product. It's also the one thing that's cheap to design correctly now and expensive to bolt on later — your current schema would need birthDate-driven age banding, a rules table, and presence-vs-clock-in joins either way; doing it after you've built dashboards, alerts, and historical reports on top of room.ratio means rebuilding all of them.
+
+The practical takeaway isn't "rip out Room.ratio today" — it's: when you build the live-ratio/alerting feature, build it as computed from children present + versioned rules, not read from that field.
+
+do we need to change lot of staff for ratio?
+
+Operating hours/holidays - looks like a billing feature that we will implement later
+No — it's almost entirely additive. The current schema is actually well-positioned; nothing gets rewritten. Here's the honest delta:
+
+What you already have (the hard parts):
+
+Student.birthDate — age banding comes free
+roomPresence — who's in which room right now, both children and staff (this is the expensive thing to build, and it exists)
+Room assignments, tenancy, per-room capacity
+What's new (the small parts):
+
+Two tiny tables + a seed — RatioRuleSet (state, programType, effectiveFrom) and RatioRule (ageBand min/max months, ratio, maxGroupSize). Seed one row set: the Georgia CCLC table. One Prisma migration.
+Two columns — state and programType on Company (or Room). For now every customer is GA/CCLC anyway, so they can even default.
+One computation function + endpoint — for each room: children present → birth dates → age bands → strictest applicable rule → required staff; compare to staff present. ~50 lines of controller logic joining data you already collect.
+FE rooms dashboard — swap "static ratio number" for "required X / present Y" + a violation badge. The room cards already render live counts, so it's a display change, not a new page.
+Room.ratio stays as-is — it just stops being the source of truth for compliance and becomes a display default. No existing feature breaks.
+
+Realistic size: a few days, not weeks. The two genuine wrinkles:
+
+Children without birthDate (it's optional in your schema) — need a policy: fall back to the room's minAge, or flag the child as "can't evaluate." Flagging is more honest for a compliance product.
+Historical ratio log ("prove we were compliant in March") — that needs presence events with timestamps, not just current state. Whether that's cheap depends on whether roomPresence keeps history or only the current set — worth checking before promising the inspection-defense report. Live dashboard + alerts don't need it.
+The memo's warning isn't "this is a big build" — it's "don't build dashboards on top of the wrong field and then pay to redo them." Building the engine first, while nothing depends on room.ratio, is exactly the cheap moment.
+
+On operating hours/holidays — agreed, defer it. It's a billing/late-fee concern with no compliance dependency. Only nuance: when you do billing, budget for it then, since proration and late-pickup fees both want it.
+
+Want me to build the ratio engine now (migration + seed + endpoint + dashboard wiring)?
+
+could you describe briefly what will be implemented?
+Ratio engine — implementation plan
+Backend (api-main-ts)
+1. Schema + migration (2 new tables, 2 columns)
+
+RatioRuleSet: state, programType (CCLC/FCCLH), effectiveFrom — versioned container
+RatioRule: belongs to a rule set; minAgeMonths, maxAgeMonths, ratio (children per staff), maxGroupSize
+Company.state + Company.programType, defaulting to GA/CCLC
+Seed: the Georgia CCLC table (1:6/12 infants → 1:25/50 for 6+)
+2. Compute service + endpoint
+
+GET /api/v1/rooms/ratio-status → for every room: children currently present (from roomPresence + birth dates), the strictest applicable rule among present age bands, required staff, staff present, group-size check, and a status: ok | warning | violation | unknown
+Children without birthDate → room flagged unknown with a list of kids needing a birth date (honest, no false green)
+Rule resolution picks the rule set effective today for the company's state/program
+Frontend (kindoraWeb)
+3. Rooms dashboard wiring
+
+New useRoomRatioStatus hook (polls the endpoint)
+Room cards: replace the static 1:N display with "staff present / required" + a colored compliance badge; tooltip explains which age band drives the requirement
+EN + ES locale keys for the new labels
+Explicitly not in this pass
+Historical ratio log / inspection-defense report (depends on presence event history — separate check)
+Alerts/notifications on violation
+Rest-period or evening ratio variants
+Admin UI for editing rules (seed data only; new states = new seed rows)
+Size: one migration, ~1 endpoint, one dashboard change. Room.ratio stays untouched as a display default — nothing existing breaks.
+
+Proceed?
