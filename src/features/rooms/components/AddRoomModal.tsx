@@ -39,7 +39,7 @@ const AddRoomModal = () => {
 	return (
 		<Modal.Backdrop isOpen={isOpen} onOpenChange={(open) => !open && closeAddRoomModal()}>
 			<Modal.Container>
-				<Modal.Dialog>
+				<Modal.Dialog aria-label={t("rooms.addRoom.title")}>
 					<Modal.CloseTrigger />
 					{isOpen ? (
 						<Modal.Body>

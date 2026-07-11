@@ -1,4 +1,4 @@
-import { Button, ButtonGroup, Label, Switch, Tabs } from "@heroui/react"
+import { Button, ButtonGroup, Switch, Tabs } from "@heroui/react"
 import { useAtom } from "jotai"
 import { useTranslation } from "react-i18next"
 
@@ -63,20 +63,20 @@ const CalendarToolbar = ({
 					isSelected={hideWeekends}
 					onChange={(value) => onHideWeekendsChange(getSwitchSelection(value))}
 				>
-					<Switch.Control>
-						<Switch.Thumb />
-					</Switch.Control>
-					<Switch.Content>
-						<Label className="text-default-600">{t("calendar.toolbar.hideWeekends")}</Label>
+					<Switch.Content className="text-default-600">
+						<Switch.Control>
+							<Switch.Thumb />
+						</Switch.Control>
+						{t("calendar.toolbar.hideWeekends")}
 					</Switch.Content>
 				</Switch>
 
 				<Switch size="sm" isSelected={showMeals} onChange={(value) => onShowMealsChange(getSwitchSelection(value))}>
-					<Switch.Control>
-						<Switch.Thumb />
-					</Switch.Control>
-					<Switch.Content>
-						<Label className="text-default-600">{t("calendar.toolbar.showMeals")}</Label>
+					<Switch.Content className="text-default-600">
+						<Switch.Control>
+							<Switch.Thumb />
+						</Switch.Control>
+						{t("calendar.toolbar.showMeals")}
 					</Switch.Content>
 				</Switch>
 

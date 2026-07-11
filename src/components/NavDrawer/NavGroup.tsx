@@ -10,18 +10,20 @@ interface NavGroupProps {
 	item: NavDrawerItem
 	isExpanded: boolean
 	onToggle: (itemKey: string) => void
+	onNavigate: () => void
 }
 
-const NavGroup = ({ item, isExpanded, onToggle }: NavGroupProps) => {
+const NavGroup = ({ item, isExpanded, onNavigate, onToggle }: NavGroupProps) => {
 	const { t } = useTranslation()
 	const label = t(item.labelKey)
 	const controlsId = `group-${item.labelKey.replace(/\W+/g, "-")}`
 	const children = item.children?.map((child) => (
 		<Link
 			activeOptions={{ exact: false }}
-			className="w-fit rounded-xl px-3 py-1.5 text-neutral-800 text-sm transition-colors hover:bg-accent-soft hover:text-accent [&.active]:bg-accent-soft [&.active]:text-accent"
+			className="w-full rounded-xl px-3 py-2 text-neutral-800 text-sm transition-colors hover:bg-accent-soft hover:text-accent [&.active]:bg-accent-soft [&.active]:text-accent"
 			key={child.path}
 			to={child.path}
+			onClick={onNavigate}
 		>
 			{t(child.labelKey)}
 		</Link>
@@ -36,16 +38,16 @@ const NavGroup = ({ item, isExpanded, onToggle }: NavGroupProps) => {
 			<button
 				aria-controls={controlsId}
 				aria-expanded={isExpanded}
-				className="inline-flex items-center rounded-xl px-3 py-1.5 font-semibold text-neutral-800 text-sm transition-colors hover:bg-accent-soft hover:text-accent"
+				className="inline-flex w-full items-center rounded-xl px-3 py-2 font-semibold text-neutral-800 text-sm transition-colors hover:bg-accent-soft hover:text-accent"
 				onClick={handleToggle}
 				type="button"
 			>
-				<div className="flex items-center gap-2">
+				<div className="flex w-full items-center gap-2">
 					{item.icon}
 					<span>{label}</span>
 					<TablerChevronUp
 						aria-hidden="true"
-						className={clsx("size-4 transition-transform", {
+						className={clsx("ml-auto size-4 transition-transform", {
 							"rotate-180": !isExpanded,
 						})}
 					/>

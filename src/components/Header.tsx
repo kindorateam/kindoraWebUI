@@ -7,14 +7,19 @@ import LanguageSwitcher from "@/components/LanguageSwitcher"
 import useAuth from "@/features/auth/hooks/useAuth"
 import useDashboardHeaderTransition from "@/hooks/useDashboardHeaderTransition"
 import MdiBellOutline from "~icons/mdi/bell-outline"
+import MdiMenu from "~icons/mdi/menu"
 
 const DASHBOARD_BG_FROM = { r: 4, g: 133, b: 247 } // #0485f7
 const DASHBOARD_BG_TO = { r: 255, g: 255, b: 255 }
 const INVERSE_THRESHOLD = 0.5
 
+interface HeaderProps {
+	onOpenNavigation: () => void
+}
+
 const interpolateChannel = (from: number, to: number, progress: number) => Math.round(from + (to - from) * progress)
 
-const Header = () => {
+const Header = ({ onOpenNavigation }: HeaderProps) => {
 	const { t } = useTranslation()
 	const { user, logoutAndRedirect } = useAuth()
 	const { pathname } = useLocation()
@@ -34,12 +39,24 @@ const Header = () => {
 			ref={ref}
 			style={isDashboard ? { backgroundColor: dashboardBackgroundColor } : undefined}
 		>
-			<div className={`flex items-center ${isDashboard ? "mx-auto w-full max-w-[1230px] px-4 sm:px-6" : "px-4"}`}>
-				<div className="flex-1">
+			<div
+				className={`flex items-center gap-2 ${isDashboard ? "mx-auto w-full max-w-[1230px] px-3 sm:px-6" : "px-3 sm:px-4"}`}
+			>
+				<Button
+					aria-label={t("nav.openMenu")}
+					className="shrink-0 bg-white shadow-sm lg:hidden"
+					isIconOnly
+					variant="ghost"
+					onPress={onOpenNavigation}
+				>
+					<MdiMenu className="size-5" />
+				</Button>
+
+				<div className="min-w-0 flex-1 overflow-hidden">
 					<Breadcrumbs inverse={isInverse} />
 				</div>
 
-				<div className="flex items-center gap-5">
+				<div className="flex shrink-0 items-center gap-1.5 sm:gap-3 lg:gap-5">
 					<LanguageSwitcher />
 					<Badge.Anchor>
 						<Button

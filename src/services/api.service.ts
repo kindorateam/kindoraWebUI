@@ -5,26 +5,23 @@ import axios, {
 	type InternalAxiosRequestConfig,
 } from "axios"
 
+import { publishAuthEvent } from "@/services/auth-events.service"
 import { redirectToLogin } from "@/services/redirect.service"
-import { clearToken, getCleanToken, setTokens } from "@/services/token.service"
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "/api/v1"
 const API_TIMEOUT = 30000
-
-interface RetryableRequestConfig extends InternalAxiosRequestConfig {
-	_authRetryAttempted?: boolean
-}
-
-interface RefreshTokenResponse {
-	accessToken: string
-}
-
 const isAuthEndpoint = (url?: string): boolean => url?.includes("/auth/") ?? false
+
+interface ApiRequestConfig extends AxiosRequestConfig {
+	skipSessionEndedHandling?: boolean
+}
+
+interface ApiInternalRequestConfig extends InternalAxiosRequestConfig {
+	skipSessionEndedHandling?: boolean
+}
 
 class ApiClient {
 	private instance: AxiosInstance
-	private refreshInstance: AxiosInstance
-	private refreshPromise: Promise<string | null> | null = null
 
 	constructor() {
 		this.instance = axios.create({
@@ -35,28 +32,12 @@ class ApiClient {
 				"Content-Type": "application/json",
 			},
 		})
-		this.refreshInstance = axios.create({
-			baseURL: API_BASE_URL,
-			timeout: API_TIMEOUT,
-			withCredentials: true,
-			headers: {
-				"Content-Type": "application/json",
-			},
-		})
-
 		this.setupInterceptors()
 	}
 
 	private setupInterceptors(): void {
-		// Request interceptor
 		this.instance.interceptors.request.use(
-			(config) => {
-				const cleanToken = getCleanToken()
-				if (cleanToken) {
-					config.headers.Authorization = `Bearer ${cleanToken}`
-				}
-				return config
-			},
+			(config) => config,
 			(error: unknown) => {
 				return Promise.reject(error instanceof Error ? error : new Error(String(error)))
 			},
@@ -67,55 +48,24 @@ class ApiClient {
 			(response) => {
 				return response
 			},
-			async (error: unknown) => {
+			(error: unknown) => {
 				if (!axios.isAxiosError(error) || error.response?.status !== 401) {
 					return Promise.reject(error instanceof Error ? error : new Error(String(error)))
 				}
 
-				const originalRequest = error.config as RetryableRequestConfig | undefined
-				if (!originalRequest || isAuthEndpoint(originalRequest.url)) {
+				const requestConfig = error.config as ApiInternalRequestConfig | undefined
+				if (!requestConfig || requestConfig.skipSessionEndedHandling || isAuthEndpoint(requestConfig.url)) {
 					return Promise.reject(error)
 				}
 
-				if (originalRequest._authRetryAttempted) {
-					clearToken()
-					redirectToLogin()
-					return Promise.reject(error)
-				}
-
-				originalRequest._authRetryAttempted = true
-				const newToken = await this.refreshAccessToken()
-
-				if (newToken) {
-					originalRequest.headers.Authorization = `Bearer ${newToken}`
-					return this.instance.request(originalRequest)
-				}
-
-				clearToken()
+				publishAuthEvent("session-ended")
 				redirectToLogin()
 				return Promise.reject(error)
 			},
 		)
 	}
 
-	private async refreshAccessToken(): Promise<string | null> {
-		if (this.refreshPromise) return this.refreshPromise
-
-		this.refreshPromise = this.refreshInstance
-			.post<RefreshTokenResponse>("/auth/refresh")
-			.then(({ data }) => {
-				setTokens(data.accessToken)
-				return data.accessToken
-			})
-			.catch(() => null)
-			.finally(() => {
-				this.refreshPromise = null
-			})
-
-		return this.refreshPromise
-	}
-
-	async get<T>(url: string, config?: AxiosRequestConfig): Promise<T> {
+	async get<T>(url: string, config?: ApiRequestConfig): Promise<T> {
 		const response: AxiosResponse<T> = await this.instance.get(url, config)
 		return response.data
 	}

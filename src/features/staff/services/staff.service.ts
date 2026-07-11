@@ -2,46 +2,18 @@ import { apiClient } from "@/services/api.service"
 
 import type { EmployeeDocument, EmployeeFull, GetEmployeesResult, UpdateEmployeePayload } from "../types"
 
-const DOCUMENT_TYPES = [
-	"Employment Contract",
-	"Background Check",
-	"CPR Certification",
-	"First Aid Certificate",
-	"Teaching License",
-	"ID Copy",
-	"Tax Form W-4",
-	"Health Clearance",
-	"TB Test Results",
-	"Training Certificate",
-] as const
-
-const MOCK_EMPLOYEE_DOCUMENTS: Record<string, EmployeeDocument[]> = {}
-
-function getOrCreateMockDocuments(employeeId: string): EmployeeDocument[] {
-	if (!MOCK_EMPLOYEE_DOCUMENTS[employeeId]) {
-		MOCK_EMPLOYEE_DOCUMENTS[employeeId] = DOCUMENT_TYPES.map((type, i) => ({
-			id: Number.parseInt(employeeId.replace(/\D/g, "") || "1", 10) * 100 + i + 1,
-			employeeId,
-			media: {
-				id: `doc-${employeeId}-${i + 1}`,
-				path: `/mock/employee-documents/${employeeId}/${type.toLowerCase().replace(/ /g, "-")}.pdf`,
-			},
-			status: i % 5 === 0 ? "expiring_soon" : i % 7 === 0 ? "expired" : i % 3 === 0 ? "uploaded" : "active",
-			expiryDate:
-				i % 4 === 0
-					? "2026-04-15"
-					: i % 3 === 0
-						? null
-						: `2027-0${(i % 9) + 1}-${String((i % 28) + 1).padStart(2, "0")}`,
-			type,
-			notes: i % 2 === 0 ? `Notes for ${type}` : null,
-			uploadedAt: `2026-0${(i % 9) + 1}-${String((i % 28) + 1).padStart(2, "0")}T10:00:00.000Z`,
-			uploadedBy: { id: "admin-1", name: "John Jackson" },
-		}))
-	}
-	// biome-ignore lint/style/noNonNullAssertion: initialized above
-	return MOCK_EMPLOYEE_DOCUMENTS[employeeId]!
+interface ApiEmployeeDocument extends Omit<EmployeeDocument, "expiryDate" | "notes" | "uploadedBy"> {
+	expiryDate?: string
+	notes?: string
+	uploadedBy: { id: string }
 }
+
+const toEmployeeDocument = (document: ApiEmployeeDocument): EmployeeDocument => ({
+	...document,
+	expiryDate: document.expiryDate ?? null,
+	notes: document.notes ?? null,
+	uploadedBy: document.uploadedBy,
+})
 
 export interface GetEmployeesParams {
 	status?: "active" | "inactive" | "all"
@@ -67,7 +39,7 @@ export async function updateEmployee(employeeId: string, payload: UpdateEmployee
 
 export async function updateEmployeeAvatar(employeeId: string, avatarFile: File): Promise<EmployeeFull> {
 	const formData = new FormData()
-	formData.append("avatar", avatarFile)
+	formData.append("file", avatarFile)
 
 	return apiClient.put<EmployeeFull>(`/employees/${employeeId}/avatar`, formData, {
 		headers: { "Content-Type": "multipart/form-data" },
@@ -75,19 +47,13 @@ export async function updateEmployeeAvatar(employeeId: string, avatarFile: File)
 }
 
 export async function getEmployeeDocuments(employeeId: string): Promise<EmployeeDocument[]> {
-	// TODO: Replace with real API call
-	// return apiClient.get<EmployeeDocument[]>(`/employees/${employeeId}/documents`)
-	await new Promise((resolve) => setTimeout(resolve, 300))
-	return [...getOrCreateMockDocuments(employeeId)]
+	const documents = await apiClient.get<ApiEmployeeDocument[]>(`/employees/${employeeId}/documents`)
+	return documents.map(toEmployeeDocument)
 }
 
 export async function getEmployeeDocument(employeeId: string, documentId: number): Promise<EmployeeDocument> {
-	// TODO: Replace with real API call
-	// return apiClient.get<EmployeeDocument>(`/employees/${employeeId}/documents/${documentId}`)
-	await new Promise((resolve) => setTimeout(resolve, 300))
-	const doc = getOrCreateMockDocuments(employeeId).find((d) => d.id === documentId)
-	if (!doc) throw new Error(`Document ${documentId} not found`)
-	return doc
+	const document = await apiClient.get<ApiEmployeeDocument>(`/employees/${employeeId}/documents/${documentId}`)
+	return toEmployeeDocument(document)
 }
 
 export async function uploadEmployeeDocument(
@@ -95,26 +61,16 @@ export async function uploadEmployeeDocument(
 	file: File,
 	data: { type: string; expiryDate?: string; notes?: string },
 ): Promise<EmployeeDocument> {
-	// TODO: Replace with real API call
-	await new Promise((resolve) => setTimeout(resolve, 300))
+	const formData = new FormData()
+	formData.append("file", file)
+	formData.append("type", data.type)
+	if (data.expiryDate) formData.append("expiryDate", data.expiryDate)
+	if (data.notes) formData.append("notes", data.notes)
 
-	const uploaded: EmployeeDocument = {
-		id: Date.now(),
-		employeeId,
-		media: {
-			id: crypto.randomUUID(),
-			path: URL.createObjectURL(file),
-		},
-		status: "uploaded",
-		expiryDate: data.expiryDate ?? null,
-		type: data.type,
-		notes: data.notes ?? null,
-		uploadedAt: new Date().toISOString(),
-		uploadedBy: { id: "admin-1", name: "John Jackson" },
-	}
-
-	MOCK_EMPLOYEE_DOCUMENTS[employeeId] = [uploaded, ...getOrCreateMockDocuments(employeeId)]
-	return uploaded
+	const document = await apiClient.post<ApiEmployeeDocument>(`/employees/${employeeId}/documents`, formData, {
+		headers: { "Content-Type": "multipart/form-data" },
+	})
+	return toEmployeeDocument(document)
 }
 
 export async function regenerateEmployeePin(employeeId: string): Promise<{ pinCode: number }> {
@@ -122,8 +78,5 @@ export async function regenerateEmployeePin(employeeId: string): Promise<{ pinCo
 }
 
 export async function deleteEmployeeDocument(employeeId: string, documentId: number): Promise<void> {
-	// TODO: Replace with real API call
-	// await apiClient.delete(`/employees/${employeeId}/documents/${documentId}`)
-	await new Promise((resolve) => setTimeout(resolve, 300))
-	MOCK_EMPLOYEE_DOCUMENTS[employeeId] = getOrCreateMockDocuments(employeeId).filter((d) => d.id !== documentId)
+	await apiClient.delete(`/employees/${employeeId}/documents/${documentId}`)
 }

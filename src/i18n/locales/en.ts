@@ -126,6 +126,9 @@ const en = {
 	},
 	nav: {
 		primaryAria: "Primary",
+		closeMenu: "Close navigation",
+		logoAlt: "Kindora home",
+		openMenu: "Open navigation",
 		dashboard: "Dashboard",
 		mySchool: "My school",
 		insights: "Insights",
@@ -197,6 +200,7 @@ const en = {
 			yellow: "Yellow",
 		},
 		delete: {
+			title: "Delete event",
 			confirmPrefix: "Are you sure you want to delete",
 			confirmSuffix: "?",
 			description: "This action cannot be undone.",
@@ -326,10 +330,24 @@ const en = {
 			favorites: "Favorites",
 		},
 		sidebar: {
+			loadError: "We couldn't load conversations",
+			loadMore: "Load more conversations",
+			loadMoreError: "We couldn't load more conversations.",
+			loading: "Loading conversations",
 			noConversationsDescription: "Try a different name or switch tabs.",
 			noConversationsFound: "No conversations found",
+			retry: "Try again",
 			searchLabel: "Search chat",
 			searchPlaceholder: "Search by family or student name",
+		},
+		conversation: {
+			empty: "No messages in this conversation yet.",
+			loadOlder: "Load older messages",
+			loadError: "We couldn't load this conversation",
+			loading: "Loading messages",
+			olderLoadError: "We couldn't load older messages.",
+			retry: "Try again",
+			retryOlder: "Retry older messages",
 		},
 		empty: {
 			noConversationSelected: "No conversation selected",
@@ -348,9 +366,13 @@ const en = {
 			sendMessage: "Send message",
 		},
 		parents: {
+			contactDetails: "Contact details for {{name}}",
+			email: "Email",
 			moreParents: "{{count}} more parent",
 			moreParents_other: "{{count}} more parents",
 			noParentsLinked: "No parents linked",
+			phone: "Phone",
+			phoneUnavailable: "Not provided",
 		},
 		composer: {
 			inputAria: "Type your message",
@@ -369,8 +391,15 @@ const en = {
 			retry: "Retry",
 		},
 		thread: {
+			attachment: "Attachment",
 			newCount: "{{count}} new",
 			newCount_other: "{{count}} new",
+			noMessages: "No messages yet",
+			untitled: "Conversation",
+		},
+		toast: {
+			favoriteFailed: "Could not update favorite",
+			sendFailed: "Could not send message",
 		},
 	},
 	newsletters: {
@@ -799,6 +828,7 @@ const en = {
 				covidVaccination: "COVID-19 Vaccination",
 				cprCertification: "CPR Certification",
 				employmentContract: "Employment Contract",
+				other: "Other",
 				tuberculosisTest: "Tuberculosis Test",
 			},
 		},

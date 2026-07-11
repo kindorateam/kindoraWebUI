@@ -1,12 +1,16 @@
 import { apiClient } from "@/services/api.service"
-import { clearToken, setTokens } from "@/services/token.service"
 
-import type { AuthTokenResponse, EmailLoginCredentials, LoginResponse, UserProfileResponse } from "../types"
+import type {
+	EmailLoginCredentials,
+	LoginResponse,
+	OAuthStateResponse,
+	SessionResponse,
+	UserProfileResponse,
+} from "../types"
 
 /**
  * Sign in with email and password
- * Returns either tokens (verified user) or verification required status (new user)
- * Refresh token is set as HttpOnly cookie by backend (only for verified users)
+ * Establishes an opaque HttpOnly server session or returns verification-required status.
  */
 export async function login(credentials: EmailLoginCredentials): Promise<LoginResponse> {
 	try {
@@ -21,7 +25,6 @@ export async function login(credentials: EmailLoginCredentials): Promise<LoginRe
 
 		// Check if verification is required (202 response or explicit status field)
 		if (isVerificationResponse) {
-			// Don't store any tokens - user needs to verify first
 			return {
 				status: "verification_required",
 				message:
@@ -31,18 +34,11 @@ export async function login(credentials: EmailLoginCredentials): Promise<LoginRe
 			}
 		}
 
-		// Verified user - store access token (refresh token is in HttpOnly cookie)
-		if ("accessToken" in responseData) {
-			setTokens(responseData.accessToken)
-		}
-
 		return responseData
 	} catch (error) {
 		if (import.meta.env.DEV) {
 			console.error("[auth.service] Login error:", error)
 		}
-		// Clear any stale tokens on login failure
-		clearToken()
 		throw error
 	}
 }
@@ -55,30 +51,31 @@ export async function fetchUserProfile(): Promise<UserProfileResponse> {
 	return apiClient.get<UserProfileResponse>("/users/profile")
 }
 
-export const loginWithGoogle = async (code: string, origin: string): Promise<AuthTokenResponse> => {
-	const response = await apiClient.get<AuthTokenResponse>("/auth/oauth/google/callback", {
+export async function restoreSession(): Promise<UserProfileResponse | null> {
+	try {
+		return await apiClient.get<UserProfileResponse>("/users/profile", { skipSessionEndedHandling: true })
+	} catch {
+		return null
+	}
+}
+
+export const createGoogleOAuthState = (): Promise<OAuthStateResponse> =>
+	apiClient.get<OAuthStateResponse>("/auth/oauth/google/state")
+
+export const loginWithGoogle = async (code: string, state: string, origin: string): Promise<SessionResponse> => {
+	return apiClient.get<SessionResponse>("/auth/oauth/google/callback", {
 		headers: {
 			CustomOrigin: origin,
 		},
-		params: { code },
+		params: { code, state },
 	})
-
-	setTokens(response.accessToken)
-	return response
 }
 
 /**
- * Logout user and clear all tokens
- * Calls backend to clear HttpOnly refresh token cookie
+ * Revoke the current server session and clear its HttpOnly cookie.
  */
 export async function logout(): Promise<void> {
-	try {
-		// Call logout endpoint to clear HttpOnly cookie
-		await apiClient.post("/auth/logout")
-	} finally {
-		// Always clear access token, even if logout request fails
-		clearToken()
-	}
+	await apiClient.post("/auth/logout")
 }
 
 /**
@@ -99,25 +96,13 @@ export async function verifyPasswordResetOTP(email: string, code: string): Promi
 
 /**
  * Verify first login with OTP code
- * Returns access token and user is logged in
- * Refresh token is set as HttpOnly cookie by backend
+ * Activates the user and establishes an opaque server session.
  */
-export async function verifyFirstLogin(email: string, code: string): Promise<AuthTokenResponse> {
-	try {
-		const response = await apiClient.post<AuthTokenResponse>("/auth/login/verify", {
-			email,
-			code,
-		})
-
-		// Store access token (refresh token is in HttpOnly cookie)
-		setTokens(response.accessToken)
-
-		return response
-	} catch (error) {
-		// Clear any stale tokens on verification failure
-		clearToken()
-		throw error
-	}
+export async function verifyFirstLogin(email: string, code: string): Promise<SessionResponse> {
+	return apiClient.post<SessionResponse>("/auth/login/verify", {
+		email,
+		code,
+	})
 }
 
 /**

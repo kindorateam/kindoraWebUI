@@ -190,11 +190,11 @@ const EventModal = () => {
 							isSelected={formData.allDay}
 							onChange={(isSelected: boolean) => updateField("allDay", isSelected)}
 						>
-							<Switch.Control>
-								<Switch.Thumb />
-							</Switch.Control>
 							<Switch.Content>
-								<Label>{t("calendar.fields.allDay")}</Label>
+								<Switch.Control>
+									<Switch.Thumb />
+								</Switch.Control>
+								{t("calendar.fields.allDay")}
 							</Switch.Content>
 						</Switch>
 
@@ -203,11 +203,11 @@ const EventModal = () => {
 							isSelected={formData.endsSameDay}
 							onChange={(isSelected: boolean) => updateField("endsSameDay", isSelected)}
 						>
-							<Switch.Control>
-								<Switch.Thumb />
-							</Switch.Control>
 							<Switch.Content>
-								<Label>{t("calendar.fields.endsSameDay")}</Label>
+								<Switch.Control>
+									<Switch.Thumb />
+								</Switch.Control>
+								{t("calendar.fields.endsSameDay")}
 							</Switch.Content>
 						</Switch>
 

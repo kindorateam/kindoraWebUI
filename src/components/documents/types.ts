@@ -14,7 +14,7 @@ export interface DocumentRecord {
 	type: string
 	notes: string | null
 	uploadedAt: string
-	uploadedBy: { id: string; name: string } | null
+	uploadedBy: { id: string; name?: string } | null
 }
 
 export interface DocumentTypeOption {

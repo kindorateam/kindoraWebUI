@@ -1,4 +1,4 @@
-import { Input, Label, TextField } from "@heroui/react"
+import { Button, Input, Label, Spinner, TextField } from "@heroui/react"
 import clsx from "clsx"
 import { useTranslation } from "react-i18next"
 
@@ -10,10 +10,17 @@ interface MessagesSidebarProps {
 	children?: React.ReactNode
 	className?: string
 	hasThreads: boolean
+	hasMore: boolean
+	isError: boolean
+	isLoading: boolean
+	isLoadingMore: boolean
+	isLoadMoreError: boolean
 	searchValue: string
 	selectedThreadId?: string
 	threads: ThreadItem[]
 	onSearchChange: (value: string) => void
+	onLoadMore: () => void
+	onRetry: () => void
 	onToggleFavorite: (threadId: string) => void
 	onThreadSelect: (threadId: string) => void
 }
@@ -22,14 +29,26 @@ const MessagesSidebar = ({
 	children,
 	className,
 	hasThreads,
+	hasMore,
+	isError,
+	isLoading,
+	isLoadingMore,
+	isLoadMoreError,
 	searchValue,
 	selectedThreadId,
 	threads,
 	onSearchChange,
+	onLoadMore,
+	onRetry,
 	onToggleFavorite,
 	onThreadSelect,
 }: MessagesSidebarProps) => {
 	const { t } = useTranslation()
+	const handleScroll = (event: React.UIEvent<HTMLDivElement>) => {
+		if (!hasMore || isLoadingMore) return
+		const target = event.currentTarget
+		if (target.scrollHeight - target.scrollTop - target.clientHeight <= 80) onLoadMore()
+	}
 
 	return (
 		<section className={clsx("min-h-0 overflow-hidden", className)}>
@@ -49,9 +68,20 @@ const MessagesSidebar = ({
 					</TextField>
 				</div>
 
-				<div className="messages-thread-scroll min-h-0 flex-1 overflow-y-auto">
+				<div className="messages-thread-scroll min-h-0 flex-1 overflow-y-auto" onScroll={handleScroll}>
 					<div className="flex min-h-full flex-col gap-1">
-						{threads.length > 0 ? (
+						{isLoading ? (
+							<div className="flex flex-1 items-center justify-center">
+								<Spinner aria-label={t("messages.sidebar.loading")} />
+							</div>
+						) : isError ? (
+							<div className="flex flex-1 flex-col items-center justify-center px-6 text-center">
+								<p className="font-medium text-foreground">{t("messages.sidebar.loadError")}</p>
+								<Button className="mt-3" size="sm" variant="secondary" onPress={onRetry}>
+									{t("messages.sidebar.retry")}
+								</Button>
+							</div>
+						) : threads.length > 0 ? (
 							threads.map((item) => (
 								<ThreadCard
 									key={item.id}
@@ -73,6 +103,26 @@ const MessagesSidebar = ({
 								</p>
 							</div>
 						)}
+						{isLoadingMore ? (
+							<div className="flex justify-center py-3">
+								<Spinner aria-label={t("messages.sidebar.loading")} size="sm" />
+							</div>
+						) : null}
+						{isLoadMoreError ? (
+							<div className="flex flex-col items-center gap-2 py-3 text-center">
+								<p className="text-default-500 text-xs">{t("messages.sidebar.loadMoreError")}</p>
+								<Button size="sm" variant="secondary" onPress={onLoadMore}>
+									{t("messages.sidebar.retry")}
+								</Button>
+							</div>
+						) : null}
+						{hasMore && !isLoadingMore && !isLoadMoreError ? (
+							<div className="flex justify-center py-3">
+								<Button size="sm" variant="tertiary" onPress={onLoadMore}>
+									{t("messages.sidebar.loadMore")}
+								</Button>
+							</div>
+						) : null}
 					</div>
 				</div>
 			</div>

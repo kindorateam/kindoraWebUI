@@ -51,7 +51,7 @@ const DeleteEventModal = () => {
 	return (
 		<Modal.Backdrop isOpen={isOpen} onOpenChange={(open) => !open && handleClose()}>
 			<Modal.Container>
-				<Modal.Dialog>
+				<Modal.Dialog aria-label={t("calendar.delete.title")}>
 					<Modal.CloseTrigger />
 					<Modal.Header className="flex flex-col items-center gap-2 pb-0">
 						<div className="flex size-12 items-center justify-center rounded-full bg-danger-100">

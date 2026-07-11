@@ -7,11 +7,12 @@ import { useUploadEmployeeDocument } from "../hooks/useStaff"
 import { closeAddDocumentModal, isAddDocumentModalOpenAtom } from "../stores/addDocumentModal.store"
 
 const DOCUMENT_TYPES = [
-	{ key: "background_check", labelKey: "staff.documents.types.backgroundCheck" },
-	{ key: "covid_vaccination", labelKey: "staff.documents.types.covidVaccination" },
-	{ key: "cpr_certification", labelKey: "staff.documents.types.cprCertification" },
-	{ key: "employment_contract", labelKey: "staff.documents.types.employmentContract" },
-	{ key: "tuberculosis_test", labelKey: "staff.documents.types.tuberculosisTest" },
+	{ key: "background-check", labelKey: "staff.documents.types.backgroundCheck" },
+	{ key: "covid-19-vaccination", labelKey: "staff.documents.types.covidVaccination" },
+	{ key: "cpr-certification", labelKey: "staff.documents.types.cprCertification" },
+	{ key: "employment-contract", labelKey: "staff.documents.types.employmentContract" },
+	{ key: "tuberculosis-test", labelKey: "staff.documents.types.tuberculosisTest" },
+	{ key: "other", labelKey: "staff.documents.types.other" },
 ]
 
 interface Props {

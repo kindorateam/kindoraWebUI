@@ -1,5 +1,7 @@
 import { useMutation } from "@tanstack/react-query"
 
+import { publishAuthEvent } from "@/services/auth-events.service"
+
 import {
 	fetchUserProfile,
 	login,
@@ -26,6 +28,7 @@ export const useEmailLogin = () => {
 			const userResponse = await fetchUserProfile()
 			const user = mapUserResponse(userResponse)
 			setAuthUser(user)
+			publishAuthEvent("session-started")
 
 			return { needsVerification: false, user }
 		},
@@ -37,12 +40,13 @@ export const useEmailLogin = () => {
 
 export const useGoogleLoginMutation = () => {
 	return useMutation({
-		mutationFn: async (code: string) => {
-			await loginWithGoogle(code, window.location.origin)
+		mutationFn: async ({ code, state }: { code: string; state: string }) => {
+			await loginWithGoogle(code, state, window.location.origin)
 
 			const userResponse = await fetchUserProfile()
 			const user = mapUserResponse(userResponse)
 			setAuthUser(user)
+			publishAuthEvent("session-started")
 
 			return { success: true }
 		},
@@ -60,6 +64,7 @@ export const useVerifyFirstLogin = () => {
 			const userResponse = await fetchUserProfile()
 			const user = mapUserResponse(userResponse)
 			setAuthUser(user)
+			publishAuthEvent("session-started")
 
 			return user
 		},
@@ -92,6 +97,7 @@ export const useLogoutMutation = () => {
 	return useMutation({
 		mutationFn: async () => {
 			await logoutService()
+			publishAuthEvent("session-ended")
 		},
 		onSettled: () => {
 			// Always clear auth state, even if logout API fails

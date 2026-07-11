@@ -40,7 +40,7 @@ const RegeneratePinModal = ({ employeeId }: Props) => {
 	return (
 		<Modal.Backdrop isOpen={isOpen} onOpenChange={(open) => !open && closeRegeneratePinModal()}>
 			<Modal.Container>
-				<Modal.Dialog>
+				<Modal.Dialog aria-label={t("staff.regeneratePin.title")}>
 					<Modal.CloseTrigger />
 					<Modal.Body>
 						<div className="flex flex-col items-center gap-5">

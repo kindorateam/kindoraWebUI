@@ -47,7 +47,8 @@ Remove repeated policy and infrastructure before repeated presentation details.
 ## Repository Rules
 
 - Use typed `apiClient` methods; never call Axios directly outside `src/services/api.service.ts`
-- Use `atomWithStorage`; never access `localStorage` directly
+- Use `atomWithStorage` only for non-sensitive persisted state; keep authentication credentials and user profiles in plain memory-backed atoms
+- Never access `localStorage` directly
 - Use Iconify through `~icons/`; never add inline SVG markup or another icon library
 - Use arrow functions for React components and one default export per component file
 - Put user-visible text through i18next and update both English and Spanish locales

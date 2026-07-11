@@ -10,23 +10,13 @@ export interface EmailRegisterCredentials extends EmailLoginCredentials {
 	name: string
 }
 
-// Response types
-export interface AuthTokens {
-	accessToken: string
-	refreshToken: string
-	expiresIn: number
-}
-
-export interface RefreshTokenResponse {
-	accessToken: string
-	expiresIn: number
-}
-
-export interface AuthTokenResponse {
-	accessToken: string
+export interface SessionResponse {
+	authenticated: true
 	expiresAt: string
-	role: string
-	// Note: RefreshToken is sent as HttpOnly cookie, not in response body
+}
+
+export interface OAuthStateResponse {
+	state: string
 }
 
 export interface VerificationRequiredResponse {
@@ -34,7 +24,7 @@ export interface VerificationRequiredResponse {
 	message: string
 }
 
-export type LoginResponse = AuthTokenResponse | VerificationRequiredResponse
+export type LoginResponse = SessionResponse | VerificationRequiredResponse
 
 // Wire shape of GET /users/profile — the backend returns the employee account DTO
 export interface ApiProfileUser {

@@ -11,11 +11,27 @@ const MessagesPage = () => {
 		activeTab,
 		connection,
 		handleBackToList,
+		handleLoadOlderMessages,
+		handleLoadMoreConversations,
 		handleReconnect,
+		handleSendMessage,
 		handleThreadSelect,
 		handleToggleFavorite,
 		hasThreads,
+		hasMoreConversations,
+		hasOlderMessages,
+		isLoadingMessages,
+		isLoadingThreads,
+		isLoadingMoreConversations,
+		isMoreConversationsError,
+		isMessagesError,
+		isOlderMessagesError,
+		isLoadingOlderMessages,
 		isMobileConversationOpen,
+		isSendingMessage,
+		isThreadsError,
+		refetchMessages,
+		refetchThreads,
 		searchValue,
 		selectedThread,
 		selectedThreadId,
@@ -25,28 +41,46 @@ const MessagesPage = () => {
 	} = useMessages()
 
 	return (
-		<div className="flex h-[calc(100vh-112px)] min-h-0 flex-col gap-4 bg-default-50/40 px-4 py-4 lg:px-6">
-			<div className="grid min-h-0 flex-1 gap-4 overflow-hidden lg:grid-cols-[320px_minmax(0,1fr)]">
+		<div className="flex h-[calc(100dvh-112px)] min-h-0 flex-col gap-3 bg-default-50/40 px-3 py-3 sm:gap-4 sm:px-4 sm:py-4 lg:px-6">
+			<div className="grid min-h-0 flex-1 gap-4 overflow-hidden md:grid-cols-[minmax(270px,320px)_minmax(0,1fr)]">
 				<MessagesSidebar
-					className={clsx(isMobileConversationOpen && "hidden lg:flex")}
+					className={clsx(isMobileConversationOpen && "hidden md:flex")}
+					hasMore={hasMoreConversations}
 					hasThreads={hasThreads}
+					isError={isThreadsError}
+					isLoading={isLoadingThreads}
+					isLoadingMore={isLoadingMoreConversations}
+					isLoadMoreError={isMoreConversationsError}
 					searchValue={searchValue}
 					selectedThreadId={selectedThreadId}
 					threads={visibleThreads}
 					onSearchChange={setSearchValue}
+					onLoadMore={() => void handleLoadMoreConversations()}
+					onRetry={() => void refetchThreads()}
 					onToggleFavorite={handleToggleFavorite}
 					onThreadSelect={handleThreadSelect}
 				>
 					<MessagesTabs activeTab={activeTab} onSelectionChange={setActiveTab} />
 				</MessagesSidebar>
 				<MessagesConversationPane
-					className={clsx(!isMobileConversationOpen && "hidden lg:flex")}
+					key={selectedThread?.id ?? "no-conversation"}
+					className={clsx(!isMobileConversationOpen && "hidden md:flex")}
 					connection={connection}
+					hasOlderMessages={hasOlderMessages}
 					hasThreads={hasThreads}
+					isLoadingMessages={isLoadingMessages}
+					isLoadingThreads={isLoadingThreads}
+					isMessagesError={isMessagesError}
+					isOlderMessagesError={isOlderMessagesError}
+					isLoadingOlderMessages={isLoadingOlderMessages}
+					isSendingMessage={isSendingMessage}
 					showBackButton={isMobileConversationOpen}
 					thread={selectedThread}
 					onBack={handleBackToList}
+					onLoadOlderMessages={handleLoadOlderMessages}
 					onReconnect={handleReconnect}
+					onRetryMessages={() => void refetchMessages()}
+					onSendMessage={handleSendMessage}
 				/>
 			</div>
 		</div>

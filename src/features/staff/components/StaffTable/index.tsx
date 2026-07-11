@@ -1,4 +1,4 @@
-import { Button, EmptyState, Label, Spinner, Switch, Table } from "@heroui/react"
+import { Button, EmptyState, Spinner, Switch, Table } from "@heroui/react"
 import { useNavigate } from "@tanstack/react-router"
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
@@ -43,11 +43,11 @@ const StaffTable = () => {
 					setPage(1)
 				}}
 			>
-				<Switch.Control>
-					<Switch.Thumb />
-				</Switch.Control>
-				<Switch.Content>
-					<Label className="text-sm">{t("staff.table.viewDeactivated")}</Label>
+				<Switch.Content className="text-sm">
+					<Switch.Control>
+						<Switch.Thumb />
+					</Switch.Control>
+					{t("staff.table.viewDeactivated")}
 				</Switch.Content>
 			</Switch>
 			<Button variant="primary" onPress={openAddStaffModal}>

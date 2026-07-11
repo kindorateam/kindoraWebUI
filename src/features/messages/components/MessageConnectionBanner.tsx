@@ -59,7 +59,12 @@ const MessageConnectionBanner = ({ connection, onReconnect }: MessageConnectionB
 	const copy = CONNECTION_COPY[connection.status]
 
 	return (
-		<div className={clsx("mx-4 mt-4 flex items-start gap-3 rounded-lg border px-3 py-2", copy.variantClassName)}>
+		<div
+			className={clsx(
+				"mx-3 mt-3 flex items-start gap-3 rounded-lg border px-3 py-2 sm:mx-4 sm:mt-4",
+				copy.variantClassName,
+			)}
+		>
 			{copy.icon}
 			<div className="min-w-0 flex-1">
 				<p className="font-medium text-sm leading-5">{t(copy.titleKey)}</p>

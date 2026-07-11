@@ -1,4 +1,4 @@
-import { Button, Label, Spinner, Switch, Table } from "@heroui/react"
+import { Button, Spinner, Switch, Table } from "@heroui/react"
 import { useAtom } from "jotai"
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
@@ -41,11 +41,11 @@ const RoomsTable = () => {
 					setPage(1)
 				}}
 			>
-				<Switch.Control>
-					<Switch.Thumb />
-				</Switch.Control>
-				<Switch.Content>
-					<Label className="text-sm">{t("rooms.table.viewDeactivated")}</Label>
+				<Switch.Content className="text-sm">
+					<Switch.Control>
+						<Switch.Thumb />
+					</Switch.Control>
+					{t("rooms.table.viewDeactivated")}
 				</Switch.Content>
 			</Switch>
 			<Button variant="primary" onPress={openAddRoomModal}>

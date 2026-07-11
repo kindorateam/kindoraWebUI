@@ -1,5 +1,5 @@
 import { atom } from "jotai"
-import { atomWithStorage } from "jotai/utils"
+import { RESET, atomWithStorage } from "jotai/utils"
 
 import { appStore } from "@/stores/jotaiStore"
 
@@ -14,21 +14,17 @@ export const mapUserResponse = ({ user }: UserProfileResponse): User => ({
 	picture: user.avatar?.path,
 })
 
-// Atoms for state - using atomWithStorage handles localStorage automatically
-const userAtom = atomWithStorage<User | null>("auth-user", null, undefined, {
-	getOnInit: true,
-})
-export const tokenAtom = atomWithStorage<string | null>("auth-token", null, undefined, {
-	getOnInit: true,
-})
-// Note: Refresh token is stored as HttpOnly cookie by backend, not in localStorage
+const userAtom = atom<User | null>(null)
+
+// Remove credentials persisted by older releases without reading them back into application state.
+const legacyUserAtom = atomWithStorage<User | null>("auth-user", null)
+const legacyTokenAtom = atomWithStorage<string | null>("auth-token", null)
 
 export const authInitializedAtom = atom(false)
 
 const isAuthenticatedAtom = atom((get) => {
-	const token = get(tokenAtom)
 	const user = get(userAtom)
-	return !!user && !!token
+	return !!user
 })
 
 // Derived atoms
@@ -45,23 +41,18 @@ export const setAuthUser = (user: User) => {
 
 export const clearAuth = () => {
 	appStore.set(userAtom, null)
-	appStore.set(tokenAtom, null)
+}
+
+export const clearLegacyAuthStorage = () => {
+	appStore.set(legacyUserAtom, RESET)
+	appStore.set(legacyTokenAtom, RESET)
+}
+
+export const setAuthInitialized = () => {
+	appStore.set(authInitializedAtom, true)
 }
 
 // Action atoms
 export const updateUserAtom = atom(null, (_get, set, user: User) => {
 	set(userAtom, user)
-})
-
-export const checkAuthAtom = atom(null, (get, set) => {
-	const token = get(tokenAtom)
-	const user = get(userAtom)
-
-	if (token && !user) {
-		set(tokenAtom, null)
-	} else if (!token && user) {
-		set(userAtom, null)
-	}
-
-	set(authInitializedAtom, true)
 })

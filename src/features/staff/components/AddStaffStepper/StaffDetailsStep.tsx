@@ -161,11 +161,11 @@ const StaffDetailsStep = () => {
 						<div className="flex items-center justify-between py-3">
 							<span className="text-default-600 text-sm">{t("staff.addStaff.invitePrompt")}</span>
 							<Switch isSelected={field.value} onChange={field.onChange}>
-								<Switch.Control>
-									<Switch.Thumb />
-								</Switch.Control>
 								<Switch.Content>
-									<Label>{t("staff.addStaff.invite")}</Label>
+									<Switch.Control>
+										<Switch.Thumb />
+									</Switch.Control>
+									{t("staff.addStaff.invite")}
 								</Switch.Content>
 							</Switch>
 						</div>

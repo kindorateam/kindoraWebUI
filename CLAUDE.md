@@ -72,7 +72,7 @@ Do not skip layers. Components should consume hooks, not call service modules di
 ## Critical Rules
 
 - Never call `axios` directly; always use `apiClient` from `src/services/api.service.ts`
-- Never access `localStorage` directly; use Jotai `atomWithStorage`
+- Never access `localStorage` directly; use Jotai `atomWithStorage` only for non-sensitive persisted state
 - Never edit `src/routeTree.gen.ts`
 - Never use `any`; prefer `unknown` with narrowing or proper generics
 - Never wrap HeroUI components unless adding meaningful shared logic
@@ -124,10 +124,13 @@ Do not skip layers. Components should consume hooks, not call service modules di
 
 ## Auth Flow
 
-- Tokens live in Jotai atoms in `src/features/auth/stores/auth.store.ts` and persist via storage-backed atoms
-- On `401`, the interceptor refreshes the token and retries the request
-- If refresh fails, redirect to login
-- All `/auth/*` endpoints, including login, verification, OAuth, logout, and refresh, skip interceptor refresh-and-retry logic
+- Web authentication uses an opaque server-side session referenced by a Secure, HttpOnly, SameSite cookie
+- No access or refresh token is exposed to frontend JavaScript; the in-memory auth atom contains only the current user profile
+- Startup restores UI state by fetching the current user profile with the session cookie
+- `BroadcastChannel` synchronizes login/logout state across tabs without transmitting credentials
+- WebSockets authenticate with a short-lived, single-use ticket from `POST /ws/ticket`; never put bearer tokens in WebSocket URLs
+- On `401`, clear the local auth view, notify other tabs, and redirect to login; never attempt browser-side token refresh
+- All browser API calls use `withCredentials`; bearer JWTs are reserved for explicit non-browser API clients
 
 ## Claude Code Skills
 
@@ -137,6 +140,7 @@ Use the independent project skills under `.claude/skills/` when relevant:
 - `new-feature`: scaffold a new feature folder using repo conventions
 - `verify`: run the standard verification sequence before finishing work
 - `heroui-v3`: use the installed HeroUI v3 compound APIs and avoid known integration traps
+- `heroui-react`: official HeroUI skill for fetching component docs, source, styles, themes, and guides; verify recent APIs against release notes
 - `i18n`: add or change user-visible text while keeping English and Spanish aligned
 
 Codex has separate physical counterparts under `.agents/skills/`. Do not replace either skill directory with symlinks. When shared project behavior changes, update both copies deliberately; environment-specific tool instructions may differ.

@@ -1,4 +1,4 @@
-import { Button, Card, Checkbox, Label, Link, Separator, toast } from "@heroui/react"
+import { Button, Card, Checkbox, Link, Separator, toast } from "@heroui/react"
 import { Controller, useForm } from "react-hook-form"
 import { useTranslation } from "react-i18next"
 
@@ -75,11 +75,11 @@ const SignInForm = ({ onForgotPassword, onVerificationRequired, defaultEmail }: 
 							name="rememberMe"
 							render={({ field: { value, onChange, ...field } }) => (
 								<Checkbox {...field} isSelected={value} onChange={onChange}>
-									<Checkbox.Control>
-										<Checkbox.Indicator />
-									</Checkbox.Control>
 									<Checkbox.Content>
-										<Label>{t("auth.signIn.rememberMe")}</Label>
+										<Checkbox.Control>
+											<Checkbox.Indicator />
+										</Checkbox.Control>
+										{t("auth.signIn.rememberMe")}
 									</Checkbox.Content>
 								</Checkbox>
 							)}

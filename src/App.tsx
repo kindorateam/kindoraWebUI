@@ -1,10 +1,10 @@
 import { RouterProvider } from "@tanstack/react-router"
-import { useAtom, useAtomValue } from "jotai"
-import { useEffect } from "react"
+import { useAtomValue } from "jotai"
 import { useTranslation } from "react-i18next"
 
+import { useAuthBootstrap } from "@/features/auth/hooks/useAuthBootstrap"
 import { useLanguage } from "@/i18n/useLanguage"
-import { authInitializedAtom, authStateAtom, checkAuthAtom } from "@/stores"
+import { authStateAtom } from "@/stores"
 
 import { router } from "./router"
 
@@ -17,12 +17,7 @@ const InnerApp = () => {
 const App = () => {
 	const { t } = useTranslation()
 	useLanguage()
-	const [, checkAuth] = useAtom(checkAuthAtom)
-	const isAuthInitialized = useAtomValue(authInitializedAtom)
-
-	useEffect(() => {
-		checkAuth()
-	}, [checkAuth])
+	const isAuthInitialized = useAuthBootstrap()
 
 	// Don't render router until initial auth check is complete
 	if (!isAuthInitialized) {

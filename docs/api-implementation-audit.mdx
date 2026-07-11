@@ -1,0 +1,310 @@
+---
+title: Kindora API Implementation Audit
+description: Backend capability and frontend-contract audit against the Georgia-first product roadmap.
+date: 2026-07-10
+backend: ../api-main-ts
+frontend: ../kindoraWeb
+---
+
+# Kindora API Implementation Audit
+
+This report compares `../api-main-ts` with the product requirements in `product-implementation-roadmap.md` and the API contracts currently used by `kindoraWeb`.
+
+The audit is based on routes, controllers, Prisma models, authorization, tests, and static code analysis. A registered route is not treated as a complete product capability when its required history, auditability, delivery, or compliance behavior is missing.
+
+## Status legend
+
+- ✅ Implemented and database-backed
+- 🟡 Partially implemented or blocked by a contract/security gap
+- ⬜ No corresponding API
+- 🔴 Implemented unsafely or with a release-blocking defect
+
+## Executive summary
+
+The backend contains **93 registered HTTP/WebSocket handlers** across authentication, companies, employees, students, rooms, conversations, storage, and system health.
+
+It is substantially more complete than the frontend currently exposes:
+
+- Employee creation, invitations, absences, and documents are database-backed; staff documents are now connected in the frontend.
+- Conversations, cursor-paginated message history, search, favorites, pins, read cursors, mute state, export, WebSockets, and optional Redis fan-out are implemented. The frontend now uses conversation listing, upward history loading, sending, favorites, read state, and WebSocket updates.
+- Student and employee room presence is supported.
+- Server-side role authorization and tenant-scoped resource controllers exist for employees, students, rooms, and conversations.
+
+However, the API is still an **administrative platform core**, not the Georgia compliance and cash-flow MVP. There are no API domains for historical attendance, Georgia regulations, inspection packets, incidents, medication administration, policies, drills, menus, billing, payments, CAPS, or migration.
+
+There are also release-blocking security and contract problems in public registration, company tenancy, OAuth state handling, and frontend/backend payload alignment.
+
+## Implemented API groups
+
+| Domain | Handlers | Status | Implemented behavior | Important limitation |
+| --- | ---: | --- | --- | --- |
+| Authentication | 14 | 🟡 | Registration, login, first-login verification, refresh rotation, logout, logout-all, password reset, Google OAuth | Delivery is stubbed; public account creation and OAuth state handling are unsafe |
+| Current user | 1 | ✅ | Authenticated employee profile | No session/device management API |
+| Companies | 5 | 🔴 | Company CRUD and soft deletion | Controllers are not tenant-scoped |
+| Employees | 17 | ✅ | CRUD, invite, PIN, activation, avatar, absences, documents | Frontend still does not use creation, invitation, or absence APIs; document metadata editing remains unwired |
+| Students | 16 | 🟡 | CRUD, activation, avatar, absences, documents | No parent/guardian mutation, tags, medical mutation, enrollment, or pickup authorization |
+| Rooms | 21 | 🟡 | CRUD, capacity, membership, primary-room assignment, current student/staff presence | Presence is current-state only; checkout deletes the record |
+| Conversations | 15 | ✅ | Direct/room conversations, messages, search, clear, favorite, pin, read, mute, export | Employee-only; no parent identity or notification delivery |
+| WebSocket chat | 1 | ✅ | Authenticated real-time message send/broadcast; Redis fan-out is optional | Token is supplied in the WebSocket query string |
+| System/storage | 4 | 🟡 | Health, local file serving, empty HS256 JWKS document, WebSocket | Storage has no general protected media download route |
+
+## Endpoint inventory
+
+<details>
+<summary>Authentication and user endpoints</summary>
+
+- `POST /api/v1/auth/register`
+- `POST /api/v1/auth/create`
+- `POST /api/v1/auth/login`
+- `POST /api/v1/auth/login/verify`
+- `POST /api/v1/auth/login/verify/resend`
+- `POST /api/v1/auth/refresh`
+- `POST /api/v1/auth/logout`
+- `POST /api/v1/auth/logout-all`
+- `POST /api/v1/auth/password/reset/request`
+- `POST /api/v1/auth/password/reset/resend`
+- `POST /api/v1/auth/password/reset/verify`
+- `POST /api/v1/auth/password/reset/set`
+- `GET /api/v1/auth/oauth/:provider/init`
+- `GET /api/v1/auth/oauth/:provider/callback`
+- `GET /api/v1/users/profile`
+
+</details>
+
+<details>
+<summary>Company endpoints</summary>
+
+- `POST /api/v1/companies`
+- `GET /api/v1/companies`
+- `GET /api/v1/companies/:id`
+- `PUT /api/v1/companies/:id`
+- `DELETE /api/v1/companies/:id`
+
+</details>
+
+<details>
+<summary>Employee endpoints</summary>
+
+- `POST /api/v1/employees`
+- `GET /api/v1/employees`
+- `GET /api/v1/employees/:employeeId`
+- `PUT /api/v1/employees/:employeeId`
+- `POST /api/v1/employees/:employeeId/pin`
+- `POST /api/v1/employees/:employeeId/invite`
+- `POST /api/v1/employees/:employeeId/deactivate`
+- `POST /api/v1/employees/:employeeId/activate`
+- `PUT /api/v1/employees/:employeeId/avatar`
+- `GET /api/v1/employees/:employeeId/absence`
+- `POST /api/v1/employees/:employeeId/absence`
+- `DELETE /api/v1/employees/:employeeId/absence/:absenceId`
+- `GET /api/v1/employees/:employeeId/documents`
+- `GET /api/v1/employees/:employeeId/documents/:documentId`
+- `POST /api/v1/employees/:employeeId/documents`
+- `PUT /api/v1/employees/:employeeId/documents/:documentId`
+- `DELETE /api/v1/employees/:employeeId/documents/:documentId`
+
+</details>
+
+<details>
+<summary>Student endpoints</summary>
+
+- `POST /api/v1/students`
+- `GET /api/v1/students`
+- `GET /api/v1/students/:studentId`
+- `PUT /api/v1/students/:studentId`
+- `DELETE /api/v1/students/:studentId`
+- `POST /api/v1/students/:studentId/deactivate`
+- `POST /api/v1/students/:studentId/activate`
+- `PUT /api/v1/students/:studentId/avatar`
+- `GET /api/v1/students/:studentId/absence`
+- `POST /api/v1/students/:studentId/absence`
+- `DELETE /api/v1/students/:studentId/absence/:absenceId`
+- `GET /api/v1/students/:studentId/documents`
+- `GET /api/v1/students/:studentId/documents/:documentId`
+- `POST /api/v1/students/:studentId/documents`
+- `PUT /api/v1/students/:studentId/documents/:documentId`
+- `DELETE /api/v1/students/:studentId/documents/:documentId`
+
+</details>
+
+<details>
+<summary>Room and presence endpoints</summary>
+
+- `POST /api/v1/rooms`
+- `GET /api/v1/rooms`
+- `GET /api/v1/rooms/minimal-list`
+- `GET /api/v1/rooms/all-students-list`
+- `GET /api/v1/rooms/all-employees-list`
+- `GET /api/v1/rooms/:roomId`
+- `PUT /api/v1/rooms/:roomId`
+- `DELETE /api/v1/rooms/:roomId`
+- `POST /api/v1/rooms/:roomId/inactivate`
+- `POST /api/v1/rooms/:roomId/activate`
+- `PUT /api/v1/rooms/:roomId/logo`
+- `POST /api/v1/rooms/:roomId/students/add`
+- `POST /api/v1/rooms/:roomId/students/remove`
+- `POST /api/v1/rooms/:roomId/students/set-primary`
+- `POST /api/v1/rooms/:roomId/students/:studentId/check-in`
+- `POST /api/v1/rooms/:roomId/students/:studentId/check-out`
+- `POST /api/v1/rooms/:roomId/employees/add`
+- `POST /api/v1/rooms/:roomId/employees/remove`
+- `POST /api/v1/rooms/:roomId/employees/set-primary`
+- `POST /api/v1/rooms/:roomId/employees/:employeeId/check-in`
+- `POST /api/v1/rooms/:roomId/employees/:employeeId/check-out`
+
+</details>
+
+<details>
+<summary>Conversation endpoints</summary>
+
+- `POST /api/v1/conversations/direct`
+- `POST /api/v1/conversations/room-group`
+- `GET /api/v1/conversations`
+- `GET /api/v1/conversations/:id`
+- `POST /api/v1/conversations/:id/messages`
+- `GET /api/v1/conversations/:id/messages`
+- `GET /api/v1/conversations/:id/messages/search`
+- `DELETE /api/v1/conversations/:id/messages`
+- `POST /api/v1/conversations/:id/favorite`
+- `DELETE /api/v1/conversations/:id/favorite`
+- `POST /api/v1/conversations/:id/pin`
+- `DELETE /api/v1/conversations/:id/pin`
+- `POST /api/v1/conversations/:id/read`
+- `POST /api/v1/conversations/:id/mute`
+- `GET /api/v1/conversations/:id/export`
+- `WS /api/v1/ws`
+
+</details>
+
+<details>
+<summary>System endpoints</summary>
+
+- `GET /health`
+- `GET /store/*` when local storage is enabled
+- `GET /api/v1/.well-known/jwks.json`
+
+</details>
+
+## Product capability matrix
+
+| Roadmap ID | Backend status | What exists | What is still required |
+| --- | --- | --- | --- |
+| F1 Authentication | 🟡 | Login, verification, reset, refresh rotation, logout-all, OAuth | Real email/SMS delivery, MFA, device/session listing, secure public provisioning |
+| F2 Organizations and locations | 🟡 | Company model and CRUD | Location model, licensing configuration, safe tenant-scoped company access |
+| F3 Rooms/classrooms | ✅ | Room CRUD, capacity, ages, ratio value, members and current presence | Location association and licensed-capacity overlays |
+| F4 Roles and permissions | 🟡 | Hard-coded role permissions enforced by protected routes | Per-user permissions, frontend/backend role alignment, `assistant` role decision |
+| F5 Immutable audit log | ⬜ | Fire-and-forget telemetry events | Immutable domain audit records with actor, old/new values, timestamp, reason and read/export APIs |
+| F6 Imports and exports | ⬜ | Chat JSON export only | Child, guardian, staff and balance imports; validation, preview, rollback and migration reports |
+| E1 Child profiles | 🟡 | Student CRUD, profile response, absences and documents | Medical, tag, schedule, parent and guardian mutation APIs; retention/archive rules |
+| E2 Parent/guardian profiles | ⬜ | Prisma `Parent` and `ParentStudent` models | Parent CRUD, invitation/authentication, relationships and guardian lifecycle |
+| E3 Pickup authorization | ⬜ | Parent PIN and `isTrustedPerson` fields exist in the schema | Authorized/prohibited pickup, custody restrictions, identity verification and emergency authorization |
+| E4 Child documents | 🟡 | Database-backed document CRUD and expiration | Child-specific document taxonomy, required-document rules and reminders |
+| E5 Digital enrollment | ⬜ | Basic student creation only | Applications, configurable packets and enrollment workflow states |
+| E6 E-signatures and consent | ⬜ | — | Signature evidence, consent types, versions and timestamps |
+| E7 Immunizations | ⬜ | — | Immunization, exemption, expiration and reminder models/routes |
+| E8 Record completeness | ⬜ | — | Requirement evaluation, status calculation and action queue |
+| A1 Basic check-in/out | 🟡 | Current student and staff room presence | Arrival/departure records, actor, guardian acknowledgment and pickup verification |
+| A2 Room transfers | 🟡 | Add/remove/set-primary primitives | One atomic transfer endpoint and attendance-transfer history |
+| A3 Attendance correction | ⬜ | — | Correction API with original/new values, reason and actor |
+| A4 Attendance reports | ⬜ | — | Daily roster, date-range query, printable export and retention |
+| A5 Offline attendance | ⬜ | — | Idempotency keys, client event IDs, sync protocol and conflict resolution |
+| A6 Kiosk/mobile attendance | ⬜ | — | Kiosk session/authentication and fast guardian flow |
+| C1 Versioned rules engine | ⬜ | — | Jurisdiction, provider type, effective dates, citations and verified rule versions |
+| C2 Georgia ratio engine | 🟡 | Manually stored `studentsPerTeacher` value | Age/walking status, mixed-age formulas, group size, exceptions and effective versions |
+| C3 Ratio warnings | ⬜ | Current presence can be queried through room responses | Server-calculated thresholds, violations, explanations and resolution suggestions |
+| C4 Staff profiles | ✅ | CRUD, status, certification, medical, emergency contact, weekly availability and rooms | Termination/access policy beyond inactive status |
+| C5 Staff documents | ✅ | Database-backed CRUD, media and expiry date | Compliance requirement mapping and renewal reminders |
+| C6 Georgia staff compliance | ⬜ | Generic document types only | KOALA, GAPS, NCPA/VCA, background status, training hours, qualification rules |
+| C7 Incident reporting | ⬜ | — | Structured incidents, attachments, signatures, notifications, acknowledgment and escalation |
+| C8 Medication administration | ⬜ | Free-text medication profile fields and unused `StudentMedice` model | Authorizations, dosage/schedule, administration events, reactions and safety checks |
+| C9 Policy acknowledgments | ⬜ | — | Versioned policies, audiences, signatures and re-acknowledgment |
+| C10 Emergency drills | ⬜ | Generic `Event` model has no routes | Drill types, cadence, completion, retention and corrective action |
+| C11 Weekly menus | ⬜ | — | Meals, recurrence, rooms, substitutions, allergy conflicts, retention and export |
+| C12 DECAL inspection packet | ⬜ | — | Evidence queries, bundle generation, manifest and export |
+| P1 Parent messaging | 🟡 | Strong employee conversation/message backend and WebSockets | Parent accounts/participants, delivery policy, parent-facing authorization |
+| P2 Announcements/newsletters | ⬜ | — | Drafts, templates, audiences, scheduling and delivery |
+| P3 Urgent alerts | ⬜ | Notification functions only log to stdout | Delivery providers, priority, acknowledgment, retries and escalation |
+| P4 Incident acknowledgment | ⬜ | — | Secure parent acknowledgment tokens and evidence |
+| S1 Security baseline | 🟡 | JWT sessions, refresh rotation/reuse detection, tenant helpers, role authorization | Fix public provisioning/company tenancy/OAuth state, add MFA, audit, retention and security tests |
+| B1–B8 Billing/payments | ⬜ | — | Complete ledger, plans, invoices, adjustments, payments, statements and reconciliation |
+| CAPS1–CAPS4 | ⬜ | — | Authorizations, attendance comparison, exceptions, evidence and exports |
+| O1 Staff time clock | 🟡 | Current staff room presence | Historical shifts, corrections, approvals and reports |
+| O2 Staff scheduling | 🟡 | Weekly availability JSON | Shifts, breaks, coverage and conflict detection |
+| O3 Multi-location | ⬜ | One company can own rooms | Location model, assignment, switching and aggregate reporting |
+| O4 Migration tooling | ⬜ | — | Imports, deduplication, validation, rollback and audit report |
+
+## Frontend/backend contract gaps
+
+| Area | Frontend behavior | Backend behavior | Impact |
+| --- | --- | --- | --- |
+| Student creation | Sends `parents`, `tags`, `medicalInfo`, `roomIds` and optional multipart avatar | Accepts a small JSON body with singular `roomId`; avatar uses a separate endpoint whose multipart field is `file` | Student creation can reject or discard intended relational data; avatar creation flow is incompatible |
+| Student update | Sends parent changes, removed parent IDs, tags and medical information | Update schema accepts only basic student fields | Profile edits cannot persist the full frontend model |
+| Staff creation | UI collects optional profile data and permissions; submit is not wired | API requires a password and supports real employee creation/invite | Existing backend capability is unused and request shapes need alignment |
+| Staff documents | Frontend now uses the employee document list, upload and delete APIs | Complete database-backed document API | Base integration is complete; metadata editing and compliance reminders remain |
+| Messages | Frontend now uses conversation listing, cursor-paginated history, message sending, favorites, read state and WebSocket updates | Complete conversations, messages and WebSocket APIs | Conversation creation/search/actions and parent participation remain |
+| Roles | Frontend offers `manager`, `teacher`, `assistant`, `admin` and custom permission selections | Backend supports `superadmin`, `admin`, `manager`, `teacher`; permissions are hard-coded by role | `assistant` requests fail and selected custom permissions are not persisted |
+| Meals/calendar | Frontend has mock services | Backend has no meal routes; generic `Event` model has no routes | Persistence APIs still need to be designed |
+
+## Release-blocking findings
+
+### 🔴 Public employee creation accepts an arbitrary company ID
+
+`POST /api/v1/auth/register` and `POST /api/v1/auth/create` are public and create an employee in any supplied `companyId`. The `/create` route is described as admin creation but has no authentication or authorization.
+
+**Required fix:** remove or tightly constrain public registration, make admin creation use the protected employee endpoint, and use an invitation or signed enrollment token when public onboarding is required.
+
+### 🔴 Company CRUD is cross-tenant
+
+Company routes authorize by role, but company controller reads and writes by global company ID without applying `tenantWhere(user)`. An administrator receives `companies:*`, so a known foreign company UUID can be read, updated, or deleted.
+
+**Required fix:** company access must be scoped to `currentUser.companyId`; keep any platform-level administration in a separate, explicitly controlled trust boundary.
+
+### 🔴 OAuth state is generated but never verified
+
+The OAuth initialization route sets a state cookie, and `verifyOAuthState` exists, but the callback does not compare the query state with the cookie. Its Swagger summary incorrectly claims state verification.
+
+**Required fix:** verify and consume OAuth state for redirect flows. If the SPA authorization-code popup intentionally uses a different contract, separate that route and document its CSRF protections explicitly.
+
+### 🔴 Attendance history is destroyed on checkout
+
+`RoomPresence` stores only `roomId`, `userId`, `userType`, and `startTime`. Check-in deletes any previous presence, and checkout deletes the active record. This supports a live room roster but cannot support Georgia attendance retention, corrections, CAPS reconciliation, or inspection evidence.
+
+**Required fix:** introduce immutable attendance events/sessions with arrival, departure, actor, guardian acknowledgment, source device, correction history, and idempotency metadata. Keep live presence as a projection, not the legal record.
+
+### 🟠 Verification and reset messages are not delivered
+
+Email and SMS functions only write verification codes to stdout. Invitations and password reset appear successful but cannot reach users outside local development.
+
+**Required fix:** add a production notification provider, delivery status, retries, safe logging, and environment-specific development capture.
+
+### 🟠 Resource APIs lack meaningful test coverage
+
+Current tests cover a small OAuth slice, the chat hub, and health behavior. There are no integration tests for tenant isolation, authorization matrices, employee/student/room CRUD, documents, presence, or conversations.
+
+**Required fix:** add database integration tests around tenant boundaries and the high-risk mutation paths before expanding compliance functionality.
+
+## Static analysis and verification
+
+| Check | Result |
+| --- | --- |
+| `bunx tsc --noEmit` | ✅ Passed |
+| `bunx prisma validate` | ✅ Passed |
+| `bun test` | ✅ 4 passed, 3 skipped, 0 failed |
+| Fallow dependency graph | ✅ No unresolved imports, circular dependencies, re-export cycles, or boundary violations |
+| Fallow cleanup findings | 🟡 46 findings: 2 unused files, 27 unused exports, 14 unused types, 1 unused dependency, 2 duplicate exports |
+
+The passing tests do not prove database-backed resource behavior because those paths currently have little or no integration coverage.
+
+## Recommended implementation sequence
+
+1. Fix public registration, company tenancy, OAuth state verification, and production notification delivery.
+2. Align frontend/backend roles and the student/employee payload contracts.
+3. Complete the remaining employee-document metadata editing and conversation creation/search actions.
+4. Add organization locations and an immutable audit-event foundation.
+5. Replace current-only presence with auditable attendance sessions/events and an atomic room-transfer API.
+6. Add parent/guardian, pickup authorization, child medical, immunization, consent, and completeness APIs.
+7. Add the versioned Georgia rules and ratio engine.
+8. Add incidents, medication administration, policies, drills, menus, and inspection exports.
+9. Add billing/payments, then CAPS reconciliation.
+
+The first implementation step should therefore be a **security and contract-alignment milestone**, before adding new compliance domains.

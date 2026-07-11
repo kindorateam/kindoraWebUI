@@ -85,9 +85,11 @@ const RoomStudentsTable = ({ roomId }: RoomStudentsTableProps) => {
 								<Table.Header>
 									<Table.Column className="pr-0">
 										<Checkbox aria-label={t("rooms.studentsTable.selectAll")} slot="selection">
-											<Checkbox.Control>
-												<Checkbox.Indicator />
-											</Checkbox.Control>
+											<Checkbox.Content>
+												<Checkbox.Control>
+													<Checkbox.Indicator />
+												</Checkbox.Control>
+											</Checkbox.Content>
 										</Checkbox>
 									</Table.Column>
 									{columns.map((column) => (
@@ -112,9 +114,11 @@ const RoomStudentsTable = ({ roomId }: RoomStudentsTableProps) => {
 														slot="selection"
 														variant="secondary"
 													>
-														<Checkbox.Control>
-															<Checkbox.Indicator />
-														</Checkbox.Control>
+														<Checkbox.Content>
+															<Checkbox.Control>
+																<Checkbox.Indicator />
+															</Checkbox.Control>
+														</Checkbox.Content>
 													</Checkbox>
 												</Table.Cell>
 												<Table.Collection items={columns}>

@@ -35,7 +35,7 @@ const AddStaffModal = () => {
 	return (
 		<Modal.Backdrop isOpen={isOpen} onOpenChange={(open) => !open && closeAddStaffModal()}>
 			<Modal.Container className={isLastStep ? "max-w-4xl" : "max-w-xl"}>
-				<Modal.Dialog>
+				<Modal.Dialog aria-label={t("staff.addStaff.title")}>
 					<Modal.CloseTrigger />
 					{isOpen ? (
 						<Modal.Body className="p-0">

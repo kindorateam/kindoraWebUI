@@ -5,10 +5,12 @@ description: Apply the installed HeroUI v3 patterns whenever creating or modifyi
 
 # HeroUI v3
 
-The project currently pins HeroUI 3.0.3 and uses its compound-component API on top of React Aria. Check `package.json` before assuming a version, inspect nearby working components, and use the `heroui-react` MCP server for unfamiliar APIs:
+The project currently pins HeroUI 3.2.2 and uses its compound-component API on top of React Aria. Check `package.json` before assuming a version and inspect nearby working components. Use the independently installed official `heroui-react` skill to fetch component documentation, source, styles, themes, or guides. Use the `heroui-react` MCP server as a supplementary source for unfamiliar APIs:
 
-1. Call `get_component_docs` for the component's current API and examples
+1. Call `get_component_docs` for the component's documented API and examples
 2. Use `get_component_source_code` or `get_component_source_styles` only when debugging internals
+
+Cross-check recent version changes against official release notes when fetched tooling reports older metadata.
 
 HeroUI v2 examples and training-data memory are not compatible by default.
 
@@ -48,6 +50,15 @@ HeroUI v2 examples and training-data memory are not compatible by default.
 ```
 
 Use `Dropdown.Trigger` only when the trigger content is not already a button.
+
+## Toggle Composition
+
+HeroUI 3.2 uses explicit content composition for `Checkbox`, `Radio`, and `Switch`.
+
+- Put `*.Control` inside `*.Content`
+- Put label text directly inside `*.Content`; do not nest a `Label`
+- Keep `Description` and `FieldError` as siblings of `*.Content`
+- Control-only table selections still require `*.Content` around `*.Control` and an accessible label on the root
 
 ## Finish
 

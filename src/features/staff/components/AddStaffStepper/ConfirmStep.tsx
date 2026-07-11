@@ -1,4 +1,4 @@
-import { Label, Switch } from "@heroui/react"
+import { Switch } from "@heroui/react"
 import { Controller, useFormContext } from "react-hook-form"
 import { useTranslation } from "react-i18next"
 
@@ -154,11 +154,11 @@ const ConfirmStep = () => {
 					<div className="flex w-full items-center justify-between">
 						<span className="text-default-600 text-sm">{t("staff.addStaff.invitePrompt")}</span>
 						<Switch isSelected={field.value} onChange={field.onChange} size="sm">
-							<Switch.Control>
-								<Switch.Thumb />
-							</Switch.Control>
 							<Switch.Content>
-								<Label>{t("staff.addStaff.invite")}</Label>
+								<Switch.Control>
+									<Switch.Thumb />
+								</Switch.Control>
+								{t("staff.addStaff.invite")}
 							</Switch.Content>
 						</Switch>
 					</div>

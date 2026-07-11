@@ -126,6 +126,9 @@ const es = {
 	},
 	nav: {
 		primaryAria: "Principal",
+		closeMenu: "Cerrar navegación",
+		logoAlt: "Inicio de Kindora",
+		openMenu: "Abrir navegación",
 		dashboard: "Panel",
 		mySchool: "Mi escuela",
 		insights: "Información",
@@ -197,6 +200,7 @@ const es = {
 			yellow: "Amarillo",
 		},
 		delete: {
+			title: "Eliminar evento",
 			confirmPrefix: "¿Seguro que quieres eliminar",
 			confirmSuffix: "?",
 			description: "Esta acción no se puede deshacer.",
@@ -327,10 +331,24 @@ const es = {
 			favorites: "Favoritos",
 		},
 		sidebar: {
+			loadError: "No pudimos cargar las conversaciones",
+			loadMore: "Cargar más conversaciones",
+			loadMoreError: "No pudimos cargar más conversaciones.",
+			loading: "Cargando conversaciones",
 			noConversationsDescription: "Prueba con otro nombre o cambia de pestaña.",
 			noConversationsFound: "No se encontraron conversaciones",
+			retry: "Intentar de nuevo",
 			searchLabel: "Buscar chat",
 			searchPlaceholder: "Busca por familia o nombre del estudiante",
+		},
+		conversation: {
+			empty: "Aún no hay mensajes en esta conversación.",
+			loadOlder: "Cargar mensajes anteriores",
+			loadError: "No pudimos cargar esta conversación",
+			loading: "Cargando mensajes",
+			olderLoadError: "No pudimos cargar los mensajes anteriores.",
+			retry: "Intentar de nuevo",
+			retryOlder: "Reintentar mensajes anteriores",
 		},
 		empty: {
 			noConversationSelected: "No hay conversación seleccionada",
@@ -349,9 +367,13 @@ const es = {
 			sendMessage: "Enviar mensaje",
 		},
 		parents: {
+			contactDetails: "Datos de contacto de {{name}}",
+			email: "Correo electrónico",
 			moreParents: "{{count}} padre/madre más",
 			moreParents_other: "{{count}} padres más",
 			noParentsLinked: "No hay padres vinculados",
+			phone: "Teléfono",
+			phoneUnavailable: "No proporcionado",
 		},
 		composer: {
 			inputAria: "Escribe tu mensaje",
@@ -370,8 +392,15 @@ const es = {
 			retry: "Reintentar",
 		},
 		thread: {
+			attachment: "Archivo adjunto",
 			newCount: "{{count}} nuevo",
 			newCount_other: "{{count}} nuevos",
+			noMessages: "Aún no hay mensajes",
+			untitled: "Conversación",
+		},
+		toast: {
+			favoriteFailed: "No se pudo actualizar el favorito",
+			sendFailed: "No se pudo enviar el mensaje",
 		},
 	},
 	newsletters: {
@@ -801,6 +830,7 @@ const es = {
 				covidVaccination: "Vacuna contra COVID-19",
 				cprCertification: "Certificación CPR",
 				employmentContract: "Contrato laboral",
+				other: "Otro",
 				tuberculosisTest: "Prueba de tuberculosis",
 			},
 		},
