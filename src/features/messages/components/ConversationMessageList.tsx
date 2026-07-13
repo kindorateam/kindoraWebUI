@@ -56,7 +56,7 @@ const ConversationMessageList = ({
 	}
 
 	return (
-		<div className="flex flex-col gap-4">
+		<div className="flex flex-col">
 			{hasOlderMessages || isOlderMessagesError ? (
 				<div className="flex flex-col items-center gap-2 pb-1 text-center">
 					{isOlderMessagesError ? (
@@ -67,9 +67,24 @@ const ConversationMessageList = ({
 					</Button>
 				</div>
 			) : null}
-			{messages.map((bubble) => (
-				<ConversationBubble key={bubble.id} bubble={bubble} />
-			))}
+			{messages.map((bubble, index) => {
+				const previous = messages[index - 1]
+				const startsDate = !previous || previous.dateKey !== bubble.dateKey
+				const startsGroup = startsDate || previous.senderId !== bubble.senderId
+
+				return (
+					<div className="contents" key={bubble.id}>
+						{startsDate ? (
+							<div className="my-3 flex justify-center first:mt-0">
+								<span className="rounded-full bg-default-100 px-3 py-1 font-medium text-default-500 text-xs">
+									{bubble.dateLabel}
+								</span>
+							</div>
+						) : null}
+						<ConversationBubble bubble={bubble} startsGroup={startsGroup} />
+					</div>
+				)
+			})}
 		</div>
 	)
 }

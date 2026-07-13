@@ -18,7 +18,7 @@ const ThreadFavorite = ({ favorite, onToggle }: ThreadFavoriteProps) => {
 			aria-label={
 				favorite === "idle" ? t("messages.actions.addToFavorites") : t("messages.actions.removeFromFavorites")
 			}
-			className="shrink-0 cursor-pointer rounded-full p-1 text-default-500 transition-colors hover:bg-default-100"
+			className="flex size-10 shrink-0 cursor-pointer items-center justify-center rounded-full text-default-500 transition-colors hover:bg-default-100"
 			type="button"
 			onClick={onToggle}
 		>

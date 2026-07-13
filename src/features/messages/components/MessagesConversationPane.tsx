@@ -1,11 +1,10 @@
-import { Avatar, Button, Chip, Input, ScrollShadow, Spinner, Tooltip } from "@heroui/react"
+import { Avatar, Button, Chip, Input, ScrollShadow, Spinner, TextField, Tooltip, toast } from "@heroui/react"
 import clsx from "clsx"
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
 
 import FluentPerson16Filled from "~icons/fluent/person-16-filled"
 import MdiArrowLeft from "~icons/mdi/arrow-left"
-import MdiDotsVertical from "~icons/mdi/dots-vertical"
 import MdiMagnify from "~icons/mdi/magnify"
 import MingcuteSendFill from "~icons/mingcute/send-fill"
 import SolarPaperclipLinear from "~icons/solar/paperclip-linear"
@@ -100,7 +99,7 @@ const MessagesConversationPane = ({
 
 	if (!thread) {
 		return (
-			<section className={clsx("min-h-0 w-full", className)}>
+			<section className={clsx("min-h-0 w-full min-w-0", className)}>
 				<div className="flex h-full min-h-0 w-full flex-col rounded-2xl border border-default-200 bg-content1">
 					<div className="flex flex-1 flex-col items-center justify-center px-6 text-center">
 						{isLoadingThreads ? (
@@ -139,8 +138,8 @@ const MessagesConversationPane = ({
 	}
 
 	return (
-		<section className={clsx("min-h-0 w-full", className)}>
-			<div className="flex h-full min-h-0 w-full flex-col overflow-hidden rounded-2xl border border-default-200 bg-content1">
+		<section className={clsx("min-h-0 w-full min-w-0", className)}>
+			<div className="flex h-full min-h-0 w-full flex-col overflow-hidden rounded-2xl border border-default-200 bg-content1 md:-ml-px md:rounded-l-none">
 				<div className="flex items-start justify-between gap-2 border-default-200 border-b px-3 py-3 sm:gap-4 sm:px-4">
 					<div className="flex min-w-0 flex-1 items-start gap-3">
 						{showBackButton ? (
@@ -207,11 +206,14 @@ const MessagesConversationPane = ({
 					</div>
 
 					<div className="flex shrink-0 items-center gap-1">
-						<Button aria-label={t("messages.actions.searchMessages")} isIconOnly size="sm" variant="ghost">
+						<Button
+							aria-label={t("messages.actions.searchMessages")}
+							isIconOnly
+							size="sm"
+							variant="ghost"
+							onPress={() => toast.info(t("messages.toast.searchUnavailable"))}
+						>
 							<MdiMagnify className="size-5" />
-						</Button>
-						<Button aria-label={t("messages.actions.moreConversationActions")} isIconOnly size="sm" variant="ghost">
-							<MdiDotsVertical className="size-5" />
 						</Button>
 					</div>
 				</div>
@@ -237,26 +239,32 @@ const MessagesConversationPane = ({
 						/>
 					</ScrollShadow>
 
-					<div className="border-default-200 border-t p-2.5 sm:p-3">
+					<div className="border-default-200 border-t bg-content1 p-2.5 sm:p-3">
 						<div className="flex items-end gap-2">
-							<Button aria-label={t("messages.actions.attachFile")} isDisabled isIconOnly variant="ghost">
+							<Button
+								aria-label={t("messages.actions.attachFile")}
+								isIconOnly
+								variant="ghost"
+								onPress={() => toast.info(t("messages.toast.attachmentsUnavailable"))}
+							>
 								<SolarPaperclipLinear className="size-5" />
 							</Button>
-							<Input
-								aria-label={t("messages.composer.inputAria")}
-								className="flex-1"
-								disabled={!isConnected || isSendingMessage}
-								placeholder={t("messages.composer.placeholder")}
-								value={draft}
-								variant="secondary"
-								onChange={(event) => setDraft(event.target.value)}
-								onKeyDown={(event) => {
-									if (event.key === "Enter" && !event.shiftKey) {
-										event.preventDefault()
-										void handleSend()
-									}
-								}}
-							/>
+							<TextField className="flex-1" fullWidth variant="secondary">
+								<Input
+									aria-label={t("messages.composer.inputAria")}
+									disabled={!isConnected || isSendingMessage}
+									fullWidth
+									placeholder={t("messages.composer.placeholder")}
+									value={draft}
+									onChange={(event) => setDraft(event.target.value)}
+									onKeyDown={(event) => {
+										if (event.key === "Enter" && !event.shiftKey) {
+											event.preventDefault()
+											void handleSend()
+										}
+									}}
+								/>
+							</TextField>
 							<Button
 								aria-label={t("messages.actions.sendMessage")}
 								isDisabled={!isConnected || !draft.trim()}

@@ -41,8 +41,8 @@ const MessagesPage = () => {
 	} = useMessages()
 
 	return (
-		<div className="flex h-[calc(100dvh-112px)] min-h-0 flex-col gap-3 bg-default-50/40 px-3 py-3 sm:gap-4 sm:px-4 sm:py-4 lg:px-6">
-			<div className="grid min-h-0 flex-1 gap-4 overflow-hidden md:grid-cols-[minmax(270px,320px)_minmax(0,1fr)]">
+		<div className="flex h-[calc(100dvh-112px)] min-h-0 flex-col px-3 py-3 sm:px-4 sm:py-4 lg:px-6">
+			<div className="grid min-h-0 min-w-0 flex-1 gap-3 overflow-hidden md:grid-cols-[minmax(270px,320px)_minmax(0,1fr)] md:gap-0">
 				<MessagesSidebar
 					className={clsx(isMobileConversationOpen && "hidden md:flex")}
 					hasMore={hasMoreConversations}

@@ -1,136 +1,85 @@
 # Authentication Hardening Roadmap
 
-The web frontend already uses opaque server-side sessions stored in PostgreSQL and referenced by Secure, HttpOnly cookies. The items below are follow-up improvements, primarily for explicit non-browser clients and production operations.
+Kindora web authentication uses short-lived access JWTs held only in browser memory and rotating opaque refresh tokens in Secure, HttpOnly, SameSite cookies. PostgreSQL is authoritative for refresh-token families; Redis coordinates distributed rate limits and WebSocket revocation/fan-out when available.
+
+## Status
+
+| Priority | Item | Status | Notes |
+| --- | --- | --- | --- |
+| High | Hash every refresh token | Complete | PostgreSQL stores only SHA-256 token hashes |
+| High | Atomic refresh rotation and replay handling | Complete | Fixed-lifetime token families revoke on replay |
+| High | Redis-backed distributed auth rate limiting | Complete | Atomic Redis counters; process-local fallback during outages |
+| High | Secure Google Sign-In | Complete | Verified ID tokens, stable `sub`, invited accounts only, one-time nonces |
+| Medium | Logged-in devices and session-management API/UI | Pending | Implement before exposing account session management to users |
+| Conditional | Redis session-validation cache | Deferred | Implement only if database-auth measurements justify it |
+| Medium | Live Google Sign-In provider test | Pending | Requires a dedicated Google test project and browser account |
+
+## Completed controls
+
+### Refresh-token protection
+
+- Raw refresh tokens are returned only to the intended client or browser cookie jar.
+- PostgreSQL stores only SHA-256 hashes.
+- Rotation atomically consumes the current token and creates one descendant.
+- Concurrent rotation has one winner; replay revokes the family.
+- Family expiry is absolute, so rotation cannot extend a session forever.
+- Logout, password reset, account deactivation, and explicit revocation invalidate sessions.
+
+### Distributed authentication rate limiting
+
+- Redis uses an atomic increment-and-expire script shared by API instances.
+- Existing `Retry-After` behavior is preserved.
+- Local development and Redis outages fall back to bounded process-local counters.
+- No password, provider credential, access token, or refresh token is part of a rate-limit key.
+
+### Google Sign-In
+
+- The frontend uses Google Identity Services authentication with FedCM rather than the Google API authorization-code flow.
+- The backend accepts the ID token only in a POST body and never puts provider credentials in URLs.
+- Verification pins RS256, Google's issuer, the configured audience, expiry/issued-at, verified email, stable `sub`, and nonce.
+- Every browser tab receives an independent database-backed nonce; consumption is atomic and single-use.
+- The first verified login may link only to an existing employee email. Unknown Google users are rejected and cannot be auto-provisioned.
+- Later logins resolve by `(provider, sub)`, not mutable email.
+- One Google identity per employee is enforced by database constraints.
 
 ## Remaining work
 
-| Priority | Item | Status | When to implement |
-| --- | --- | --- | --- |
-| High | Hash external-client refresh tokens | Pending | Before enabling mobile or external API clients in production |
-| High | Atomic refresh rotation with token-family and replay tracking | Pending | Before enabling mobile or external API clients in production |
-| High | Redis-backed distributed login rate limiting | Pending | Before running multiple production API instances |
-| Medium | Logged-in devices and session-management API/UI | Pending | Before exposing account session management to users |
-| Conditional | Redis session-validation cache | Deferred | Only after measurements show PostgreSQL session validation is a bottleneck |
-| Medium | Live Google OAuth exchange test | Pending | When a dedicated OAuth test project and credentials are available |
+### Logged-in devices and session management
 
-## 1. Hash external-client refresh tokens
+Backend:
 
-External-client refresh tokens should receive the same database protection as web-session tokens.
-
-- Generate a cryptographically random raw refresh token.
-- Return the raw value only once to the client.
-- Store only a SHA-256 hash in PostgreSQL.
-- Look up refresh sessions using the token hash.
-- Migrate or revoke existing plaintext refresh-token records.
-- Ensure logs, telemetry, and error responses never expose raw tokens.
-
-### Acceptance criteria
-
-- No raw refresh token is stored in PostgreSQL.
-- Login, refresh, logout, and logout-all continue to work for explicit token clients.
-- Tests confirm that database records cannot be used directly as credentials.
-
-## 2. Atomic refresh rotation and token families
-
-Refresh rotation must remain correct when requests arrive concurrently or a consumed token is replayed.
-
-- Add a token-family identifier shared by every rotation descendant.
-- Store parent/replacement relationships or equivalent rotation metadata.
-- Claim a refresh token atomically using a database transaction or compare-and-swap update.
-- Allow only one request to rotate a given token successfully.
-- Detect reuse of consumed tokens.
-- Revoke the affected token family when genuine replay is detected.
-- Add absolute family expiration so rotation cannot extend a session indefinitely.
-- Add concurrency tests that issue simultaneous refresh requests.
-
-### Acceptance criteria
-
-- Exactly one concurrent rotation succeeds.
-- A replayed consumed token cannot mint another access token.
-- Replay revokes the intended token family without affecting unrelated device sessions.
-
-## 3. Distributed login rate limiting
-
-The current in-process limiter does not share counters across API instances. Redis should become the shared rate-limit backend before horizontally scaling the API.
-
-- Use atomic Redis increments with expiration.
-- Key limits by normalized account identifier and client IP where appropriate.
-- Preserve the current `Retry-After` response behavior.
-- Define explicit behavior during Redis outages.
-- Avoid logging passwords, tokens, or sensitive request bodies.
-- Add tests using two independent API instances against the same Redis server.
-
-### Acceptance criteria
-
-- Attempts against instance A affect limits enforced by instance B.
-- Counters expire at the expected time.
-- Redis failure behavior is documented and tested.
-
-## 4. Logged-in devices and session management
-
-Users should eventually be able to inspect and revoke their active web sessions.
-
-### Backend
-
-- Store safe session metadata such as creation time, last activity, approximate device label, and coarse IP information if approved by the privacy policy.
-- Never return session-token hashes.
+- Store safe session metadata such as creation time, last activity, and an approved coarse device label.
 - Add tenant-safe endpoints to list sessions, revoke one session, and revoke all other sessions.
-- Prevent users from revoking another employee's sessions.
-- Broadcast revocation so matching WebSockets close immediately across API instances.
+- Never return refresh-token hashes.
+- Broadcast revocation so matching WebSockets close on every API instance.
 
-### Frontend
+Frontend:
 
-- Add an account-security view listing active sessions.
-- Clearly mark the current session.
-- Provide “Sign out” and “Sign out all other devices” actions with confirmation and loading/error states.
-- Localize all visible text in English and Spanish.
+- Add an account-security view listing only the current employee's sessions.
+- Mark the current session and provide localized revoke actions with confirmation and loading/error states.
 
-### Acceptance criteria
+### Redis session-validation cache
 
-- Users see only their sessions.
-- Revoking a session invalidates its API requests and closes its chat sockets.
-- Cross-tab logout behavior remains consistent.
+This remains intentionally deferred. PostgreSQL stays authoritative. Add a short-lived Redis cache only if production traces show session validation materially affects latency or database capacity; cache entries must never outlive or override authoritative expiry/revocation.
 
-## 5. Redis session-validation cache
+### Live Google provider test
 
-This is intentionally deferred until production measurements show PostgreSQL session validation is a meaningful bottleneck.
+Deterministic tests already cover cryptographic claim validation with local signing keys, origin enforcement, nonce replay, concurrent tabs, invitation-only linking, stable-subject lookup, and duplicate-link rejection.
 
-If justified:
+A real provider test still requires infrastructure that cannot live in the repository:
 
-- Keep PostgreSQL as the authoritative session store.
-- Cache only the minimum validation result in Redis.
-- Use a short TTL, initially 30–60 seconds.
-- Delete cache entries when sessions are revoked.
-- Broadcast revocation across API instances.
-- Fall back to PostgreSQL when Redis is unavailable.
-- Never allow a cache entry to outlive the authoritative session expiration.
+- A separate Google Cloud test project and web client.
+- Exact test HTTPS origins and no production tenant access.
+- A dedicated test Google account stored in CI/browser secrets.
+- Assertions for consent, cancellation, invalid audience, provider-key rotation, and cleanup.
 
-### Decision gate
+## Production checklist
 
-Implement only when traces or database metrics show session-validation queries materially affect latency or database capacity.
-
-## 6. Live Google OAuth exchange test
-
-Current automated coverage verifies signed OAuth state generation, mismatch rejection, and tamper rejection. A complete provider exchange requires a dedicated Google OAuth test project.
-
-- Create isolated test client credentials and redirect URIs.
-- Keep credentials in CI secrets, never in the repository.
-- Test popup state issuance and single-use callback consumption.
-- Test the server-redirect flow separately.
-- Cover invalid state, replayed state, denied consent, invalid code, and inactive accounts.
-- Ensure tests cannot create users in a production company.
-
-### Acceptance criteria
-
-- A real authorization-code exchange succeeds in the test environment.
-- Missing, mismatched, expired, and replayed states fail.
-- Test-created accounts and sessions are cleaned up.
-
-## Recommended implementation order
-
-1. Hash external refresh tokens.
-2. Add atomic token-family rotation and replay handling.
-3. Move login rate limiting to Redis.
-4. Add the devices/session-management API and UI.
-5. Add the live Google OAuth test environment.
-6. Reconsider Redis session caching only after performance measurement.
+- Use separate Google Cloud projects for development and production.
+- Register only exact owned HTTPS origins in the production client.
+- Keep the OAuth consent screen, verified domains, privacy policy, and support contacts current.
+- Set `COOKIE_SECURE=true` and a strong `JWT_SECRET`.
+- Configure Redis for every multi-instance deployment and alert on local rate-limit fallback logs.
+- Leave `TRUST_PROXY` disabled unless a trusted reverse proxy replaces forwarded-IP headers.
+- Allow the Google Identity Services script, frame, and connection origins in the production Content Security Policy.
+- Apply database migrations before deploying the frontend that calls `/auth/google`.

@@ -9,6 +9,8 @@ import {
 	authInitializedAtom,
 	clearAuth,
 	clearLegacyAuthStorage,
+	expectAuthSession,
+	getAuthCredentials,
 	mapUserResponse,
 	setAuthInitialized,
 	setAuthUser,
@@ -36,16 +38,20 @@ export const useAuthBootstrap = () => {
 		}
 
 		void initializeAuth()
-		const unsubscribe = subscribeToAuthEvents((event) => {
+		const unsubscribe = subscribeToAuthEvents(({ event, sessionVersion }) => {
 			if (event === "session-ended") {
-				clearAuth()
-				redirectToLogin()
+				if (clearAuth(sessionVersion)) redirectToLogin()
 				return
 			}
 
-			void restoreSession().then((response) => {
-				if (isActive && response) setAuthUser(mapUserResponse(response))
-			})
+			expectAuthSession(sessionVersion)
+			void (async () => {
+				let response = await restoreSession()
+				if (!response && getAuthCredentials().sessionVersion === sessionVersion) response = await restoreSession()
+				if (isActive && response && getAuthCredentials().sessionVersion === sessionVersion) {
+					setAuthUser(mapUserResponse(response))
+				}
+			})()
 		})
 		return () => {
 			isActive = false

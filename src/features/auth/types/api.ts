@@ -11,12 +11,15 @@ export interface EmailRegisterCredentials extends EmailLoginCredentials {
 }
 
 export interface SessionResponse {
-	authenticated: true
+	accessToken: string
 	expiresAt: string
+	role: string
+	sessionVersion: string
 }
 
-export interface OAuthStateResponse {
-	state: string
+export interface GoogleLoginNonceResponse {
+	nonce: string
+	expiresAt: string
 }
 
 export interface VerificationRequiredResponse {

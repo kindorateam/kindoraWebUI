@@ -85,6 +85,8 @@ const es = {
 		signIn: {
 			forgotPassword: "¿Olvidaste tu contraseña?",
 			google: "Iniciar sesión con Google",
+			googleFailed: "No se pudo iniciar sesión con Google",
+			googleFailedDescription: "Inténtalo de nuevo o usa tu correo y contraseña de Kindora.",
 			loginFailed: "No se pudo iniciar sesión",
 			or: "O",
 			rememberMe: "Recordarme",
@@ -349,6 +351,8 @@ const es = {
 			olderLoadError: "No pudimos cargar los mensajes anteriores.",
 			retry: "Intentar de nuevo",
 			retryOlder: "Reintentar mensajes anteriores",
+			today: "Hoy",
+			yesterday: "Ayer",
 		},
 		empty: {
 			noConversationSelected: "No hay conversación seleccionada",
@@ -361,7 +365,6 @@ const es = {
 			addToFavorites: "Agregar a favoritos",
 			attachFile: "Adjuntar archivo",
 			backToConversations: "Volver a conversaciones",
-			moreConversationActions: "Más acciones de conversación",
 			removeFromFavorites: "Quitar de favoritos",
 			searchMessages: "Buscar mensajes",
 			sendMessage: "Enviar mensaje",
@@ -399,7 +402,9 @@ const es = {
 			untitled: "Conversación",
 		},
 		toast: {
+			attachmentsUnavailable: "Los archivos adjuntos aún no están disponibles",
 			favoriteFailed: "No se pudo actualizar el favorito",
+			searchUnavailable: "La búsqueda de mensajes aún no está disponible",
 			sendFailed: "No se pudo enviar el mensaje",
 		},
 	},

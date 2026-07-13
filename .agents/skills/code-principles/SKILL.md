@@ -47,7 +47,9 @@ Remove repeated policy and infrastructure before repeated presentation details.
 ## Repository Rules
 
 - Use typed `apiClient` methods; never call Axios directly outside `src/services/api.service.ts`
-- Use `atomWithStorage` only for non-sensitive persisted state; keep authentication credentials and user profiles in plain memory-backed atoms
+- Use `atomWithStorage` only for non-sensitive persisted state; keep access JWTs and user profiles in plain memory-backed atoms, and leave refresh tokens exclusively in HttpOnly cookies
+- Preserve the single-flight refresh promise, cross-tab `navigator.locks` rotation lock, and versioned credential-free `BroadcastChannel` events when changing auth code
+- Preserve Google Sign-In's one-time server nonce and ID-token POST flow; never switch authentication back to provider codes in URLs or client-supplied identity data
 - Never access `localStorage` directly
 - Use Iconify through `~icons/`; never add inline SVG markup or another icon library
 - Use arrow functions for React components and one default export per component file

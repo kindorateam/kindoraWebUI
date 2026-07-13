@@ -2,15 +2,15 @@ import { apiClient } from "@/services/api.service"
 
 import type {
 	EmailLoginCredentials,
+	GoogleLoginNonceResponse,
 	LoginResponse,
-	OAuthStateResponse,
 	SessionResponse,
 	UserProfileResponse,
 } from "../types"
 
 /**
  * Sign in with email and password
- * Establishes an opaque HttpOnly server session or returns verification-required status.
+ * Returns an access JWT for memory and sets a rotating HttpOnly refresh cookie.
  */
 export async function login(credentials: EmailLoginCredentials): Promise<LoginResponse> {
 	try {
@@ -53,26 +53,21 @@ export async function fetchUserProfile(): Promise<UserProfileResponse> {
 
 export async function restoreSession(): Promise<UserProfileResponse | null> {
 	try {
-		return await apiClient.get<UserProfileResponse>("/users/profile", { skipSessionEndedHandling: true })
+		await apiClient.refreshAccessToken({ failureMode: "silent" })
+		return await fetchUserProfile()
 	} catch {
 		return null
 	}
 }
 
-export const createGoogleOAuthState = (): Promise<OAuthStateResponse> =>
-	apiClient.get<OAuthStateResponse>("/auth/oauth/google/state")
+export const createGoogleLoginNonce = (): Promise<GoogleLoginNonceResponse> =>
+	apiClient.post<GoogleLoginNonceResponse>("/auth/google/nonce")
 
-export const loginWithGoogle = async (code: string, state: string, origin: string): Promise<SessionResponse> => {
-	return apiClient.get<SessionResponse>("/auth/oauth/google/callback", {
-		headers: {
-			CustomOrigin: origin,
-		},
-		params: { code, state },
-	})
-}
+export const loginWithGoogle = (credential: string): Promise<SessionResponse> =>
+	apiClient.post<SessionResponse>("/auth/google", { credential })
 
 /**
- * Revoke the current server session and clear its HttpOnly cookie.
+ * Revoke the current token family and clear its HttpOnly refresh cookie.
  */
 export async function logout(): Promise<void> {
 	await apiClient.post("/auth/logout")
@@ -96,7 +91,7 @@ export async function verifyPasswordResetOTP(email: string, code: string): Promi
 
 /**
  * Verify first login with OTP code
- * Activates the user and establishes an opaque server session.
+ * Activates the user, returns an access JWT, and sets a refresh cookie.
  */
 export async function verifyFirstLogin(email: string, code: string): Promise<SessionResponse> {
 	return apiClient.post<SessionResponse>("/auth/login/verify", {

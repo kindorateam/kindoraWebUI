@@ -3,7 +3,6 @@ import clsx from "clsx"
 import { useTranslation } from "react-i18next"
 
 import FluentPerson16Filled from "~icons/fluent/person-16-filled"
-import MdiClockTimeFourOutline from "~icons/mdi/clock-time-four-outline"
 
 import ThreadFavorite from "./ThreadFavorite"
 
@@ -22,7 +21,7 @@ const ThreadCard = ({ isSelected, item, onPress, onToggleFavorite }: ThreadCardP
 	return (
 		<div
 			className={clsx(
-				"flex w-full items-start gap-3 rounded-xl border px-3 py-3 transition-colors",
+				"flex w-full min-w-0 items-center gap-2 overflow-hidden rounded-xl border px-3 py-2.5 transition-colors",
 				isSelected
 					? "border-accent/20 bg-accent/[0.06]"
 					: item.favorite === "favorite"
@@ -31,7 +30,7 @@ const ThreadCard = ({ isSelected, item, onPress, onToggleFavorite }: ThreadCardP
 			)}
 		>
 			<button
-				className="flex min-w-0 flex-1 items-start gap-3 text-left"
+				className="flex min-w-0 flex-1 items-center gap-3 text-left"
 				type="button"
 				onClick={() => onPress(item.id)}
 			>
@@ -43,24 +42,33 @@ const ThreadCard = ({ isSelected, item, onPress, onToggleFavorite }: ThreadCardP
 				</Avatar>
 
 				<div className="min-w-0 flex-1">
-					<div className="flex items-start gap-3">
+					<div className="flex items-center gap-2">
 						<div className="min-w-0 flex-1">
-							<p className="truncate font-medium text-foreground text-sm leading-5">{item.name}</p>
-							<p className="mt-1 line-clamp-2 text-default-500 text-sm leading-5">{item.preview}</p>
+							<p
+								className={clsx(
+									"truncate text-foreground text-sm leading-5",
+									item.unreadCount ? "font-semibold" : "font-medium",
+								)}
+							>
+								{item.name}
+							</p>
 						</div>
-						<div className="flex shrink-0 flex-col items-end gap-2">
-							<span className="whitespace-nowrap text-default-400 text-xs leading-4">{item.time}</span>
-						</div>
+						<span className="shrink-0 whitespace-nowrap text-default-400 text-xs leading-4">{item.activityLabel}</span>
 					</div>
 
-					<div className="mt-3 flex flex-wrap items-center gap-2 text-default-400 text-xs leading-4">
-						<div className="flex items-center gap-1.5">
-							<MdiClockTimeFourOutline className="size-4 shrink-0" />
-							<span>{item.dateLabel}</span>
-						</div>
+					<div className="mt-1 flex items-center gap-2">
+						<p
+							className={clsx(
+								"min-w-0 flex-1 truncate text-sm leading-5",
+								item.unreadCount ? "text-foreground" : "text-default-500",
+							)}
+						>
+							{item.preview}
+						</p>
 						{item.unreadCount ? (
-							<span className="inline-flex items-center rounded-full bg-success px-2 py-0.5 font-medium text-[11px] text-white shadow-sm">
-								{t("messages.thread.newCount", { count: item.unreadCount })}
+							<span className="inline-flex size-5 shrink-0 items-center justify-center rounded-full bg-accent font-semibold text-[11px] text-accent-foreground">
+								<span aria-hidden>{item.unreadCount > 9 ? "9+" : item.unreadCount}</span>
+								<span className="sr-only">{t("messages.thread.newCount", { count: item.unreadCount })}</span>
 							</span>
 						) : null}
 					</div>

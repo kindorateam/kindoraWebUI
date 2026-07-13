@@ -124,13 +124,15 @@ Do not skip layers. Components should consume hooks, not call service modules di
 
 ## Auth Flow
 
-- Web authentication uses an opaque server-side session referenced by a Secure, HttpOnly, SameSite cookie
-- No access or refresh token is exposed to frontend JavaScript; the in-memory auth atom contains only the current user profile
-- Startup restores UI state by fetching the current user profile with the session cookie
-- `BroadcastChannel` synchronizes login/logout state across tabs without transmitting credentials
+- Web authentication uses a short-lived access JWT held only in a plain in-memory atom; never persist it to `localStorage`, `sessionStorage`, IndexedDB, or cookies
+- The rotating refresh token is available only to the browser's Secure, HttpOnly, SameSite cookie jar and is never exposed to frontend JavaScript
+- Startup obtains an access JWT from `POST /auth/refresh`, then fetches the current profile; anonymous startup failure stays silent
+- `navigator.locks` serializes refresh-cookie rotation across tabs, while an in-tab promise collapses parallel `401` refreshes
+- `BroadcastChannel` carries only login/logout plus the non-secret session-family version; never broadcast tokens or user data
 - WebSockets authenticate with a short-lived, single-use ticket from `POST /ws/ticket`; never put bearer tokens in WebSocket URLs
-- On `401`, clear the local auth view, notify other tabs, and redirect to login; never attempt browser-side token refresh
-- All browser API calls use `withCredentials`; bearer JWTs are reserved for explicit non-browser API clients
+- On the first protected-request `401`, rotate once and retry once; a refresh failure clears only the matching session version, not a newer cross-tab login
+- All browser API calls use `withCredentials`; `apiClient` attaches the current access JWT as a bearer token and auth endpoints opt out of refresh interception
+- Google authentication uses the GIS ID-token button with FedCM, a database-backed one-time nonce, and `POST /auth/google`; never use Google authorization codes for sign-in or put provider credentials in URLs
 
 ## Claude Code Skills
 

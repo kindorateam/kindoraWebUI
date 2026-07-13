@@ -74,6 +74,10 @@ export interface NewMessageFrame {
 export interface BubbleItem {
 	id: string
 	align: "left" | "right"
+	dateKey: string
+	dateLabel: string
+	senderId: string
+	senderName: string
 	text: string
 	time: string
 }
@@ -83,8 +87,7 @@ export interface ThreadItem {
 	name: string
 	avatarUrl?: string
 	preview: string
-	time: string
-	dateLabel: string
+	activityLabel: string
 	favorite: FavoriteState
 	unreadCount?: number
 	parents: ThreadParent[]

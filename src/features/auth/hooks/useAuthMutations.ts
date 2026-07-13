@@ -12,23 +12,29 @@ import {
 	verifyFirstLogin,
 	verifyPasswordResetOTP,
 } from "../services/auth.service"
-import { clearAuth, mapUserResponse, setAuthUser } from "../stores/auth.store"
+import { clearAuth, getAuthCredentials, mapUserResponse, setAuthCredentials, setAuthUser } from "../stores/auth.store"
 
-import type { LoginResult } from "../types"
+import type { LoginResult, SessionResponse, User } from "../types"
+
+const completeAuthSession = async (session: SessionResponse): Promise<User> => {
+	setAuthCredentials(session)
+	const userResponse = await fetchUserProfile()
+	const user = mapUserResponse(userResponse)
+	setAuthUser(user)
+	publishAuthEvent("session-started", session.sessionVersion)
+	return user
+}
 
 export const useEmailLogin = () => {
 	return useMutation({
 		mutationFn: async (credentials: { email: string; password: string }): Promise<LoginResult> => {
 			const response = await login(credentials)
 
-			if ("status" in response && response.status === "verification_required") {
+			if (!("accessToken" in response)) {
 				return { needsVerification: true, email: credentials.email, message: response.message }
 			}
 
-			const userResponse = await fetchUserProfile()
-			const user = mapUserResponse(userResponse)
-			setAuthUser(user)
-			publishAuthEvent("session-started")
+			const user = await completeAuthSession(response)
 
 			return { needsVerification: false, user }
 		},
@@ -40,13 +46,9 @@ export const useEmailLogin = () => {
 
 export const useGoogleLoginMutation = () => {
 	return useMutation({
-		mutationFn: async ({ code, state }: { code: string; state: string }) => {
-			await loginWithGoogle(code, state, window.location.origin)
-
-			const userResponse = await fetchUserProfile()
-			const user = mapUserResponse(userResponse)
-			setAuthUser(user)
-			publishAuthEvent("session-started")
+		mutationFn: async (credential: string) => {
+			const response = await loginWithGoogle(credential)
+			await completeAuthSession(response)
 
 			return { success: true }
 		},
@@ -59,14 +61,8 @@ export const useGoogleLoginMutation = () => {
 export const useVerifyFirstLogin = () => {
 	return useMutation({
 		mutationFn: async ({ email, code }: { email: string; code: string }) => {
-			await verifyFirstLogin(email, code)
-
-			const userResponse = await fetchUserProfile()
-			const user = mapUserResponse(userResponse)
-			setAuthUser(user)
-			publishAuthEvent("session-started")
-
-			return user
+			const response = await verifyFirstLogin(email, code)
+			return completeAuthSession(response)
 		},
 		onError: () => {
 			clearAuth()
@@ -96,12 +92,16 @@ export const useResetPassword = () => {
 export const useLogoutMutation = () => {
 	return useMutation({
 		mutationFn: async () => {
-			await logoutService()
-			publishAuthEvent("session-ended")
-		},
-		onSettled: () => {
-			// Always clear auth state, even if logout API fails
-			clearAuth()
+			const sessionVersion = getAuthCredentials().sessionVersion
+			try {
+				await logoutService()
+			} finally {
+				if (!sessionVersion) {
+					clearAuth()
+				} else if (clearAuth(sessionVersion)) {
+					publishAuthEvent("session-ended", sessionVersion)
+				}
+			}
 		},
 	})
 }

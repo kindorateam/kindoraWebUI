@@ -11,7 +11,7 @@ describe("auth events", () => {
 			received = true
 		})
 
-		publishAuthEvent("session-started")
+		publishAuthEvent("session-started", "current-session")
 		await Bun.sleep(25)
 
 		unsubscribe()
@@ -22,11 +22,11 @@ describe("auth events", () => {
 		const event = new Promise<string>((resolve) => {
 			const unsubscribe = subscribeToAuthEvents((receivedEvent) => {
 				unsubscribe()
-				resolve(receivedEvent)
+				resolve(receivedEvent.event)
 			})
 		})
 		const externalTab = new BroadcastChannel(AUTH_CHANNEL)
-		externalTab.postMessage({ event: "session-ended", sourceId: "another-tab" })
+		externalTab.postMessage({ event: "session-ended", sessionVersion: "other-session", sourceId: "another-tab" })
 
 		expect(await event).toBe("session-ended")
 		externalTab.close()

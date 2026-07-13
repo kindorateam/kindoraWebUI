@@ -85,6 +85,8 @@ const en = {
 		signIn: {
 			forgotPassword: "Forgot password?",
 			google: "Sign in with Google",
+			googleFailed: "Google sign-in failed",
+			googleFailedDescription: "Please try again or use your Kindora email and password.",
 			loginFailed: "Login failed",
 			or: "OR",
 			rememberMe: "Remember me",
@@ -348,6 +350,8 @@ const en = {
 			olderLoadError: "We couldn't load older messages.",
 			retry: "Try again",
 			retryOlder: "Retry older messages",
+			today: "Today",
+			yesterday: "Yesterday",
 		},
 		empty: {
 			noConversationSelected: "No conversation selected",
@@ -360,7 +364,6 @@ const en = {
 			addToFavorites: "Add to favorites",
 			attachFile: "Attach file",
 			backToConversations: "Back to conversations",
-			moreConversationActions: "More conversation actions",
 			removeFromFavorites: "Remove from favorites",
 			searchMessages: "Search messages",
 			sendMessage: "Send message",
@@ -398,7 +401,9 @@ const en = {
 			untitled: "Conversation",
 		},
 		toast: {
+			attachmentsUnavailable: "File attachments aren't available yet",
 			favoriteFailed: "Could not update favorite",
+			searchUnavailable: "Message search isn't available yet",
 			sendFailed: "Could not send message",
 		},
 	},

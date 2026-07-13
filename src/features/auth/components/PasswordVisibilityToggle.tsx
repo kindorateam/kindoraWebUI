@@ -19,7 +19,7 @@ const PasswordVisibilityToggle = ({ isVisible, onToggle, label }: PasswordVisibi
 	return (
 		<button
 			aria-label={ariaLabel}
-			className="text-default-400"
+			className="flex size-8 shrink-0 items-center justify-center self-center rounded-full text-default-400 transition-colors hover:bg-default-100 hover:text-foreground focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
 			onClick={onToggle}
 			onMouseDown={(event) => event.preventDefault()}
 			type="button"

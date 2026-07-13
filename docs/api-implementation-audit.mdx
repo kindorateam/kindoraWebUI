@@ -1,7 +1,7 @@
 ---
 title: Kindora API Implementation Audit
 description: Backend capability and frontend-contract audit against the Georgia-first product roadmap.
-date: 2026-07-10
+date: 2026-07-13
 backend: ../api-main-ts
 frontend: ../kindoraWeb
 ---
@@ -32,20 +32,20 @@ It is substantially more complete than the frontend currently exposes:
 
 However, the API is still an **administrative platform core**, not the Georgia compliance and cash-flow MVP. There are no API domains for historical attendance, Georgia regulations, inspection packets, incidents, medication administration, policies, drills, menus, billing, payments, CAPS, or migration.
 
-There are also release-blocking security and contract problems in public registration, company tenancy, OAuth state handling, and frontend/backend payload alignment.
+There are also release-blocking security and contract problems in public registration, company tenancy, and frontend/backend payload alignment. Google Sign-In now uses verified ID tokens, stable provider identities, invited-account linking, and one-time nonces.
 
 ## Implemented API groups
 
 | Domain | Handlers | Status | Implemented behavior | Important limitation |
 | --- | ---: | --- | --- | --- |
-| Authentication | 14 | 🟡 | Registration, login, first-login verification, refresh rotation, logout, logout-all, password reset, Google OAuth | Delivery is stubbed; public account creation and OAuth state handling are unsafe |
+| Authentication | — | 🟡 | Registration, login, first-login verification, atomic refresh rotation, logout, logout-all, password reset, Google Sign-In | Delivery is stubbed and public account creation remains unsafe |
 | Current user | 1 | ✅ | Authenticated employee profile | No session/device management API |
 | Companies | 5 | 🔴 | Company CRUD and soft deletion | Controllers are not tenant-scoped |
 | Employees | 17 | ✅ | CRUD, invite, PIN, activation, avatar, absences, documents | Frontend still does not use creation, invitation, or absence APIs; document metadata editing remains unwired |
 | Students | 16 | 🟡 | CRUD, activation, avatar, absences, documents | No parent/guardian mutation, tags, medical mutation, enrollment, or pickup authorization |
 | Rooms | 21 | 🟡 | CRUD, capacity, membership, primary-room assignment, current student/staff presence | Presence is current-state only; checkout deletes the record |
 | Conversations | 15 | ✅ | Direct/room conversations, messages, search, clear, favorite, pin, read, mute, export | Employee-only; no parent identity or notification delivery |
-| WebSocket chat | 1 | ✅ | Authenticated real-time message send/broadcast; Redis fan-out is optional | Token is supplied in the WebSocket query string |
+| WebSocket chat | 1 | ✅ | Single-use-ticket authentication, real-time message send/broadcast, and optional Redis fan-out | Parent identities and delivery notifications remain unavailable |
 | System/storage | 4 | 🟡 | Health, local file serving, empty HS256 JWKS document, WebSocket | Storage has no general protected media download route |
 
 ## Endpoint inventory
@@ -65,8 +65,8 @@ There are also release-blocking security and contract problems in public registr
 - `POST /api/v1/auth/password/reset/resend`
 - `POST /api/v1/auth/password/reset/verify`
 - `POST /api/v1/auth/password/reset/set`
-- `GET /api/v1/auth/oauth/:provider/init`
-- `GET /api/v1/auth/oauth/:provider/callback`
+- `POST /api/v1/auth/google/nonce`
+- `POST /api/v1/auth/google`
 - `GET /api/v1/users/profile`
 
 </details>
@@ -189,7 +189,7 @@ There are also release-blocking security and contract problems in public registr
 
 | Roadmap ID | Backend status | What exists | What is still required |
 | --- | --- | --- | --- |
-| F1 Authentication | 🟡 | Login, verification, reset, refresh rotation, logout-all, OAuth | Real email/SMS delivery, MFA, device/session listing, secure public provisioning |
+| F1 Authentication | 🟡 | Login, verification, reset, refresh rotation, logout-all, secure Google Sign-In | Real email/SMS delivery, MFA, device/session listing, secure public provisioning |
 | F2 Organizations and locations | 🟡 | Company model and CRUD | Location model, licensing configuration, safe tenant-scoped company access |
 | F3 Rooms/classrooms | ✅ | Room CRUD, capacity, ages, ratio value, members and current presence | Location association and licensed-capacity overlays |
 | F4 Roles and permissions | 🟡 | Hard-coded role permissions enforced by protected routes | Per-user permissions, frontend/backend role alignment, `assistant` role decision |
@@ -225,7 +225,7 @@ There are also release-blocking security and contract problems in public registr
 | P2 Announcements/newsletters | ⬜ | — | Drafts, templates, audiences, scheduling and delivery |
 | P3 Urgent alerts | ⬜ | Notification functions only log to stdout | Delivery providers, priority, acknowledgment, retries and escalation |
 | P4 Incident acknowledgment | ⬜ | — | Secure parent acknowledgment tokens and evidence |
-| S1 Security baseline | 🟡 | JWT sessions, refresh rotation/reuse detection, tenant helpers, role authorization | Fix public provisioning/company tenancy/OAuth state, add MFA, audit, retention and security tests |
+| S1 Security baseline | 🟡 | JWT sessions, refresh rotation/reuse detection, tenant helpers, role authorization, nonce-bound Google Sign-In | Fix public provisioning/company tenancy; add MFA, audit, retention and broader security tests |
 | B1–B8 Billing/payments | ⬜ | — | Complete ledger, plans, invoices, adjustments, payments, statements and reconciliation |
 | CAPS1–CAPS4 | ⬜ | — | Authorizations, attendance comparison, exceptions, evidence and exports |
 | O1 Staff time clock | 🟡 | Current staff room presence | Historical shifts, corrections, approvals and reports |
@@ -259,12 +259,6 @@ Company routes authorize by role, but company controller reads and writes by glo
 
 **Required fix:** company access must be scoped to `currentUser.companyId`; keep any platform-level administration in a separate, explicitly controlled trust boundary.
 
-### 🔴 OAuth state is generated but never verified
-
-The OAuth initialization route sets a state cookie, and `verifyOAuthState` exists, but the callback does not compare the query state with the cookie. Its Swagger summary incorrectly claims state verification.
-
-**Required fix:** verify and consume OAuth state for redirect flows. If the SPA authorization-code popup intentionally uses a different contract, separate that route and document its CSRF protections explicitly.
-
 ### 🔴 Attendance history is destroyed on checkout
 
 `RoomPresence` stores only `roomId`, `userId`, `userType`, and `startTime`. Check-in deletes any previous presence, and checkout deletes the active record. This supports a live room roster but cannot support Georgia attendance retention, corrections, CAPS reconciliation, or inspection evidence.
@@ -279,7 +273,7 @@ Email and SMS functions only write verification codes to stdout. Invitations and
 
 ### 🟠 Resource APIs lack meaningful test coverage
 
-Current tests cover a small OAuth slice, the chat hub, and health behavior. There are no integration tests for tenant isolation, authorization matrices, employee/student/room CRUD, documents, presence, or conversations.
+Current tests cover Google ID-token and nonce boundaries, the chat hub, and health behavior. There are no integration tests for tenant isolation, authorization matrices, employee/student/room CRUD, documents, presence, or conversations.
 
 **Required fix:** add database integration tests around tenant boundaries and the high-risk mutation paths before expanding compliance functionality.
 
@@ -297,7 +291,7 @@ The passing tests do not prove database-backed resource behavior because those p
 
 ## Recommended implementation sequence
 
-1. Fix public registration, company tenancy, OAuth state verification, and production notification delivery.
+1. Fix public registration, company tenancy, and production notification delivery.
 2. Align frontend/backend roles and the student/employee payload contracts.
 3. Complete the remaining employee-document metadata editing and conversation creation/search actions.
 4. Add organization locations and an immutable audit-event foundation.

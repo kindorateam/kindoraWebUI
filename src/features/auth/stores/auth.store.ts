@@ -5,6 +5,13 @@ import { appStore } from "@/stores/jotaiStore"
 
 import type { User, UserProfileResponse } from "../types"
 
+export interface AuthCredentials {
+	accessToken: string | null
+	expiresAt: string | null
+	role: string | null
+	sessionVersion: string | null
+}
+
 export const mapUserResponse = ({ user }: UserProfileResponse): User => ({
 	id: user.id,
 	email: user.email ?? "",
@@ -15,6 +22,12 @@ export const mapUserResponse = ({ user }: UserProfileResponse): User => ({
 })
 
 const userAtom = atom<User | null>(null)
+const authCredentialsAtom = atom<AuthCredentials>({
+	accessToken: null,
+	expiresAt: null,
+	role: null,
+	sessionVersion: null,
+})
 
 // Remove credentials persisted by older releases without reading them back into application state.
 const legacyUserAtom = atomWithStorage<User | null>("auth-user", null)
@@ -24,7 +37,8 @@ export const authInitializedAtom = atom(false)
 
 const isAuthenticatedAtom = atom((get) => {
 	const user = get(userAtom)
-	return !!user
+	const credentials = get(authCredentialsAtom)
+	return Boolean(user && credentials.accessToken)
 })
 
 // Derived atoms
@@ -39,8 +53,34 @@ export const setAuthUser = (user: User) => {
 	appStore.set(userAtom, user)
 }
 
-export const clearAuth = () => {
+export const getAuthCredentials = (): AuthCredentials => appStore.get(authCredentialsAtom)
+
+export const setAuthCredentials = ({
+	accessToken,
+	expiresAt,
+	role,
+	sessionVersion,
+}: {
+	accessToken: string
+	expiresAt: string
+	role: string
+	sessionVersion: string
+}) => {
+	appStore.set(authCredentialsAtom, { accessToken, expiresAt, role, sessionVersion })
+}
+
+export const expectAuthSession = (sessionVersion: string) => {
 	appStore.set(userAtom, null)
+	appStore.set(authCredentialsAtom, { accessToken: null, expiresAt: null, role: null, sessionVersion })
+}
+
+export const clearAuth = (expectedSessionVersion?: string | null): boolean => {
+	const currentSessionVersion = appStore.get(authCredentialsAtom).sessionVersion
+	if (expectedSessionVersion && expectedSessionVersion !== currentSessionVersion) return false
+
+	appStore.set(userAtom, null)
+	appStore.set(authCredentialsAtom, { accessToken: null, expiresAt: null, role: null, sessionVersion: null })
+	return true
 }
 
 export const clearLegacyAuthStorage = () => {

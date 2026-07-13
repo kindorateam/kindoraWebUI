@@ -37,10 +37,17 @@ export const useMessages = () => {
 	const threadOptions = {
 		attachmentLabel: t("messages.thread.attachment"),
 		dateFormatter: new Intl.DateTimeFormat(i18n.language, { day: "numeric", month: "short" }),
+		messageDateFormatter: new Intl.DateTimeFormat(i18n.language, {
+			day: "numeric",
+			month: "long",
+			year: "numeric",
+		}),
 		noMessagesLabel: t("messages.thread.noMessages"),
 		timeFormatter: new Intl.DateTimeFormat(i18n.language, { hour: "numeric", minute: "2-digit" }),
+		todayLabel: t("messages.conversation.today"),
 		untitledLabel: t("messages.thread.untitled"),
 		userId: user?.id,
+		yesterdayLabel: t("messages.conversation.yesterday"),
 	}
 
 	useEffect(() => {

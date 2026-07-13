@@ -51,8 +51,8 @@ const MessagesSidebar = ({
 	}
 
 	return (
-		<section className={clsx("min-h-0 overflow-hidden", className)}>
-			<div className="flex h-full min-h-0 flex-col gap-3 rounded-2xl border border-default-200 bg-content1 p-3">
+		<section className={clsx("min-h-0 min-w-0 overflow-hidden", className)}>
+			<div className="flex h-full min-h-0 w-full min-w-0 flex-col gap-3 overflow-hidden rounded-2xl border border-default-200 bg-content1 p-3 md:rounded-r-none">
 				{children}
 
 				<div className="flex items-end">
@@ -68,7 +68,7 @@ const MessagesSidebar = ({
 					</TextField>
 				</div>
 
-				<div className="messages-thread-scroll min-h-0 flex-1 overflow-y-auto" onScroll={handleScroll}>
+				<div className="messages-thread-scroll min-h-0 min-w-0 flex-1 overflow-y-auto" onScroll={handleScroll}>
 					<div className="flex min-h-full flex-col gap-1">
 						{isLoading ? (
 							<div className="flex flex-1 items-center justify-center">
