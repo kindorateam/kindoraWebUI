@@ -1,4 +1,5 @@
 import { Button, Card } from "@heroui/react"
+import { useTranslation } from "react-i18next"
 
 import LineMdEmailCheck from "~icons/line-md/email-check"
 
@@ -7,19 +8,21 @@ interface ForgotPasswordConfirmationProps {
 	onNext: () => void
 }
 
-const ForgotPasswordConfirmation = ({ email: _email, onNext }: ForgotPasswordConfirmationProps) => {
+const ForgotPasswordConfirmation = ({ email, onNext }: ForgotPasswordConfirmationProps) => {
+	const { t } = useTranslation()
+
 	return (
-		<Card.Content className="flex flex-col items-center gap-5">
-			<div className="flex flex-col items-center gap-3">
-				<LineMdEmailCheck className="size-16 text-warning" />
-				<h2 className="text-center font-medium text-xl">Check your email</h2>
+		<Card.Content className="flex flex-col items-center gap-6 py-2">
+			<div className="flex flex-col items-center gap-2">
+				<LineMdEmailCheck className="size-14 text-warning" />
+				<h2 className="text-center font-semibold text-xl">{t("auth.forgotPassword.confirmationTitle")}</h2>
 				<p className="text-center text-default-500 text-sm">
-					We have sent a password recover instructions to your email
+					{t("auth.forgotPassword.confirmationDescription", { email })}
 				</p>
 			</div>
 
-			<Button fullWidth variant="primary" onPress={onNext} size="md">
-				Next
+			<Button fullWidth variant="primary" onPress={onNext} size="lg">
+				{t("common.next")}
 			</Button>
 		</Card.Content>
 	)

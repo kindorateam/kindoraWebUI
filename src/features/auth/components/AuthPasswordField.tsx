@@ -30,9 +30,9 @@ const AuthPasswordField = <T extends FieldValues>({
 			control={control}
 			name={name}
 			render={({ field, fieldState }) => (
-				<TextField isInvalid={!!fieldState.error} isRequired variant="secondary">
+				<TextField isInvalid={!!fieldState.error} isRequired>
 					<Label>{label}</Label>
-					<InputGroup>
+					<InputGroup className="[--field-focus:var(--default)]" variant="secondary">
 						<InputGroup.Input {...field} placeholder={placeholder} type={isVisible ? "text" : "password"} />
 						<InputGroup.Suffix>
 							<PasswordVisibilityToggle

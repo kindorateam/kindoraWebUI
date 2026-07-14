@@ -1,6 +1,7 @@
 import { Button, Card, InputOTP, Link, Tooltip, toast } from "@heroui/react"
 import { useEffect, useState } from "react"
 import { Controller, useForm } from "react-hook-form"
+import { useTranslation } from "react-i18next"
 
 import { getErrorMessage } from "@/utils/error"
 import PhClockCountdown from "~icons/ph/clock-countdown"
@@ -22,6 +23,7 @@ interface OTPVerificationFormProps {
 }
 
 const OTPVerificationForm = ({ email, onBack, onSuccess, context = "login", codeSentAt }: OTPVerificationFormProps) => {
+	const { t } = useTranslation()
 	const { verifyMutation } = useAuth()
 	const resendMutation = useRequestPasswordReset()
 	const verifyResetOTPMutation = useVerifyPasswordResetOTP()
@@ -70,7 +72,7 @@ const OTPVerificationForm = ({ email, onBack, onSuccess, context = "login", code
 				setResendTimeLeft(RESEND_COOLDOWN_SECONDS)
 			},
 			onError: (error) => {
-				toast("Failed to resend code", { description: getErrorMessage(error), variant: "danger" })
+				toast(t("auth.verification.resendFailed"), { description: getErrorMessage(error), variant: "danger" })
 			},
 		})
 	}
@@ -82,7 +84,7 @@ const OTPVerificationForm = ({ email, onBack, onSuccess, context = "login", code
 				{
 					onSuccess: () => onSuccess?.(),
 					onError: (error) => {
-						toast("Verification failed", { description: getErrorMessage(error), variant: "danger" })
+						toast(t("auth.verification.failed"), { description: getErrorMessage(error), variant: "danger" })
 					},
 				},
 			)
@@ -92,7 +94,7 @@ const OTPVerificationForm = ({ email, onBack, onSuccess, context = "login", code
 				{
 					onSuccess: () => onSuccess?.(data.otp),
 					onError: (error) => {
-						toast("Verification failed", { description: getErrorMessage(error), variant: "danger" })
+						toast(t("auth.verification.failed"), { description: getErrorMessage(error), variant: "danger" })
 					},
 				},
 			)
@@ -104,30 +106,37 @@ const OTPVerificationForm = ({ email, onBack, onSuccess, context = "login", code
 	return (
 		<>
 			<Card.Header>
-				<h1 className="font-medium text-2xl">We email you a code</h1>
+				<h1 className="font-semibold text-xl">{t("auth.verification.title")}</h1>
 			</Card.Header>
 
-			<Card.Content className="gap-4">
-				<div className="flex flex-col gap-4">
+			<Card.Content>
+				<div className="flex flex-col gap-3">
 					<div className="flex flex-col gap-1">
-						<p className="text-default-500 text-sm">Enter the verification code sent to</p>
-						<div className="flex items-center gap-1">
-							<p className="text-sm text-warning">{email}</p>
+						<p className="text-default-500 text-sm">{t("auth.verification.description")}</p>
+						<div className="flex min-w-0 items-center gap-1">
+							<p className="min-w-0 truncate text-sm text-warning">{email}</p>
 							<Tooltip delay={0}>
-								<Button isIconOnly onPress={onBack} size="sm" variant="ghost">
+								<Button
+									aria-label={t("auth.verification.changeEmail")}
+									className="shrink-0"
+									isIconOnly
+									onPress={onBack}
+									size="sm"
+									variant="ghost"
+								>
 									<TablerEdit className="text-warning" />
 								</Button>
-								<Tooltip.Content>Change email</Tooltip.Content>
+								<Tooltip.Content>{t("auth.verification.changeEmail")}</Tooltip.Content>
 							</Tooltip>
 						</div>
 					</div>
 
-					<div className="mx-auto">
+					<div className="mx-auto py-1">
 						<Controller
 							control={control}
 							name="otp"
 							render={({ field }) => (
-								<InputOTP {...field} maxLength={6}>
+								<InputOTP {...field} aria-label={t("auth.verification.codeLabel")} maxLength={6}>
 									<InputOTP.Group>
 										<InputOTP.Slot index={0} />
 										<InputOTP.Slot index={1} />
@@ -142,43 +151,45 @@ const OTPVerificationForm = ({ email, onBack, onSuccess, context = "login", code
 								</InputOTP>
 							)}
 							rules={{
-								required: "Verification code is required",
+								required: t("auth.verification.validation.required"),
 								minLength: {
 									value: 6,
-									message: "Code must be 6 digits",
+									message: t("auth.verification.validation.length"),
 								},
 								pattern: {
 									value: /^[0-9]{6}$/,
-									message: "Code must contain only digits",
+									message: t("auth.verification.validation.digits"),
 								},
 							}}
 						/>
 					</div>
 
-					<div className="flex items-center justify-between">
-						<p className="text-default-500 text-sm">This temporary code will expire in</p>
-						<div className="flex items-center gap-1">
+					<div className="flex items-center justify-between gap-3">
+						<p className="text-default-500 text-sm">{t("auth.verification.expiresIn")}</p>
+						<div className="flex shrink-0 items-center gap-1">
 							<p className="text-sm text-warning">{formatTime(timeLeft)}</p>
 							<PhClockCountdown className="text-warning" />
-							<p className="text-sm text-warning">min</p>
+							<p className="text-sm text-warning">{t("auth.verification.minutes")}</p>
 						</div>
 					</div>
 				</div>
 			</Card.Content>
 
-			<Card.Footer className="flex-col gap-4">
+			<Card.Footer className="flex-col gap-3">
 				<form className="w-full" onSubmit={handleSubmit(onSubmit)}>
-					<Button fullWidth variant="primary" isDisabled={!isValid} isPending={isPending} size="md" type="submit">
-						Next
+					<Button fullWidth variant="primary" isDisabled={!isValid} isPending={isPending} size="lg" type="submit">
+						{t("common.next")}
 					</Button>
 				</form>
 
-				<div className="flex w-full items-center justify-between">
-					<p className="text-default-500 text-sm">Didn't get your code?</p>
+				<div className="flex w-full flex-wrap items-center justify-between gap-x-3 gap-y-1">
+					<p className="text-default-500 text-sm">{t("auth.verification.didNotReceive")}</p>
 					{resendTimeLeft > 0 ? (
-						<span className="text-default-400 text-xs">Send a new code in {resendTimeLeft}s</span>
+						<span className="text-default-400 text-xs">
+							{t("auth.verification.resendIn", { seconds: resendTimeLeft })}
+						</span>
 					) : (
-						<Link onPress={handleResendCode}>Send a new code</Link>
+						<Link onPress={handleResendCode}>{t("auth.verification.resend")}</Link>
 					)}
 				</div>
 			</Card.Footer>

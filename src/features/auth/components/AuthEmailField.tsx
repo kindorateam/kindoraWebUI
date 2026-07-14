@@ -19,9 +19,9 @@ const AuthEmailField = <T extends FieldValues>({ control, name }: AuthEmailField
 			control={control}
 			name={name}
 			render={({ field, fieldState }) => (
-				<TextField isInvalid={!!fieldState.error} isRequired variant="secondary">
+				<TextField isInvalid={!!fieldState.error} isRequired>
 					<Label>{t("auth.fields.email")}</Label>
-					<InputGroup>
+					<InputGroup className="[--field-focus:var(--default)]" variant="secondary">
 						<InputGroup.Input {...field} placeholder={t("auth.placeholders.email")} type="email" />
 					</InputGroup>
 					<FieldError>{fieldState.error?.message}</FieldError>

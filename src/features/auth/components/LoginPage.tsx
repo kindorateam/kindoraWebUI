@@ -42,7 +42,7 @@ const LoginPage = () => {
 	}, [isAuthenticated, navigate])
 
 	return (
-		<div className="flex min-h-screen items-center justify-center">
+		<div className="flex min-h-svh items-center justify-center px-4 py-6">
 			<SignInCard
 				codeSentAt={codeSentAt}
 				resetToken={resetToken}

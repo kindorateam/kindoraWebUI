@@ -116,9 +116,9 @@ const SignInForm = ({ onForgotPassword, onVerificationRequired, defaultEmail }: 
 				<h1 className="font-semibold text-xl">{t("auth.signIn.title")}</h1>
 			</Card.Header>
 
-			<Card.Content className="gap-4">
+			<Card.Content>
 				<form onSubmit={handleSubmit(onSubmit)}>
-					<div className="mb-4 flex flex-col gap-3">
+					<div className="mb-3 flex flex-col gap-2">
 						<AuthEmailField control={control} name="email" />
 						<AuthPasswordField
 							control={control}
@@ -128,12 +128,12 @@ const SignInForm = ({ onForgotPassword, onVerificationRequired, defaultEmail }: 
 							requiredMessage={t("auth.validation.passwordRequired")}
 						/>
 					</div>
-					<div className="flex items-center justify-between">
+					<div className="flex min-h-8 items-center justify-between">
 						<Controller
 							control={control}
 							name="rememberMe"
 							render={({ field: { value, onChange, ...field } }) => (
-								<Checkbox {...field} isSelected={value} onChange={onChange}>
+								<Checkbox {...field} isSelected={value} onChange={onChange} variant="secondary">
 									<Checkbox.Content>
 										<Checkbox.Control>
 											<Checkbox.Indicator />
@@ -147,23 +147,23 @@ const SignInForm = ({ onForgotPassword, onVerificationRequired, defaultEmail }: 
 					</div>
 
 					<Button
-						className="mt-5"
+						className="mt-4"
 						fullWidth
 						variant="primary"
 						isDisabled={!isValid}
 						isPending={emailLoginMutation.isPending}
-						size="md"
+						size="lg"
 						type="submit"
 					>
 						{t("auth.signIn.submit")}
 					</Button>
 				</form>
 			</Card.Content>
-			<Card.Footer className="flex-col gap-4">
-				<div className="flex items-center gap-4">
-					<Separator className="flex-1" />
-					<span className="text-default-400 text-sm">{t("auth.signIn.or")}</span>
-					<Separator className="flex-1" />
+			<Card.Footer className="flex-col gap-3">
+				<div className="flex w-full items-center gap-3">
+					<Separator className="flex-1 bg-default-200" />
+					<span className="text-default-500 text-xs">{t("auth.signIn.or")}</span>
+					<Separator className="flex-1 bg-default-200" />
 				</div>
 
 				{nonce && !isLoading && !googleLoginMutation.isPending ? (

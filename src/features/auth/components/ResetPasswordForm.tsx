@@ -68,12 +68,12 @@ const ResetPasswordForm = ({ email, token, onBack, onResetSuccess }: ResetPasswo
 	return (
 		<>
 			<Card.Header>
-				<h1 className="font-medium text-xl">{t("auth.resetPassword.title")}</h1>
+				<h1 className="font-semibold text-xl">{t("auth.resetPassword.title")}</h1>
 			</Card.Header>
 
 			<Card.Content>
-				<form className="flex flex-col gap-5" id={formId} onSubmit={handleSubmit(onSubmit)}>
-					<div className="flex flex-col gap-3">
+				<form className="flex flex-col gap-4" id={formId} onSubmit={handleSubmit(onSubmit)}>
+					<div className="flex flex-col gap-2">
 						<AuthPasswordField
 							control={control}
 							label={t("auth.fields.newPassword")}
@@ -92,14 +92,14 @@ const ResetPasswordForm = ({ email, token, onBack, onResetSuccess }: ResetPasswo
 						/>
 					</div>
 
-					<div className="flex items-center gap-8">
-						<div className="flex min-w-44 items-center gap-1 text-sm">
+					<div className="flex flex-col gap-2">
+						<div className="flex items-center justify-between gap-2 text-sm">
 							<p className="text-foreground">{t("auth.resetPassword.strength")}</p>
 							<span className={strength.barsFilled > 0 ? strength.colorClass : "text-default-400"}>
 								{strength.barsFilled > 0 ? strength.displayLabel : t("auth.resetPassword.none")}
 							</span>
 						</div>
-						<div className="flex flex-1 items-center gap-2">
+						<div className="flex items-center gap-1.5">
 							{[0, 1, 2, 3, 4].map((barIndex) => (
 								<div
 									className={`h-1 flex-1 rounded-xl ${
@@ -111,9 +111,9 @@ const ResetPasswordForm = ({ email, token, onBack, onResetSuccess }: ResetPasswo
 						</div>
 					</div>
 
-					<div className="flex flex-col">
+					<div className="flex flex-col gap-1">
 						{requirementStatuses.map((requirement) => (
-							<div className="flex items-center gap-2 p-2" key={requirement.id}>
+							<div className="flex items-center gap-2 py-1" key={requirement.id}>
 								<span
 									className={`flex size-4 items-center justify-center rounded-lg border-2 ${
 										requirement.isMet ? "border-success bg-success" : "border-default bg-default"
@@ -128,18 +128,19 @@ const ResetPasswordForm = ({ email, token, onBack, onResetSuccess }: ResetPasswo
 				</form>
 			</Card.Content>
 
-			<Card.Footer className="flex-col gap-3">
+			<Card.Footer className="flex-col gap-2">
 				<Button
 					fullWidth
 					variant="primary"
 					form={formId}
 					isDisabled={!canSubmit}
 					isPending={resetPasswordMutation.isPending}
+					size="lg"
 					type="submit"
 				>
 					{t("auth.resetPassword.submit")}
 				</Button>
-				<Button fullWidth onPress={onBack} variant="outline">
+				<Button fullWidth onPress={onBack} size="lg" variant="outline">
 					{t("common.back")}
 				</Button>
 			</Card.Footer>

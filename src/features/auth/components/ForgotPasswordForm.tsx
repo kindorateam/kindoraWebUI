@@ -73,25 +73,25 @@ const ForgotPasswordForm = ({ onBack, onNext, defaultEmail }: ForgotPasswordForm
 				<h1 className="font-semibold text-xl">{t("auth.forgotPassword.title")}</h1>
 			</Card.Header>
 
-			<Card.Content className="gap-4">
+			<Card.Content className="gap-3">
 				<p className="text-default-500 text-sm">{t("auth.forgotPassword.description")}</p>
 				<AuthEmailField control={control} name="email" />
 			</Card.Content>
 
-			<Card.Footer className="flex-col gap-4">
+			<Card.Footer className="flex-col gap-2">
 				<form className="w-full" onSubmit={handleSubmit(onSubmit)}>
 					<Button
 						fullWidth
 						variant="primary"
 						isDisabled={!isValid}
 						isPending={requestResetMutation.isPending}
-						size="md"
+						size="lg"
 						type="submit"
 					>
 						{t("common.next")}
 					</Button>
 				</form>
-				<Button fullWidth onPress={onBack} size="md" variant="outline">
+				<Button fullWidth onPress={onBack} size="lg" variant="outline">
 					{t("common.back")}
 				</Button>
 			</Card.Footer>
